@@ -1,42 +1,87 @@
-# sv
+# NexoPDF 🚀
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+**Master your PDFs with absolute privacy.**
 
-## Creating a project
+NexoPDF is a professional, high-performance PDF toolkit that runs entirely in your browser. By leveraging powerful WebAssembly (WASM) engines, it ensures your documents never leave your device, providing world-class security and speed.
 
-If you're seeing this, you've probably already done this step. Congrats!
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Svelte](https://img.shields.io/badge/Svelte-5.0-ff3e00?logo=svelte)](https://svelte.dev)
+[![WASM](https://img.shields.io/badge/Engine-WASM-654ff0?logo=webassembly)](https://webassembly.org)
+
+## ✨ Why NexoPDF?
+
+*   **🔒 100% Private & Secure**: All processing happens locally in your browser's sandbox. Zero server uploads, zero data transfer.
+*   **⚡ Native Speed**: Powered by a high-performance WASM engine for desktop-class processing speeds.
+*   **📱 Offline Capable**: Fully functional without an internet connection. Install it as a PWA for a seamless desktop experience (available soon).
+*   **♾️ Unlimited Everything**: No daily quotas, no file size caps, and no subscriptions. Batch process as much as your hardware handles.
+
+## 🛠️ Essential Tools
+
+| Tool | Description |
+| :--- | :--- |
+| **Merge PDF** | Combine multiple files into one. Drag and drop to reorder. |
+| **Split PDF** | Extract pages, split ranges, or divide files into multiple documents. |
+| **Compress PDF** | Reduce file sizes while maintaining professional quality. |
+| **Image to PDF** | Instant conversion for JPG, PNG, and HEIC formats. |
+| **PDF Multi-Tool** | The ultimate workspace to rearrange, rotate, and export pages. |
+
+## 🚀 Tech Stack
+
+NexoPDF is built with cutting-edge technologies for maximum performance and reliability:
+
+- **Frontend**: [Svelte 5](https://svelte.dev/) (Runes), [SvelteKit](https://kit.svelte.dev/)
+- **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)
+- **PDF Core**: [`pdf-lib`](https://pdf-lib.js.org/), [`pdfjs-dist`](https://mozilla.github.io/pdf.js/)
+- **WASM Engine**: [`@neslinesli93/qpdf-wasm`](https://github.com/neslinesli93/qpdf-wasm)
+- **Icons**: [Lucide Svelte](https://lucide.dev/)
+- **Linting**: [Biome](https://biomejs.dev/)
+
+## 🛠️ Local Development
+
+### Prerequisites
+
+You'll need [Bun](https://bun.sh/) (recommended) or Node.js installed.
+
+### Installation
 
 ```sh
-# create a new project
-npx sv create my-app
+# Clone the repository
+git clone https://github.com/kanakkholwal/nexopdf.git
+
+# Navigate to the project
+cd nexo-pdf
+
+# Install dependencies
+bun install
 ```
 
-To recreate this project with the same configuration:
+### Development
 
 ```sh
-# recreate this project
-bun x sv create --template minimal --types ts --install bun nexo-pdf
+# Start the development server
+bun run dev
+
+# Open in browser
+# http://localhost:5173
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### Building for Production
 
 ```sh
-npm run dev
+# Create a production build
+bun run build
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Preview the build
+bun run preview
 ```
 
-## Building
+## 🤝 Contributing
 
-To create a production version of your app:
+Contributions are welcome! If you have an idea for a tool or a feature, feel free to open an issue or submit a pull request.
 
-```sh
-npm run build
-```
+## 📄 License
 
-You can preview the production build with `npm run preview`.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+---
+

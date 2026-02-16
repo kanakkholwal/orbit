@@ -51,7 +51,7 @@
       <div class="container mx-auto max-w-5xl px-4 text-center">
         
         <div class="mb-8 inline-flex items-center justify-center">
-          <a href="https://github.com/kanakkholwa/nexopdf" target="_blank" class="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-border/50 bg-background/50 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-md transition-colors hover:bg-muted/50 hover:text-foreground">
+          <a href="https://github.com/kanakkholwal/nexopdf" target="_blank" class="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-border/50 bg-background/50 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-md transition-colors hover:bg-muted/50 hover:text-foreground">
             <span class="flex h-2 w-2 rounded-full bg-primary shadow-lg"></span>
             <span class="relative">v2.0 is now Open Source</span>
             <ArrowRight class="ml-1 size-3 transition-transform group-hover:translate-x-0.5" />
@@ -79,7 +79,7 @@
             <ArrowRight class="ml-2 size-4" />
           </a>
           <a
-            href="https://github.com/kanakkholwa/nexopdf"
+            href="https://github.com/kanakkholwal/nexopdf"
             target="_blank"
             class="inline-flex h-12 items-center justify-center rounded-xl border border-border bg-background/60 backdrop-blur-sm px-8 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >

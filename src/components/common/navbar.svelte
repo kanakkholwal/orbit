@@ -51,7 +51,7 @@
 
       <div class="flex items-center gap-1.5 sm:gap-2">
         <Button
-          href="https://github.com/kanakkholwa/nexopdf"
+          href="https://github.com/kanakkholwal/nexopdf"
           target="_blank"
           variant="ghost"
           size="icon"
@@ -123,7 +123,7 @@
           {/each}
            -->
           <a
-            href="https://github.com/kanakkholwa/nexopdf"
+            href="https://github.com/kanakkholwal/nexopdf"
             target="_blank"
             class="flex items-center justify-between rounded-xl p-3 text-sm font-medium text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-colors"
           >
