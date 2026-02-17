@@ -3,12 +3,34 @@
   import { fade } from "svelte/transition";
 
   import ShareButton from "$components/application/ShareButton.svelte";
-  import { ChevronLeft, Info, Share2, ShieldCheck } from "@lucide/svelte";
+  import {
+    ChevronLeft,
+    Info,
+    Loader2,
+    Share2,
+    ShieldCheck,
+  } from "@lucide/svelte";
+  import type { Component } from "svelte";
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
+
   const tool = $derived(data.tool);
-  
+
+  let ToolComponent: Component | null = $state(null);
+  let loading = $state(true);
+
+  $effect(() => {
+    // Reset state when tool changes
+    loading = true;
+    ToolComponent = null;
+
+    // Artificial delay check (optional) or just load
+    tool.component().then((mod) => {
+      ToolComponent = mod.default;
+      loading = false;
+    });
+  });
 </script>
 
 <svelte:head>
@@ -20,10 +42,7 @@
 </svelte:head>
 
 {#if tool}
-  <div
-    class="min-h-screen w-full bg-background text-foreground"
-    in:fade
-  >
+  <div class="min-h-screen w-full bg-background text-foreground" in:fade>
     <div class="mx-auto max-w-app px-4 pb-20 sm:px-6 lg:px-8">
       <nav class="mb-8 flex items-center justify-between">
         <a
@@ -108,10 +127,32 @@
           </div>
         </header>
 
-        <section class="mt-4 w-full max-w-app">
-          {#if tool.component}
-            {@const Component = tool.component}
-            <Component />
+        <section class="mt-4 w-full max-w-app min-h-100 relative">
+          {#if loading}
+            <div
+              in:fade={{ duration: 200 }}
+              out:fade={{ duration: 200 }}
+              class="absolute inset-0 w-full h-100 rounded-3xl border-2 border-dashed border-border bg-card/50 backdrop-blur-sm flex flex-col items-center justify-center"
+            >
+              <div
+                class="flex flex-col items-center gap-4 opacity-50 animate-pulse"
+              >
+                <div
+                  class="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center"
+                >
+                  <Loader2 class="size-8 animate-spin text-primary" />
+                </div>
+                <div class="space-y-2 text-center">
+                  <div class="h-4 w-48 bg-muted/50 rounded mx-auto"></div>
+                  <div class="h-3 w-32 bg-muted/30 rounded mx-auto"></div>
+                </div>
+                <div class="h-10 w-36 bg-muted/50 rounded-full mt-4"></div>
+              </div>
+            </div>
+          {:else if ToolComponent}
+            <div in:fade={{ duration: 300, delay: 100 }}>
+              <ToolComponent />
+            </div>
           {/if}
         </section>
 

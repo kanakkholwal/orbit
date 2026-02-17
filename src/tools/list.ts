@@ -12,24 +12,14 @@ import {
 } from '@lucide/svelte';
 import type { Component } from 'svelte';
 
-// import individual tool components
-import CompressPdfTool from './compress-pdf/tool.svelte';
-import DecryptPdfTool from './decrypt-pdf/tool.svelte';
-import EncryptPdfTool from './encrypt-pdf/tool.svelte';
-import ImgToPdfTool from './img-to-pdf/tool.svelte';
-import MergePdfTool from './merge-pdf/tool.svelte';
-import MultiPdfTool from './multi-pdf/tool.svelte';
-import OrganizePdfTool from './organize-pdf/tool.svelte';
-import PdfToJpgTool from './pdf-to-img/tool.svelte';
-import RotatePdfTool from './rotate-pdf/tool.svelte';
-import SplitPdfTool from './split-pdf/tool.svelte';
+
 
 export interface ToolConfig {
     slug: string;
     title: string;
     description: string;
     icon: typeof Icon;
-    component: Component;
+    component: () => Promise<{ default: Component }>;
     color: string;
     category?: string;
 }
@@ -45,7 +35,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Combine multiple PDF files into one single document in seconds. Drag and drop to reorder pages.',
         category: 'PDF Management',
         icon: FileStack,
-        component: MergePdfTool,
+        component: () => import('./merge-pdf/tool.svelte'),
         color: 'text-indigo-500'
     },
     "multi-pdf": {
@@ -54,7 +44,7 @@ const tools: Record<string, ToolConfig> = {
         description: "Upload, rearrange, rotate, and export multiple PDF pages with ease.",
         category: 'Essential',
         icon: FileText,
-        component: MultiPdfTool,
+        component: () => import('./multi-pdf/tool.svelte'),
         color: "text-primary",
     },
     'split-pdf': {
@@ -63,7 +53,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Extract pages, split ranges, or divide your PDF into multiple files.',
         category: 'Essential',
         icon: Scissors,
-        component: SplitPdfTool,
+        component: () => import('./split-pdf/tool.svelte'),
         color: 'text-pink-500'
     },
     'compress-pdf': {
@@ -72,7 +62,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Reduce file size while maintaining quality. Advanced optimization options.',
         category: 'Essential',
         icon: Zap,
-        component: CompressPdfTool,
+        component: () => import('./compress-pdf/tool.svelte'),
         color: 'text-yellow-500'
     },
     'img-to-pdf': {
@@ -81,7 +71,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Convert images to PDF instantly. Supports JPG, PNG, and more.',
         category: 'Conversion',
         icon: ImageIcon,
-        component: ImgToPdfTool,
+        component: () => import('./img-to-pdf/tool.svelte'),
         color: 'text-orange-500'
     },
     "pdf-to-img": {
@@ -90,7 +80,7 @@ const tools: Record<string, ToolConfig> = {
         description: "Convert PDF pages into high-quality images. Supports JPG and PNG formats.",
         category: 'Conversion',
         icon: ImageIcon,
-        component: PdfToJpgTool,
+        component: () => import('./pdf-to-img/tool.svelte'),
         color: 'text-blue-500'
     },
     'encrypt-pdf': {
@@ -99,7 +89,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Protect your PDF with a password. Simple and secure encryption.',
         category: 'Security',
         icon: Lock,
-        component: EncryptPdfTool,
+        component: () => import('./encrypt-pdf/tool.svelte'),
         color: 'text-green-500'
     },
     'decrypt-pdf': {
@@ -108,7 +98,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Remove password protection from your PDF. Simple and secure decryption.',
         category: 'Security',
         icon: Unlock,
-        component: DecryptPdfTool,
+        component: () => import('./decrypt-pdf/tool.svelte'),
         color: 'text-green-500'
     },
     'rotate-pdf': {
@@ -117,7 +107,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Easily rotate PDF pages to the correct orientation. Supports batch processing.',
         category: 'PDF Management',
         icon: RotateCw,
-        component: RotatePdfTool,
+        component: () => import('./rotate-pdf/tool.svelte'),
         color: 'text-purple-500'
     },
     'organize-pdf': {
@@ -126,7 +116,7 @@ const tools: Record<string, ToolConfig> = {
         description: 'Easily organize PDF pages. Supports batch processing.',
         category: 'PDF Management',
         icon: MoveIcon,
-        component: OrganizePdfTool,
+        component:() => import('./organize-pdf/tool.svelte'),
         color: 'text-purple-500'
     }
 };
