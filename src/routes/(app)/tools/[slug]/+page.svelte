@@ -21,10 +21,10 @@
 
 {#if tool}
   <div
-    class="relative min-h-screen w-full bg-background text-foreground"
+    class="min-h-screen w-full bg-background text-foreground"
     in:fade
   >
-    <div class="mx-auto max-w-app px-4 pt-6 pb-20 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-app px-4 pb-20 sm:px-6 lg:px-8">
       <nav class="mb-8 flex items-center justify-between">
         <a
           href="/explore"
@@ -65,7 +65,7 @@
         <header
           class="flex flex-col items-start gap-8 px-2 sm:flex-row sm:items-center"
         >
-          <div class="relative shrink-0 group">
+          <div class="relative shrink-0 group hidden md:block">
             <div
               class="absolute inset-0 rounded-full bg-primary/20 blur-2xl opacity-50 transition-opacity group-hover:opacity-70"
             ></div>
@@ -108,7 +108,7 @@
           </div>
         </header>
 
-        <section class="relative mt-4 w-full max-w-app">
+        <section class="mt-4 w-full max-w-app">
           {#if tool.component}
             {@const Component = tool.component}
             <Component />

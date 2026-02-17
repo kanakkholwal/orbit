@@ -1,12 +1,12 @@
 <script lang="ts">
-	import * as Tooltip from "$components/ui/tooltip/index.js";
-	import { cn, type WithElementRef } from "$lib/utils.js";
+	import * as Tooltip from "$components/ui/tooltip";
+	import { cn, type WithElementRef } from "$lib/utils";
 	import type { HTMLAttributes } from "svelte/elements";
 	import {
-		SIDEBAR_COOKIE_MAX_AGE,
-		SIDEBAR_COOKIE_NAME,
-		SIDEBAR_WIDTH,
-		SIDEBAR_WIDTH_ICON,
+	  SIDEBAR_COOKIE_MAX_AGE,
+	  SIDEBAR_COOKIE_NAME,
+	  SIDEBAR_WIDTH,
+	  SIDEBAR_WIDTH_ICON,
 	} from "./constants.js";
 	import { setSidebar } from "./context.svelte.js";
 

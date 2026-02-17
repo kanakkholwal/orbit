@@ -30,7 +30,7 @@
 		children,
 		btnProps = {},
 		class: className,
-		showCloseButton = true,
+		showCloseButton = false,
 		hideHeader = false
 	}: Props = $props();
 
@@ -95,7 +95,7 @@
 			{#if showCloseButton}
 				<Drawer.Footer class="pt-2 justify-end">
 					<Drawer.Close>
-						<Button variant="outline" size="sm">Cancel</Button>
+						<Button variant="outline" size="sm" class="w-full">Cancel</Button>
 					</Drawer.Close>
 				</Drawer.Footer>
 			{/if}

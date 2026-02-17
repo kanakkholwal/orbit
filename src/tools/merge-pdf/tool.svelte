@@ -11,9 +11,10 @@
   import { setContext } from "svelte";
   import { MERGE_STATE_KEY, MergeState } from "./helper.svelte";
 
-  import UploadArea from "$components/application/UploadArea.svelte";
+  import UploadArea from "$components/ui/UploadArea.svelte";
   import FileModeItem from "./FileModeItem.svelte";
   import PageModeThumbnail from "./PageModeThumbnail.svelte";
+  import Button from "$components/ui/button/button.svelte";
 
   const localStore = new MergeState();
   setContext(MERGE_STATE_KEY, localStore);
@@ -178,10 +179,12 @@
     <div
       class="fixed bottom-8 left-1/2 z-40 -translate-x-1/2 w-full max-w-sm px-4"
     >
-      <button
+      <Button
+        size="lg"
+        variant="dark"
+        class="px-8 h-11 min-w-50"
         onclick={() => localStore.mergeAndDownload()}
         disabled={localStore.isProcessing}
-        class="group w-full flex items-center justify-center gap-3 rounded-full bg-primary py-4 text-lg font-bold text-primary-foreground shadow-xl transition-all hover:scale-[1.02] hover:shadow-2xl hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
       >
         {#if localStore.isProcessing}
           <Loader2 class="animate-spin" />
@@ -193,7 +196,7 @@
             class="transition-transform group-hover:translate-x-1"
           />
         {/if}
-      </button>
+      </Button>
     </div>
   {/if}
 </div>

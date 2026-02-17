@@ -6,7 +6,7 @@
 </script>
 
 <header
-  class="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border/40 bg-background/80 px-4 backdrop-blur-md md:hidden"
+  class="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-border/40 bg-card/80 px-4 backdrop-blur-md md:hidden"
 >
   <div class="flex items-center gap-2">
     <div

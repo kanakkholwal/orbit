@@ -56,15 +56,15 @@ export const toolsCategories = [
     tools: [
 
       {
-        id: "protect",
-        title: "Protect PDF",
+        id: "encrypt-pdf",
+        title: "Encrypt PDF",
         desc: "Encrypt with password.",
         icon: Lock,
         color: "text-indigo-600 bg-indigo-50",
       },
       {
-        id: "unlock",
-        title: "Unlock PDF",
+        id: "decrypt-pdf",
+        title: "Decrypt PDF",
         desc: "Remove passwords instantly.",
         icon: Shield,
         color: "text-red-600 bg-red-50",
@@ -79,7 +79,7 @@ export const toolsCategories = [
     tools: [
       {
         id: "pdf-to-img",
-        title: "PDF to JPG",
+        title: "PDF to Images",
         desc: "Convert pages to images.",
         icon: ImageIcon,
         color: "text-purple-600 bg-purple-50",
@@ -100,14 +100,14 @@ export const toolsCategories = [
     icon: PenLineIcon,
     tools: [
       {
-        id: "rotate",
-        title: "Rotate",
+        id: "rotate-pdf",
+        title: "Rotate PDF",
         desc: "Fix page orientation.",
         icon: RotateCw,
         color: "text-cyan-600 bg-cyan-50",
       },
       {
-        id: "organize",
+        id: "organize-pdf",
         title: "Organize",
         desc: "Reorder and delete pages.",
         icon: LayoutTemplate,

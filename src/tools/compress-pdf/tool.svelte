@@ -1,5 +1,6 @@
 <script lang="ts">
-  import UploadArea from "$components/application/UploadArea.svelte";
+  import { Button } from "$components/ui/button";
+  import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
   import {
     AlertTriangle,
@@ -188,17 +189,19 @@
       </div>
 
       <div class="border-t border-border bg-background p-4 text-center">
-        <button
+        <Button
+        size="lg"
+        variant="dark"
+        class="px-8 h-11 min-w-50"
           onclick={() => store.process()}
           disabled={store.isProcessing}
-          class="inline-flex h-11 min-w-50 items-center justify-center gap-2 rounded-full bg-primary px-8 text-lg font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-105 hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
         >
           {#if store.isProcessing}
             <Loader2 class="animate-spin" /> {store.progress.text}
           {:else}
             Compress Files <Zap size={18} class="fill-current" />
           {/if}
-        </button>
+        </Button>
       </div>
     </div>
   {/if}

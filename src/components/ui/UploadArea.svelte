@@ -180,7 +180,7 @@
         {@render action()}
       {:else}
         <div
-          class="rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-lg transition-transform duration-300 hover:bg-primary/90 hover:scale-105 active:scale-95"
+          class="rounded-full bg-primary/10 px-8 py-3 text-sm font-semibold text-primary shadow-xs transition-transform duration-300 hover:bg-primary/10 hover:scale-105 active:scale-95"
         >
           Select Files
         </div>

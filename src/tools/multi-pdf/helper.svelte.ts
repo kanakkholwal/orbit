@@ -25,10 +25,10 @@ type Snapshot = {
 
 
 // Context Key for passing state to children
-export const PDF_STATE_KEY = Symbol('PDF_STATE');
+export const PDF_STATE_KEY = Symbol('MULTI_PDF_STATE');
 
 
-export class PdfEditorState  extends PdfEngine {
+export class PdfEditorState extends PdfEngine {
   pages = $state<PageData[]>([]);
   selectedIds = $state<Set<string>>(new Set());
   splitMarkers = $state<Set<string>>(new Set());
@@ -144,7 +144,7 @@ export class PdfEditorState  extends PdfEngine {
 
 
 
-  // --- Manipulation ---
+  //  Manipulation 
   toggleSelection(id: string) {
     if (this.selectedIds.has(id)) {
       this.selectedIds.delete(id);
@@ -238,6 +238,23 @@ export class PdfEditorState  extends PdfEngine {
 
   reorderPages(newIndices: number[]) {
     // Stub for safety, logic moved to SortableJS inline
+  }
+  async renderThumbnail(
+    canvas: HTMLCanvasElement,
+    pdfIndex: number,
+    pageIndex: number,
+    _rotation: number = 0
+  ) {
+    // 1. Resolve the PDF Object from the index
+    const pdfDoc = this.pdfJsDocs[pdfIndex];
+
+    if (!pdfDoc) {
+      console.error(`[PdfEditor] PDF Document at index ${pdfIndex} not found.`);
+      return;
+    }
+
+    // 2. Call the base Engine method with the correct signature
+    await super.renderPageToCanvas(canvas, pdfDoc, pageIndex);
   }
 
   // --- Export ---

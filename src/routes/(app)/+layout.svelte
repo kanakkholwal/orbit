@@ -10,10 +10,10 @@
 >
   <AppSidebar />
   <main
-    class="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 lg:p-8 relative pt-0"
+    class="flex-1 overflow-y-auto overflow-x-hidden relative pt-0"
   >
     <MobileHeader />
-    <div class="mx-auto max-w-app h-full flex flex-col">
+    <div class="mx-auto max-w-app h-full flex flex-col p-4 md:p-6 lg:p-8">
       {@render children?.()}
     </div>
   </main>

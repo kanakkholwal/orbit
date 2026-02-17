@@ -33,29 +33,26 @@ export class PdfEngine {
     ) {
         if (!pdfDocProxy) return;
 
-        const page = await pdfDocProxy.getPage(pageIndex + 1); // PDF.js is 1-based
+        const page = await pdfDocProxy.getPage(pageIndex + 1);
 
-        // 1. Calculate Scale
-        const unscaledViewport = page.getViewport({ scale: 1 });
-        const scale = targetWidth / unscaledViewport.width;
+        const viewport = page.getViewport({ scale: 1 });
 
-        // 2. Handle High DPI (Retina)
+        // Thumbnail size ~200px
+        const scale = 200 / viewport.width;
+        const scaledViewport = page.getViewport({ scale });
         const outputScale = window.devicePixelRatio || 1;
-        const viewport = page.getViewport({ scale: scale * outputScale });
 
-        // 3. Set Dimensions
-        canvas.width = Math.floor(viewport.width);
-        canvas.height = Math.floor(viewport.height);
+        canvas.width = Math.floor(scaledViewport.width * outputScale);
+        canvas.height = Math.floor(scaledViewport.height * outputScale);
+        canvas.style.width = Math.floor(scaledViewport.width) + "px";
+        canvas.style.height = Math.floor(scaledViewport.height) + "px";
 
-        // CSS handling for sharpness
-        canvas.style.width = Math.floor(viewport.width / outputScale) + "px";
-        canvas.style.height = Math.floor(viewport.height / outputScale) + "px";
-
-        const context = canvas.getContext('2d');
-        if (context) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
             await page.render({
-                canvasContext: context,
-                viewport: viewport,
+                canvasContext: ctx,
+                viewport: scaledViewport,
+                transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined,
                 canvas
             }).promise;
         }

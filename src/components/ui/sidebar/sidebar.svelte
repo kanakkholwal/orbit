@@ -9,7 +9,7 @@
 		ref = $bindable(null),
 		side = "left",
 		variant = "sidebar",
-		collapsible = "offcanvas",
+		collapsible = "icon",
 		class: className,
 		children,
 		...restProps

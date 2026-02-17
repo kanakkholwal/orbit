@@ -25,11 +25,11 @@
 
 <div 
   use:lazy
-  class="relative flex aspect-[3/4] cursor-move flex-col items-center justify-center overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:ring-2 hover:ring-primary"
+  class="relative flex aspect-3/4 cursor-move flex-col items-center justify-center overflow-hidden rounded-lg border border-border bg-card shadow-sm transition-all hover:ring-2 hover:ring-primary"
   title="{item.fileName} - Page {item.pageIndex + 1}"
 >
   {#if !isRendered}
-    <Loader2 class="animate-spin text-muted-foreground" />
+    <Loader2 class="animate-spin text-muted-foreground m-auto" />
   {/if}
   
   <canvas 
