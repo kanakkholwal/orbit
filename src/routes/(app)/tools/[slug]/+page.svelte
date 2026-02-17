@@ -2,6 +2,7 @@
   import { page } from "$app/state";
   import { fade } from "svelte/transition";
 
+  import AdUnit from "$components/AdUnit.svelte";
   import ShareButton from "$components/application/ShareButton.svelte";
   import {
     ChevronLeft,
@@ -19,17 +20,23 @@
 
   let ToolComponent: Component | null = $state(null);
   let loading = $state(true);
+  let error = $state(false);
 
   $effect(() => {
-    // Reset state when tool changes
     loading = true;
     ToolComponent = null;
+    error = false;
 
-    // Artificial delay check (optional) or just load
-    tool.component().then((mod) => {
-      ToolComponent = mod.default;
-      loading = false;
-    });
+    tool
+      .component()
+      .then((mod) => {
+        ToolComponent = mod.default;
+      })
+      .catch((e) => {
+        console.error("Error loading tool component:", e);
+        error = true;
+      })
+      .finally(() => (loading = false));
   });
 </script>
 
@@ -70,16 +77,7 @@
       </nav>
 
       <div class="flex w-full min-w-0 flex-col gap-8">
-        <div
-          class="relative flex min-h-25 w-full items-center justify-center overflow-hidden rounded-2xl border border-border/60 bg-muted/20"
-        >
-          <div
-            class="absolute inset-0 bg-[radial-gradient(#00000005_1px,transparent_1px)] bg-size-[16px_16px]"
-          ></div>
-          <div class="relative z-10 text-xs text-muted-foreground">
-            [AdSpace: Horizontal Leaderboard]
-          </div>
-        </div>
+        <AdUnit adSlot="display-horizontal" />
 
         <header
           class="flex flex-col items-start gap-8 px-2 sm:flex-row sm:items-center"
@@ -132,7 +130,7 @@
             <div
               in:fade={{ duration: 200 }}
               out:fade={{ duration: 200 }}
-              class="absolute inset-0 w-full h-100 rounded-3xl border-2 border-dashed border-border bg-card/50 backdrop-blur-sm flex flex-col items-center justify-center"
+              class="absolute inset-0 w-full h-100 rounded-3xl border-2 border-border bg-card/50 backdrop-blur-sm flex flex-col items-center justify-center"
             >
               <div
                 class="flex flex-col items-center gap-4 opacity-50 animate-pulse"
@@ -164,13 +162,7 @@
             >
             <div class="h-px flex-1 bg-border"></div>
           </div>
-          <div
-            class="flex min-h-70 w-full items-center justify-center rounded-2xl border border-border bg-card p-4 shadow-sm"
-          >
-            <span class="text-xs text-muted-foreground"
-              >[AdSpace: Multiplex]</span
-            >
-          </div>
+          <AdUnit adSlot="multiplex_horizontal" />
         </div>
 
         <div class="py-10 text-center">

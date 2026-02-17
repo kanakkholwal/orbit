@@ -7,7 +7,7 @@ export const load: PageLoad = ({ params }) => {
   const tool = getTool(params.slug);
 
   if (!tool) {
-   	error(404, 'Not found');
+    error(404, 'Not found');
 
   }
   return { tool };

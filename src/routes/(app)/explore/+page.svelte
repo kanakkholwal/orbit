@@ -15,14 +15,14 @@
         if (activeCategory !== "all" && cat.id !== activeCategory) return null;
 
         // Filter tools inside the category based on search
-        const matchingTools = cat.tools.filter(
+        const matchingTools = cat.tools?.filter(
           (tool) =>
             tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            tool.desc.toLowerCase().includes(searchQuery.toLowerCase()),
+            tool.description.toLowerCase().includes(searchQuery.toLowerCase()),
         );
 
         // Return category only if it has matching tools
-        return matchingTools.length > 0
+        return matchingTools?.length! > 0
           ? { ...cat, tools: matchingTools }
           : null;
       })
@@ -172,7 +172,7 @@
         >
           {#each category?.tools as tool}
             <a
-              href={`/tools/${tool.id}`}
+              href={`/tools/${tool.slug}`}
               class="group relative flex flex-col p-5 h-full rounded-2xl border border-border bg-card backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-[1.02] hover:bg-card hover:shadow-xl hover:shadow-blue-900/5 hover:border-primary/20"
             >
               <div
@@ -191,7 +191,7 @@
                   {tool.title}
                 </h3>
                 <p class="text-sm text-muted-foreground leading-relaxed">
-                  {tool.desc}
+                  {tool.description}
                 </p>
               </div>
 

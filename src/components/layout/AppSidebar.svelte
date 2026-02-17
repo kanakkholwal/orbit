@@ -3,11 +3,17 @@
   import Button from "$components/ui/button/button.svelte";
   import * as Sidebar from "$components/ui/sidebar";
   import { config } from "$constants/app";
-  import { categories, tools } from "$constants/tools";
   import { cn } from "$lib/utils";
-  import { Command, Moon, Star, Sun } from "@lucide/svelte";
+  import { toolList } from "$tools/list";
+  import {
+    Chromium,
+    Command,
+    GithubIcon,
+    Moon,
+    Star,
+    Sun,
+  } from "@lucide/svelte";
   import { mode, toggleMode } from "mode-watcher";
-
   // Derived state for reactivity
   let currentPath = $derived(page.url.pathname);
 
@@ -23,9 +29,8 @@
   <Sidebar.Rail class="data-[state=collapsed]:hidden" />
   <Sidebar.Header>
     <Sidebar.MenuItem>
-      <Sidebar.MenuButton
-        size="lg"
-        class="inline-flex w-full items-center justify-between gap-2 hover:bg-transparent"
+      <div
+        class="inline-flex w-full items-center justify-between gap-2 hover:bg-transparent py-2"
       >
         <a
           href="/"
@@ -60,58 +65,48 @@
             <Moon size={16} />
           {/if}
         </Button>
-      </Sidebar.MenuButton>
+      </div>
     </Sidebar.MenuItem>
   </Sidebar.Header>
   <Sidebar.Content class="scrollbar-hide">
     <Sidebar.Group>
-      <Sidebar.GroupLabel>Explore</Sidebar.GroupLabel>
-      <Sidebar.GroupContent>
-        <Sidebar.Menu>
-          {#each categories as item (item.id)}
-            <Sidebar.MenuItem>
-              <Sidebar.MenuButton tooltipContent={item.name}>
-                {#snippet child({ props })}
-                  <a
-                    href={`/explore?category=${item.id}`}
-                    {...props}
-                    class={cn(
-                      "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200",
-                      isActive(`/explore?category=${item.id}`)
-                        ? "bg-background shadow-sm text-foreground"
-                        : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
-                      "group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:size-8",
-                    )}
-                  >
-                    {#if item.icon}
-                      {@const Icon = item.icon}
-                      <Icon size={16} />
-                    {/if}
-                    <span class="group-data-[state=collapsed]:hidden"
-                      >{item.name}</span
-                    >
-                  </a>
-                {/snippet}
-              </Sidebar.MenuButton>
-            </Sidebar.MenuItem>
-          {/each}
-        </Sidebar.Menu>
-      </Sidebar.GroupContent>
+      <Sidebar.Menu>
+        <Sidebar.MenuItem class="flex items-center gap-2 p-0">
+          <Button
+            variant="dark"
+            href="/explore"
+            class="flex-auto h-8 justify-start group-data-[state=collapsed]:hidden"
+          >
+            <Chromium size={16} />
+            <span>Explore</span>
+          </Button>
+          <Button
+            size="icon"
+            class="size-8"
+            variant="outline"
+            target="_blank"
+            href={config.github}
+          >
+            <GithubIcon />
+            <span class="sr-only">Github</span>
+          </Button>
+        </Sidebar.MenuItem>
+      </Sidebar.Menu>
     </Sidebar.Group>
     <Sidebar.Group>
       <Sidebar.GroupLabel>Workspace</Sidebar.GroupLabel>
       <Sidebar.GroupContent>
         <Sidebar.Menu>
-          {#each tools as tool (tool.id)}
+          {#each toolList as tool (tool.slug)}
             <Sidebar.MenuItem>
               <Sidebar.MenuButton tooltipContent={tool.title}>
                 {#snippet child({ props })}
                   <a
-                    href={`/tools/${tool.id}`}
+                    href={`/tools/${tool.slug}`}
                     {...props}
                     class={cn(
                       "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all duration-200 border border-transparent",
-                      isActive(`/tools/${tool.id}`)
+                      isActive(`/tools/${tool.slug}`)
                         ? "bg-background shadow-sm text-foreground border-border/50 ring-1 ring-black/5"
                         : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                       "group-data-[state=collapsed]:p-2 group-data-[state=collapsed]:size-8",
@@ -122,8 +117,7 @@
                       <Icon size={16} />
                     {/if}
                     <span class="group-data-[state=collapsed]:hidden"
-                      >{tool.title}</span
-                    >
+                      >{tool.title}</span>
                   </a>
                 {/snippet}
               </Sidebar.MenuButton>
