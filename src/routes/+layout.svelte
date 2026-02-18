@@ -18,7 +18,7 @@
 <ModeWatcher />
 <Toaster />
 <div
-  class="relative min-h-screen w-full flex flex-col antialiased bg-[image:var(--noise-bg)] text-foreground transition-colors duration-300"
+  class="relative min-h-screen w-full flex flex-col antialiased bg-(image:--noise-bg) text-foreground transition-colors duration-300"
 >
   {@render children()}
 </div>
