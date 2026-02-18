@@ -4,6 +4,7 @@
   import "@fontsource/google-sans/600.css";
   import "@fontsource/google-sans/700.css";
   import "../app.css";
+
   let { children } = $props();
 
   import { Toaster } from "$components/ui/sonner";
@@ -18,7 +19,7 @@
 <ModeWatcher />
 <Toaster />
 <div
-  class="relative min-h-screen w-full flex flex-col antialiased bg-[image:var(--noise-bg)] text-foreground transition-colors duration-300"
+  class="relative min-h-screen w-full flex flex-col antialiased bg-(image:--noise-bg) text-foreground transition-colors duration-300"
 >
   {@render children()}
 </div>

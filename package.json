@@ -12,7 +12,8 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "bunx --bun biome lint",
-		"format": "bunx --bun biome format --write ./src"
+		"format": "bunx --bun biome format --write ./src",
+		"tauri": "tauri"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.0",
@@ -39,7 +40,9 @@
 		"@lucide/svelte": "^0.561.0",
 		"@neslinesli93/qpdf-wasm": "^0.3.0",
 		"@sveltejs/adapter-auto": "^7.0.1",
+		"@sveltejs/adapter-static": "^3.0.10",
 		"@tailwindcss/vite": "^4.1.18",
+		"@tauri-apps/cli": "^2.10.0",
 		"@types/sortablejs": "^1.15.9",
 		"heic2any": "^0.0.4",
 		"jszip": "^3.10.1",
