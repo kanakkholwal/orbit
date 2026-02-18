@@ -55,7 +55,7 @@
 <div class="flex flex-col select-none">
   <div
     class="group flex items-center gap-2 p-2 rounded border border-transparent hover:bg-muted/50 {isSelected
-      ? 'bg-muted ring-1 ring-primary border-primary/20'
+      ? 'bg-accent ring-1 ring-primary border-primary/20'
       : ''}"
     style="padding-left: {depth * 1.5 + 0.5}rem"
   >

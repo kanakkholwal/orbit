@@ -34,8 +34,6 @@
     onFilesSelected={(files) => store.loadFile(files[0])}
   />
 {:else}
-  <div class="flex flex-col h-full">
-    <div class="border-b border-border bg-background/50 p-6 backdrop-blur-sm">
       <div
         class="mx-auto flex max-w-2xl items-center justify-between rounded-xl border border-border bg-card p-4 shadow-sm"
       >
@@ -63,9 +61,8 @@
           <Trash2 size={18} />
         </button>
       </div>
-    </div>
 
-    <div class="flex-1 overflow-y-auto bg-muted/10 p-6">
+    <div class="flex-1 overflow-y-auto py-6">
       <div class="mx-auto max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="space-y-4">
           <div
@@ -82,7 +79,7 @@
               class="aspect-3/4 max-h-75 w-full mx-auto bg-muted/30 border border-dashed border-border rounded-lg relative p-4"
             >
               <div
-                class="absolute inset-4 bg-background shadow-sm border border-border rounded flex flex-col justify-between p-4"
+                class="absolute inset-4 bg-card shadow-sm border border-border rounded flex flex-col justify-between p-4"
               >
                 <div class="flex justify-between">
                   <Button
@@ -252,18 +249,18 @@
       </div>
     </div>
 
-    <div class="border-t border-border bg-background p-4 text-center">
-      <button
+    <div class="border-t border-border p-4 text-center">
+      <Button
+      variant="dark"
         onclick={() => store.process()}
         disabled={store.state.isProcessing}
-        class="inline-flex h-11 min-w-50 items-center justify-center gap-2 rounded-full bg-primary px-8 text-lg font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-105 hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
+        class="inline-flex h-11 min-w-50 px-8"
       >
         {#if store.state.isProcessing}
           <Loader2 class="animate-spin" /> {store.state.progress}
         {:else}
           Add Page Numbers <ArrowRight size={18} />
         {/if}
-      </button>
+      </Button>
     </div>
-  </div>
 {/if}

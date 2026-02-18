@@ -1,6 +1,13 @@
 <script lang="ts">
   import Button from "$components/ui/button/button.svelte";
-  import * as Dialog from "$components/ui/dialog";
+  import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+  } from "$components/ui/dialog";
+  import { Input } from "$components/ui/input";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { FolderTree, Plus, Redo, Save, Undo } from "@lucide/svelte";
   import { onMount } from "svelte";
@@ -76,8 +83,8 @@
     onFilesSelected={(files) => store.loadFile(files[0])}
   />
 {:else}
-  <div class="flex flex-col h-full lg:flex-row bg-muted/10 overflow-hidden">
-    <div class="w-full lg:w-96 flex flex-col border-r bg-background">
+  <div class="flex flex-col h-full lg:flex-row gap-2 overflow-hidden">
+    <div class="w-full lg:w-96 flex flex-col border-r rounded-lg bg-card">
       <div class="p-3 border-b flex items-center justify-between">
         <div class="font-semibold flex items-center gap-2">
           <FolderTree size={18} /> Bookmarks
@@ -105,19 +112,20 @@
 
       <div class="p-3 border-b bg-muted/10">
         <div class="flex gap-2">
-          <input
+          <Input
             bind:value={modalTitle}
             placeholder="New bookmark..."
-            class="flex-1 px-2 py-1 text-sm border rounded"
+            class="flex-1"
             onkeydown={(e) =>
               e.key === "Enter" && store.addBookmark(null, modalTitle)}
           />
-          <button
+          <Button
+            variant="outline"
+            size="icon-sm"
             onclick={() => store.addBookmark(null, modalTitle)}
-            class="bg-primary text-primary-foreground p-1.5 rounded"
           >
             <Plus size={16} />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -128,6 +136,7 @@
             <Button
               variant="default_soft"
               class="mt-2"
+              size="sm"
               onclick={() => store.extractExisting()}>Extract from PDF</Button
             >
           </div>
@@ -138,7 +147,7 @@
         {/if}
       </div>
 
-      <div class="p-4 border-t bg-background">
+      <div class="p-4 border-t">
         <Button variant="dark" onclick={() => store.save()}>
           <Save size={18} /> Download PDF
         </Button>
@@ -150,21 +159,20 @@
     </div>
   </div>
 {/if}
-<Dialog.Root bind:open={showModal}>
-  <Dialog.Content>
-    <Dialog.Header>
-      <Dialog.Title>{editingId ? "Edit Bookmark" : "Add Child"}</Dialog.Title>
-      <Dialog.Description>
+<Dialog bind:open={showModal}>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>{editingId ? "Edit Bookmark" : "Add Child"}</DialogTitle>
+      <DialogDescription>
         {editingId
           ? "Edit the title of the bookmark. Destination will remain unchanged."
           : "Add a new child bookmark under the selected parent."}
-      </Dialog.Description>
-    </Dialog.Header>
+      </DialogDescription>
+    </DialogHeader>
     <input
       bind:value={modalTitle}
       class="w-full border p-2 rounded mb-4"
       placeholder="Title"
-      
     />
     <div class="flex justify-end gap-2">
       <button
@@ -177,5 +185,5 @@
         >Save</button
       >
     </div>
-  </Dialog.Content>
-</Dialog.Root>
+  </DialogContent>
+</Dialog>

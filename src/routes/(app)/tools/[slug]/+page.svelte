@@ -50,7 +50,7 @@
 
 {#if tool}
   <div class="min-h-screen w-full" in:fade>
-    <div class="px-4 pb-20 sm:px-6 lg:px-8">
+    <div class="px-3 pb-20 sm:px-6 lg:px-8">
       <nav class="mb-8 flex items-center justify-between">
         <a
           href="/explore"

@@ -1,3 +1,4 @@
+import { dev } from '$app/environment';
 import {
     PUBLIC_ADSENSE_PUBLISHER_ID,
     PUBLIC_GOOGLE_ANALYTICS_ID
@@ -10,6 +11,6 @@ export const config = {
           locally via WebAssembly without them ever touching a server.`,
     supportEmail: "support@nexonauts.com",
     github: "https://github.com/kanakkholwal/nexo-pdf",
-    adsensePublisherId: PUBLIC_ADSENSE_PUBLISHER_ID || "",
-    googleAnalyticsId: PUBLIC_GOOGLE_ANALYTICS_ID || "",
+    adsensePublisherId: dev ? "" : PUBLIC_ADSENSE_PUBLISHER_ID || "",
+    googleAnalyticsId: dev ? "" : PUBLIC_GOOGLE_ANALYTICS_ID || "",
 }

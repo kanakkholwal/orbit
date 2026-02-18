@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Button } from "$components/ui/button";
+  import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import {
     Download,
@@ -29,9 +31,8 @@
     onFilesSelected={(files) => store.queueFiles(files)}
   />
 {:else}
-  <div class="flex flex-col h-full bg-muted/10">
     <div
-      class="border-b border-border bg-background p-3 flex items-center justify-between gap-4"
+      class="border-b border-border p-3 flex items-center justify-between gap-4"
     >
       <div class="flex items-center gap-2">
         <div
@@ -43,17 +44,18 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button
+        <Button
           onclick={() => store.downloadActivePdf()}
           disabled={store.state.isLoading}
-          class="inline-flex h-9 items-center gap-2 rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 disabled:opacity-50"
+          variant="dark"
+          size="sm"
         >
           {#if store.state.isLoading}
             <Loader2 size={16} class="animate-spin" />
           {:else}
             <Download size={16} /> Save
           {/if}
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -104,7 +106,7 @@
           </div>
         {/each}
 
-        <label
+        <Label
           class="flex items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/30 p-2 min-w-35 cursor-pointer hover:bg-muted transition-colors"
         >
           <input
@@ -118,8 +120,7 @@
           <span class="text-xs font-medium text-muted-foreground"
             >+ Add PDF</span
           >
-        </label>
+        </Label>
       </div>
     </div>
-  </div>
 {/if}

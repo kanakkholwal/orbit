@@ -69,7 +69,7 @@
   use:lazyLoad
 >
   <div
-    class="relative flex aspect-[3/4] w-full items-center justify-center overflow-hidden bg-muted/30 p-4"
+    class="relative flex aspect-3/4 w-full items-center justify-center overflow-hidden bg-muted/30 p-4"
   >
     {#if !isRendered}
       <div class="absolute inset-0 flex items-center justify-center">

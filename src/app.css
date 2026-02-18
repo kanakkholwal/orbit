@@ -585,8 +585,7 @@ body {
        - starts from 1024px (for tablets/small desktops)
        - scales with viewport
        - grows reasonably beyond 1440px without a hard limit */
-  @apply text-foreground selection:bg-primary/75 selection:text-white selection:rounded-2xl;
-  background: var(--noise-bg);
+  @apply bg-(image:--noise-bg) text-foreground selection:bg-primary/75 selection:text-white selection:rounded-2xl antialiased transition-all duration-300;
 }
 
 /* Custom Grid Background Utility */

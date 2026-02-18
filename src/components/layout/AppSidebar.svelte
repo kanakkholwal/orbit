@@ -46,32 +46,28 @@
         </Button>
       </div>
     </Sidebar.MenuItem>
+    <Sidebar.MenuItem class="flex items-center gap-2 p-0">
+      <Button
+        variant="dark"
+        href="/explore"
+        class="flex-auto h-8 justify-start group-data-[state=collapsed]:hidden"
+      >
+        <Chromium size={16} />
+        <span>Explore</span>
+      </Button>
+      <Button
+        size="icon"
+        class="size-8"
+        variant="outline"
+        target="_blank"
+        href={config.github}
+      >
+        <GithubIcon />
+        <span class="sr-only">Github</span>
+      </Button>
+    </Sidebar.MenuItem>
   </Sidebar.Header>
   <Sidebar.Content class="scrollbar-hide">
-    <Sidebar.Group>
-      <Sidebar.Menu>
-        <Sidebar.MenuItem class="flex items-center gap-2 p-0">
-          <Button
-            variant="dark"
-            href="/explore"
-            class="flex-auto h-8 justify-start group-data-[state=collapsed]:hidden"
-          >
-            <Chromium size={16} />
-            <span>Explore</span>
-          </Button>
-          <Button
-            size="icon"
-            class="size-8"
-            variant="outline"
-            target="_blank"
-            href={config.github}
-          >
-            <GithubIcon />
-            <span class="sr-only">Github</span>
-          </Button>
-        </Sidebar.MenuItem>
-      </Sidebar.Menu>
-    </Sidebar.Group>
     <Sidebar.Group>
       <Sidebar.GroupLabel>Workspace</Sidebar.GroupLabel>
       <Sidebar.GroupContent>

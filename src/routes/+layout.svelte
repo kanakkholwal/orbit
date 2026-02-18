@@ -8,17 +8,25 @@
 
   import { Toaster } from "$components/ui/sonner";
 
+  import { config } from "$constants/app";
   import { ModeWatcher } from "mode-watcher";
 </script>
 
 <svelte:head>
-  <title>Nexo PDF</title>
+  <title>{config.appName}</title>
 </svelte:head>
 
 <ModeWatcher />
 <Toaster />
-<div
-  class="relative min-h-screen w-full flex flex-col antialiased bg-(image:--noise-bg) text-foreground transition-colors duration-300"
->
+<div class="relative min-h-screen w-full flex flex-col">
   {@render children()}
 </div>
+
+{#if config.adsensePublisherId}
+  <script
+    async
+    id="adsense-script"
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+    crossorigin="anonymous"
+  ></script>
+{/if}
