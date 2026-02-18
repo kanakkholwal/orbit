@@ -9,6 +9,7 @@
     Trash2,
   } from "@lucide/svelte";
   import { slide } from "svelte/transition";
+  import BookmarkItem from "./BookmarkItem.svelte";
   import type { BookmarkNode, BookmarkPdfState } from "./helper.svelte";
 
   let {
@@ -136,11 +137,10 @@
       </button>
     </div>
   </div>
-
   {#if node.isExpanded && node.children.length > 0}
     <div class="flex flex-col" transition:slide={{ duration: 200 }}>
       {#each node.children as child (child.id)}
-        <svelte:self node={child} {store} depth={depth + 1} />
+        <BookmarkItem node={child} {store} depth={depth + 1} />
       {/each}
     </div>
   {/if}
