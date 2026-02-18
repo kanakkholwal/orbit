@@ -32,7 +32,7 @@ const toolsCategories: ToolCategory[] = [
 
   },
   {
-    id: "convert",
+    id: "conversion",
     name: "Conversion",
     description: "Transform documents to other formats.",
     icon: RotateCw,
