@@ -31,9 +31,6 @@ export class MergeState extends PdfEngine {
     allPages = $state<PageItem[]>([]); // Flattened list for Page Mode
     mode = $state<'file' | 'page'>('file');
 
-    isProcessing = $state(false);
-    progress = $state({ current: 0, total: 0, text: '' });
-
     // Internal
     private pdfJsDocs: Map<string, PDFJS.PDFDocumentProxy> = new Map();
 
@@ -123,28 +120,7 @@ export class MergeState extends PdfEngine {
         const doc = this.pdfJsDocs.get(fileId);
         if (!doc) return;
 
-        const page = await doc.getPage(pageIndex + 1);
-        const viewport = page.getViewport({ scale: 1 });
-
-        // Thumbnail size ~200px
-        const scale = 200 / viewport.width;
-        const scaledViewport = page.getViewport({ scale });
-        const outputScale = window.devicePixelRatio || 1;
-
-        canvas.width = Math.floor(scaledViewport.width * outputScale);
-        canvas.height = Math.floor(scaledViewport.height * outputScale);
-        canvas.style.width = Math.floor(scaledViewport.width) + "px";
-        canvas.style.height = Math.floor(scaledViewport.height) + "px";
-
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-            await page.render({
-                canvasContext: ctx,
-                viewport: scaledViewport,
-                transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined,
-                canvas
-            }).promise;
-        }
+        await this.renderPageToCanvas(canvas, doc, pageIndex);
     }
 
     // --- Merge Logic ---
@@ -195,14 +171,7 @@ export class MergeState extends PdfEngine {
             // Save and Download
             const pdfBytes = await mergedPdf.save();
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `merged_${new Date().getTime()}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            this.downloadBlob(blob, `merged_${new Date().getTime()}.pdf`);
 
         } catch (e) {
             console.error(e);
@@ -212,30 +181,6 @@ export class MergeState extends PdfEngine {
         }
     }
 
-    // Helper: Parse "1-3, 5" string to [0, 1, 2, 4]
-    private parsePageRange(rangeStr: string, maxPages: number): number[] {
-        const indices = new Set<number>();
-        const parts = rangeStr.split(',');
-
-        for (const part of parts) {
-            const trimmed = part.trim();
-            if (trimmed.includes('-')) {
-                const [start, end] = trimmed.split('-').map(Number);
-                if (!isNaN(start) && !isNaN(end)) {
-                    // Clamp to valid range
-                    const s = Math.max(1, start);
-                    const e = Math.min(maxPages, end);
-                    for (let i = s; i <= e; i++) indices.add(i - 1);
-                }
-            } else {
-                const p = Number(trimmed);
-                if (!isNaN(p) && p >= 1 && p <= maxPages) {
-                    indices.add(p - 1);
-                }
-            }
-        }
-        return Array.from(indices);
-    }
 
     reset() {
         this.files = [];

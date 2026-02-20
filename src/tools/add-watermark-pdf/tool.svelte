@@ -205,13 +205,13 @@
   <div class="border-t border-border p-4 text-center">
     <Button
       onclick={() => store.process()}
-      disabled={store.state.isProcessing ||
+      disabled={store.isProcessing ||
         (store.state.watermarkType === "image" && !store.state.imageFile)}
       class="inline-flex h-11 min-w-50 px-8"
       variant="dark"
     >
-      {#if store.state.isProcessing}
-        <Loader2 class="animate-spin" /> {store.state.progress}
+      {#if store.isProcessing}
+        <Loader2 class="animate-spin" /> {store.progress}
       {:else}
         Add Watermark <ArrowRight size={18} />
       {/if}

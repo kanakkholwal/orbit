@@ -76,9 +76,7 @@
     <div class="mx-auto max-w-4xl space-y-6">
       <div class="flex flex-wrap items-center gap-4 text-sm">
         <Label class="flex items-center gap-2 cursor-pointer">
-          <Checkbox
-            bind:checked={store.state.applyToAll}
-          />
+          <Checkbox bind:checked={store.state.applyToAll} />
           <span>Apply crop to all pages</span>
         </Label>
 
@@ -88,9 +86,7 @@
           class="flex items-center gap-2 cursor-pointer"
           title="Converts pages to images. Fixes stubborn PDFs but removes text selection."
         >
-          <Checkbox
-            bind:checked={store.state.isDestructive}
-          />
+          <Checkbox bind:checked={store.state.isDestructive} />
           <span>Flatten (Destructive)</span>
         </Label>
       </div>
@@ -102,13 +98,13 @@
   <div class="border-t border-border p-4 text-center">
     <Button
       onclick={() => store.crop()}
-      disabled={store.state.isProcessing}
+      disabled={store.isProcessing}
       variant="dark"
       size="lg"
       class="inline-flex h-11 min-w-50 px-8 text-lg"
     >
-      {#if store.state.isProcessing}
-        <Loader2 class="animate-spin" /> {store.state.progress}
+      {#if store.isProcessing}
+        <Loader2 class="animate-spin" /> {store.progress}
       {:else}
         Crop PDF <ArrowRight size={18} />
       {/if}

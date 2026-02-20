@@ -54,8 +54,6 @@ export class CompressState extends PdfEngine {
         removeThumbnails: true
     });
 
-    isProcessing = $state(false);
-    progress = $state({ current: 0, total: 0, text: '' });
 
 
 
@@ -179,7 +177,7 @@ export class CompressState extends PdfEngine {
             const ctx = canvas.getContext('2d');
 
             if (ctx) {
-                await page.render({ canvasContext: ctx, viewport,canvas }).promise;
+                await page.render({ canvasContext: ctx, viewport, canvas }).promise;
 
                 const blob = await new Promise<Blob | null>(r => canvas.toBlob(r, 'image/jpeg', preset.quality));
                 if (!blob) throw new Error("Canvas to Blob failed");
@@ -203,25 +201,15 @@ export class CompressState extends PdfEngine {
         if (successful.length === 0) return;
 
         if (successful.length === 1) {
-            this.triggerDownload(successful[0].resultBlob!, `compressed_${successful[0].file.name}`);
+            this.downloadBlob(successful[0].resultBlob!, `compressed_${successful[0].file.name}`);
         } else {
             const zip = new JSZip();
             successful.forEach(f => {
                 zip.file(`compressed_${f.file.name}`, f.resultBlob!);
             });
             const content = await zip.generateAsync({ type: 'blob' });
-            this.triggerDownload(content, 'compressed_files.zip');
+            this.downloadBlob(content, 'compressed_files.zip');
         }
     }
 
-    private triggerDownload(blob: Blob, name: string) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
 }

@@ -91,12 +91,11 @@
     <Button
       variant="dark"
       onclick={() => store.process()}
-      disabled={store.state.isProcessing ||
-        store.state.pagesToDelete.size === 0}
+      disabled={store.isProcessing || store.state.pagesToDelete.size === 0}
       class="inline-flex h-11 min-w-50 px-8"
     >
-      {#if store.state.isProcessing}
-        <Loader2 class="animate-spin" /> {store.state.progress}
+      {#if store.isProcessing}
+        <Loader2 class="animate-spin" /> {store.progress}
       {:else}
         Delete Selected Pages <ArrowRight size={18} />
       {/if}

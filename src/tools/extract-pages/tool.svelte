@@ -104,12 +104,12 @@
   <div class="border-t border-border p-4 text-center">
     <Button
       onclick={() => store.extract()}
-      disabled={store.state.isProcessing || !store.state.pagesToExtract}
+      disabled={store.isProcessing || !store.state.pagesToExtract}
       variant="dark"
       class="h-11 min-w-50 px-8"
     >
-      {#if store.state.isProcessing}
-        <Loader2 class="animate-spin" /> {store.state.progress}
+      {#if store.isProcessing}
+        <Loader2 class="animate-spin" /> {store.progress}
       {:else}
         Extract Pages <ArrowRight size={18} />
       {/if}

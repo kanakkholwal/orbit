@@ -111,10 +111,10 @@
       variant="dark"
       class="px-8 h-11 min-w-50"
       onclick={() => store.decrypt()}
-      disabled={store.state.isProcessing || !store.state.password}
+      disabled={store.isProcessing || !store.state.password}
     >
-      {#if store.state.isProcessing}
-        <Loader2 class="animate-spin" /> {store.state.progress}
+      {#if store.isProcessing}
+        <Loader2 class="animate-spin" /> {store.progress}
       {:else}
         Decrypt PDF <ArrowRight size={18} />
       {/if}

@@ -65,9 +65,7 @@
         </div>
 
         <div class="space-y-2">
-          <Label
-            for="user-pwd"
-          >
+          <Label for="user-pwd">
             User Password <span class="text-red-500">*</span>
           </Label>
           <div class="relative">
@@ -95,9 +93,7 @@
         </div>
 
         <div class="space-y-2">
-          <Label
-            for="owner-pwd"
-          >
+          <Label for="owner-pwd">
             Owner Password <span
               class="text-xs font-normal text-muted-foreground">(Optional)</span
             >
@@ -146,10 +142,10 @@
       variant="dark"
       class="px-8 h-11 min-w-50"
       onclick={() => store.encrypt()}
-      disabled={store.state.isProcessing || !store.state.userPassword}
+      disabled={store.isProcessing || !store.state.userPassword}
     >
-      {#if store.state.isProcessing}
-        <Loader2 class="animate-spin" /> {store.state.progress}
+      {#if store.isProcessing}
+        <Loader2 class="animate-spin" /> {store.progress}
       {:else}
         Encrypt PDF <ArrowRight size={18} />
       {/if}

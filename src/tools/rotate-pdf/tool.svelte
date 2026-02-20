@@ -85,10 +85,10 @@
       variant="dark"
       class="px-8 h-11 min-w-50"
       onclick={() => store.save()}
-      disabled={store.state.isProcessing}
+      disabled={store.isProcessing}
     >
-      {#if store.state.isProcessing}
-        <Loader2 class="animate-spin" /> {store.state.progress}
+      {#if store.isProcessing}
+        <Loader2 class="animate-spin" /> {store.progress}
       {:else}
         Apply & Download <ArrowRight size={18} />
       {/if}
