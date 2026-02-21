@@ -2,7 +2,7 @@ name: Release Desktop App
 on:
   push:
     tags:
-      - "v.*"
+      - "v*"
   
 jobs:
   publish-tauri:
