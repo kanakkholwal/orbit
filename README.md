@@ -1,14 +1,14 @@
-# NexoNauts PDF 🚀
+# Orbit PDF 🚀
 
 **Master your PDFs with absolute privacy.**
 
-NexoNauts PDF is a professional, high-performance PDF toolkit that runs entirely in your browser. By leveraging powerful WebAssembly (WASM) engines, it ensures your documents never leave your device, providing world-class security and speed.
+Orbit PDF is a professional, high-performance PDF toolkit that runs entirely in your browser. By leveraging powerful WebAssembly (WASM) engines, it ensures your documents never leave your device, providing world-class security and speed.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Svelte](https://img.shields.io/badge/Svelte-5.0-ff3e00?logo=svelte)](https://svelte.dev)
 [![WASM](https://img.shields.io/badge/Engine-WASM-654ff0?logo=webassembly)](https://webassembly.org)
 
-## ✨ Why NexoNauts PDF?
+## ✨ Why Orbit PDF?
 
 *   **🔒 100% Private & Secure**: All processing happens locally in your browser's sandbox. Zero server uploads, zero data transfer.
 *   **⚡ Native Speed**: Powered by a high-performance WASM engine for desktop-class processing speeds.
@@ -27,7 +27,7 @@ NexoNauts PDF is a professional, high-performance PDF toolkit that runs entirely
 
 ## 🚀 Tech Stack
 
-NexoNauts PDF is built with cutting-edge technologies for maximum performance and reliability:
+Orbit PDF is built with cutting-edge technologies for maximum performance and reliability:
 
 - **Frontend**: [Svelte 5](https://svelte.dev/) (Runes), [SvelteKit](https://kit.svelte.dev/)
 - **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/)

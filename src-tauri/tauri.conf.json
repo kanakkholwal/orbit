@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "nexo-pdf",
+  "productName": "orbit",
   "version": "0.1.0",
-  "identifier": "com.nexonauts.pdf",
+  "identifier": "com.nexonauts.orbit",
   "build": {
     "frontendDist": "../build",
     "devUrl": "http://localhost:3000",
@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Nexo PDF",
+        "title": "Orbit PDF",
         "width": 800,
         "height": 600,
         "resizable": true,

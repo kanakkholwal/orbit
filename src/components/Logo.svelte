@@ -96,7 +96,7 @@
       fill="currentColor"
       class={cn(textAnimationClass, textClassName)}
     >
-      {config.appName.split(" ").at(-1)}
+      {config.appName.split(" ").at(0)}
     </text>
   </svg>
 </div>

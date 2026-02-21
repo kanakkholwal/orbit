@@ -1,5 +1,5 @@
 [package]
-name = "nexo-pdf"
+name = "orbit"
 version = "0.1.0"
 description = "The privacy-first PDF toolkit for professionals."
 authors = ["you"]
