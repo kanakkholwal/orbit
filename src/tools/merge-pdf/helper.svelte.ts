@@ -31,9 +31,6 @@ export class MergeState extends PdfEngine {
     allPages = $state<PageItem[]>([]); // Flattened list for Page Mode
     mode = $state<'file' | 'page'>('file');
 
-    isProcessing = $state(false);
-    progress = $state({ current: 0, total: 0, text: '' });
-
     // Internal
     private pdfJsDocs: Map<string, PDFJS.PDFDocumentProxy> = new Map();
 
@@ -41,17 +38,13 @@ export class MergeState extends PdfEngine {
     // --- Actions ---
 
     async addFiles(newFiles: File[]) {
-        if (this.isProcessing) return;
-        this.isProcessing = true;
-        this.progress = { current: 0, total: newFiles.length, text: 'Analyzing PDFs...' };
+        if (!newFiles.length) return;
 
-        try {
+        await this.handleProcess(async () => {
             const pdfjs = await this.getPdfJs();
 
             for (let i = 0; i < newFiles.length; i++) {
                 const file = newFiles[i];
-                this.progress = { current: i + 1, total: newFiles.length, text: `Loading ${file.name}...` };
-
                 const arrayBuffer = await file.arrayBuffer();
 
                 // 1. Load for Rendering (PDF.js)
@@ -88,12 +81,11 @@ export class MergeState extends PdfEngine {
                     });
                 }
             }
-        } catch (error) {
-            console.error(error);
-            alert("Failed to load one or more PDF files.");
-        } finally {
-            this.isProcessing = false;
-        }
+        }, {
+            loading: 'Analyzing PDFs...',
+            success: 'Files loaded successfully!',
+            error: 'Failed to load one or more PDF files.'
+        });
     }
 
     removeFile(fileId: string) {
@@ -104,18 +96,8 @@ export class MergeState extends PdfEngine {
     }
 
     updateFileOrder(newIndices: number[]) {
-        // Reorder files array based on SortableJS indices
-        // This is a simple reorder, but we must also re-generate `allPages` 
-        // to match the new file order if the user switches to Page Mode later.
-        // However, if the user has already messed with Page Mode, we shouldn't overwrite it.
-        // For simplicity in this tool: File Mode order dominates initial Page Mode order.
-
-        // In Svelte 5, direct assignment triggers updates
         const reordered = newIndices.map(i => this.files[i]);
         this.files = reordered;
-
-        // Optional: Re-sort pages based on new file order? 
-        // Usually better to leave pages alone if they've been manually sorted.
     }
 
     // --- Rendering for Thumbnails ---
@@ -123,38 +105,15 @@ export class MergeState extends PdfEngine {
         const doc = this.pdfJsDocs.get(fileId);
         if (!doc) return;
 
-        const page = await doc.getPage(pageIndex + 1);
-        const viewport = page.getViewport({ scale: 1 });
-
-        // Thumbnail size ~200px
-        const scale = 200 / viewport.width;
-        const scaledViewport = page.getViewport({ scale });
-        const outputScale = window.devicePixelRatio || 1;
-
-        canvas.width = Math.floor(scaledViewport.width * outputScale);
-        canvas.height = Math.floor(scaledViewport.height * outputScale);
-        canvas.style.width = Math.floor(scaledViewport.width) + "px";
-        canvas.style.height = Math.floor(scaledViewport.height) + "px";
-
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-            await page.render({
-                canvasContext: ctx,
-                viewport: scaledViewport,
-                transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined,
-                canvas
-            }).promise;
-        }
+        await this.renderPageToCanvas(canvas, doc, pageIndex);
     }
 
     // --- Merge Logic ---
 
     async mergeAndDownload() {
         if (this.files.length === 0) return;
-        this.isProcessing = true;
-        this.progress = { current: 0, total: 100, text: 'Merging PDFs...' };
 
-        try {
+        await this.handleProcess(async () => {
             const mergedPdf = await PDFDocument.create();
 
             if (this.mode === 'file') {
@@ -177,7 +136,7 @@ export class MergeState extends PdfEngine {
                 }
 
             } else {
-                // --- PAGE MODE MERGE ---
+                
                 // We iterate the `allPages` array which reflects the user's custom sort order
                 const fileCache = new Map<string, PDFDocument>();
                 // Pre-fill cache
@@ -195,47 +154,15 @@ export class MergeState extends PdfEngine {
             // Save and Download
             const pdfBytes = await mergedPdf.save();
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `merged_${new Date().getTime()}.pdf`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-
-        } catch (e) {
-            console.error(e);
-            alert("Error merging PDFs. Please check console.");
-        } finally {
-            this.isProcessing = false;
-        }
+            this.downloadBlob(blob, `merged_${new Date().getTime()}.pdf`);
+        }, {
+            loading: 'Merging PDFs...',
+            success: 'PDFs merged successfully!',
+            error: 'Error merging PDFs. Please check console.'
+        });
     }
 
-    // Helper: Parse "1-3, 5" string to [0, 1, 2, 4]
-    private parsePageRange(rangeStr: string, maxPages: number): number[] {
-        const indices = new Set<number>();
-        const parts = rangeStr.split(',');
 
-        for (const part of parts) {
-            const trimmed = part.trim();
-            if (trimmed.includes('-')) {
-                const [start, end] = trimmed.split('-').map(Number);
-                if (!isNaN(start) && !isNaN(end)) {
-                    // Clamp to valid range
-                    const s = Math.max(1, start);
-                    const e = Math.min(maxPages, end);
-                    for (let i = s; i <= e; i++) indices.add(i - 1);
-                }
-            } else {
-                const p = Number(trimmed);
-                if (!isNaN(p) && p >= 1 && p <= maxPages) {
-                    indices.add(p - 1);
-                }
-            }
-        }
-        return Array.from(indices);
-    }
 
     reset() {
         this.files = [];

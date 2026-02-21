@@ -3,7 +3,7 @@ import { getTool } from '$tools/list';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
-
+export const ssr = false;
 
 export const load: PageLoad = ({ params }) => {
   const tool = getTool(params.slug);

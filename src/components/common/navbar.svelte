@@ -13,7 +13,7 @@
 
   const navLinks = [
     { name: "Explore", href: "/explore" },
-    { name: "Github", href: config.github },
+    { name: "Github", href: config.github ,target: "_blank" },
   ];
 </script>
 
@@ -37,6 +37,7 @@
         {#each navLinks as item}
           <a
             href={item.href}
+            target={item.target || "_self"}
             class="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground"
           >
             {item.name}
@@ -48,8 +49,8 @@
         <Button
           onclick={toggleMode}
           variant="ghost"
-          size="icon"
-          class="h-9 w-9 rounded-full text-muted-foreground hover:text-foreground transition-all hover:bg-secondary/80"
+          size="icon-sm"
+          class="rounded-full relative"
         >
           {#if mode.current === "light"}
             <Sun
@@ -70,7 +71,8 @@
         <Button
           href="/#tools"
           size="sm"
-          class="hidden h-9 rounded-full bg-foreground px-5 text-xs font-medium text-background hover:bg-foreground/90 shadow-md sm:inline-flex"
+          variant="dark"
+          class="hidden rounded-full sm:inline-flex"
         >
           Get Started
         </Button>
@@ -98,6 +100,7 @@
           {#each navLinks as item}
             <a
               href={item.href}
+              target={item.target || "_self"}
               class="flex items-center justify-between rounded-xl p-3 text-sm font-medium text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-colors"
               on:click={() => (isMobileOpen = false)}
             >

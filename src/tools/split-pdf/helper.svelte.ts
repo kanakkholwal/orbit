@@ -15,8 +15,6 @@ export class SplitState extends PdfEngine {
 
   // UI States
   mode = $state<SplitMode>('range');
-  isProcessing = $state(false);
-  progress = $state({ text: '', percent: 0 });
 
   // Mode Specific Inputs
   rangeInput = $state(''); // e.g. "1-5, 8"
@@ -28,11 +26,9 @@ export class SplitState extends PdfEngine {
 
 
   async loadFile(newFile: File) {
-    if (this.isProcessing) return;
-    this.isProcessing = true;
-    this.progress = { text: 'Loading PDF...', percent: 10 };
+    if (!newFile) return;
 
-    try {
+    await this.handleProcess(async () => {
       const arrayBuffer = await newFile.arrayBuffer();
 
       // 1. Load pdf-lib (for splitting)
@@ -48,39 +44,16 @@ export class SplitState extends PdfEngine {
       this.fileName = newFile.name;
       this.selectedPages.clear();
       this.rangeInput = '';
-
-    } catch (error) {
-      console.error(error);
-      alert("Failed to load PDF. It might be password protected or corrupted.");
-    } finally {
-      this.isProcessing = false;
-    }
+    }, {
+      loading: 'Loading PDF...',
+      success: 'PDF loaded successfully!',
+      error: 'Failed to load PDF. It might be password protected or corrupted.'
+    });
   }
 
   async renderThumbnail(canvas: HTMLCanvasElement, pageIndex: number) {
     if (!this.pdfJsDoc) return;
-    const page = await this.pdfJsDoc.getPage(pageIndex + 1);
-
-    // Low-res thumbnail logic
-    const viewport = page.getViewport({ scale: 1 });
-    const scale = 200 / viewport.width;
-    const scaledViewport = page.getViewport({ scale });
-    const outputScale = window.devicePixelRatio || 1;
-
-    canvas.width = Math.floor(scaledViewport.width * outputScale);
-    canvas.height = Math.floor(scaledViewport.height * outputScale);
-    canvas.style.width = Math.floor(scaledViewport.width) + "px";
-    canvas.style.height = Math.floor(scaledViewport.height) + "px";
-
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      await page.render({
-        canvasContext: ctx,
-        viewport: scaledViewport,
-        transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined,
-        canvas
-      }).promise;
-    }
+    await this.renderPageToCanvas(canvas, this.pdfJsDoc, pageIndex);
   }
 
   togglePageSelection(index: number) {
@@ -96,10 +69,8 @@ export class SplitState extends PdfEngine {
 
   async processSplit() {
     if (!this.pdfDoc || !this.file) return;
-    this.isProcessing = true;
-    this.progress = { text: 'Splitting...', percent: 0 };
 
-    try {
+    await this.handleProcess(async () => {
       if (this.mode === 'range') {
         await this.splitByRange();
       } else if (this.mode === 'visual' || this.mode === 'extract') {
@@ -107,14 +78,13 @@ export class SplitState extends PdfEngine {
       } else if (this.mode === 'n-times') {
         await this.splitNTimes();
       }
-      // Add 'bookmarks' logic if needed later (requires complex parsing)
-    } catch (e: any) {
-      console.error(e);
-      alert(e.message || "Error splitting PDF");
-    } finally {
-      this.isProcessing = false;
-    }
+    }, {
+      loading: 'Splitting PDF...',
+      success: 'PDF split successfully!',
+      error: 'Error splitting PDF'
+    });
   }
+
 
   private async splitByRange() {
     const indices = this.parsePageRange(this.rangeInput, this.pageCount);
@@ -138,7 +108,7 @@ export class SplitState extends PdfEngine {
     const total = this.pageCount;
     const numChunks = Math.ceil(total / n);
 
-    this.progress = { text: 'Creating chunks...', percent: 10 };
+    this.progress = { text: 'Creating chunks...', current: 10, total: 100 };
 
     for (let i = 0; i < numChunks; i++) {
       const start = i * n;
@@ -153,7 +123,7 @@ export class SplitState extends PdfEngine {
       const pdfBytes = await newPdf.save();
       zip.file(`part_${i + 1}.pdf`, pdfBytes);
 
-      this.progress = { text: `Processing part ${i + 1}/${numChunks}`, percent: 10 + ((i / numChunks) * 80) };
+      this.progress = { text: `Processing part ${i + 1}/${numChunks}`, current: Math.floor(10 + ((i / numChunks) * 80)), total: 100 };
     }
 
     const content = await zip.generateAsync({ type: "blob" });
@@ -169,36 +139,7 @@ export class SplitState extends PdfEngine {
     this.downloadBlob(new Blob([pdfBytes as BlobPart], { type: 'application/pdf' }), filename);
   }
 
-  private parsePageRange(rangeStr: string, maxPages: number): number[] {
-    const indices = new Set<number>();
-    const parts = rangeStr.split(',');
-    for (const part of parts) {
-      const trimmed = part.trim();
-      if (trimmed.includes('-')) {
-        const [start, end] = trimmed.split('-').map(Number);
-        if (!isNaN(start) && !isNaN(end)) {
-          const s = Math.max(1, start);
-          const e = Math.min(maxPages, end);
-          for (let i = s; i <= e; i++) indices.add(i - 1);
-        }
-      } else {
-        const p = Number(trimmed);
-        if (!isNaN(p) && p >= 1 && p <= maxPages) indices.add(p - 1);
-      }
-    }
-    return Array.from(indices);
-  }
 
-  private downloadBlob(blob: Blob, name: string) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
 
   reset() {
     this.file = null;

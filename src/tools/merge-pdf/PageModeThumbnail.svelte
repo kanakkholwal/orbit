@@ -39,7 +39,7 @@
     class="h-full w-full object-contain transition-opacity duration-300"
   ></canvas>
 
-  <div class="absolute bottom-0 left-0 right-0 bg-black/60 py-1 text-center text-[10px] text-white backdrop-blur-sm">
+  <div class="absolute bottom-0 left-0 right-0 bg-card py-1 text-center text-[10px] text-card-foreground backdrop-blur-sm rounded-b-lg">
     Page {item.pageIndex + 1}
   </div>
 </div>

@@ -69,7 +69,7 @@
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
 
-  --noise-bg:url(/light-noise.svg),linear-gradient(hsl(40, 30%, 96%),hsl(40, 30%, 96%));
+  --noise-bg: url(/light-noise.svg), linear-gradient(hsl(40, 30%, 96%), hsl(40, 30%, 96%));
 
   --text-primary: hsl(0deg 0% 96.08%);
   --text-secondary: hsl(0deg 0% 9.8%);
@@ -144,9 +144,9 @@
 
   --accent: hsl(240 3.7% 15.9%);
   --accent-foreground: hsl(0, 0%, 61%);
-  --destructive: hsl(0 62.8% 30.6%);
-  --destructive-foreground: hsl(0deg 0% 92.16%);
-  --noise-bg:url(/dark-noise.png),linear-gradient(#393737,#1b1b1b);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --noise-bg: url(/dark-noise.png), linear-gradient(#393737, #1b1b1b);
 
 
   /* proposed */
@@ -585,8 +585,7 @@ body {
        - starts from 1024px (for tablets/small desktops)
        - scales with viewport
        - grows reasonably beyond 1440px without a hard limit */
-  @apply text-foreground selection:bg-primary/75 selection:text-white selection:rounded-2xl;
-  background: var(--noise-bg);
+  @apply bg-(image:--noise-bg) text-foreground selection:bg-primary/75 selection:text-white selection:rounded-2xl antialiased transition-all duration-300;
 }
 
 /* Custom Grid Background Utility */

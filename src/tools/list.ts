@@ -1,16 +1,22 @@
 import {
     Bookmark,
+    BookMinus,
     CropIcon,
     Edit3Icon,
+    FileIcon,
+    FileMinus2,
     FileStack,
     FileText,
     Highlighter,
     ImageIcon,
+    LayoutTemplate,
     Lock,
     MoveIcon,
+    PaintBucket,
     RotateCw,
     Scissors,
     Text,
+    Trash2,
     Unlock,
     Zap,
     type Icon
@@ -84,7 +90,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF to Image",
         description: "Convert PDF pages into high-quality images. Supports JPG and PNG formats.",
         category: 'conversion',
-        icon: ImageIcon,
+        icon: FileIcon,
         component: () => import('./pdf-to-img/tool.svelte'),
         color: 'text-blue-500'
     },
@@ -186,7 +192,61 @@ const tools: Record<string, ToolConfig> = {
         icon: Highlighter,
         component: () => import('./add-watermark-pdf/tool.svelte'),
         color: 'text-blue-500'
-    }
+    },
+    "delete-pages":{
+        slug: "delete-pages",
+        title: "Delete PDF Pages",
+        description: "Remove unwanted pages from your PDF quickly and easily.",
+        category: 'pdf-management',
+        icon: FileMinus2,
+        component: () => import('./delete-pages/tool.svelte'),
+        color: 'text-pink-500'
+    },
+    "header-footer":{
+        slug: "header-footer",
+        title: "Add Header & Footer",
+        description: "Easily add headers and footers to your PDF for a professional look.",
+        category: 'pdf-management',
+        icon: LayoutTemplate,
+        component: () => import('./header-footer/tool.svelte'),
+        color: 'text-blue-500'
+    },
+    "background-color":{
+        slug: "background-color",
+        title: "Change Background Color",
+        description: "Customize your PDF by changing the background color of your pages.",
+        category: 'pdf-management',
+        icon: PaintBucket,
+        component: () => import('./background-color/tool.svelte'),
+        color: 'text-blue-500'
+    },
+    "remove-annotations":{
+        slug: "remove-annotations",
+        title: "Remove Annotations",
+        description: "Easily remove annotations from your PDF pages for a cleaner look.",
+        category: 'pdf-management',
+        icon: Trash2,
+        component: () => import('./remove-annotations/tool.svelte'),
+        color: 'text-red-500'
+    },
+    "remove-blank-pages":{
+        slug: "remove-blank-pages",
+        title: "Remove Blank Pages",
+        description: "Automatically detect and remove blank pages from your PDF.",
+        category: 'pdf-management',
+        icon: BookMinus,
+        component: () => import('./remove-blank-pages/tool.svelte'),
+        color: 'text-red-500'
+    },
+    "extract-images":{
+        slug: "extract-images",
+        title: "Extract Images from PDF",
+        description: "Easily extract all images from your PDF into separate files.",
+        category: 'pdf-management',
+        icon: ImageIcon,
+        component: () => import('./extract-images/tool.svelte'),
+        color: 'text-green-500'
+    },
 };
 
 

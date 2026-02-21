@@ -6,12 +6,12 @@ export type WatermarkType = 'text' | 'image';
 export interface WatermarkStateData {
     file: File | null;
     watermarkType: WatermarkType;
-    
+
     // Text Options
     text: string;
     fontSize: number;
     color: string; // Hex
-    
+
     // Image Options
     imageFile: File | null;
     imageScale: number; // For future scaling features, default 0.5 or fit
@@ -19,9 +19,6 @@ export interface WatermarkStateData {
     // Common Options
     opacity: number; // 0 to 1
     rotation: number; // degrees
-    
-    isProcessing: boolean;
-    progress: string;
 }
 
 export class AddWatermarkState extends PdfEngine {
@@ -34,9 +31,7 @@ export class AddWatermarkState extends PdfEngine {
         imageFile: null,
         imageScale: 0.5,
         opacity: 0.3,
-        rotation: -45,
-        isProcessing: false,
-        progress: ''
+        rotation: -45
     });
 
     // --- Actions ---
@@ -48,7 +43,7 @@ export class AddWatermarkState extends PdfEngine {
 
     reset() {
         this.state.file = null;
-        this.state.isProcessing = false;
+        this.isProcessing = false;
         // Resetting content is optional, user might want to watermark multiple files with same settings
     }
 
@@ -56,15 +51,13 @@ export class AddWatermarkState extends PdfEngine {
 
     async process() {
         if (!this.state.file) return;
-        this.state.isProcessing = true;
-        this.state.progress = 'Applying Watermark...';
 
-        try {
-            const arrayBuffer = await this.state.file.arrayBuffer();
+        await this.handleProcess(async () => {
+            const arrayBuffer = await this.state.file!.arrayBuffer();
             const pdfDoc = await PDFDocument.load(arrayBuffer);
-            
+
             const pages = pdfDoc.getPages();
-            const { width, height } = pages[0].getSize(); // Assume consistent size for centering logic base, or iter per page
+            // const { width, height } = pages[0].getSize(); // Assume consistent size for centering logic base, or iter per page
 
             // Prepare Common Resources
             let embedImage: any = null;
@@ -114,7 +107,7 @@ export class AddWatermarkState extends PdfEngine {
                 } else if (embedImage) {
                     // Image Watermark
                     const imgDims = embedImage.scale(this.state.imageScale);
-                    
+
                     // Simple Centering
                     const x = pageWidth / 2 - imgDims.width / 2;
                     const y = pageHeight / 2 - imgDims.height / 2;
@@ -132,25 +125,14 @@ export class AddWatermarkState extends PdfEngine {
 
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
-            
-            const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadFile(blob, `${originalName}_watermarked.pdf`);
 
-        } catch (e: any) {
-            console.error(e);
-            alert(`Error: ${e.message}`);
-        } finally {
-            this.state.isProcessing = false;
-        }
-    }
-
-    private downloadFile(blob: Blob, fileName: string) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
+            const originalName = this.state.file!.name.replace('.pdf', '');
+            this.downloadBlob(blob, `${originalName}_watermarked.pdf`);
+        }, {
+            loading: 'Applying watermark...',
+            success: 'Watermark applied successfully!',
+            error: 'Failed to apply watermark.'
+        });
     }
 }
+

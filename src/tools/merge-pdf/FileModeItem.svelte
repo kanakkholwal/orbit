@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Input } from '$components/ui/input';
+  import { Label } from '$components/ui/label';
   import { GripVertical, Trash2 } from '@lucide/svelte';
   import type { UploadedFile } from './helper.svelte';
 
@@ -23,15 +25,15 @@
   </div>
 
   <div class="flex flex-col items-end gap-1">
-    <label for="range-{file.id}" class="text-[10px] uppercase tracking-wider text-muted-foreground">
+    <Label for="range-{file.id}" class="text-[10px] uppercase tracking-wider text-muted-foreground">
       Pages (e.g. 1-3, 5)
-    </label>
-    <input
+    </Label>
+    <Input
       id="range-{file.id}"
       type="text"
       bind:value={file.pageRange}
       placeholder="All"
-      class="h-8 w-32 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring placeholder:text-muted-foreground/50"
+      class="h-8 w-32 rounded-md px-3 py-1 text-sm"
     />
   </div>
 

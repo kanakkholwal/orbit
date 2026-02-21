@@ -6,23 +6,21 @@
   import { cn } from "$lib/utils";
   import { ArrowRight, Search, Sparkles } from "@lucide/svelte";
 
-  let searchQuery = $state("");
+  // Initialize both from the URL parameters
+  let searchQuery = $state(page.url.searchParams.get("search") || "");
   let activeCategory = $state(page.url.searchParams.get("category") || "all");
 
   let filteredCategories = $derived(
     toolsCategories
       .map((cat) => {
-        // If specific category is selected, only show that one
         if (activeCategory !== "all" && cat.id !== activeCategory) return null;
 
-        // Filter tools inside the category based on search
         const matchingTools = cat.tools?.filter(
           (tool) =>
             tool.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
             tool.description.toLowerCase().includes(searchQuery.toLowerCase()),
         );
 
-        // Return category only if it has matching tools
         return matchingTools?.length! > 0
           ? { ...cat, tools: matchingTools }
           : null;
@@ -38,36 +36,26 @@
       url.searchParams.set("category", category);
     }
     activeCategory = category;
-    // Update the URL without a full page reload or creating history entries
-    replaceState(url.href, {
-      scroll: false,
-    });
+    replaceState(url.href, { scroll: false });
   }
 
-  function handleSearchInput(searchQuery: string) {
+  function handleSearchInput(query: string) {
     const url = new URL(page.url);
-    if (searchQuery) {
-      url.searchParams.set("search", searchQuery);
+    if (query) {
+      url.searchParams.set("search", query);
     } else {
       url.searchParams.delete("search");
     }
-    replaceState(url.href, {
-      scroll: false,
-    });
+    searchQuery = query; // Ensure Svelte state stays in sync
+    replaceState(url.href, { scroll: false });
   }
-  $effect(() => {
-    updateCategory(activeCategory);
-  });
-  $effect(() => {
-    handleSearchInput(searchQuery);
-  });
 </script>
 
 <main
   class="relative z-10 container mx-auto px-4 py-24 md:py-32 pt-10! max-w-app @container"
 >
   <div
-    class="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-16"
+    class="flex flex-col @4xl:flex-row items-start @4xl:items-end justify-between gap-6 mb-16"
   >
     <div class="max-w-2xl">
       <div
@@ -77,7 +65,7 @@
         <span>Explore Library</span>
       </div>
       <h1
-        class="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground mb-4"
+        class="text-4xl @4xl:text-5xl font-extrabold tracking-tight text-foreground mb-4"
       >
         Everything you need <br />
         <span
@@ -90,7 +78,7 @@
       </p>
     </div>
 
-    <div class="w-full md:w-auto relative group flex items-center mt-auto">
+    <div class="w-full @4xl:w-auto relative group flex items-center mt-auto">
       <Search
         size={18}
         class="size-7 my-auto text-primary absolute z-5 inset-y-0 left-0 pl-3 pointer-events-none group-focus-within:text-primary transition-colors"
@@ -98,7 +86,8 @@
       <Input
         type="search"
         name="explore-search"
-        bind:value={searchQuery}
+        value={searchQuery}
+        oninput={(e) => handleSearchInput(e.currentTarget.value)}
         placeholder="Search tools (e.g. 'Merge')..."
         class="w-full md:w-80 rounded-xl pl-10 pr-4 py-3 text-sm font-medium shadow-sm backdrop-blur-md outline-none bg-card"
       />
@@ -127,7 +116,7 @@
             ? "bg-foreground text-background shadow-md"
             : "bg-card/50 text-foreground hover:bg-card hover:text-foreground",
         )}
-        onclick={() => (activeCategory = cat.id)}
+        onclick={() => updateCategory(cat.id)}
       >
         {cat.name}
       </button>

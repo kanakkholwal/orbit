@@ -88,7 +88,7 @@
 
         <div class="mt-20 grid grid-cols-2 gap-8 border-y border-border bg-card/75 py-8 backdrop-blur-sm md:grid-cols-4 lg:rounded-2xl lg:shadow-xs">
           <div class="space-y-1">
-            <h3 class="text-3xl font-bold tracking-tight text-foreground">1M+</h3>
+            <h3 class="text-3xl font-bold tracking-tight text-foreground">1K+</h3>
             <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Files Processed</p>
           </div>
           <div class="space-y-1">
@@ -100,7 +100,7 @@
             <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Client Side</p>
           </div>
           <div class="space-y-1">
-            <h3 class="text-3xl font-bold tracking-tight text-foreground">5.0</h3>
+            <h3 class="text-3xl font-bold tracking-tight text-foreground">100%</h3>
             <p class="text-xs font-medium uppercase tracking-wider text-muted-foreground">Open Source</p>
           </div>
         </div>
@@ -121,7 +121,7 @@
           {#each displayTools as tool}
             <a
               href={`/tools/${tool.slug}`}
-              class="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 p-6 shadow-sm backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-primary/20 hover:bg-card hover:shadow-md"
+              class="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/75 p-6 shadow-xs backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-primary/20 hover:bg-card hover:shadow-md"
             >
               <div class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 

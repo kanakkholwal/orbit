@@ -9,6 +9,7 @@ export default defineConfig({
 		tailwindcss(),
 		sveltekit()
 	],
+	clearScreen: false,
 	server: {
 		port: 3000,
 		open: true

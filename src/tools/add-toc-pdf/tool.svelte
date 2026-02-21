@@ -137,11 +137,11 @@
     <div class="border-t border-border bg-background p-4 text-center">
       <button
         onclick={() => store.generateTOC()}
-        disabled={store.state.isProcessing}
+        disabled={store.isProcessing}
         class="inline-flex h-11 min-w-50 items-center justify-center gap-2 rounded-full bg-primary px-8 text-lg font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-105 hover:bg-primary/90 disabled:pointer-events-none disabled:opacity-50"
       >
-        {#if store.state.isProcessing}
-          <Loader2 class="animate-spin" /> {store.state.progress}
+        {#if store.isProcessing}
+          <Loader2 class="animate-spin" /> {store.progress}
         {:else}
           Generate TOC <ArrowRight size={18} />
         {/if}

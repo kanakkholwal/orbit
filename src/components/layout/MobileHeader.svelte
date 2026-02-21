@@ -13,7 +13,7 @@
     href="/"
     class="group flex items-center gap-3 transition-opacity hover:opacity-80"
   >
-    <Logo size="md" class="text-foreground"/>
+    <Logo size="md"/>
   </a>
   <div>
     <Button

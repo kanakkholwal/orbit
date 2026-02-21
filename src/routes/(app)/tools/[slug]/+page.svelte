@@ -4,8 +4,12 @@
 
   import AdUnit from "$components/AdUnit.svelte";
   import ShareButton from "$components/application/ShareButton.svelte";
+  import Seo from "$components/Seo.svelte";
+  import { Button } from "$components/ui/button";
+  import { config } from "$constants/app";
   import {
     ChevronLeft,
+    Github,
     Info,
     Loader2,
     Share2,
@@ -40,40 +44,46 @@
   });
 </script>
 
-<svelte:head>
-  {#if tool}
-    <title>{tool.title} | NexoPDF</title>
-    <meta name="description" content={tool.description} />
-    <meta property="og:title" content="{tool.title} | Free Online PDF Tool" />
-  {/if}
-</svelte:head>
+{#if tool}
+  <Seo
+    title={tool.title + " - Free Online PDF Tool"}
+    description={tool.description}
+  />
+{/if}
 
 {#if tool}
   <div class="min-h-screen w-full" in:fade>
-    <div class="px-4 pb-20 sm:px-6 lg:px-8">
+    <div class="px-2 pb-20 sm:px-6 lg:px-8">
       <nav class="mb-8 flex items-center justify-between">
-        <a
+        <Button
+          variant="ghost"
           href="/explore"
-          class="group flex items-center gap-1 pl-0 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          class="group text-muted-foreground hover:text-foreground hover:bg-transparent!"
         >
           <ChevronLeft
             class="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
           />
           Back to Directory
-        </a>
+        </Button>
 
-        <ShareButton
-          data={{
-            title: tool.title,
-            text: `Check out this PDF tool: ${tool.title}`,
-            url: page.url.href,
-          }}
-          variant="dark"
-          size="sm"
-        >
-          <Share2 class="size-3.5" />
-          Share
-        </ShareButton>
+        <div class="inline-flex gap-2 items-center flex-wrap">
+          <Button variant="dark" size="sm" href={config.github} target="_blank">
+            <Github class="size-3.5" />
+            <span class="hidden md:inline-block">Star on Github</span>
+          </Button>
+          <ShareButton
+            data={{
+              title: tool.title,
+              text: `Check out this PDF tool: ${tool.title}`,
+              url: page.url.href,
+            }}
+            variant="dark"
+            size="sm"
+          >
+            <Share2 class="size-3.5" />
+            Share
+          </ShareButton>
+        </div>
       </nav>
 
       <div class="flex w-full min-w-0 flex-col gap-8">
