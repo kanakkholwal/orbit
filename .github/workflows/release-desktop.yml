@@ -19,16 +19,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      #  Bun 
+      #  Bun
       - uses: oven-sh/setup-bun@v2
-    
+
       - uses: actions/cache@v4
         with:
-         path: |
+          path: |
             ~/.bun
             node_modules
             src-tauri/target
-         key: ${{ runner.os }}-tauri-${{ hashFiles('**/bun.lockb') }}
+          key: ${{ runner.os }}-tauri-${{ hashFiles('**/bun.lockb') }}
 
       - name: Install dependencies
         run: bun install
@@ -45,12 +45,12 @@ jobs:
             patchelf
 
       # macOS signing (optional but production ready)
-      - name: Import Apple certificate
-        if: matrix.platform == 'macos-latest'
-        uses: apple-actions/import-codesign-certs@v2
-        with:
-          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
-          p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+      # - name: Import Apple certificate
+      #   if: matrix.platform == 'macos-latest'
+      #   uses: apple-actions/import-codesign-certs@v2
+      #   with:
+      #     p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
+      #     p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
 
       - name: Build Tauri app
         uses: tauri-apps/tauri-action@v0
@@ -60,11 +60,11 @@ jobs:
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 
-          # macOS signing
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          # macOS signing - 
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
         with:
           tagName: ${{ github.ref_name }}

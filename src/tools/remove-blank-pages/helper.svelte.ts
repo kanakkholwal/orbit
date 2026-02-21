@@ -9,8 +9,6 @@ export interface BlankPageStateData {
     
     sensitivity: number; // 0 to 100
     isDetecting: boolean;
-    isProcessing: boolean;
-    progress: string;
 
     // Array of objects representing pages detected as blank
     // isSelected indicates if the user wants to proceed with deleting it
@@ -25,8 +23,6 @@ export class RemoveBlankPagesState extends PdfEngine {
         originalSize: 0,
         sensitivity: 80,
         isDetecting: false,
-        isProcessing: false,
-        progress: '',
         detectedPages: [],
         hasPerformedDetection: false
     });
@@ -40,8 +36,8 @@ export class RemoveBlankPagesState extends PdfEngine {
         if (!files || files.length === 0) return;
         const file = files[0];
         
-        this.state.isProcessing = true;
-        this.state.progress = 'Loading PDF...';
+        this.isProcessing = true;
+        this.progress = { text: 'Loading PDF...', current: 0, total: 0 };
         try {
             const arrayBuffer = await file.arrayBuffer();
             
@@ -63,7 +59,7 @@ export class RemoveBlankPagesState extends PdfEngine {
             console.error("Error loading PDF", e);
             alert("Failed to load the PDF file.");
         } finally {
-            this.state.isProcessing = false;
+            this.isProcessing = false;
         }
     }
 
@@ -90,7 +86,7 @@ export class RemoveBlankPagesState extends PdfEngine {
         if (!this.pdfJsDoc) return;
         
         this.state.isDetecting = true;
-        this.state.progress = 'Analyzing pages...';
+        this.progress = { text: 'Analyzing pages...', current: 0, total: this.pdfJsDoc.numPages };
         this.state.detectedPages = [];
         
         // Convert sensitivity (0-100) to a brightness threshold (0-255).
@@ -104,7 +100,7 @@ export class RemoveBlankPagesState extends PdfEngine {
             const detected = [];
 
             for (let i = 1; i <= totalPages; i++) {
-                this.state.progress = `Analyzing page ${i} of ${totalPages}...`;
+                this.progress = { text: `Analyzing page ${i} of ${totalPages}...`, current: i, total: totalPages };
                 const page = await this.pdfJsDoc.getPage(i);
                 const isBlank = await this.isPageBlank(page, threshold);
                 
@@ -178,8 +174,8 @@ export class RemoveBlankPagesState extends PdfEngine {
             return;
         }
 
-        this.state.isProcessing = true;
-        this.state.progress = 'Removing pages...';
+        this.isProcessing = true;
+        this.progress = { text: 'Removing pages...', current: 0, total: pagesToRemove.size };
 
         try {
             const newPdfDoc = await PDFDocument.create();
@@ -202,7 +198,7 @@ export class RemoveBlankPagesState extends PdfEngine {
             console.error(e);
             alert(e.message || "Could not remove pages.");
         } finally {
-            this.state.isProcessing = false;
+            this.isProcessing = false;
             // Optionally reset detection state after successful removal
             // this.state.hasPerformedDetection = false;
         }
