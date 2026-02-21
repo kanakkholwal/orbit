@@ -77,7 +77,7 @@ jobs:
 
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "Nexo PDF ${{ github.ref_name }}"
-          releaseBody: "See the assets to download this version."
+          releaseName: "Desktop App Release ${{ github.ref_name }}"
+          releaseBody: "Automated release of the desktop application for version ${{ github.ref_name }}."
           releaseDraft: false
           prerelease: false
