@@ -1,3 +1,4 @@
+import { BaseEngine } from '$lib/base-engine.svelte';
 import { loadPyMuPDF } from '$utils/pymupdf-loader';
 
 export interface ExtractedImage {
@@ -8,15 +9,13 @@ export interface ExtractedImage {
     url: string; // Object URL for preview
 }
 
-export class ExtractImagesState {
+export class ExtractImagesState extends BaseEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
     extractedImages = $state<ExtractedImage[]>([]);
     
-    isProcessing = $state(false);
-    progress = $state({ text: '' });
+
     extractionDone = $state(false);
 
-    // --- Actions ---
 
     addFiles(newFiles: File[]) {
         for (const f of newFiles) {
@@ -125,7 +124,7 @@ export class ExtractImagesState {
             });
 
             const zipBlob = await zip.generateAsync({ type: 'blob' });
-            this.triggerDownload(zipBlob, 'extracted-images.zip');
+            this.downloadBlob(zipBlob, 'extracted-images.zip');
         } catch (e) {
             console.error(e);
             alert("Failed to create ZIP archive.");
@@ -138,17 +137,8 @@ export class ExtractImagesState {
         const img = this.extractedImages.find(i => i.id === id);
         if (img) {
             const blob = new Blob([img.data as BlobPart]);
-            this.triggerDownload(blob, img.name);
+            this.downloadBlob(blob, img.name);
         }
     }
 
-    private triggerDownload(blob: Blob, filename: string) {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(a.href);
-    }
 }

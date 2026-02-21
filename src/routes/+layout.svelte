@@ -14,6 +14,7 @@
   import { Toaster } from "$components/ui/sonner";
   import { config } from "$constants/app";
   import { ModeWatcher } from "mode-watcher";
+  import { onMount, tick } from "svelte";
 
   // State for the smart progress bar
   let progress = $state(0);
@@ -51,6 +52,12 @@
       // Cleanup interval if the effect re-runs before completion
       return () => clearInterval(interval);
     }
+  });
+
+  // Remove the boot splash screen after the app is mounted
+  onMount(async () => {
+    await tick();
+    document.getElementById("boot")?.remove();
   });
 </script>
 

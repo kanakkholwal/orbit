@@ -295,7 +295,8 @@ export class PdfEditorState extends PdfEngine {
       }
     }
     const pdfBytes = await newPdf.save();
-    this.triggerDownload(pdfBytes, filename, 'application/pdf');
+    const pdfBlob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
+    this.downloadBlob(pdfBlob, filename);
   }
 
   async downloadSplitPdfs() {
@@ -317,7 +318,7 @@ export class PdfEditorState extends PdfEngine {
       zip.file(`document-${segmentCount}.pdf`, pdfBytes);
     }
     const zipBlob = await zip.generateAsync({ type: 'blob' });
-    this.triggerDownload(zipBlob, 'split-documents.zip', 'application/zip');
+    this.downloadBlob(zipBlob, 'split-documents.zip');
   }
 
   private async createPdfBytes(pages: PageData[]): Promise<Uint8Array> {
@@ -338,17 +339,7 @@ export class PdfEditorState extends PdfEngine {
     return newPdf.save();
   }
 
-  triggerDownload(data: Uint8Array | Blob, filename: string, type: string) {
-    const blob = data instanceof Blob ? data : new Blob([data.buffer as BlobPart], { type });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+ 
 }
 
 export const pdfState = new PdfEditorState();
