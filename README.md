@@ -46,7 +46,7 @@ You'll need [Bun](https://bun.sh/) (recommended) or Node.js installed.
 
 ```sh
 # Clone the repository
-git clone https://github.com/kanakkholwal/nexo-pdf.git
+git clone https://github.com/kanakkholwal/orbit.git
 
 # Navigate to the project
 cd nexo-pdf
