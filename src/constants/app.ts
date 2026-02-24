@@ -11,7 +11,7 @@ export const config = {
           locally via WebAssembly without them ever touching a server.`,
     supportEmail: "support@nexonauts.com",
     appDomain: "orbit.nexonauts.com",
-    github: "https://github.com/kanakkholwal/nexo-pdf",
+    github: "https://github.com/kanakkholwal/orbit",
     adsensePublisherId: dev ? "" : (PUBLIC_ADSENSE_PUBLISHER_ID?.trim() || ""),
     googleAnalyticsId: dev ? "" : (PUBLIC_GOOGLE_ANALYTICS_ID?.trim() || ""),
 }
