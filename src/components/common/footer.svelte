@@ -6,7 +6,6 @@
 
   const currentYear = new Date().getFullYear();
 
-  // Expanded data for a better 4-column grid look
   const footerSections = [
     {
       title: "Popular Tools",
