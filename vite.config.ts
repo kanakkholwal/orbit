@@ -3,6 +3,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vite';
 
+
 export default defineConfig({
 	plugins: [
 		enhancedImages(),
@@ -12,6 +13,7 @@ export default defineConfig({
 	clearScreen: false,
 	server: {
 		port: 3000,
-		open: true
+		open: true,
+		strictPort: true,
 	}
 });
