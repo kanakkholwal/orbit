@@ -9,7 +9,11 @@ on:
         description: "Release tag (e.g. v1.0.0)"
         required: true
         type: string
-      
+env:
+  NODE_ENV: production
+  # for web platform only, but required by the frontend code, so we set it to an empty string
+  PUBLIC_ADSENSE_PUBLISHER_ID: "" # not needed for desktop app, but required by the frontend code, so we set it to an empty string
+  PUBLIC_GOOGLE_ANALYTICS_ID: ""  # not needed for desktop app, but required by the frontend code, so we set it to an empty string
 jobs:
   # Windows build and release using Tauri's GitHub Action. This is separate to ensure we can sign the Windows executable properly.
   build-windows:
