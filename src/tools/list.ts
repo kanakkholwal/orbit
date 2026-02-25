@@ -247,6 +247,15 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./extract-images/tool.svelte'),
         color: 'text-green-500'
     },
+    "txt-to-pdf":{
+        slug: "txt-to-pdf",
+        title: "Text to PDF",
+        description: "Convert plain text files into PDF format with customizable options.",
+        category: 'pdf-management',
+        icon: FileText,
+        component: () => import('./txt-to-pdf/tool.svelte'),
+        color: 'text-green-500'
+    },
 };
 
 

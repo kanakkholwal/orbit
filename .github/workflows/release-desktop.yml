@@ -11,24 +11,16 @@ on:
         type: string
       
 jobs:
-  publish-tauri:
+  # Windows build and release using Tauri's GitHub Action. This is separate to ensure we can sign the Windows executable properly.
+  build-windows:
     permissions:
       contents: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        # platform: [macos-latest, ubuntu-22.04, windows-latest]
-        platform: [ubuntu-22.04, windows-latest]
-
-    runs-on: ${{ matrix.platform }}
-
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
       #  Bun
       - uses: oven-sh/setup-bun@v2
-
       - uses: actions/cache@v4
         with:
           path: |
@@ -36,48 +28,61 @@ jobs:
             node_modules
             src-tauri/target
           key: ${{ runner.os }}-tauri-${{ hashFiles('**/bun.lockb') }}
-
-      - name: Install dependencies
+      - name: Install dependencies (Frontend)
         run: bun install
+      - name: Build and Release (Windows)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Orbit PDF - Windows Release ${{ github.ref_name }}"
+          releaseBody: "See assets below to download and install."
+          releaseDraft: true
+          prerelease: false
+  
+  # Linux build and release using Tauri's GitHub Action. This is separate to ensure we can build the Linux AppImage properly.
+  build-linux:
+    permissions:
+      contents: write
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
 
-      # Linux deps
-      - name: Install Linux system deps
-        if: matrix.platform == 'ubuntu-22.04'
+      #  Bun
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun
+            node_modules
+            src-tauri/target
+          key: ${{ runner.os }}-tauri-${{ hashFiles('**/bun.lockb') }}
+      - name: Install dependencies (Frontend)
+        run: bun install
+      - name: Install Linux system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             libwebkit2gtk-4.1-dev \
             libappindicator3-dev \
             librsvg2-dev \
-            patchelf
-
-      # macOS signing (optional but production ready)
-      # - name: Import Apple certificate
-      #   if: matrix.platform == 'macos-latest'
-      #   uses: apple-actions/import-codesign-certs@v2
-      #   with:
-      #     p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
-      #     p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-
-      - name: Build Tauri app
+            patchelf \
+            libssl-dev \
+            libgtk-3-dev
+      - name: Build and Release (Linux)
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-
-          PUBLIC_ADSENSE_PUBLISHER_ID: ""
-          PUBLIC_GOOGLE_ANALYTICS_ID: ""
-          # macOS signing - 
-          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          # APPLE_ID: ${{ secrets.APPLE_ID }}
-          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
-          releaseName: "Desktop App Release ${{ github.ref_name }}"
-          releaseBody: "Automated release of the desktop application for version ${{ github.ref_name }}."
-          releaseDraft: false
+          releaseName: "Orbit PDF - Linux Release ${{ github.ref_name }}"
+          releaseBody: "See assets below to download and install."
+          releaseDraft: true
           prerelease: false
+
+    
