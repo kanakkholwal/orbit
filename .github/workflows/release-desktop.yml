@@ -17,8 +17,8 @@ env:
 jobs:
   # Windows build and release using Tauri's GitHub Action. This is separate to ensure we can sign the Windows executable properly.
   build-windows:
-    permissions:
-      contents: write
+    # permissions:
+    #   contents: write
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,8 +49,8 @@ jobs:
   
   # Linux build and release using Tauri's GitHub Action. This is separate to ensure we can build the Linux AppImage properly.
   build-linux:
-    permissions:
-      contents: write
+    # permissions:
+    #   contents: write
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
