@@ -45,7 +45,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ inputs.tag || github.ref_name }}
-          releaseName: "Orbit PDF - Windows Release ${{ inputs.tag || github.ref_name }}"
+          releaseName: "Orbit PDF - Release ${{ inputs.tag || github.ref_name }}"
           releaseBody: "See assets below to download and install."
           releaseDraft: false
           prerelease: false
@@ -90,7 +90,7 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ inputs.tag || github.ref_name }}
-          releaseName: "Orbit PDF - Linux Release ${{ inputs.tag || github.ref_name }}"
+          releaseName: "Orbit PDF - Release ${{ inputs.tag || github.ref_name }}"
           releaseBody: "See assets below to download and install."
           releaseDraft: false
           prerelease: false
