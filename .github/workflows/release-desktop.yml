@@ -30,10 +30,13 @@ jobs:
           path: |
             ~/.bun
             node_modules
-            src-tauri/target
-          key: ${{ runner.os }}-tauri-${{ hashFiles('**/bun.lockb') }}
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Install dependencies (Frontend)
         run: bun install
+      - name: Clean Rust build
+        run: cd src-tauri && cargo clean
       - name: Build and Release (Windows)
         uses: tauri-apps/tauri-action@v0
         env:
@@ -62,8 +65,9 @@ jobs:
           path: |
             ~/.bun
             node_modules
-            src-tauri/target
-          key: ${{ runner.os }}-tauri-${{ hashFiles('**/bun.lockb') }}
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}-cargo-${{ hashFiles('**/Cargo.lock') }}
       - name: Install dependencies (Frontend)
         run: bun install
       - name: Install Linux system dependencies
@@ -76,6 +80,8 @@ jobs:
             patchelf \
             libssl-dev \
             libgtk-3-dev
+      - name: Clean Rust build
+        run: cd src-tauri && cargo clean
       - name: Build and Release (Linux)
         uses: tauri-apps/tauri-action@v0
         env:
