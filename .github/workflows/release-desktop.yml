@@ -47,7 +47,7 @@ jobs:
           tagName: ${{ inputs.tag || github.ref_name }}
           releaseName: "Orbit PDF - Windows Release ${{ inputs.tag || github.ref_name }}"
           releaseBody: "See assets below to download and install."
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
   
   # Linux build and release using Tauri's GitHub Action. This is separate to ensure we can build the Linux AppImage properly.
@@ -92,7 +92,7 @@ jobs:
           tagName: ${{ inputs.tag || github.ref_name }}
           releaseName: "Orbit PDF - Linux Release ${{ inputs.tag || github.ref_name }}"
           releaseBody: "See assets below to download and install."
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
 
     
