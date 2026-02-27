@@ -1,10 +1,10 @@
 <script lang="ts">
   import { replaceState } from "$app/navigation";
   import { page } from "$app/state";
+  import { Button } from "$components/ui/button";
   import Input from "$components/ui/input/input.svelte";
   import { toolsCategories } from "$constants/tools";
-  import { cn } from "$lib/utils";
-  import { ArrowRight, Search, Sparkles } from "@lucide/svelte";
+  import { ArrowRight, ArrowUpRight, Search, Sparkles } from "@lucide/svelte";
 
   // Initialize both from the URL parameters
   let searchQuery = $state(page.url.searchParams.get("search") || "");
@@ -97,29 +97,21 @@
   <div
     class="flex flex-wrap items-center gap-2 mb-12 border-b border-border/60 pb-6"
   >
-    <button
-      class={cn(
-        "px-4 py-2 rounded-full text-sm font-medium transition-all border",
-        activeCategory === "all"
-          ? "bg-foreground text-background shadow-md"
-          : "bg-card/50 text-foreground hover:bg-card hover:text-foreground",
-      )}
+    <Button
+      variant={activeCategory === "all" ? "dark" : "outline"}
+      class="rounded-full"
       onclick={() => updateCategory("all")}
     >
       All Tools
-    </button>
+    </Button>
     {#each toolsCategories as cat}
-      <button
-        class={cn(
-          "px-4 py-2 rounded-full text-sm font-medium transition-all border",
-          activeCategory === cat.id
-            ? "bg-foreground text-background shadow-md"
-            : "bg-card/50 text-foreground hover:bg-card hover:text-foreground",
-        )}
+      <Button
+        variant={activeCategory === cat.id ? "dark" : "outline"}
+        class="rounded-full"
         onclick={() => updateCategory(cat.id)}
       >
         {cat.name}
-      </button>
+      </Button>
     {/each}
   </div>
 
@@ -160,37 +152,35 @@
         </div>
 
         <div
-          class="grid grid-cols-1 @sm:grid-cols-2 @4xl:grid-cols-3 @6xl:grid-cols-4 gap-5"
+          class="grid grid-cols-1 @md:grid-cols-2 @4xl:grid-cols-3 @6xl:grid-cols-4 gap-5"
         >
           {#each category?.tools as tool}
             <a
               href={`/tools/${tool.slug}`}
-              class="group relative flex flex-col p-5 h-full rounded-2xl border border-border bg-card backdrop-blur-md shadow-sm transition-all duration-300 hover:scale-[1.02] hover:bg-card hover:shadow-xl hover:shadow-blue-900/5 hover:border-primary/20"
+              class="group flex flex-col justify-between p-5 rounded-xl border border-border bg-card/80 hover:bg-secondary/80 transition-colors relative overflow-hidden"
             >
-              <div
-                class={`size-12 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 ${tool.color}`}
-              >
-                {#if tool.icon}
-                  {@const Icon = tool.icon}
-                  <Icon size={22} strokeWidth={2} />
-                {/if}
+              <div class="flex items-start justify-between mb-4">
+                <div
+                  class={`p-2.5 rounded-lg ${tool.color} bg-opacity-10 text-current`}
+                >
+                  {#if tool.icon}
+                    {@const Icon = tool.icon}
+                    <Icon size={20} />
+                  {/if}
+                </div>
+                <ArrowUpRight
+                  size={18}
+                  class="text-muted-foreground opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
               </div>
 
-              <div class="flex-1">
-                <h3
-                  class="font-bold text-foreground text-lg mb-1 group-hover:text-primary transition-colors"
+              <div>
+                <h3 class="font-bold text-foreground mb-1">{tool.title}</h3>
+                <p
+                  class="text-xs text-muted-foreground line-clamp-2 leading-relaxed"
                 >
-                  {tool.title}
-                </h3>
-                <p class="text-sm text-muted-foreground leading-relaxed">
                   {tool.description}
                 </p>
-              </div>
-
-              <div
-                class="mt-4 flex items-center text-xs font-semibold text-primary opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0"
-              >
-                Launch Tool <ArrowRight size={12} class="ml-1" />
               </div>
             </a>
           {/each}

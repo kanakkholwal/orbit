@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "nexo-pdf",
+      "name": "orbit",
       "dependencies": {
         "@embedpdf/snippet": "^2.6.0",
         "@fontsource/google-sans": "^5.2.1",

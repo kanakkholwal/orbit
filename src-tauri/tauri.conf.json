@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "nexo-pdf",
+  "productName": "orbit",
   "version": "0.1.0",
-  "identifier": "com.nexonauts.pdf",
+  "identifier": "com.nexonauts.orbit",
   "build": {
     "frontendDist": "../build",
     "devUrl": "http://localhost:3000",
@@ -13,7 +13,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Nexo PDF",
+        "title": "Orbit PDF",
         "width": 800,
         "height": 600,
         "resizable": true,
@@ -27,11 +27,27 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "publisher": "Nexonauts",
     "icon": [
-      "icons/32x32.png",
       "icons/128x128.png",
       "icons/128x128@2x.png",
       "icons/favicon.ico"
-    ]
+    ],
+    "windows": {
+      "digestAlgorithm": "sha256",
+      "timestampUrl": "http://timestamp.digicert.com"
+    },
+    "linux": {
+      "appimage": {}
+    }
+  },
+   "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDE2M0M0NEFBM0NBM0FDRDQKUldUVXJLTThxa1E4Rm9OR3FiaktjZWx5QUlwTjVBdFZxckNhRzNEeFEydnNZSUtZMjJxV0lIdGEK",
+      "endpoints": [
+        "https://github.com/kanakkholwal/orbit/releases/latest/download/latest.json"
+      ],
+      "dialog": true
+    }
   }
 }

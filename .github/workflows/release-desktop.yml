@@ -1,74 +1,98 @@
-name: Release
+name: Release Desktop App
 on:
   push:
     tags:
       - "v*"
-
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. v1.0.0)"
+        required: true
+        type: string
+env:
+  NODE_ENV: production
+  # for web platform only, but required by the frontend code, so we set it to an empty string
+  PUBLIC_ADSENSE_PUBLISHER_ID: "" # not needed for desktop app, but required by the frontend code, so we set it to an empty string
+  PUBLIC_GOOGLE_ANALYTICS_ID: ""  # not needed for desktop app, but required by the frontend code, so we set it to an empty string
 jobs:
-  publish-tauri:
+  # Windows build and release using Tauri's GitHub Action. This is separate to ensure we can sign the Windows executable properly.
+  build-windows:
     permissions:
       contents: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [macos-latest, ubuntu-22.04, windows-latest]
-
-    runs-on: ${{ matrix.platform }}
-
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
       #  Bun
       - uses: oven-sh/setup-bun@v2
-
       - uses: actions/cache@v4
         with:
           path: |
             ~/.bun
             node_modules
-            src-tauri/target
-          key: ${{ runner.os }}-tauri-${{ hashFiles('**/bun.lockb') }}
-
-      - name: Install dependencies
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Install dependencies (Frontend)
         run: bun install
+      - name: Clean Rust build
+        run: cd src-tauri && cargo clean
+      - name: Build and Release (Windows)
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          tagName: ${{ inputs.tag || github.ref_name }}
+          releaseName: "Orbit PDF - Windows Release ${{ inputs.tag || github.ref_name }}"
+          releaseBody: "See assets below to download and install."
+          releaseDraft: true
+          prerelease: false
+  
+  # Linux build and release using Tauri's GitHub Action. This is separate to ensure we can build the Linux AppImage properly.
+  build-linux:
+    permissions:
+      contents: write
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
 
-      # Linux deps
-      - name: Install Linux system deps
-        if: matrix.platform == 'ubuntu-22.04'
+      #  Bun
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun
+            node_modules
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Install dependencies (Frontend)
+        run: bun install
+      - name: Install Linux system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             libwebkit2gtk-4.1-dev \
             libappindicator3-dev \
             librsvg2-dev \
-            patchelf
-
-      # macOS signing (optional but production ready)
-      # - name: Import Apple certificate
-      #   if: matrix.platform == 'macos-latest'
-      #   uses: apple-actions/import-codesign-certs@v2
-      #   with:
-      #     p12-file-base64: ${{ secrets.APPLE_CERTIFICATE }}
-      #     p12-password: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-
-      - name: Build Tauri app
+            patchelf \
+            libssl-dev \
+            libgtk-3-dev
+      - name: Clean Rust build
+        run: cd src-tauri && cargo clean
+      - name: Build and Release (Linux)
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
-          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
-
-          # macOS signing - 
-          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          # APPLE_ID: ${{ secrets.APPLE_ID }}
-          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: "App ${{ github.ref_name }}"
-          releaseBody: "See the assets to download this version."
-          releaseDraft: false
+          tagName: ${{ inputs.tag || github.ref_name }}
+          releaseName: "Orbit PDF - Linux Release ${{ inputs.tag || github.ref_name }}"
+          releaseBody: "See assets below to download and install."
+          releaseDraft: true
           prerelease: false
+
+    

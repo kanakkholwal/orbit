@@ -1,5 +1,5 @@
 {
-	"name": "nexo-pdf",
+	"name": "orbit",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -13,7 +13,10 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "bunx --bun biome lint",
 		"format": "bunx --bun biome format --write ./src",
-		"tauri": "tauri"
+		"tauri": "tauri",
+		"tauri:dev": "cross-env NODE_ENV=development tauri dev",
+		"tauri:build": "cross-env NODE_ENV=production tauri build",
+		"android:dev": "tauri android dev --open --host"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.0",
