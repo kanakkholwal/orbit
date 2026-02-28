@@ -98,7 +98,7 @@
     class="flex flex-wrap items-center gap-2 mb-12 border-b border-border/60 pb-6"
   >
     <Button
-      variant={activeCategory === "all" ? "dark" : "outline"}
+      variant={activeCategory === "all" ? "dark" : "secondary"}
       class="rounded-full"
       onclick={() => updateCategory("all")}
     >
@@ -106,7 +106,7 @@
     </Button>
     {#each toolsCategories as cat}
       <Button
-        variant={activeCategory === cat.id ? "dark" : "outline"}
+        variant={activeCategory === cat.id ? "dark" : "ghost"}
         class="rounded-full"
         onclick={() => updateCategory(cat.id)}
       >

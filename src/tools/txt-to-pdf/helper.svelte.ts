@@ -1,5 +1,4 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
-import { loadPyMuPDF } from '$utils/pymupdf-loader';
 import { toast } from 'svelte-sonner';
 
 const RTL_PATTERN = /[\u0590-\u05FF\u0600-\u06FF\u0700-\u074F\u0750-\u077F\u0780-\u07BF\u07C0-\u07FF\u08A0-\u08FF\uFB1D-\uFB4F\uFB50-\uFDFF\uFE70-\uFEFF]/;
@@ -60,7 +59,11 @@ export class TxtToPdfState extends BaseEngine {
 
     this.progress.text = 'Loading engine...';
     this.handleProcess(async () => {
-      const pymupdf = await loadPyMuPDF();
+      let pymupdf: any = null;
+
+      const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
+      pymupdf = await loadPyMuPDF();
+
       let finalContent = '';
 
       if (this.mode === 'upload') {

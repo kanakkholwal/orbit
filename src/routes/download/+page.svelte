@@ -2,7 +2,7 @@
   import Footer from "$components/common/footer.svelte";
   import Navbar from "$components/common/navbar.svelte";
   import { Button } from "$components/ui/button";
-  import { Download, Info, Monitor, Terminal } from "@lucide/svelte";
+  import { Download, Info, Monitor, Smartphone, Terminal } from "@lucide/svelte";
 
   let { data } = $props();
 </script>
@@ -113,6 +113,31 @@
               .deb
             </Button>
           </div>
+        </div>
+        <div
+          class="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 rounded-3xl bg-muted/30 border border-dashed"
+        >
+          <div class="flex items-center gap-5 mb-4 sm:mb-0">
+            <div
+              class="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-purple-500/10 text-purple-500"
+            >
+              <Smartphone size={26} strokeWidth={1.5} />
+            </div>
+            <div>
+              <h3 class="text-xl font-medium text-foreground tracking-tight flex items-center gap-2">
+                Mobile
+                <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-500">
+                  Coming Soon
+                </span>
+              </h3>
+              <p class="text-sm text-muted-foreground font-light mt-0.5">
+                Android &amp; iOS — in development
+              </p>
+            </div>
+          </div>
+          <p class="text-xs text-muted-foreground/70 font-light sm:text-right max-w-xs sm:max-w-50">
+            Want it faster? Contribute on GitHub to help speed up the release.
+          </p>
         </div>
       </div>
 

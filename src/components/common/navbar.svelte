@@ -1,125 +1,255 @@
 <script lang="ts">
   import Logo from "$components/Logo.svelte";
-  import Button from "$components/ui/button/button.svelte";
+  import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
+  import { isTauriApp } from "$lib/runtime/isTauri";
   import { cn } from "$lib/utils";
-  import { ChevronRight, Menu, Moon, Sun, X } from "@lucide/svelte";
+  import {
+    ChevronRight,
+    Compass,
+    Github,
+    LayoutGrid,
+    Menu,
+    MonitorDown,
+    Moon,
+    Sun,
+    X,
+  } from "@lucide/svelte";
   import { mode, toggleMode } from "mode-watcher";
+  import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
   import { slide } from "svelte/transition";
 
-  let isMobileOpen = false;
-  let scrollY = 0;
+  let isMobileOpen = $state(false);
+  let scrollY = $state(0);
 
+  let isTauri = $state(false);
+  let mounted = $state(false);
+
+  // Essential Web Navigation Links
   const navLinks = [
-    { name: "Explore", href: "/explore" },
-    { name: "Github", href: config.github ,target: "_blank" },
+    { name: "Tools", href: "/#tools", icon: LayoutGrid },
+    { name: "Explore", href: "/explore", icon: Compass },
+    { name: "Download", href: "/download", icon: MonitorDown },
   ];
+
+  onMount(async () => {
+    isTauri = await isTauriApp();
+    mounted = true;
+  });
 </script>
 
 <svelte:window bind:scrollY />
 
-<header class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-  <div
-    class={cn(
-      "relative w-full max-w-2xl border border-border/40 bg-card/80 backdrop-blur-2xl shadow-xs backdrop-saturate-150 transition-all duration-300 overflow-hidden",
-      isMobileOpen ? "px-4 py-3 rounded-lg" : "px-2 py-2 rounded-full",
-    )}
-  >
-    <div class="flex h-10 items-center justify-between px-2 pr-2 sm:px-4">
-      <a href="/" class="flex items-center gap-2 group">
-        <Logo />
-      </a>
+{#if mounted}
+  {#if isTauri}
+    <header
+      class="flex h-14 w-full items-center justify-between border-b border-border/50 bg-card/80 backdrop-blur-2xl px-4 supports-backdrop-filter:bg-card/60"
+      data-tauri-drag-region
+    >
+      <div class="flex items-center gap-4 pointer-events-none">
+        <a
+          href="/"
+          class="pointer-events-auto flex items-center gap-2 transition-opacity hover:opacity-80"
+        >
+          <Logo />
+        </a>
+      </div>
 
-      <nav
-        class="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2"
-      >
-        {#each navLinks as item}
-          <a
-            href={item.href}
-            target={item.target || "_self"}
-            class="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground"
-          >
-            {item.name}
-          </a>
-        {/each}
-      </nav>
-
-      <div class="flex items-center gap-1.5 sm:gap-2">
+      <div class="flex items-center gap-2">
         <Button
           onclick={toggleMode}
           variant="ghost"
-          size="icon-sm"
-          class="rounded-full relative"
+          size="icon"
+          class="size-8 rounded-full text-muted-foreground hover:text-foreground"
         >
           {#if mode.current === "light"}
-            <Sun
-              size={18}
-              class="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
-            />
+            <Sun size={16} />
           {:else}
-            <Moon
-              size={18}
-              class="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
-            />
+            <Moon size={16} />
           {/if}
           <span class="sr-only">Toggle theme</span>
         </Button>
-
-        <div class="mx-1 h-4 w-px bg-border/60 hidden sm:block"></div>
-
-        <Button
-          href="/#tools"
-          size="sm"
-          variant="dark"
-          class="hidden rounded-full sm:inline-flex"
-        >
-          Get Started
-        </Button>
-
-        <button
-          class="flex size-9 items-center justify-center rounded-full text-foreground hover:bg-secondary/80 md:hidden focus:outline-none"
-          on:click={() => (isMobileOpen = !isMobileOpen)}
-          aria-label="Toggle Menu"
-        >
-          {#if !isMobileOpen}
-            <Menu size={18} />
-          {:else}
-            <X size={18} />
-          {/if}
-        </button>
       </div>
-    </div>
-
-    {#if isMobileOpen}
+    </header>
+  {:else}
+    <header
+      class="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 px-4 transition-all duration-500"
+      class:pt-3={scrollY > 20}
+    >
       <div
-        transition:slide={{ duration: 300, easing: cubicOut, axis: "y" }}
-        class="border-t border-border/40 px-2 pb-4 md:hidden"
+        class={cn(
+          "relative w-full max-w-5xl bg-card/70 backdrop-blur-xl transition-all duration-500 ring-1 ring-border/50",
+          isMobileOpen ? "rounded-2xl shadow-lg bg-card/90" : "rounded-2xl",
+          scrollY > 20 && !isMobileOpen ? "shadow-md bg-card/85" : "shadow-sm",
+        )}
       >
-        <div class="grid gap-1 p-2">
-          {#each navLinks as item}
+        <div class="flex h-14 items-center justify-between px-3 sm:px-4">
+          <div class="flex flex-1 items-center">
             <a
-              href={item.href}
-              target={item.target || "_self"}
-              class="flex items-center justify-between rounded-xl p-3 text-sm font-medium text-muted-foreground hover:bg-secondary/50 hover:text-foreground transition-colors"
-              on:click={() => (isMobileOpen = false)}
+              href="/"
+              class="flex items-center gap-2.5 group ml-2 transition-transform active:scale-95"
             >
-              {item.name}
-              <ChevronRight size={14} class="opacity-50" />
+              <Logo />
             </a>
-          {/each}
+          </div>
+
+          <nav class="hidden md:flex items-center gap-1 justify-center flex-1">
+            {#each navLinks as item}
+              <a
+                href={item.href}
+                class="rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-secondary/80 hover:text-foreground"
+              >
+                {item.name}
+              </a>
+            {/each}
+          </nav>
+
+          <div class="flex flex-1 items-center justify-end gap-1.5 sm:gap-2">
+            <a
+              href={config.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="hidden sm:flex size-9 items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+              title="GitHub Repository"
+            >
+              <Github size={18} />
+            </a>
+
+            <Button
+              onclick={toggleMode}
+              variant="ghost"
+              size="icon"
+              class="size-9 rounded-full hidden sm:inline-flex text-muted-foreground hover:text-foreground"
+            >
+              {#if mode.current === "light"}
+                <Sun
+                  size={18}
+                  class="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+                />
+              {:else}
+                <Moon
+                  size={18}
+                  class="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+                />
+              {/if}
+              <span class="sr-only">Toggle theme</span>
+            </Button>
+
+            <div class="hidden md:block h-4 w-px bg-border mx-1"></div>
+
+            <Button
+              href="/download"
+              variant="dark"
+              size="sm"
+              class="hidden sm:inline-flex rounded-full px-5! font-semibold shadow-sm"
+            >
+              <MonitorDown size={14} />
+              Native App
+            </Button>
+
+            <button
+              class="flex size-10 items-center justify-center rounded-full text-foreground hover:bg-secondary md:hidden focus:outline-none transition-colors"
+              onclick={() => (isMobileOpen = !isMobileOpen)}
+              aria-label="Toggle Menu"
+            >
+              {#if !isMobileOpen}
+                <Menu size={20} />
+              {:else}
+                <X size={20} />
+              {/if}
+            </button>
+          </div>
         </div>
 
-        <div class="mt-2 px-2">
-          <a
-            href="/#tools"
-            class="flex w-full items-center justify-center rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-sm transition-transform active:scale-95"
-            on:click={() => (isMobileOpen = false)}
+        {#if isMobileOpen}
+          <div class="overflow-hidden rounded-b-2xl">
+
+          <div
+            transition:slide={{ duration: 300, easing: cubicOut, axis: "y" }}
+            class="border-t border-border/40 px-4 pb-6 pt-2 md:hidden bg-card/50 backdrop-blur-md"
           >
-            Get Started
-          </a>
-        </div>
+            <nav class="flex flex-col gap-1">
+              {#each navLinks as item}
+                <a
+                  href={item.href}
+                  class="flex items-center rounded-xl px-4 py-3.5 text-sm font-semibold text-muted-foreground hover:bg-secondary/80 hover:text-foreground transition-colors group"
+                  onclick={() => (isMobileOpen = false)}
+                >
+                  {#if item.icon}
+                    <item.icon
+                      size={18}
+                      class="mr-3 text-primary/70 group-hover:text-primary transition-colors"
+                    />
+                  {/if}
+                  <span class="flex-1">{item.name}</span>
+                  <ChevronRight
+                    size={16}
+                    class="opacity-40 group-hover:translate-x-1 transition-transform"
+                  />
+                </a>
+              {/each}
+
+              <div class="my-2 h-px w-full bg-border/40"></div>
+
+              <a
+                href={config.github}
+                target="_blank"
+                class="flex items-center rounded-xl px-4 py-3.5 text-sm font-semibold text-muted-foreground hover:bg-secondary/80 hover:text-foreground transition-colors group"
+                onclick={() => (isMobileOpen = false)}
+              >
+                <Github size={18} class="mr-3" />
+                <span class="flex-1">Open Source</span>
+                <ChevronRight
+                  size={16}
+                  class="opacity-40 group-hover:translate-x-1 transition-transform"
+                />
+              </a>
+            </nav>
+
+            <div
+              class="mt-4 flex items-center justify-between px-4 py-4 border-y border-border/40"
+            >
+              <span class="text-sm font-medium text-foreground"
+                >Theme Preference</span
+              >
+              <Button
+                onclick={toggleMode}
+                variant="secondary"
+                size="sm"
+                class="rounded-full px-4"
+              >
+                {#if mode.current === "light"}
+                  <Sun size={14} class="mr-2" /> Light Mode
+                {:else}
+                  <Moon size={14} class="mr-2" /> Dark Mode
+                {/if}
+              </Button>
+            </div>
+
+            <div class="mt-6 flex flex-col gap-3">
+              <Button
+                href="/download"
+                variant="outline"
+                class="w-full rounded-xl py-5 font-semibold text-foreground border-border/60"
+                onclick={() => (isMobileOpen = false)}
+              >
+                <MonitorDown size={18} class="mr-2 text-muted-foreground" />
+                Download Native App
+              </Button>
+              <Button
+                href="/#tools"
+                variant="dark"
+                class="w-full rounded-xl py-5 font-semibold shadow-md"
+                onclick={() => (isMobileOpen = false)}
+              >
+                Use Web Tools
+              </Button>
+            </div>
+          </div>
+          </div>
+        {/if}
       </div>
-    {/if}
-  </div>
-</header>
+    </header>
+  {/if}
+{/if}

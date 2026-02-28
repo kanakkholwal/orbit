@@ -1,5 +1,4 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
-import { loadPyMuPDF } from '$utils/pymupdf-loader';
 
 export interface ImageFile {
     id: string;
@@ -50,7 +49,7 @@ export class JpgToPdfState extends BaseEngine {
         this.isProcessing = false;
     }
 
-    // --- Processing ---
+    // Processing 
 
     async convert() {
         if (this.files.length === 0) return;
@@ -58,8 +57,10 @@ export class JpgToPdfState extends BaseEngine {
         this.progress = { current: 0, total: this.files.length, text: 'Initializing Engine...' };
 
         try {
-            // 1. Load WASM Engine
-            const mupdf = await loadPyMuPDF();
+            let pymupdf: any = null;
+
+            const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
+            pymupdf = await loadPyMuPDF();
 
             const processedFiles: File[] = [];
 
@@ -86,7 +87,7 @@ export class JpgToPdfState extends BaseEngine {
 
             // FIX: Use the method from your legacy code directly
             // This avoids the "mupdf.Document is not a constructor" error
-            const pdfBlob = await mupdf.imagesToPdf(processedFiles);
+            const pdfBlob = await pymupdf.imagesToPdf(processedFiles);
 
             this.downloadBlob(pdfBlob, 'converted_images.pdf');
 

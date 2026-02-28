@@ -159,6 +159,59 @@
                 <div class="h-10 w-36 bg-muted/50 rounded-full mt-4"></div>
               </div>
             </div>
+          {:else if error}
+            <div
+              in:fade={{ duration: 200 }}
+              class="absolute inset-0 w-full h-100 rounded-3xl border-2 border-destructive/20 bg-destructive/5 backdrop-blur-sm flex flex-col items-center justify-center"
+            >
+              <div class="flex flex-col items-center gap-4 text-center px-6">
+                <div
+                  class="h-20 w-20 rounded-full bg-destructive/10 border border-destructive/20 flex items-center justify-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="size-8 text-destructive"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                </div>
+                <div class="space-y-1">
+                  <p class="text-sm font-semibold text-foreground">
+                    Failed to load tool
+                  </p>
+                  <p class="text-xs text-muted-foreground max-w-xs">
+                    Something went wrong while loading <strong>{tool.title}</strong>.
+                    Please try refreshing the page or come back later.
+                  </p>
+                </div>
+                <div class="flex gap-2 mt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onclick={() => window.location.reload()}
+                    class="rounded-full border-destructive/30 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    Try again
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    href="/explore"
+                    class="rounded-full text-muted-foreground hover:text-foreground"
+                  >
+                    Browse other tools
+                  </Button>
+                </div>
+              </div>
+            </div>
           {:else if ToolComponent}
             <div in:fade={{ duration: 300, delay: 100 }}>
               <ToolComponent />

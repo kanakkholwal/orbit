@@ -1,5 +1,4 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
-import { loadPyMuPDF } from '$utils/pymupdf-loader';
 
 export interface ExtractedImage {
     id: string;
@@ -12,7 +11,7 @@ export interface ExtractedImage {
 export class ExtractImagesState extends BaseEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
     extractedImages = $state<ExtractedImage[]>([]);
-    
+
 
     extractionDone = $state(false);
 
@@ -44,23 +43,26 @@ export class ExtractImagesState extends BaseEngine {
         this.extractedImages.forEach(img => URL.revokeObjectURL(img.url));
     }
 
-    // --- Processing ---
+    //  Processing 
 
     async extract() {
         if (this.files.length === 0) return;
         this.isProcessing = true;
         this.progress.text = 'Loading PDF engine...';
-        
+
         this.cleanupUrls();
         this.extractedImages = [];
 
         try {
-            const pymupdf = await loadPyMuPDF();
+            let pymupdf: any = null;
+
+            const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
+            pymupdf = await loadPyMuPDF();
             let imgCounter = 0;
 
             for (const fileObj of this.files) {
                 this.progress.text = `Extracting images from ${fileObj.file.name}...`;
-                
+
                 const doc = await pymupdf.open(fileObj.file);
                 const pageCount = doc.pageCount;
 
@@ -75,7 +77,7 @@ export class ExtractImagesState extends BaseEngine {
                                 imgCounter++;
                                 const ext = imgData.ext || 'png';
                                 const name = `image_${imgCounter}.${ext}`;
-                                
+
                                 const blob = new Blob([imgData.data]);
                                 const url = URL.createObjectURL(blob);
 

@@ -4,7 +4,7 @@ import {
     PUBLIC_GOOGLE_ANALYTICS_ID
 } from '$env/static/public';
 
-export const config = {
+const config = {
     appName: 'Orbit PDF',
     appVersion: '0.1.0',
     appDescription: `The privacy-first PDF toolkit for professionals. Process documents
@@ -15,3 +15,6 @@ export const config = {
     adsensePublisherId: dev ? "" : (PUBLIC_ADSENSE_PUBLISHER_ID?.trim() || ""),
     googleAnalyticsId: dev ? "" : (PUBLIC_GOOGLE_ANALYTICS_ID?.trim() || ""),
 }
+Object.freeze(config);
+
+export { config };

@@ -8,7 +8,7 @@ export async function isTauriApp(): Promise<boolean> {
 
   try {
     const mod = await import("@tauri-apps/api/core");
-    tauri = await mod.isTauri();
+    tauri = mod.isTauri();
   } catch {
     tauri = false;
   }

@@ -33,6 +33,7 @@ export interface ToolConfig {
     component: () => Promise<{ default: Component }>;
     color: string;
     category?: string;
+    keywords?: string[]
 }
 /*
 * Centralized configuration for all tools in the application.
@@ -148,7 +149,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./crop-pdf/tool.svelte'),
         color: 'text-red-500'
     },
-    "edit-pdf":{
+    "edit-pdf": {
         slug: "edit-pdf",
         title: "Edit PDF",
         description: "Edit PDF content directly. Add text, images, and annotations.",
@@ -157,7 +158,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./edit-pdf/tool.svelte'),
         color: 'text-blue-500'
     },
-    "bookmark-pdf":{
+    "bookmark-pdf": {
         slug: "bookmark-pdf",
         title: "Bookmark PDF",
         description: "Add, edit, and manage bookmarks in your PDF for easy navigation.",
@@ -175,7 +176,7 @@ const tools: Record<string, ToolConfig> = {
     //     component: () => import('./add-toc-pdf/tool.svelte'),
     //     color: 'text-blue-500'
     // },
-    "add-page-no-pdf":{
+    "add-page-no-pdf": {
         slug: "add-page-no-pdf",
         title: "Add Page Numbers",
         description: "Easily add page numbers to your PDF for better readability.",
@@ -184,7 +185,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./add-page-no-pdf/tool.svelte'),
         color: 'text-blue-500'
     },
-    "add-watermark-pdf":{
+    "add-watermark-pdf": {
         slug: "add-watermark-pdf",
         title: "Add Watermark",
         description: "Protect your PDF by adding a custom watermark to your pages.",
@@ -193,7 +194,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./add-watermark-pdf/tool.svelte'),
         color: 'text-blue-500'
     },
-    "delete-pages":{
+    "delete-pages": {
         slug: "delete-pages",
         title: "Delete PDF Pages",
         description: "Remove unwanted pages from your PDF quickly and easily.",
@@ -202,7 +203,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./delete-pages/tool.svelte'),
         color: 'text-pink-500'
     },
-    "header-footer":{
+    "header-footer": {
         slug: "header-footer",
         title: "Add Header & Footer",
         description: "Easily add headers and footers to your PDF for a professional look.",
@@ -211,7 +212,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./header-footer/tool.svelte'),
         color: 'text-blue-500'
     },
-    "background-color":{
+    "background-color": {
         slug: "background-color",
         title: "Change Background Color",
         description: "Customize your PDF by changing the background color of your pages.",
@@ -220,7 +221,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./background-color/tool.svelte'),
         color: 'text-blue-500'
     },
-    "remove-annotations":{
+    "remove-annotations": {
         slug: "remove-annotations",
         title: "Remove Annotations",
         description: "Easily remove annotations from your PDF pages for a cleaner look.",
@@ -229,7 +230,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./remove-annotations/tool.svelte'),
         color: 'text-red-500'
     },
-    "remove-blank-pages":{
+    "remove-blank-pages": {
         slug: "remove-blank-pages",
         title: "Remove Blank Pages",
         description: "Automatically detect and remove blank pages from your PDF.",
@@ -238,7 +239,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./remove-blank-pages/tool.svelte'),
         color: 'text-red-500'
     },
-    "extract-images":{
+    "extract-images": {
         slug: "extract-images",
         title: "Extract Images from PDF",
         description: "Easily extract all images from your PDF into separate files.",
@@ -247,7 +248,7 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./extract-images/tool.svelte'),
         color: 'text-green-500'
     },
-    "txt-to-pdf":{
+    "txt-to-pdf": {
         slug: "txt-to-pdf",
         title: "Text to PDF",
         description: "Convert plain text files into PDF format with customizable options.",
@@ -256,6 +257,15 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./txt-to-pdf/tool.svelte'),
         color: 'text-green-500'
     },
+    "pdf-to-docx": {
+        slug: "pdf-to-docx",
+        title: "PDF to Docx",
+        description: "Convert PDF files to editable Word documents.",
+        category: 'pdf-management',
+        icon: FileText,
+        component: () => import('./pdf-to-docx/tool.svelte'),
+        color: 'text-green-500'
+    }
 };
 
 

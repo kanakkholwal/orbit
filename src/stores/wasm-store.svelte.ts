@@ -8,7 +8,7 @@ interface WasmProviderConfig {
     cpdf?: string;
 }
 
-const STORAGE_KEY = 'bentopdf:wasm-providers';
+const STORAGE_KEY = 'orbit:wasm-providers';
 
 const CDN_DEFAULTS: Record<WasmPackage, string> = {
     pymupdf: 'https://cdn.jsdelivr.net/npm/@bentopdf/pymupdf-wasm@0.11.14/',

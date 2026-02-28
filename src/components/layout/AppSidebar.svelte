@@ -4,17 +4,30 @@
   import Button from "$components/ui/button/button.svelte";
   import * as Sidebar from "$components/ui/sidebar";
   import { config } from "$constants/app";
+  import { isTauriApp } from "$lib/runtime/isTauri";
   import { cn } from "$lib/utils";
   import { toolList } from "$tools/list";
-  import { Chromium, GithubIcon, Moon, Star, Sun } from "@lucide/svelte";
+  import {
+    Chromium,
+    DownloadIcon,
+    GithubIcon,
+    Moon,
+    Star,
+    Sun,
+  } from "@lucide/svelte";
   import { mode, toggleMode } from "mode-watcher";
+  import { onMount } from "svelte";
   // Derived state for reactivity
   let currentPath = $derived(page.url.pathname);
+  let isTauri = $state(false)
 
   // Helper for active state checking
   function isActive(path: string) {
     return currentPath.startsWith(path);
   }
+  onMount(async () => {
+    isTauri = await isTauriApp();
+  });
 </script>
 
 <Sidebar.Root
@@ -49,11 +62,18 @@
     <Sidebar.MenuItem class="flex items-center gap-2 p-0">
       <Button
         variant="dark"
-        href="/explore"
+        href={!isTauri && currentPath.startsWith("/explore")
+          ? "/download"
+          : "/explore"}
         class="flex-auto h-8 justify-start group-data-[state=collapsed]:hidden"
       >
-        <Chromium size={16} />
-        <span>Explore</span>
+        {#if !isTauri && currentPath.startsWith("/explore")}
+          <DownloadIcon size={16} />
+          <span>Download Native App</span>
+        {:else}
+          <Chromium size={16} />
+          <span>Explore</span>
+        {/if}
       </Button>
       <Button
         size="icon"
@@ -109,7 +129,8 @@
   >
     <a
       href={config.github}
-      target="_blank" rel="noopener noreferrer"
+      target="_blank"
+      rel="noopener noreferrer"
       class="relative overflow-hidden rounded-xl border border-border/50 bg-linear-to-br from-card to-muted/50 p-4 shadow-sm"
     >
       <div class="flex items-center gap-3">

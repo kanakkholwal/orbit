@@ -86,6 +86,7 @@ export class CompressState extends PdfEngine {
         try {
             // Lazy load heavy libs only when needed
             let pymupdf: any = null;
+            this.progress.text = 'Loading compression engine...';
             if (this.settings.algorithm === 'condense') {
                 // You'll need to adapt your pymupdf loader to be importable here
                 // For now, I'll stub it or assume you have a utility
@@ -95,6 +96,7 @@ export class CompressState extends PdfEngine {
                 // For Photon, we need PDF.js
                 await this.getPdfJs();
             }
+            this.progress.text = 'Compressing files...';
 
             for (let i = 0; i < this.files.length; i++) {
                 const fileEntry = this.files[i];
