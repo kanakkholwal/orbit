@@ -48,6 +48,7 @@
   <Seo
     title={tool.title + " - Free Online PDF Tool"}
     description={tool.description}
+    keywords={tool?.keywords}
   />
 {/if}
 

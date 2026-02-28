@@ -1,11 +1,12 @@
-<script>
+<script lang="ts">
   import { dev } from "$app/environment";
   import { page } from "$app/state";
   import { config } from "$constants/app";
 
   export let title = config.appName;
   export let description = config.appDescription;
-  export let image = "";
+  export let keywords:string[] = []
+  export let image = config.appDomain + "/og.png";
   export let isBase = false;
 
   let canonicalUrl = dev
@@ -21,7 +22,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
-
+  <meta property="keywords" content={keywords.join(",")}/>
   <meta name="twitter:card" content="summary_large_image" />
   <meta property="twitter:domain" content={config.appDomain} />
   <meta property="twitter:url" content={canonicalUrl} />
