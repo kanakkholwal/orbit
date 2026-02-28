@@ -44,128 +44,142 @@ const tools: Record<string, ToolConfig> = {
     'merge-pdf': {
         slug: 'merge-pdf',
         title: 'Merge PDF',
-        description: 'Combine multiple PDF files into one single document in seconds. Drag and drop to reorder pages.',
+        description: 'Combine multiple PDF files into one single document in seconds. Drag and drop to reorder pages. Free online PDF merger with batch processing support.',
         category: "essentials",
         icon: FileStack,
         component: () => import('./merge-pdf/tool.svelte'),
-        color: 'text-indigo-500'
+        color: 'text-indigo-500',
+        keywords: ['merge pdf', 'combine pdf', 'pdf merger', 'join pdf files', 'pdf combiner', 'merge pdf online', 'free pdf merger', 'pdf concatenate', 'batch merge pdf', 'reorder pdf pages']
     },
     "multi-pdf": {
         slug: "multi-pdf",
         title: "PDF Multi-Tool",
-        description: "Upload, rearrange, rotate, and export multiple PDF pages with ease.",
+        description: "Upload, rearrange, rotate, and export multiple PDF pages with advanced editing capabilities. All-in-one PDF manager for quick page manipulation and batch operations.",
         category: "essentials",
         icon: FileText,
         component: () => import('./multi-pdf/tool.svelte'),
         color: "text-primary",
+        keywords: ['pdf multi-tool', 'pdf page manager', 'rearrange pdf pages', 'rotate pdf', 'export pdf', 'pdf editor', 'batch pdf processing', 'manage pdf pages']
     },
     'split-pdf': {
         slug: 'split-pdf',
         title: 'Split PDF',
-        description: 'Extract pages, split ranges, or divide your PDF into multiple files.',
+        description: 'Extract pages, split ranges, or divide your PDF into multiple files instantly. Free online PDF splitter with advanced range selection and batch processing.',
         category: "essentials",
         icon: Scissors,
         component: () => import('./split-pdf/tool.svelte'),
-        color: 'text-pink-500'
+        color: 'text-pink-500',
+        keywords: ['split pdf', 'extract pdf pages', 'pdf splitter', 'divide pdf', 'separate pdf pages', 'free pdf splitter', 'pdf page extractor', 'crop pdf pages', 'pdf range selector']
     },
     'compress-pdf': {
         slug: 'compress-pdf',
         title: 'Compress PDF',
-        description: 'Reduce file size while maintaining quality. Advanced optimization options.',
+        description: 'Reduce PDF file size while maintaining quality. Advanced optimization options for faster sharing and storage. Free online PDF compressor.',
         category: "essentials",
         icon: Zap,
         component: () => import('./compress-pdf/tool.svelte'),
-        color: 'text-yellow-500'
+        color: 'text-yellow-500',
+        keywords: ['compress pdf', 'reduce pdf size', 'pdf compressor', 'shrink pdf', 'optimize pdf', 'pdf compression', 'free pdf compressor', 'small pdf file', 'pdf file size reducer']
     },
     'img-to-pdf': {
         slug: 'img-to-pdf',
         title: 'Image to PDF',
-        description: 'Convert images to PDF instantly. Supports JPG, PNG, and more.',
+        description: 'Convert images to PDF instantly. Supports JPG, PNG, BMP, TIFF and more formats. Free online image to PDF converter with batch processing.',
         category: 'conversion',
         icon: ImageIcon,
         component: () => import('./img-to-pdf/tool.svelte'),
-        color: 'text-orange-500'
+        color: 'text-orange-500',
+        keywords: ['image to pdf', 'jpg to pdf', 'png to pdf', 'convert image to pdf', 'image converter', 'pdf converter', 'free image to pdf', 'batch image to pdf', 'photo to pdf']
     },
     "pdf-to-img": {
         slug: "pdf-to-img",
         title: "PDF to Image",
-        description: "Convert PDF pages into high-quality images. Supports JPG and PNG formats.",
+        description: "Convert PDF pages into high-quality images in JPG and PNG formats. Free online PDF to image converter with batch processing and custom resolution settings.",
         category: 'conversion',
         icon: FileIcon,
         component: () => import('./pdf-to-img/tool.svelte'),
-        color: 'text-blue-500'
+        color: 'text-blue-500',
+        keywords: ['pdf to image', 'pdf to jpg', 'pdf to png', 'convert pdf to image', 'extract images from pdf', 'pdf image converter', 'free pdf to image', 'pdf page to image', 'export pdf as image']
     },
     'encrypt-pdf': {
         slug: 'encrypt-pdf',
         title: 'Encrypt PDF',
-        description: 'Protect your PDF with a password. Simple and secure encryption.',
+        description: 'Protect your PDF with password encryption. Simple and secure AES encryption with user and owner permissions. Free online PDF encryptor.',
         category: 'security',
         icon: Lock,
         component: () => import('./encrypt-pdf/tool.svelte'),
-        color: 'text-green-500'
+        color: 'text-green-500',
+        keywords: ['encrypt pdf', 'password protect pdf', 'secure pdf', 'pdf encryption', 'protect pdf with password', 'pdf security', 'free pdf encryption', 'aes encryption', 'pdf password protection']
     },
     'decrypt-pdf': {
         slug: 'decrypt-pdf',
         title: 'Decrypt PDF',
-        description: 'Remove password protection from your PDF. Simple and secure decryption.',
+        description: 'Remove password protection from your PDF securely. Unlock encrypted PDFs instantly without software installation. Free online PDF decryption tool.',
         category: 'security',
         icon: Unlock,
         component: () => import('./decrypt-pdf/tool.svelte'),
-        color: 'text-green-500'
+        color: 'text-green-500',
+        keywords: ['decrypt pdf', 'remove password from pdf', 'unlock pdf', 'pdf decryption', 'unprotect pdf', 'remove encryption from pdf', 'free pdf decryptor', 'unlock encrypted pdf', 'open password protected pdf']
     },
     'rotate-pdf': {
         slug: 'rotate-pdf',
         title: 'Rotate PDF',
-        description: 'Easily rotate PDF pages to the correct orientation. Supports batch processing.',
+        description: 'Easily rotate PDF pages to the correct orientation. Supports 90, 180, and 270-degree rotations with batch processing capabilities.',
         category: 'pdf-management',
         icon: RotateCw,
         component: () => import('./rotate-pdf/tool.svelte'),
-        color: 'text-purple-500'
+        color: 'text-purple-500',
+        keywords: ['rotate pdf', 'rotate pdf pages', 'pdf rotation', 'flip pdf', 'turn pdf pages', 'rotate pdf online', 'free pdf rotator', 'batch rotate pdf', 'pdf page rotation']
     },
     'organize-pdf': {
         slug: 'organize-pdf',
         title: 'Organize PDF',
-        description: 'Easily organize PDF pages. Supports batch processing.',
+        description: 'Easily organize and rearrange PDF pages with drag-and-drop interface. Reorder pages, delete sections, and create custom page arrangements with batch support.',
         category: 'pdf-management',
         icon: MoveIcon,
         component: () => import('./organize-pdf/tool.svelte'),
-        color: 'text-purple-500'
+        color: 'text-purple-500',
+        keywords: ['organize pdf', 'rearrange pdf pages', 'reorder pdf', 'pdf page organizer', 'arrange pdf pages', 'pdf manager', 'manage pdf pages', 'drag and drop pdf']
     },
     "extract-pages": {
         slug: "extract-pages",
         title: "Extract PDF Pages",
-        description: "Select and extract specific pages from your PDF into a new file.",
+        description: "Select and extract specific pages from your PDF into a new file. Advanced page range selection tool for precise document extraction and organization.",
         category: 'pdf-management',
         icon: Scissors,
         component: () => import('./extract-pages/tool.svelte'),
-        color: 'text-pink-500'
+        color: 'text-pink-500',
+        keywords: ['extract pdf pages', 'extract pages from pdf', 'pdf page extractor', 'select pdf pages', 'extract specific pages', 'save pdf pages', 'pdf extractor tool', 'page extraction']
     },
     "crop-pdf": {
         slug: "crop-pdf",
         title: "Crop PDF",
-        description: "Crop PDF pages to remove unwanted areas or adjust layout.",
+        description: "Crop PDF pages to remove unwanted areas or adjust layout precisely. Advanced cropping tool with visual preview and batch processing support.",
         category: 'pdf-management',
         icon: CropIcon,
         component: () => import('./crop-pdf/tool.svelte'),
-        color: 'text-red-500'
+        color: 'text-red-500',
+        keywords: ['crop pdf', 'crop pdf pages', 'pdf cropping tool', 'trim pdf', 'remove margins from pdf', 'adjust pdf layout', 'pdf crop editor', 'page cropper']
     },
     "edit-pdf": {
         slug: "edit-pdf",
         title: "Edit PDF",
-        description: "Edit PDF content directly. Add text, images, and annotations.",
+        description: "Edit PDF content directly with advanced tools. Add and edit text, insert images, and manage annotations without external software.",
         category: 'pdf-management',
         icon: Edit3Icon,
         component: () => import('./edit-pdf/tool.svelte'),
-        color: 'text-blue-500'
+        color: 'text-blue-500',
+        keywords: ['edit pdf', 'pdf editor', 'edit pdf online', 'add text to pdf', 'pdf annotation', 'modify pdf', 'free pdf editor', 'edit pdf text', 'pdf markup tool']
     },
     "bookmark-pdf": {
         slug: "bookmark-pdf",
         title: "Bookmark PDF",
-        description: "Add, edit, and manage bookmarks in your PDF for easy navigation.",
+        description: "Add, edit, and manage bookmarks in your PDF for easy navigation. Create interactive table of contents with customizable bookmark hierarchy.",
         category: 'pdf-management',
         icon: Bookmark,
         component: () => import('./bookmark-pdf/tool.svelte'),
-        color: 'text-blue-500'
+        color: 'text-blue-500',
+        keywords: ['bookmark pdf', 'add bookmarks to pdf', 'pdf bookmarking tool', 'pdf navigation', 'create pdf bookmarks', 'edit bookmarks', 'pdf outlining', 'interactive pdf']
     },
     // "add-toc-pdf":{
     //     slug: "add-toc-pdf",
@@ -179,92 +193,102 @@ const tools: Record<string, ToolConfig> = {
     "add-page-no-pdf": {
         slug: "add-page-no-pdf",
         title: "Add Page Numbers",
-        description: "Easily add page numbers to your PDF for better readability.",
+        description: "Easily add page numbers to your PDF for better readability and organization. Customize font, size, color, and position with flexible placement options.",
         category: 'pdf-management',
         icon: Text,
         component: () => import('./add-page-no-pdf/tool.svelte'),
-        color: 'text-blue-500'
+        color: 'text-blue-500',
+        keywords: ['add page numbers to pdf', 'page numbering', 'number pdf pages', 'pdf pagination', 'add numbering to pdf', 'page counter', 'pdf page numbers']
     },
     "add-watermark-pdf": {
         slug: "add-watermark-pdf",
         title: "Add Watermark",
-        description: "Protect your PDF by adding a custom watermark to your pages.",
+        description: "Protect your PDF by adding custom text or image watermarks to pages. Prevent unauthorized copying with visible or invisible watermark options.",
         category: 'pdf-management',
         icon: Highlighter,
         component: () => import('./add-watermark-pdf/tool.svelte'),
-        color: 'text-blue-500'
+        color: 'text-blue-500',
+        keywords: ['add watermark to pdf', 'pdf watermark', 'watermark tool', 'protect pdf', 'add text watermark', 'image watermark', 'copyright protection', 'branded watermark']
     },
     "delete-pages": {
         slug: "delete-pages",
         title: "Delete PDF Pages",
-        description: "Remove unwanted pages from your PDF quickly and easily.",
+        description: "Remove unwanted pages from your PDF quickly and easily with advanced selection options. Permanently delete specific page ranges or individual pages.",
         category: 'pdf-management',
         icon: FileMinus2,
         component: () => import('./delete-pages/tool.svelte'),
-        color: 'text-pink-500'
+        color: 'text-pink-500',
+        keywords: ['delete pdf pages', 'remove pages from pdf', 'pdf page deletion', 'eliminate pages', 'remove unwanted pages', 'delete from pdf', 'page removal tool']
     },
     "header-footer": {
         slug: "header-footer",
         title: "Add Header & Footer",
-        description: "Easily add headers and footers to your PDF for a professional look.",
+        description: "Easily add headers and footers to your PDF for a professional look. Customize fonts, sizes, colors, and positions with automatic page numbering options.",
         category: 'pdf-management',
         icon: LayoutTemplate,
         component: () => import('./header-footer/tool.svelte'),
-        color: 'text-blue-500'
+        color: 'text-blue-500',
+        keywords: ['add header footer to pdf', 'pdf headers', 'pdf footers', 'header footer tool', 'professional pdf layout', 'add text to header', 'page header', 'document footer']
     },
     "background-color": {
         slug: "background-color",
         title: "Change Background Color",
-        description: "Customize your PDF by changing the background color of your pages.",
+        description: "Customize your PDF by changing the background color of your pages. Apply solid colors or gradients with flexible customization options.",
         category: 'pdf-management',
         icon: PaintBucket,
         component: () => import('./background-color/tool.svelte'),
-        color: 'text-blue-500'
+        color: 'text-blue-500',
+        keywords: ['change pdf background color', 'pdf background', 'customize pdf appearance', 'background color tool', 'pdf styling', 'color pdf pages', 'document customization']
     },
     "remove-annotations": {
         slug: "remove-annotations",
         title: "Remove Annotations",
-        description: "Easily remove annotations from your PDF pages for a cleaner look.",
+        description: "Easily remove annotations from your PDF pages for a cleaner appearance. Delete comments, highlights, stamps, and markup objects selectively.",
         category: 'pdf-management',
         icon: Trash2,
         component: () => import('./remove-annotations/tool.svelte'),
-        color: 'text-red-500'
+        color: 'text-red-500',
+        keywords: ['remove annotations from pdf', 'delete pdf comments', 'remove highlights from pdf', 'strip annotations', 'clean pdf', 'remove markup from pdf', 'annotation removal tool']
     },
     "remove-blank-pages": {
         slug: "remove-blank-pages",
         title: "Remove Blank Pages",
-        description: "Automatically detect and remove blank pages from your PDF.",
+        description: "Automatically detect and remove blank pages from your PDF with intelligent algorithms. Reduce file size and improve document quality efficiently.",
         category: 'pdf-management',
         icon: BookMinus,
         component: () => import('./remove-blank-pages/tool.svelte'),
-        color: 'text-red-500'
+        color: 'text-red-500',
+        keywords: ['remove blank pages from pdf', 'delete blank pages', 'detect blank pages', 'clean pdf document', 'remove empty pages', 'pdf cleaning tool', 'automated page removal']
     },
     "extract-images": {
         slug: "extract-images",
         title: "Extract Images from PDF",
-        description: "Easily extract all images from your PDF into separate files.",
+        description: "Easily extract all images from your PDF into separate files with high quality. Batch extraction with support for multiple image formats.",
         category: 'pdf-management',
         icon: ImageIcon,
         component: () => import('./extract-images/tool.svelte'),
-        color: 'text-green-500'
+        color: 'text-green-500',
+        keywords: ['extract images from pdf', 'save images from pdf', 'pdf image extractor', 'download images from pdf', 'batch image extraction', 'image recovery tool', 'extract graphics from pdf']
     },
     "txt-to-pdf": {
         slug: "txt-to-pdf",
         title: "Text to PDF",
-        description: "Convert plain text files into PDF format with customizable options.",
+        description: "Convert plain text files into PDF format with customizable options. Preserve formatting with advanced typography and layout controls.",
         category: 'pdf-management',
         icon: FileText,
         component: () => import('./txt-to-pdf/tool.svelte'),
-        color: 'text-green-500'
+        color: 'text-green-500',
+        keywords: ['text to pdf', 'convert text to pdf', 'txt to pdf converter', 'text file to pdf', 'create pdf from text', 'free text converter', 'document conversion']
     },
     "pdf-to-docx": {
         slug: "pdf-to-docx",
         title: "PDF to Docx",
-        description: "Convert PDF files to editable Word documents.",
+        description: "Convert PDF files to editable Word documents seamlessly. Preserve formatting, fonts, and layout with intelligent conversion technology.",
         category: 'pdf-management',
         icon: FileText,
         component: () => import('./pdf-to-docx/tool.svelte'),
-        color: 'text-green-500'
+        color: 'text-green-500',
+        keywords: ['pdf to docx', 'pdf to word', 'convert pdf to word', 'pdf to document', 'editable word document', 'pdf conversion', 'doc converter', 'word document creator']
     }
 };
 
