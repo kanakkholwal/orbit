@@ -1,6 +1,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
+import { toast } from 'svelte-sonner';
 
 export interface ExtractStateData {
     file: File | null;
@@ -21,7 +22,7 @@ export class ExtractPagesState extends PdfEngine {
 
     private pdfDoc: PDFDocument | null = null;
 
-    // --- Actions ---
+// Actions
 
     async loadFile(file: File) {
         if (!file) return;
@@ -36,7 +37,7 @@ export class ExtractPagesState extends PdfEngine {
             this.state.pageCount = this.pdfDoc.getPageCount();
         } catch (e) {
             console.error(e);
-            alert("Failed to load PDF.");
+            toast.error("Failed to load PDF.");
         } finally {
             this.state.isProcessing = false;
         }
@@ -49,7 +50,7 @@ export class ExtractPagesState extends PdfEngine {
         this.pdfDoc = null;
     }
 
-    // --- Processing ---
+// Processing
 
     async extract() {
         if (!this.state.file || !this.pdfDoc) return;
@@ -57,7 +58,7 @@ export class ExtractPagesState extends PdfEngine {
         const indices = this.parsePageRanges(this.state.pagesToExtract, this.state.pageCount);
         
         if (indices.length === 0) {
-            alert("Please enter valid page numbers.");
+            toast.error("Please enter valid page numbers.");
             return;
         }
 
@@ -86,7 +87,7 @@ export class ExtractPagesState extends PdfEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Extraction failed: ${e.message}`);
+            toast.error(`Extraction failed: ${e.message}`);
         } finally {
             this.state.isProcessing = false;
         }

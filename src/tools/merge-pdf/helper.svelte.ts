@@ -35,7 +35,7 @@ export class MergeState extends PdfEngine {
     private pdfJsDocs: Map<string, PDFJS.PDFDocumentProxy> = new Map();
 
 
-    // --- Actions ---
+Actions
 
     async addFiles(newFiles: File[]) {
         if (!newFiles.length) return;
@@ -100,7 +100,7 @@ export class MergeState extends PdfEngine {
         this.files = reordered;
     }
 
-    // --- Rendering for Thumbnails ---
+Rendering for Thumbnails
     async renderThumbnail(canvas: HTMLCanvasElement, fileId: string, pageIndex: number) {
         const doc = this.pdfJsDocs.get(fileId);
         if (!doc) return;
@@ -108,7 +108,7 @@ export class MergeState extends PdfEngine {
         await this.renderPageToCanvas(canvas, doc, pageIndex);
     }
 
-    // --- Merge Logic ---
+Merge Logic
 
     async mergeAndDownload() {
         if (this.files.length === 0) return;
@@ -117,7 +117,7 @@ export class MergeState extends PdfEngine {
             const mergedPdf = await PDFDocument.create();
 
             if (this.mode === 'file') {
-                // --- FILE MODE MERGE ---
+FILE MODE MERGE
                 for (const file of this.files) {
                     if (!file.pdfDoc) continue;
 

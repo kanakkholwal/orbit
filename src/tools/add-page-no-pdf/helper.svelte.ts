@@ -1,5 +1,6 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { toast } from 'svelte-sonner';
 
 export type Position = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 export type NumberFormat = 'n' | 'n of x';
@@ -28,7 +29,7 @@ export class PageNumberState extends PdfEngine {
         startFromPage: 1
     });
 
-    // --- Actions ---
+// Actions
 
     async loadFile(file: File) {
         if (!file) return;
@@ -44,7 +45,7 @@ export class PageNumberState extends PdfEngine {
             this.state.pageCount = pdfDoc.getPageCount();
         } catch (e) {
             console.error(e);
-            alert("Failed to load PDF.");
+            toast.error("Failed to load PDF.");
         } finally {
             this.isProcessing = false;
         }
@@ -55,7 +56,7 @@ export class PageNumberState extends PdfEngine {
         this.state.pageCount = 0;
     }
 
-    // --- Processing ---
+    // Processing
 
     async process() {
         if (!this.state.file) return;

@@ -1,4 +1,5 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
+import { toast } from 'svelte-sonner';
 
 export interface ImageFile {
     id: string;
@@ -22,7 +23,7 @@ export class JpgToPdfState extends BaseEngine {
     isProcessing = $state(false);
     progress = $state({ current: 0, total: 0, text: '' });
 
-    // --- Actions ---
+// Actions
 
     addFiles(newFiles: File[]) {
         const entries = newFiles.map(f => ({
@@ -93,13 +94,13 @@ export class JpgToPdfState extends BaseEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Conversion failed: ${e.message}`);
+            toast.error(`Conversion failed: ${e.message}`);
         } finally {
             this.isProcessing = false;
         }
     }
 
-    // --- Helpers ---
+// Helpers
 
     private async handleHeic(file: File): Promise<File> {
         if (file.name.match(/\.(heic|heif)$/i) || file.type === 'image/heic') {

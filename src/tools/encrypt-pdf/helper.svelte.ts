@@ -3,6 +3,7 @@ import { BaseEngine } from '$lib/base-engine.svelte';
 import {
     initializeQpdf
 } from '$utils/helper';
+import { toast } from 'svelte-sonner';
 
 export interface EncryptState {
     file: File | null;
@@ -22,7 +23,7 @@ export class EncryptPdfState extends BaseEngine {
         progress: ''
     });
 
-    // --- Actions ---
+// Actions
 
     setFile(file: File) {
         this.state.file = file;
@@ -34,12 +35,12 @@ export class EncryptPdfState extends BaseEngine {
         this.state.ownerPassword = '';
     }
 
-    // --- Processing Logic ---
+// Processing Logic
 
     async encrypt() {
         if (!this.state.file) return;
         if (!this.state.userPassword) {
-            alert("Please enter a User Password to protect the PDF.");
+            toast.error("Please enter a User Password to protect the PDF.");
             return;
         }
 
@@ -105,7 +106,7 @@ export class EncryptPdfState extends BaseEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Encryption failed: ${e.message}`);
+            toast.error(`Encryption failed: ${e.message}`);
         } finally {
             this.state.isProcessing = false;
         }

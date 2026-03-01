@@ -1,5 +1,6 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import JSZip from 'jszip';
+import { toast } from 'svelte-sonner';
 
 export type ImageFormat = 'jpeg' | 'png' | 'webp';
 
@@ -23,7 +24,7 @@ export class PdfToJpgState extends PdfEngine {
         progress: ''
     });
 
-    // --- Actions ---
+// Actions
 
     async loadFile(file: File) {
         if (!file) return;
@@ -41,7 +42,7 @@ export class PdfToJpgState extends PdfEngine {
             this.state.pageCount = pdf.numPages;
         } catch (e) {
             console.error(e);
-            alert("Failed to load PDF. It might be corrupted.");
+            toast.error("Failed to load PDF. It might be corrupted.");
         } finally {
             this.state.isProcessing = false;
         }
@@ -53,7 +54,7 @@ export class PdfToJpgState extends PdfEngine {
         this.state.isProcessing = false;
     }
 
-    // --- Processing Logic ---
+// Processing Logic
 
     async convert() {
         if (!this.state.file) return;
@@ -109,7 +110,7 @@ export class PdfToJpgState extends PdfEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Conversion failed: ${e.message}`);
+            toast.error(`Conversion failed: ${e.message}`);
         } finally {
             this.state.isProcessing = false;
         }

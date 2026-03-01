@@ -65,7 +65,7 @@ export class SplitState extends PdfEngine {
     this.selectedPages = new Set(this.selectedPages); // Reactivity trigger
   }
 
-  // --- Split Logic ---
+Split Logic
 
   async processSplit() {
     if (!this.pdfDoc || !this.file) return;

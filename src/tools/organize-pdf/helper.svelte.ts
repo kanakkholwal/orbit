@@ -23,7 +23,7 @@ export class OrganizePdfState extends PdfEngine {
     private pdfLibDoc: PDFDocument | null = null;
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
-    // --- Actions ---
+Actions
 
     async loadFile(file: File) {
         if (!file) return;
@@ -62,7 +62,7 @@ export class OrganizePdfState extends PdfEngine {
         this.pdfJsDoc = null;
     }
 
-    // --- Page Manipulation ---
+Page Manipulation
 
     movePage(fromIndex: number, toIndex: number) {
         const item = this.state.pages[fromIndex];
@@ -115,14 +115,14 @@ export class OrganizePdfState extends PdfEngine {
         }));
     }
 
-    // --- Rendering ---
+Rendering
 
     async renderThumbnail(canvas: HTMLCanvasElement, originalIndex: number) {
         if (!this.pdfJsDoc) return;
         await this.renderPageToCanvas(canvas, this.pdfJsDoc, originalIndex);
     }
 
-    // --- Saving ---
+Saving
 
     async save() {
         if (!this.state.file || !this.pdfLibDoc) return;

@@ -2,6 +2,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, degrees } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { toast } from 'svelte-sonner';
 
 export interface RotatePageData {
     pageIndex: number;
@@ -49,7 +50,7 @@ export class RotatePdfState extends PdfEngine {
 
         } catch (e) {
             console.error(e);
-            alert("Failed to load PDF.");
+            toast.error("Failed to load PDF.");
         } finally {
             this.state.isProcessing = false;
         }
@@ -104,7 +105,7 @@ export class RotatePdfState extends PdfEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Save failed: ${e.message}`);
+            toast.error(`Save failed: ${e.message}`);
         } finally {
             this.state.isProcessing = false;
         }

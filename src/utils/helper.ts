@@ -166,7 +166,7 @@ export async function initializeQpdf() {
   showLoader('Initializing PDF engine...');
   try {
     qpdfInstance = await createModule({
-      locateFile: () => "/qpdf.wasm",
+      locateFile: () => "/wasm/qpdf.wasm",
     });
   } catch (error) {
     console.error('Failed to initialize qpdf-wasm:', error);

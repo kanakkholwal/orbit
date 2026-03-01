@@ -23,6 +23,7 @@ const config = {
 			$constants: 'src/constants',
 			$tools: 'src/tools',
 			$stores: 'src/stores',
+			$utils: 'src/utils',
 			"@": "./src/@",
 		}
 	}

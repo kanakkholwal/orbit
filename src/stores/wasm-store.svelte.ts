@@ -67,7 +67,7 @@ export class WasmStore {
         }
     }
 
-    // --- Configuration Methods ---
+// Configuration Methods
 
     getUrl(packageName: WasmPackage): string | undefined {
         return this.config[packageName] || ENV_DEFAULTS[packageName];
@@ -96,7 +96,7 @@ export class WasmStore {
         if (browser) localStorage.removeItem(STORAGE_KEY);
     }
 
-    // --- Validation Logic ---
+// Validation Logic
 
     async validateUrl(packageName: WasmPackage, url?: string): Promise<{ valid: boolean; error?: string }> {
         const testUrl = url || this.config[packageName];
@@ -140,7 +140,7 @@ export class WasmStore {
         }
     }
 
-    // --- Dialog Management ---
+// Dialog Management
 
     /**
      * Checks if a package is available. If not, opens the dialog.
@@ -164,7 +164,7 @@ export class WasmStore {
         this.dialogState.isOpen = false;
     }
 
-    // --- Metadata Helpers ---
+// Metadata Helpers
 
     getDisplayName(packageName: WasmPackage): string {
         const names: Record<WasmPackage, string> = {

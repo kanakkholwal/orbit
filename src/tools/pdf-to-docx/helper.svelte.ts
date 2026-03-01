@@ -1,4 +1,5 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
+import { toast } from 'svelte-sonner';
 
 export class PdfToWordState extends BaseEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
@@ -11,7 +12,7 @@ export class PdfToWordState extends BaseEngine {
         );
 
         if (validFiles.length < newFiles.length) {
-            alert('Some files were skipped. Only PDF files are allowed.');
+            toast.error('Some files were skipped. Only PDF files are allowed.');
         }
 
         for (const f of validFiles) {
@@ -29,7 +30,7 @@ export class PdfToWordState extends BaseEngine {
         this.progress.text = '';
     }
 
-    // --- Processing ---
+// Processing
 
     async process() {
         if (this.files.length === 0) return;
@@ -81,7 +82,7 @@ export class PdfToWordState extends BaseEngine {
 
         } catch (e: any) {
             console.error('[PDF to Word] Error:', e);
-            alert(`An error occurred during conversion: ${e.message}`);
+            toast.error(`An error occurred during conversion: ${e.message}`);
         } finally {
             this.isProcessing = false;
         }

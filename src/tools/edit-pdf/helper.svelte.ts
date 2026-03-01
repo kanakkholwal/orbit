@@ -1,4 +1,6 @@
+import { BaseEngine } from '$lib/base-engine.svelte';
 import { formatBytes } from '$utils/helper';
+import { toast } from 'svelte-sonner';
 
 export interface EditorFile {
   id: string;
@@ -15,7 +17,7 @@ export interface EditPdfStateData {
   isLoading: boolean;
 }
 
-export class EditPdfState {
+export class EditPdfState extends BaseEngine {
   state = $state<EditPdfStateData>({
     files: [],
     pendingFiles: [],
@@ -47,7 +49,7 @@ export class EditPdfState {
         type: 'container',
         target: container,
         worker: true,
-        wasmUrl: '/pdfium.wasm', // Ensure this file is in /static folder
+        wasmUrl: '/wasm/pdfium.wasm', // Ensure this file is in /static folder
         documentManager: { maxDocuments: 10 },
         tabBar: 'always',
       });
@@ -135,15 +137,10 @@ export class EditPdfState {
       const activeFile = this.state.files.find(f => f.id === this.state.activeDocId);
       const name = activeFile ? `edited_${activeFile.name}` : 'edited_document.pdf';
 
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+     this.downloadBlob(blob, name);
     } catch (e) {
       console.error(e);
-      alert("Failed to download PDF.");
+      toast.error("Failed to download PDF.");
     } finally {
       this.state.isLoading = false;
     }

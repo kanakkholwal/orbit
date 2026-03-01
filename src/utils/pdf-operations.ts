@@ -53,10 +53,10 @@ export async function rotatePdfUniform(
             const newHeight = width * absSin + height * absCos;
             const newPage = newPdfDoc.addPage([newWidth, newHeight]);
             const x =
-                newWidth / 2 -
+                newWidth / 2
                 ((width / 2) * Math.cos(angleRad) - (height / 2) * Math.sin(angleRad));
             const y =
-                newHeight / 2 -
+                newHeight / 2
                 ((width / 2) * Math.sin(angleRad) + (height / 2) * Math.cos(angleRad));
             newPage.drawPage(embeddedPage, {
                 x,
@@ -99,10 +99,10 @@ export async function rotatePdfPages(
             const newHeight = width * absSin + height * absCos;
             const newPage = newPdfDoc.addPage([newWidth, newHeight]);
             const x =
-                newWidth / 2 -
+                newWidth / 2
                 ((width / 2) * Math.cos(angleRad) - (height / 2) * Math.sin(angleRad));
             const y =
-                newHeight / 2 -
+                newHeight / 2
                 ((width / 2) * Math.sin(angleRad) + (height / 2) * Math.cos(angleRad));
             newPage.drawPage(embeddedPage, {
                 x,

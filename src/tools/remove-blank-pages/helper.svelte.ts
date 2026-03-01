@@ -1,6 +1,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { toast } from 'svelte-sonner';
 
 export interface BlankPageStateData {
     file: File | null;
@@ -30,7 +31,7 @@ export class RemoveBlankPagesState extends PdfEngine {
     private pdfLibDoc: PDFDocument | null = null;
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
-    // --- Actions ---
+// Actions
 
     async loadFile(files: File[]) {
         if (!files || files.length === 0) return;
@@ -57,7 +58,7 @@ export class RemoveBlankPagesState extends PdfEngine {
 
         } catch (e) {
             console.error("Error loading PDF", e);
-            alert("Failed to load the PDF file.");
+            toast.error("Failed to load the PDF file.");
         } finally {
             this.isProcessing = false;
         }
@@ -80,7 +81,7 @@ export class RemoveBlankPagesState extends PdfEngine {
         }
     }
 
-    // --- Detection ---
+// Detection
 
     async detectBlankPages() {
         if (!this.pdfJsDoc) return;
@@ -114,7 +115,7 @@ export class RemoveBlankPagesState extends PdfEngine {
 
         } catch (e) {
             console.error(e);
-            alert("Error during blank page detection.");
+            toast.error("Error during blank page detection.");
         } finally {
             this.state.isDetecting = false;
         }
@@ -153,14 +154,14 @@ export class RemoveBlankPagesState extends PdfEngine {
         return avgBrightness > threshold;
     }
 
-    // --- Rendering for UI Thumbnails ---
+// Rendering for UI Thumbnails
     async renderThumbnail(canvas: HTMLCanvasElement, pageIndex: number) {
         if (!this.pdfJsDoc) return;
         await this.renderPageToCanvas(canvas, this.pdfJsDoc, pageIndex, 0.3); // Low scale for thumbnail
     }
 
 
-    // --- Processing ---
+// Processing
 
     async process() {
         if (!this.pdfLibDoc || !this.state.file) return;
@@ -170,7 +171,7 @@ export class RemoveBlankPagesState extends PdfEngine {
         );
 
         if (pagesToRemove.size === 0) {
-            alert("No pages selected for removal.");
+            toast.error("No pages selected for removal.");
             return;
         }
 
@@ -196,7 +197,7 @@ export class RemoveBlankPagesState extends PdfEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(e.message || "Could not remove pages.");
+            toast.error(e.message || "Could not remove pages.");
         } finally {
             this.isProcessing = false;
             // Optionally reset detection state after successful removal

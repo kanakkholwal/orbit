@@ -3,6 +3,7 @@
   import { UploadCloud } from "@lucide/svelte";
   import { fade } from "svelte/transition";
   import { buttonVariants } from "./button";
+  import { toast } from "svelte-sonner";
   interface Props {
     accept?: string;
     multiple?: boolean;
@@ -82,7 +83,7 @@
     const validFiles = newFiles.filter((file) => {
       // 1. Check Size
       if (file.size > maxSize) {
-        alert(`File ${file.name} is too large.`);
+        toast.error(`File ${file.name} is too large.`);
         return false;
       }
 

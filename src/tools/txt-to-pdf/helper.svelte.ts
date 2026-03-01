@@ -19,7 +19,7 @@ export class TxtToPdfState extends BaseEngine {
   // Derived value to auto-detect text direction based on content
   textDirection = $derived(RTL_PATTERN.test(this.textContent) ? 'rtl' : 'ltr') as 'rtl' | 'ltr';
 
-  // --- Actions ---
+// Actions
 
   addFiles(newFiles: File[]) {
     const validFiles = newFiles.filter(
@@ -27,7 +27,7 @@ export class TxtToPdfState extends BaseEngine {
     );
 
     if (validFiles.length < newFiles.length) {
-      alert('Some files were skipped. Only text (.txt) files are allowed.');
+      toast.error('Some files were skipped. Only text (.txt) files are allowed.');
     }
 
     for (const f of validFiles) {

@@ -1,4 +1,5 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
+import { toast } from 'svelte-sonner';
 
 export interface ExtractedImage {
     id: string;
@@ -99,17 +100,17 @@ export class ExtractImagesState extends BaseEngine {
 
             this.extractionDone = true;
             if (this.extractedImages.length === 0) {
-                alert("No embedded images were found in the selected PDF(s).");
+                toast.error("No embedded images were found in the selected PDF(s).");
             }
         } catch (e: any) {
             console.error(e);
-            alert(`An error occurred during extraction: ${e.message}`);
+            toast.error(`An error occurred during extraction: ${e.message}`);
         } finally {
             this.isProcessing = false;
         }
     }
 
-    // --- Downloading ---
+// Downloading
 
     async downloadAll() {
         if (this.extractedImages.length === 0) return;
@@ -129,7 +130,7 @@ export class ExtractImagesState extends BaseEngine {
             this.downloadBlob(zipBlob, 'extracted-images.zip');
         } catch (e) {
             console.error(e);
-            alert("Failed to create ZIP archive.");
+            toast.error("Failed to create ZIP archive.");
         } finally {
             this.isProcessing = false;
         }

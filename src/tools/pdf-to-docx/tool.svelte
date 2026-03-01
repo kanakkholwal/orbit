@@ -34,7 +34,7 @@
       </h2>
       <div class="flex items-center gap-2">
         <Button variant="ghost" onclick={() => uploadArea.click()}>
-          <Plus size={16} /> Add Images
+          <Plus size={16} /> Add More
         </Button>
         <Button variant="ghost" onclick={() => store.reset()}>
           <Trash2 size={16} /> Clear All

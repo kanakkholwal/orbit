@@ -1,6 +1,7 @@
 
 import { BaseEngine } from '$lib/base-engine.svelte';
 import { initializeQpdf } from '$utils/helper';
+import { toast } from 'svelte-sonner';
 
 export interface DecryptState {
     file: File | null;
@@ -18,7 +19,7 @@ export class DecryptPdfState extends BaseEngine {
         progress: ''
     });
 
-    // --- Actions ---
+// Actions
 
     setFile(file: File) {
         this.state.file = file;
@@ -29,12 +30,12 @@ export class DecryptPdfState extends BaseEngine {
         this.state.password = '';
     }
 
-    // --- Processing Logic ---
+// Processing Logic
 
     async decrypt() {
         if (!this.state.file) return;
         if (!this.state.password) {
-            alert("Please enter the PDF password.");
+            toast.error("Please enter the PDF password.");
             return;
         }
 
@@ -103,7 +104,7 @@ export class DecryptPdfState extends BaseEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Decryption Failed: ${e.message}`);
+            toast.error(`Decryption Failed: ${e.message}`);
         } finally {
             this.state.isProcessing = false;
         }

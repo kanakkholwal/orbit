@@ -1,6 +1,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { toast } from 'svelte-sonner';
 
 export interface CropData {
     x: number; // Percentage (0-1)
@@ -31,7 +32,7 @@ export class CropPdfState extends PdfEngine {
     private pdfJsDoc: PDFDocumentProxy | null = null;
     private fileBuffer: ArrayBuffer | null = null;
 
-    // --- Actions ---
+// Actions
 
     async loadFile(file: File) {
         if (!file) return;
@@ -51,7 +52,7 @@ export class CropPdfState extends PdfEngine {
 
         } catch (e) {
             console.error(e);
-            alert("Failed to load PDF.");
+            toast.error("Failed to load PDF.");
         } finally {
             this.isProcessing = false;
         }
@@ -74,7 +75,7 @@ export class CropPdfState extends PdfEngine {
         this.state.pageCrops[pageNum] = crop;
     }
 
-    // --- Rendering for Cropper ---
+// Rendering for Cropper
 
     async renderPageForCropper(canvas: HTMLCanvasElement, pageNum: number) {
         if (!this.pdfJsDoc) return;
@@ -82,7 +83,7 @@ export class CropPdfState extends PdfEngine {
         await this.renderPageToCanvas(canvas, this.pdfJsDoc, pageNum - 1, 1000); 
     }
 
-    // --- Processing ---
+// Processing
 
     async crop() {
         if (!this.state.file || !this.pdfJsDoc || !this.fileBuffer) return;
@@ -93,7 +94,7 @@ export class CropPdfState extends PdfEngine {
         if (this.state.applyToAll) {
             const currentCrop = this.state.pageCrops[this.state.currentPage];
             if (!currentCrop) {
-                alert("Please define a crop area on the current page first.");
+                toast.error("Please define a crop area on the current page first.");
                 return;
             }
             for (let i = 1; i <= this.state.pageCount; i++) {
@@ -104,7 +105,7 @@ export class CropPdfState extends PdfEngine {
         }
 
         if (Object.keys(finalCrops).length === 0) {
-            alert("No pages have been cropped.");
+            toast.error("No pages have been cropped.");
             return;
         }
 
@@ -125,7 +126,7 @@ export class CropPdfState extends PdfEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Crop failed: ${e.message}`);
+            toast.error(`Crop failed: ${e.message}`);
         } finally {
             this.isProcessing = false;
         }

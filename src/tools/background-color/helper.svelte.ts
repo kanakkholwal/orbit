@@ -20,7 +20,7 @@ export class BackgroundColorState extends BaseEngine {
 
     private pdfLibDoc: PDFDocument | null = null;
 
-    // --- Actions ---
+Actions
 
     async loadFile(files: File[]) {
         if (!files || files.length === 0) return;
@@ -51,7 +51,7 @@ export class BackgroundColorState extends BaseEngine {
         this.progress = { current: 0, total: 0, text: '' };
     }
 
-    // --- Processing ---
+Processing
 
     async process() {
         this.handleProcess(async () => {

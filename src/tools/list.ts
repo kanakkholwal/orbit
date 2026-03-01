@@ -9,6 +9,7 @@ import {
     FileText,
     Highlighter,
     ImageIcon,
+    Info,
     LayoutTemplate,
     Lock,
     MoveIcon,
@@ -33,7 +34,7 @@ export interface ToolConfig {
     component: () => Promise<{ default: Component }>;
     color: string;
     category?: string;
-    keywords?: string[]
+    keywords?: string[]; // Optional array of keywords for SEO and search functionality
 }
 /*
 * Centralized configuration for all tools in the application.
@@ -181,15 +182,6 @@ const tools: Record<string, ToolConfig> = {
         color: 'text-blue-500',
         keywords: ['bookmark pdf', 'add bookmarks to pdf', 'pdf bookmarking tool', 'pdf navigation', 'create pdf bookmarks', 'edit bookmarks', 'pdf outlining', 'interactive pdf']
     },
-    // "add-toc-pdf":{
-    //     slug: "add-toc-pdf",
-    //     title: "Table of Contents",
-    //     description: "Generate and add a table of contents to your PDF for better organization.",
-    //     category: 'pdf-management',
-    //     icon: FileText,
-    //     component: () => import('./add-toc-pdf/tool.svelte'),
-    //     color: 'text-blue-500'
-    // },
     "add-page-no-pdf": {
         slug: "add-page-no-pdf",
         title: "Add Page Numbers",
@@ -274,7 +266,7 @@ const tools: Record<string, ToolConfig> = {
         slug: "txt-to-pdf",
         title: "Text to PDF",
         description: "Convert plain text files into PDF format with customizable options. Preserve formatting with advanced typography and layout controls.",
-        category: 'pdf-management',
+        category: 'conversion',
         icon: FileText,
         component: () => import('./txt-to-pdf/tool.svelte'),
         color: 'text-green-500',
@@ -284,11 +276,121 @@ const tools: Record<string, ToolConfig> = {
         slug: "pdf-to-docx",
         title: "PDF to Docx",
         description: "Convert PDF files to editable Word documents seamlessly. Preserve formatting, fonts, and layout with intelligent conversion technology.",
-        category: 'pdf-management',
+        category: 'conversion',
         icon: FileText,
         component: () => import('./pdf-to-docx/tool.svelte'),
         color: 'text-green-500',
         keywords: ['pdf to docx', 'pdf to word', 'convert pdf to word', 'pdf to document', 'editable word document', 'pdf conversion', 'doc converter', 'word document creator']
+    },
+    "pdf-to-excel": {
+        slug: "pdf-to-excel",
+        title: "PDF to Excel",
+        description: "Convert PDF tables into editable Excel spreadsheets with high accuracy. Preserve data structure and formatting for seamless spreadsheet creation.",
+        category: 'conversion',
+        icon: FileText,
+        component: () => import('./pdf-to-excel/tool.svelte'),
+        color: 'text-green-500',
+        keywords: ['pdf to excel', 'convert pdf to excel', 'pdf table to spreadsheet', 'pdf data extraction', 'editable excel file', 'pdf conversion', 'excel converter', 'spreadsheet creator']
+    },
+    "pdf-for-ai": {
+        slug: "pdf-for-ai",
+        title: "PDF for AI",
+        description: "Optimize your PDF documents for AI processing and analysis. Clean, structure, and format PDFs to enhance machine learning performance.",
+        category: 'pdf-management',
+        icon: Zap,
+        component: () => import('./pdf-for-ai/tool.svelte'),
+        color: 'text-yellow-500',
+        keywords: ['pdf for ai', 'optimize pdf for ai', 'clean pdf for ai', 'structure pdf for ai', 'format pdf for ai', 'ai document preparation', 'machine learning pdf', 'pdf preprocessing']
+    },
+    "ocr-pdf": {
+        slug: "ocr-pdf",
+        title: "OCR PDF",
+        description: "Convert scanned PDFs into searchable and editable documents with OCR technology. Extract text from images for easy editing and indexing.",
+        category: 'conversion',
+        icon: Text,
+        component: () => import('./ocr-pdf/tool.svelte'),
+        color: 'text-green-500',
+        keywords: ['ocr pdf', 'pdf ocr', 'optical character recognition', 'convert scanned pdf', 'searchable pdf', 'editable pdf', 'text extraction from pdf', 'ocr converter']
+    },
+    "view-metadata": {
+        slug: "view-metadata",
+        title: "View PDF Metadata",
+        description: "Easily view and analyze metadata embedded in your PDF files. Access information like author, creation date, and custom properties with a simple interface.",
+        category: 'pdf-management',
+        icon: FileIcon,
+        component: () => import('./view-metadata/tool.svelte'),
+        color: 'text-blue-500',
+        keywords: ['view pdf metadata', 'pdf properties viewer', 'pdf information tool', 'access pdf metadata', 'pdf author info', 'pdf creation date', 'custom pdf properties']
+    },
+    "edit-metadata": {
+        slug: "edit-metadata",
+        title: "Edit PDF Metadata",
+        description: "Modify the metadata of your PDF files with ease. Update author, title, keywords, and custom properties to keep your documents organized.",
+        category: 'pdf-management',
+        icon: Edit3Icon,
+        component: () => import('./edit-metadata/tool.svelte'),
+        color: 'text-blue-500',
+        keywords: ['edit pdf metadata', 'modify pdf properties', 'update pdf information', 'change pdf author', 'edit pdf title', 'manage pdf keywords', 'customize pdf metadata']
+    },
+    "reverse-pages": {
+        slug: "reverse-pages",
+        title: "Reverse PDF Pages",
+        description: "Quickly reverse the order of pages in your PDF document. Ideal for creating booklets or changing reading direction with a simple click.",
+        category: 'pdf-management',
+        icon: RotateCw,
+        component: () => import('./reverse-pages/tool.svelte'),
+        color: 'text-purple-500',
+        keywords: ['reverse pdf pages', 'flip pdf page order', 'pdf page reversal', 'change pdf reading direction', 'pdf booklet maker', 'reverse page sequence', 'pdf page flipper']
+    },
+    "pdf-to-text": {
+        slug: "pdf-to-text",
+        title: "PDF to Text",
+        description: "Extract plain text from your PDF files with high accuracy. Ideal for repurposing content, creating summaries, or preparing documents for AI processing.",
+        category: 'conversion',
+        icon: FileText,
+        component: () => import('./pdf-to-text/tool.svelte'),
+        color: 'text-green-500',
+        keywords: ['pdf to text', 'extract text from pdf', 'pdf text extractor', 'convert pdf to text', 'plain text from pdf', 'pdf content extraction', 'text output from pdf', 'pdf to txt']
+    },
+    "fix-page-size": {
+        slug: "fix-page-size",
+        title: "Fix PDF Page Size",
+        description: "Standardize the page size of your PDF documents for consistent printing and viewing. Adjust dimensions to fit common paper sizes or custom specifications.",
+        category: 'pdf-management',
+        icon: LayoutTemplate,
+        component: () => import('./fix-page-size/tool.svelte'),
+        color: 'text-blue-500',
+        keywords: ['fix pdf page size', 'standardize pdf dimensions', 'adjust pdf page size', 'pdf page resizing', 'set pdf page size', 'customize pdf dimensions', 'pdf layout adjustment']
+    },
+    "linearize-pdf":{
+        slug: "linearize-pdf",
+        title: "Linearize PDF",
+        description: "Optimize your PDF for fast web viewing by linearizing its structure. Enable progressive loading of pages for a smoother online experience.",
+        category: 'pdf-management',
+        icon: Zap,
+        component: () => import('./linearize-pdf/tool.svelte'),
+        color: 'text-yellow-500',
+        keywords: ['linearize pdf', 'optimize pdf for web', 'progressive pdf loading', 'fast web viewing pdf', 'pdf linearization', 'web-optimized pdf', 'pdf streaming optimization']
+    },
+    "page-dimensions":{
+        slug: "page-dimensions",
+        title: "View Page Dimensions",
+        description: "Easily view the dimensions of each page in your PDF document. Get detailed information about page size and layout for better document management.",
+        category: 'pdf-management',
+        icon: Info,
+        component: () => import('./page-dimensions/tool.svelte'),
+        color: 'text-blue-500',
+        keywords: ['view page dimensions', 'pdf page size viewer', 'page layout information', 'pdf page details', 'get pdf page dimensions', 'pdf page measurement', 'analyze pdf pages']
+    },
+    "deskew-pdf":{
+        slug: "deskew-pdf",
+        title: "Deskew PDF",
+        description: "Automatically correct skewed pages in your PDF documents. Enhance readability and presentation by straightening scanned or misaligned pages with advanced algorithms.",
+        category: 'pdf-management',
+        icon: CropIcon,
+        component: () => import('./deskew-pdf/tool.svelte'),
+        color: 'text-red-500',
+        keywords: ['deskew pdf', 'correct skewed pages', 'straighten pdf pages', 'pdf page alignment', 'fix misaligned pages', 'pdf deskewing tool', 'automated page correction']
     }
 };
 

@@ -6,6 +6,7 @@ import { degrees, PDFDocument as PDFLibDocument } from 'pdf-lib';
 
 
 import type * as PDFJS from 'pdfjs-dist';
+import { toast } from 'svelte-sonner';
 
 export interface PageData {
   id: string;
@@ -45,7 +46,7 @@ export class PdfEditorState extends PdfEngine {
 
 
 
-  // --- Actions ---
+// Actions
   snapshot() {
     const snap: Snapshot = {
       pages: $state.snapshot(this.pages),
@@ -135,7 +136,7 @@ export class PdfEditorState extends PdfEngine {
       }
     } catch (e) {
       console.error(e);
-      alert('Failed to load PDF');
+      toast.error('Failed to load PDF');
     } finally {
       this.loader.show = false;
     }
@@ -257,7 +258,7 @@ export class PdfEditorState extends PdfEngine {
     await super.renderPageToCanvas(canvas, pdfDoc, pageIndex);
   }
 
-  // --- Export ---
+// Export
   async download() {
     if (this.pages.length === 0) return;
     this.loader.show = true;
@@ -271,7 +272,7 @@ export class PdfEditorState extends PdfEngine {
       }
     } catch (e) {
       console.error(e);
-      alert("Error generating PDF");
+      toast.error("Error generating PDF");
     } finally {
       this.loader.show = false;
     }

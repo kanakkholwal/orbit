@@ -1,6 +1,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { toast } from 'svelte-sonner';
 
 export interface DeleteStateData {
     file: File | null;
@@ -24,7 +25,7 @@ export class DeletePagesState extends PdfEngine {
     private pdfLibDoc: PDFDocument | null = null;
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
-    // --- Actions ---
+// Actions
 
     async loadFile(file: File) {
         if (!file) return;
@@ -49,7 +50,7 @@ export class DeletePagesState extends PdfEngine {
 
         } catch (e) {
             console.error(e);
-            alert("Failed to load PDF.");
+            toast.error("Failed to load PDF.");
         } finally {
             this.state.isProcessing = false;
         }
@@ -90,23 +91,23 @@ export class DeletePagesState extends PdfEngine {
         this.state.inputText = sorted.join(', ');
     }
 
-    // --- Rendering ---
+// Rendering
     async renderThumbnail(canvas: HTMLCanvasElement, pageIndex: number) {
         if (!this.pdfJsDoc) return;
         await this.renderPageToCanvas(canvas, this.pdfJsDoc, pageIndex);
     }
 
-    // --- Processing ---
+// Processing
     async process() {
         if (!this.state.file || !this.pdfLibDoc) return;
         
         if (this.state.pagesToDelete.size === 0) {
-            alert("Please select at least one page to delete.");
+            toast.error("Please select at least one page to delete.");
             return;
         }
         
         if (this.state.pagesToDelete.size >= this.state.pageCount) {
-            alert("You cannot delete all pages in the document.");
+            toast.error("You cannot delete all pages in the document.");
             return;
         }
 
@@ -134,7 +135,7 @@ export class DeletePagesState extends PdfEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Process failed: ${e.message}`);
+            toast.error(`Process failed: ${e.message}`);
         } finally {
             this.state.isProcessing = false;
         }

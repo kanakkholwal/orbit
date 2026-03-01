@@ -1,6 +1,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
+import { toast } from 'svelte-sonner';
 
 // Types for Compression
 export type Algorithm = 'condense' | 'photon';
@@ -76,7 +77,7 @@ export class CompressState extends PdfEngine {
         this.isProcessing = false;
     }
 
-    // --- Compression Logic ---
+// Compression Logic
 
     async process() {
         if (this.files.length === 0) return;
@@ -128,7 +129,7 @@ export class CompressState extends PdfEngine {
 
         } catch (e) {
             console.error(e);
-            alert("Critical error during compression.");
+            toast.error("Critical error during compression.");
         } finally {
             this.isProcessing = false;
         }

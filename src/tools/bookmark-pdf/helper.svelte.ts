@@ -1,6 +1,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, PDFHexString, PDFName, PDFNumber, type PDFRef } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
+import { toast } from 'svelte-sonner';
 
 export type BookmarkColor = 'red' | 'blue' | 'green' | 'yellow' | 'purple' | null | string;
 export type BookmarkStyle = 'bold' | 'italic' | 'bold-italic' | null;
@@ -54,7 +55,7 @@ export class BookmarkPdfState extends PdfEngine {
     pdfLibDoc: PDFDocument | null = null;
     pdfJsDoc: PDFDocumentProxy | null = null;
 
-    // --- History Management ---
+// History Management
     snapshot() {
         // Remove future history if we diverge
         if (this.state.historyIndex < this.state.history.length - 1) {
@@ -78,7 +79,7 @@ export class BookmarkPdfState extends PdfEngine {
         }
     }
 
-    // --- Loading ---
+// Loading
     async loadFile(file: File) {
         if (!file) return;
         this.state.isProcessing = true;
@@ -106,20 +107,20 @@ export class BookmarkPdfState extends PdfEngine {
 
         } catch (e) {
             console.error(e);
-            alert("Failed to load PDF.");
+            toast.error("Failed to load PDF.");
         } finally {
             this.state.isProcessing = false;
         }
     }
 
-    // --- Rendering ---
+// Rendering
     async renderCurrentPage(canvas: HTMLCanvasElement) {
         if (!this.pdfJsDoc) return;
         // Use base engine
         await this.renderPageToCanvas(canvas, this.pdfJsDoc, this.state.currentPage - 1); // 0-based
     }
 
-    // --- Bookmark Operations ---
+// Bookmark Operations
     
     addBookmark(parent: BookmarkNode | null, title: string) {
         const newNode: BookmarkNode = {
@@ -172,12 +173,12 @@ export class BookmarkPdfState extends PdfEngine {
         this.snapshot();
     }
 
-    // --- Extraction (From existing PDF) ---
+// Extraction (From existing PDF)
     async extractExisting() {
         if(!this.pdfJsDoc) return;
         const outline = await this.pdfJsDoc.getOutline();
         if(!outline) {
-            alert("No bookmarks found in this PDF.");
+            toast.error("No bookmarks found in this PDF.");
             return;
         }
 
@@ -224,7 +225,7 @@ export class BookmarkPdfState extends PdfEngine {
         }
     }
 
-    // --- Saving ---
+// Saving
     async save() {
         if (!this.pdfLibDoc || !this.state.file) return;
         this.state.isProcessing = true;
@@ -315,7 +316,7 @@ export class BookmarkPdfState extends PdfEngine {
 
         } catch(e) {
             console.error(e);
-            alert("Error saving PDF.");
+            toast.error("Error saving PDF.");
         } finally {
             this.state.isProcessing = false;
         }

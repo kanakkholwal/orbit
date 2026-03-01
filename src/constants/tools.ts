@@ -45,7 +45,7 @@ const toolsCategories: ToolCategory[] = [
     icon: PenLineIcon,
 
   },
-];
+]
 
 
 const categories = toolsCategories.map((c) => ({

@@ -1,5 +1,6 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
 import { PDFDocument, PDFName } from 'pdf-lib';
+import { toast } from 'svelte-sonner';
 
 export interface RemoveAnnotationsStateData {
     file: File | null;
@@ -18,23 +19,23 @@ export class RemoveAnnotationsState extends BaseEngine {
 
     private pdfLibDoc: PDFDocument | null = null;
 
-    // --- Actions ---
+    // Actions
 
     async loadFile(files: File[]) {
         if (!files || files.length === 0) return;
         const file = files[0];
-        
+
         this.state.isProcessing = true;
         try {
             const arrayBuffer = await file.arrayBuffer();
             this.pdfLibDoc = await PDFDocument.load(arrayBuffer);
-            
+
             this.state.file = file;
             this.state.originalSize = file.size;
             this.state.pageCount = this.pdfLibDoc.getPageCount();
         } catch (e) {
             console.error("Error loading PDF", e);
-            alert("Failed to load the PDF file.");
+            toast.error("Failed to load the PDF file.");
         } finally {
             this.state.isProcessing = false;
         }
@@ -47,7 +48,7 @@ export class RemoveAnnotationsState extends BaseEngine {
         this.state.originalSize = 0;
     }
 
-    // --- Processing ---
+    // Processing
 
     async process() {
         if (!this.pdfLibDoc || !this.state.file) return;
@@ -69,13 +70,13 @@ export class RemoveAnnotationsState extends BaseEngine {
 
             const newPdfBytes = await this.pdfLibDoc.save();
             const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
-            
+
             const originalName = this.state.file.name.replace('.pdf', '');
             this.downloadBlob(blob, `${originalName}_no_annotations.pdf`);
 
         } catch (e: any) {
             console.error(e);
-            alert(e.message || "Could not remove annotations.");
+            toast.error(e.message || "Could not remove annotations.");
         } finally {
             this.state.isProcessing = false;
         }

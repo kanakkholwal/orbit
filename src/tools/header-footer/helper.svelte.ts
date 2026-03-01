@@ -1,5 +1,6 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { toast } from 'svelte-sonner';
 
 export interface HeaderFooterStateData {
     file: File | null;
@@ -55,7 +56,7 @@ export class HeaderFooterState extends BaseEngine {
             this.state.pageCount = this.pdfLibDoc.getPageCount();
         } catch (e) {
             console.error("Error loading PDF", e);
-            alert("Failed to load the PDF file.");
+            toast.error("Failed to load the PDF file.");
         } finally {
             this.state.isProcessing = false;
         }
@@ -127,7 +128,7 @@ export class HeaderFooterState extends BaseEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(e.message || "An error occurred.");
+            toast.error(e.message || "An error occurred.");
         } finally {
             this.state.isProcessing = false;
         }

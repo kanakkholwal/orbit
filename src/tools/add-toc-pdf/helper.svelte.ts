@@ -1,4 +1,5 @@
 import { BaseEngine } from "$lib/base-engine.svelte";
+import { toast } from "svelte-sonner";
 
 export interface TocStateData {
     file: File | null;
@@ -70,12 +71,12 @@ export class TableOfContentsState extends BaseEngine {
 
         } catch (e: any) {
             console.error(e);
-            alert(`Error: ${e.message}`);
+            toast.error(`Error: ${e.message}`);
             this.isProcessing = false;
         }
     }
 
-    // --- Helper: Fetch Library locally and convert to Blob ---
+// Helper: Fetch Library locally and convert to Blob
     private async fetchLibraryUrl(): Promise<string> {
         const cdnUrl = 'https://cdn.jsdelivr.net/npm/coherentpdf/dist/coherentpdf.min.js';
         
@@ -87,7 +88,7 @@ export class TableOfContentsState extends BaseEngine {
         return URL.createObjectURL(blob);
     }
 
-    // --- Inline Worker Creation ---
+    // Inline Worker Creation
     private createInlineWorker(localLibUrl: string): Worker {
         const workerCode = `
             // Load CoherentPDF from the local Blob URL we created
@@ -171,14 +172,14 @@ export class TableOfContentsState extends BaseEngine {
             
         } else if (e.data.status === 'error') {
             console.error("Worker Error:", e.data.message);
-            alert(`Generation Failed: ${e.data.message}`);
+            toast.error(`Generation Failed: ${e.data.message}`);
             this.isProcessing = false;
         }
     }
 
     private handleWorkerError(e: ErrorEvent) {
         console.error("Worker System Error:", e);
-        // Don't alert here immediately as the explicit error message usually follows
+        // Don't toast.error here immediately as the explicit error message usually follows
         this.isProcessing = false;
     }
 
