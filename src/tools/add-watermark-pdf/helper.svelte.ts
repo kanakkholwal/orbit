@@ -34,7 +34,7 @@ export class AddWatermarkState extends PdfEngine {
         rotation: -45
     });
 
-Actions
+// Actions
 
     loadFile(file: File) {
         if (!file) return;
@@ -47,7 +47,7 @@ Actions
         // Resetting content is optional, user might want to watermark multiple files with same settings
     }
 
-Processing
+// Processing
 
     async process() {
         if (!this.state.file) return;

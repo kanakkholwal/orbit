@@ -20,10 +20,10 @@ const config = {
 		alias: {
 			$components: 'src/components',
 			$utils: 'src/utils',
+			$hooks: 'src/lib/hooks',
 			$constants: 'src/constants',
 			$tools: 'src/tools',
 			$stores: 'src/stores',
-			$utils: 'src/utils',
 			"@": "./src/@",
 		}
 	}

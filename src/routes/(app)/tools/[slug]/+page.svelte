@@ -4,6 +4,7 @@
 
   import AdUnit from "$components/AdUnit.svelte";
   import ShareButton from "$components/application/ShareButton.svelte";
+  import PdfCommandMenu from "$components/PdfCommandMenu.svelte";
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";

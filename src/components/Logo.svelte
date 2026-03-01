@@ -47,7 +47,7 @@
   );
 </script>
 
-<div class={cn("relative flex items-center", containerClassName)}>
+<div class={cn("relative flex items-center", containerClassName)} title="Logo">
   <svg
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid meet"

@@ -33,7 +33,7 @@ export interface ToolConfig {
     icon: typeof Icon;
     component: () => Promise<{ default: Component }>;
     color: string;
-    category?: string;
+    category: string;
     keywords?: string[]; // Optional array of keywords for SEO and search functionality
 }
 /*

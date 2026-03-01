@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import Logo from "$components/Logo.svelte";
+  import PdfCommandMenu from "$components/PdfCommandMenu.svelte";
   import Button from "$components/ui/button/button.svelte";
   import * as Sidebar from "$components/ui/sidebar";
   import { config } from "$constants/app";
@@ -19,7 +20,7 @@
   import { onMount } from "svelte";
   // Derived state for reactivity
   let currentPath = $derived(page.url.pathname);
-  let isTauri = $state(false)
+  let isTauri = $state(false);
 
   // Helper for active state checking
   function isActive(path: string) {
@@ -58,6 +59,9 @@
           {/if}
         </Button>
       </div>
+    </Sidebar.MenuItem>
+    <Sidebar.MenuItem>
+      <PdfCommandMenu />
     </Sidebar.MenuItem>
     <Sidebar.MenuItem class="flex items-center gap-2 p-0">
       <Button

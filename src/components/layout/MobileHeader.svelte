@@ -1,5 +1,6 @@
 <script lang="ts">
   import Logo from "$components/Logo.svelte";
+  import PdfCommandMenu from "$components/PdfCommandMenu.svelte";
   import { Button } from "$components/ui/button";
   import { Trigger as SidebarTrigger } from "$components/ui/sidebar";
   import { Moon, Sun } from "@lucide/svelte";
@@ -13,9 +14,10 @@
     href="/"
     class="group flex items-center gap-3 transition-opacity hover:opacity-80"
   >
-    <Logo size="md"/>
+    <Logo size="md" />
   </a>
-  <div>
+  <div class="inline-flex items-center gap-2">
+    <PdfCommandMenu iconOnly />
     <Button
       variant="ghost"
       size="icon"

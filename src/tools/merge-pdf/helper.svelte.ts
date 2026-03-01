@@ -35,7 +35,7 @@ export class MergeState extends PdfEngine {
     private pdfJsDocs: Map<string, PDFJS.PDFDocumentProxy> = new Map();
 
 
-Actions
+    // Actions
 
     async addFiles(newFiles: File[]) {
         if (!newFiles.length) return;
@@ -100,7 +100,7 @@ Actions
         this.files = reordered;
     }
 
-Rendering for Thumbnails
+    // Rendering for Thumbnails
     async renderThumbnail(canvas: HTMLCanvasElement, fileId: string, pageIndex: number) {
         const doc = this.pdfJsDocs.get(fileId);
         if (!doc) return;
@@ -108,7 +108,7 @@ Rendering for Thumbnails
         await this.renderPageToCanvas(canvas, doc, pageIndex);
     }
 
-Merge Logic
+    // Merge Logic
 
     async mergeAndDownload() {
         if (this.files.length === 0) return;
@@ -117,7 +117,7 @@ Merge Logic
             const mergedPdf = await PDFDocument.create();
 
             if (this.mode === 'file') {
-FILE MODE MERGE
+                // FILE MODE MERGE
                 for (const file of this.files) {
                     if (!file.pdfDoc) continue;
 
@@ -136,7 +136,7 @@ FILE MODE MERGE
                 }
 
             } else {
-                
+
                 // We iterate the `allPages` array which reflects the user's custom sort order
                 const fileCache = new Map<string, PDFDocument>();
                 // Pre-fill cache
