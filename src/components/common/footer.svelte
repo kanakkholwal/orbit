@@ -89,13 +89,6 @@
               <span class="sr-only">GitHub</span>
               <Github size={18} />
             </a>
-            <a
-              href="https://twitter.com/kanakkholwal"
-              class="text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <span class="sr-only">Twitter</span>
-              <Twitter size={18} />
-            </a>
           </div>
         </div>
       </div>
