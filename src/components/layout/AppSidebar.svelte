@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import Logo from "$components/Logo.svelte";
-  import PdfCommandMenu from "$components/PdfCommandMenu.svelte";
+  import SearchCommandMenu from "$components/layout/SearchCommandMenu.svelte";
   import Button from "$components/ui/button/button.svelte";
   import * as Sidebar from "$components/ui/sidebar";
   import { config } from "$constants/app";
@@ -61,11 +61,9 @@
       </div>
     </Sidebar.MenuItem>
 
-    {#if !isTauri}
-      <Sidebar.MenuItem>
-        <PdfCommandMenu />
-      </Sidebar.MenuItem>
-    {/if}
+    <Sidebar.MenuItem>
+      <SearchCommandMenu />
+    </Sidebar.MenuItem>
     <Sidebar.MenuItem class="flex items-center gap-2 p-0">
       <Button
         variant="dark"

@@ -7,7 +7,7 @@
   import { toolList } from "$tools/list";
   import { ChevronRight, FileText, Github, Search } from "@lucide/svelte";
   import { onMount } from "svelte";
-  import { Button } from "./ui/button";
+  import { Button } from "../ui/button";
 
   interface CommandItem {
     id: string;
@@ -90,9 +90,12 @@
     selectedIndex = 0;
   }
 
-  function executeCommand(command: CommandItem) {
-    command.action();
-  }
+
+  
+	function runCommand(command: () => unknown) {
+		open = false;
+		command();
+	}
 
   function handleKeyDown(e: KeyboardEvent) {
     if (!open) {
@@ -118,7 +121,7 @@
       case "Enter":
         e.preventDefault();
         if (filteredCommands[selectedIndex]) {
-          executeCommand(filteredCommands[selectedIndex]);
+          runCommand(filteredCommands[selectedIndex].action);
           handleClose();
         }
         break;
@@ -157,50 +160,52 @@
 
 <svelte:window on:keydown={handleKeyDown} />
 
-<Button
-  onclick={() => (open = true)}
-  aria-label="Open Command Menu"
-  title="Open Command Menu (⌘K)"
-  variant="outline"
-  size={iconOnly ? "icon" : "default"}
-  class={cn(
-    "group relative group-data-[state=collapsed]:size-8",
-    !iconOnly && "w-full max-w-xs",
-  )}
->
-  <Search
-    class="size-4 shrink-0 opacity-50 transition-opacity group-hover:opacity-70"
-  />
-  {#if !iconOnly}
-    <span
-      class="flex-1 text-left text-xs font-medium group-data-[state=collapsed]:hidden!"
-      >Search tools...</span
+<Dialog.Root bind:open>
+  <Dialog.Trigger>
+    {#snippet child({ props })}
+      <Button
+        {...props}
+        aria-label="Open Command Menu"
+        title="Open Command Menu (⌘K)"
+        variant="outline"
+        size={iconOnly ? "icon" : "default"}
+        class={cn(
+          "group relative group-data-[state=collapsed]:size-8",
+          !iconOnly && "w-full max-w-xs",
+        )}
+      >
+        <Search
+          class="size-4 shrink-0 opacity-50 transition-opacity group-hover:opacity-70"
+        />
+        {#if !iconOnly}
+          <span
+            class="flex-1 text-left text-xs font-medium group-data-[state=collapsed]:hidden!"
+            >Search tools...</span
+          >
+          <kbd
+            class="group-data-[st ate=collapsed]:hidden! hidden items-center gap-1 rounded-md border border-border/40 bg-background/50 px-2 py-1 font-mono text-[11px] font-medium text-muted-foreground/70 backdrop-blur-sm sm:inline-flex"
+          >
+            <span
+              class="text-xs font-semibold group-data-[state=collapsed]:hidden"
+              >⌘</span
+            >K
+          </kbd>
+        {/if}
+      </Button>
+    {/snippet}
+  </Dialog.Trigger>
+  <Dialog.Content showCloseButton={false} class="rounded-xl border-none bg-clip-padding p-2 pb-11 shadow-2xl ring-4 ring-neutral-200/80 dark:bg-neutral-900 dark:ring-neutral-800">
+    <Command.Root
+      class="**:data-[slot=command-input-wrapper]:bg-input/50 **:data-[slot=command-input-wrapper]:border-input rounded-none bg-transparent **:data-[slot=command-input]:h-9! **:data-[slot=command-input]:py-0 **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:h-9! **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border"
     >
-    <kbd
-      class="group-data-[state=collapsed]:hidden! hidden items-center gap-1 rounded-md border border-border/40 bg-background/50 px-2 py-1 font-mono text-[11px] font-medium text-muted-foreground/70 backdrop-blur-sm sm:inline-flex"
-    >
-      <span class="text-xs font-semibold group-data-[state=collapsed]:hidden"
-        >⌘</span
-      >K
-    </kbd>
-  {/if}
-</Button>
-
-<Dialog.Root bind:open onOpenChange={(newOpen) => (open = newOpen)}>
-  <Dialog.Content class="overflow-hidden p-0 shadow-2xl border-border/40">
-    <Command.Root value={searchValue} onValueChange={(v) => (searchValue = v)}>
       <Command.Input
-        bind:value={searchValue}
-        placeholder="Search tools by name or function..."
-        class="border-0"
+        placeholder={`Search tools by name or function in ${toolList.length} tools...`}
       />
-
-      <!-- Command List -->
-      <Command.List>
+      <Command.List class="scrollbar-hide">
         {#if filteredCommands.length === 0}
           <Command.Empty>
             <div class="text-sm text-muted-foreground">
-              No commands found. Try a different search.
+              No results found. Try a different search.
             </div>
           </Command.Empty>
         {:else}
@@ -211,18 +216,16 @@
                   selectedIndex === filteredCommands.indexOf(command)}
                 <Command.Item
                   value={command.id}
-                  onSelect={() => executeCommand(command)}
+                  onSelect={() => runCommand(command.action)}
                   class={cn(
-                    isSelected && "aria-selected:bg-accent aria-selected:text-accent-foreground"
+                    isSelected &&
+                      "aria-selected:bg-accent aria-selected:text-primary-foreground",
                   )}
                 >
                   {#if command.icon}
                     {@const IconComponent = command.icon}
                     <IconComponent
-                      class={cn(
-                        "size-4 shrink-0",
-                        command.color
-                      )}
+                      class={cn("size-5 shrink-0", command.color)}
                     />
                   {/if}
                   <div class="flex flex-col flex-1 min-w-0 gap-0.5">
@@ -242,22 +245,19 @@
           {/each}
         {/if}
       </Command.List>
-
-      <!-- Footer -->
-      <div class="border-t bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-        <div class="flex items-center justify-between">
-          <span
-            >Press <kbd class="rounded bg-background px-1.5 py-0.5">Esc</kbd> to
-            close</span
-          >
-          <span>
-            <kbd class="rounded bg-background px-1 py-0.5">↑</kbd>
-            <kbd class="rounded bg-background px-1 py-0.5 ml-1">↓</kbd>
-            <span class="ml-1">to navigate</span>
-          </span>
-        </div>
-      </div>
     </Command.Root>
+    <div			class="text-muted-foreground absolute inset-x-0 bottom-0 z-20 flex h-10 items-center gap-2 rounded-b-xl border-t border-t-neutral-100 bg-neutral-50 px-4 text-xs font-medium dark:border-t-neutral-700 dark:bg-neutral-800">
+      <div class="flex items-center justify-between">
+        <span
+          >Press <kbd class="rounded bg-background px-1.5 py-0.5">Esc</kbd> to
+          close</span
+        >
+        <span>
+          <kbd class="rounded bg-background px-1 py-0.5">↑</kbd>
+          <kbd class="rounded bg-background px-1 py-0.5 ml-1">↓</kbd>
+          <span class="ml-1">to navigate</span>
+        </span>
+      </div>
+    </div>
   </Dialog.Content>
 </Dialog.Root>
-

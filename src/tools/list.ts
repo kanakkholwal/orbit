@@ -1,8 +1,10 @@
 import {
     Bookmark,
     BookMinus,
+    Copy,
     CropIcon,
     Edit3Icon,
+    Eye,
     FileIcon,
     FileMinus2,
     FileStack,
@@ -10,15 +12,20 @@ import {
     Highlighter,
     ImageIcon,
     Info,
+    Layers,
     LayoutTemplate,
     Lock,
+    Maximize2,
     MoveIcon,
     PaintBucket,
+    RefreshCw,
     RotateCw,
     Scissors,
+    Settings,
     Text,
     Trash2,
     Unlock,
+    WandIcon,
     Zap,
     type Icon
 } from '@lucide/svelte';
@@ -57,7 +64,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF Multi-Tool",
         description: "Upload, rearrange, rotate, and export multiple PDF pages with advanced editing capabilities. All-in-one PDF manager for quick page manipulation and batch operations.",
         category: "essentials",
-        icon: FileText,
+        icon: FileMinus2,
         component: () => import('./multi-pdf/tool.svelte'),
         color: "text-primary",
         keywords: ['pdf multi-tool', 'pdf page manager', 'rearrange pdf pages', 'rotate pdf', 'export pdf', 'pdf editor', 'batch pdf processing', 'manage pdf pages']
@@ -67,7 +74,7 @@ const tools: Record<string, ToolConfig> = {
         title: 'Split PDF',
         description: 'Extract pages, split ranges, or divide your PDF into multiple files instantly. Free online PDF splitter with advanced range selection and batch processing.',
         category: "essentials",
-        icon: Scissors,
+        icon: Copy,
         component: () => import('./split-pdf/tool.svelte'),
         color: 'text-pink-500',
         keywords: ['split pdf', 'extract pdf pages', 'pdf splitter', 'divide pdf', 'separate pdf pages', 'free pdf splitter', 'pdf page extractor', 'crop pdf pages', 'pdf range selector']
@@ -97,7 +104,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF to Image",
         description: "Convert PDF pages into high-quality images in JPG and PNG formats. Free online PDF to image converter with batch processing and custom resolution settings.",
         category: 'conversion',
-        icon: FileIcon,
+        icon: Bookmark,
         component: () => import('./pdf-to-img/tool.svelte'),
         color: 'text-blue-500',
         keywords: ['pdf to image', 'pdf to jpg', 'pdf to png', 'convert pdf to image', 'extract images from pdf', 'pdf image converter', 'free pdf to image', 'pdf page to image', 'export pdf as image']
@@ -177,7 +184,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Bookmark PDF",
         description: "Add, edit, and manage bookmarks in your PDF for easy navigation. Create interactive table of contents with customizable bookmark hierarchy.",
         category: 'pdf-management',
-        icon: Bookmark,
+        icon: FileIcon,
         component: () => import('./bookmark-pdf/tool.svelte'),
         color: 'text-blue-500',
         keywords: ['bookmark pdf', 'add bookmarks to pdf', 'pdf bookmarking tool', 'pdf navigation', 'create pdf bookmarks', 'edit bookmarks', 'pdf outlining', 'interactive pdf']
@@ -187,7 +194,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Add Page Numbers",
         description: "Easily add page numbers to your PDF for better readability and organization. Customize font, size, color, and position with flexible placement options.",
         category: 'pdf-management',
-        icon: Text,
+        icon: Highlighter,
         component: () => import('./add-page-no-pdf/tool.svelte'),
         color: 'text-blue-500',
         keywords: ['add page numbers to pdf', 'page numbering', 'number pdf pages', 'pdf pagination', 'add numbering to pdf', 'page counter', 'pdf page numbers']
@@ -197,7 +204,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Add Watermark",
         description: "Protect your PDF by adding custom text or image watermarks to pages. Prevent unauthorized copying with visible or invisible watermark options.",
         category: 'pdf-management',
-        icon: Highlighter,
+        icon: WandIcon,
         component: () => import('./add-watermark-pdf/tool.svelte'),
         color: 'text-blue-500',
         keywords: ['add watermark to pdf', 'pdf watermark', 'watermark tool', 'protect pdf', 'add text watermark', 'image watermark', 'copyright protection', 'branded watermark']
@@ -207,7 +214,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Delete PDF Pages",
         description: "Remove unwanted pages from your PDF quickly and easily with advanced selection options. Permanently delete specific page ranges or individual pages.",
         category: 'pdf-management',
-        icon: FileMinus2,
+        icon: Text,
         component: () => import('./delete-pages/tool.svelte'),
         color: 'text-pink-500',
         keywords: ['delete pdf pages', 'remove pages from pdf', 'pdf page deletion', 'eliminate pages', 'remove unwanted pages', 'delete from pdf', 'page removal tool']
@@ -257,7 +264,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Extract Images from PDF",
         description: "Easily extract all images from your PDF into separate files with high quality. Batch extraction with support for multiple image formats.",
         category: 'pdf-management',
-        icon: ImageIcon,
+        icon: Eye,
         component: () => import('./extract-images/tool.svelte'),
         color: 'text-green-500',
         keywords: ['extract images from pdf', 'save images from pdf', 'pdf image extractor', 'download images from pdf', 'batch image extraction', 'image recovery tool', 'extract graphics from pdf']
@@ -277,7 +284,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF to Docx",
         description: "Convert PDF files to editable Word documents seamlessly. Preserve formatting, fonts, and layout with intelligent conversion technology.",
         category: 'conversion',
-        icon: FileText,
+        icon: Layers,
         component: () => import('./pdf-to-docx/tool.svelte'),
         color: 'text-green-500',
         keywords: ['pdf to docx', 'pdf to word', 'convert pdf to word', 'pdf to document', 'editable word document', 'pdf conversion', 'doc converter', 'word document creator']
@@ -287,7 +294,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF to Excel",
         description: "Convert PDF tables into editable Excel spreadsheets with high accuracy. Preserve data structure and formatting for seamless spreadsheet creation.",
         category: 'conversion',
-        icon: FileText,
+        icon: Maximize2,
         component: () => import('./pdf-to-excel/tool.svelte'),
         color: 'text-green-500',
         keywords: ['pdf to excel', 'convert pdf to excel', 'pdf table to spreadsheet', 'pdf data extraction', 'editable excel file', 'pdf conversion', 'excel converter', 'spreadsheet creator']
@@ -297,7 +304,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF for AI",
         description: "Optimize your PDF documents for AI processing and analysis. Clean, structure, and format PDFs to enhance machine learning performance.",
         category: 'pdf-management',
-        icon: Zap,
+        icon: RefreshCw,
         component: () => import('./pdf-for-ai/tool.svelte'),
         color: 'text-yellow-500',
         keywords: ['pdf for ai', 'optimize pdf for ai', 'clean pdf for ai', 'structure pdf for ai', 'format pdf for ai', 'ai document preparation', 'machine learning pdf', 'pdf preprocessing']
@@ -307,7 +314,7 @@ const tools: Record<string, ToolConfig> = {
         title: "OCR PDF",
         description: "Convert scanned PDFs into searchable and editable documents with OCR technology. Extract text from images for easy editing and indexing.",
         category: 'conversion',
-        icon: Text,
+        icon: Copy,
         component: () => import('./ocr-pdf/tool.svelte'),
         color: 'text-green-500',
         keywords: ['ocr pdf', 'pdf ocr', 'optical character recognition', 'convert scanned pdf', 'searchable pdf', 'editable pdf', 'text extraction from pdf', 'ocr converter']
@@ -317,7 +324,7 @@ const tools: Record<string, ToolConfig> = {
         title: "View PDF Metadata",
         description: "Easily view and analyze metadata embedded in your PDF files. Access information like author, creation date, and custom properties with a simple interface.",
         category: 'pdf-management',
-        icon: FileIcon,
+        icon: Info,
         component: () => import('./view-metadata/tool.svelte'),
         color: 'text-blue-500',
         keywords: ['view pdf metadata', 'pdf properties viewer', 'pdf information tool', 'access pdf metadata', 'pdf author info', 'pdf creation date', 'custom pdf properties']
@@ -327,7 +334,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Edit PDF Metadata",
         description: "Modify the metadata of your PDF files with ease. Update author, title, keywords, and custom properties to keep your documents organized.",
         category: 'pdf-management',
-        icon: Edit3Icon,
+        icon: Settings,
         component: () => import('./edit-metadata/tool.svelte'),
         color: 'text-blue-500',
         keywords: ['edit pdf metadata', 'modify pdf properties', 'update pdf information', 'change pdf author', 'edit pdf title', 'manage pdf keywords', 'customize pdf metadata']
@@ -337,7 +344,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Reverse PDF Pages",
         description: "Quickly reverse the order of pages in your PDF document. Ideal for creating booklets or changing reading direction with a simple click.",
         category: 'pdf-management',
-        icon: RotateCw,
+        icon: RefreshCw,
         component: () => import('./reverse-pages/tool.svelte'),
         color: 'text-purple-500',
         keywords: ['reverse pdf pages', 'flip pdf page order', 'pdf page reversal', 'change pdf reading direction', 'pdf booklet maker', 'reverse page sequence', 'pdf page flipper']
@@ -347,7 +354,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF to Text",
         description: "Extract plain text from your PDF files with high accuracy. Ideal for repurposing content, creating summaries, or preparing documents for AI processing.",
         category: 'conversion',
-        icon: FileText,
+        icon: Text,
         component: () => import('./pdf-to-text/tool.svelte'),
         color: 'text-green-500',
         keywords: ['pdf to text', 'extract text from pdf', 'pdf text extractor', 'convert pdf to text', 'plain text from pdf', 'pdf content extraction', 'text output from pdf', 'pdf to txt']

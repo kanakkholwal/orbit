@@ -1,17 +1,12 @@
 <script lang="ts">
   import Logo from "$components/Logo.svelte";
-  import PdfCommandMenu from "$components/PdfCommandMenu.svelte";
+  import SearchCommandMenu from "$components/layout/SearchCommandMenu.svelte";
   import { Button } from "$components/ui/button";
   import { Trigger as SidebarTrigger } from "$components/ui/sidebar";
   import { Moon, Sun } from "@lucide/svelte";
   import { mode, toggleMode } from "mode-watcher";
-  let isTauri = $state(false);
 
-  import { isTauriApp } from "$lib/runtime/isTauri";
-  import { onMount } from "svelte";
-  onMount(async () => {
-    isTauri = await isTauriApp();
-  });
+
 </script>
 
 <header
@@ -24,9 +19,7 @@
     <Logo size="md" />
   </a>
   <div class="inline-flex items-center gap-2">
-  {#if !isTauri}
-  <PdfCommandMenu iconOnly />
-  {/if}
+  <SearchCommandMenu iconOnly />
     <Button
       variant="ghost"
       size="icon"
