@@ -1,13 +1,13 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
-  import * as Command from "$components/ui/command/index.js";
-  import * as Dialog from "$components/ui/dialog/index.js";
+  import { Button } from "$components/ui/button";
+  import * as Command from "$components/ui/command";
+  import * as Dialog from "$components/ui/dialog";
   import { config } from "$constants/app";
   import { cn } from "$lib/utils";
   import { toolList } from "$tools/list";
   import { ChevronRight, FileText, Github, Search } from "@lucide/svelte";
   import { onMount } from "svelte";
-  import { Button } from "../ui/button";
 
   interface CommandItem {
     id: string;
@@ -75,10 +75,11 @@
     filteredCommands = commands.filter((cmd) => {
       const titleMatch = cmd.title.toLowerCase().includes(lowerQuery);
       const descMatch = cmd.description?.toLowerCase().includes(lowerQuery);
+      const slugMatch = cmd.id.toLowerCase().includes(lowerQuery);
       const keywordsMatch = cmd.keywords?.some((kw) =>
         kw.toLowerCase().includes(lowerQuery),
       );
-      return titleMatch || descMatch || keywordsMatch;
+      return titleMatch || descMatch || slugMatch || keywordsMatch;
     });
 
     selectedIndex = 0;
