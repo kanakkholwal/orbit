@@ -8,10 +8,10 @@
   import Seo from "$components/Seo.svelte";
   import { Toaster } from "$components/ui/sonner";
   import { config } from "$constants/app";
+  import Analytics from "$lib/Analytics.svelte";
   import { ModeWatcher } from "mode-watcher";
   import { onMount, tick } from "svelte";
-
-  // import { ProgressBar } from "@prgm/sveltekit-progress-bar";
+// import { ProgressBar } from "@prgm/sveltekit-progress-bar";
   import Loader from "$components/common/loader.svelte";
 
   // Remove the boot splash screen after the app is mounted
@@ -23,7 +23,6 @@
 
 <Seo title={config.appName} description={config.appDescription} isBase={true} />
 
-<!-- <ProgressBar class="text-emerald-500" /> -->
 <Loader />
 <ModeWatcher />
 <Toaster position="top-right" richColors />
@@ -32,6 +31,9 @@
   {@render children()}
 </div>
 
+{#if config.googleAnalyticsId && config.googleAnalyticsId !== ""}
+  <Analytics />
+{/if}
 {#if config.adsensePublisherId && config.adsensePublisherId !== ""}
   <script
     async

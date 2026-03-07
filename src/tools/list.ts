@@ -1,4 +1,6 @@
 import {
+    AlignLeft,
+    ArrowDownUp,
     Bookmark,
     BookMinus,
     Copy,
@@ -9,6 +11,7 @@ import {
     FileMinus2,
     FileStack,
     FileText,
+    Gauge,
     Highlighter,
     ImageIcon,
     Info,
@@ -20,6 +23,7 @@ import {
     PaintBucket,
     RefreshCw,
     RotateCw,
+    ScanText,
     Scissors,
     Settings,
     Text,
@@ -314,7 +318,7 @@ const tools: Record<string, ToolConfig> = {
         title: "OCR PDF",
         description: "Convert scanned PDFs into searchable and editable documents with OCR technology. Extract text from images for easy editing and indexing.",
         category: 'conversion',
-        icon: Copy,
+        icon: ScanText,
         component: () => import('./ocr-pdf/tool.svelte'),
         color: 'text-green-500',
         keywords: ['ocr pdf', 'pdf ocr', 'optical character recognition', 'convert scanned pdf', 'searchable pdf', 'editable pdf', 'text extraction from pdf', 'ocr converter']
@@ -344,7 +348,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Reverse PDF Pages",
         description: "Quickly reverse the order of pages in your PDF document. Ideal for creating booklets or changing reading direction with a simple click.",
         category: 'pdf-management',
-        icon: RefreshCw,
+        icon: ArrowDownUp,
         component: () => import('./reverse-pages/tool.svelte'),
         color: 'text-purple-500',
         keywords: ['reverse pdf pages', 'flip pdf page order', 'pdf page reversal', 'change pdf reading direction', 'pdf booklet maker', 'reverse page sequence', 'pdf page flipper']
@@ -354,7 +358,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF to Text",
         description: "Extract plain text from your PDF files with high accuracy. Ideal for repurposing content, creating summaries, or preparing documents for AI processing.",
         category: 'conversion',
-        icon: Text,
+        icon: AlignLeft,
         component: () => import('./pdf-to-text/tool.svelte'),
         color: 'text-green-500',
         keywords: ['pdf to text', 'extract text from pdf', 'pdf text extractor', 'convert pdf to text', 'plain text from pdf', 'pdf content extraction', 'text output from pdf', 'pdf to txt']
@@ -374,7 +378,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Linearize PDF",
         description: "Optimize your PDF for fast web viewing by linearizing its structure. Enable progressive loading of pages for a smoother online experience.",
         category: 'pdf-management',
-        icon: Zap,
+        icon: Gauge,
         component: () => import('./linearize-pdf/tool.svelte'),
         color: 'text-yellow-500',
         keywords: ['linearize pdf', 'optimize pdf for web', 'progressive pdf loading', 'fast web viewing pdf', 'pdf linearization', 'web-optimized pdf', 'pdf streaming optimization']
