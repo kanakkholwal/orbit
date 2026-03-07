@@ -1,9 +1,6 @@
 <script lang="ts">
+  import "@fontsource-variable/google-sans";
 
-  import "@fontsource/google-sans/400.css";
-  import "@fontsource/google-sans/500.css";
-  import "@fontsource/google-sans/600.css";
-  import "@fontsource/google-sans/700.css";
   import "../app.css";
 
   let { children } = $props();
@@ -27,7 +24,7 @@
 <Seo title={config.appName} description={config.appDescription} isBase={true} />
 
 <!-- <ProgressBar class="text-emerald-500" /> -->
-<Loader/>
+<Loader />
 <ModeWatcher />
 <Toaster position="top-right" richColors />
 

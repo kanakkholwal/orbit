@@ -51,6 +51,10 @@ self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
     if (isTauri) return; // Don't handle fetch events in Tauri, as it has its own caching mechanism
 
+    // Only handle http/https — ignore chrome-extension://, blob://, data://, etc.
+    const { protocol } = new URL(event.request.url);
+    if (protocol !== 'http:' && protocol !== 'https:') return;
+
     
     async function respond() {
         const url = new URL(event.request.url);
@@ -82,6 +86,7 @@ self.addEventListener('fetch', (event) => {
                 const networkResponse = await fetch(event.request);
                 // Only cache successful, non-opaque responses
                 if (networkResponse.status === 200) {
+                    
                     cache.put(event.request, networkResponse.clone());
                 }
                 return networkResponse;

@@ -5,7 +5,7 @@
       "name": "orbit",
       "dependencies": {
         "@embedpdf/snippet": "^2.6.0",
-        "@fontsource/google-sans": "^5.2.1",
+        "@fontsource-variable/google-sans": "^5.2.1",
         "@lucide/svelte": "^0.561.0",
         "@neslinesli93/qpdf-wasm": "^0.3.0",
         "@pdf-lib/fontkit": "^1.1.1",
@@ -219,7 +219,7 @@
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.10", "", {}, "sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ=="],
 
-    "@fontsource/google-sans": ["@fontsource/google-sans@5.2.1", "", {}, "sha512-FteXH18YS0288Bcrjefwyyp7hLwxd8yQBEcmjU/P0BED9c8n8kxwgna3gtMtYyFQx/wIkpyrzj8RaYQyl/4quw=="],
+    "@fontsource-variable/google-sans": ["@fontsource-variable/google-sans@5.2.1", "", {}, "sha512-dMyMlJVRJgQvvYlJLcrg2oiVzlKAuIMrbDxIMchEiMBGmpOA6VnVblj3cPfJyA0/fNPQS6krZaiJyJjHJZmkzw=="],
 
     "@img/colour": ["@img/colour@1.0.0", "", {}, "sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw=="],
 
