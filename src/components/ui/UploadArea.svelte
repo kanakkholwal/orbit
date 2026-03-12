@@ -1,9 +1,10 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
   import { UploadCloud } from "@lucide/svelte";
+  import { toast } from "svelte-sonner";
   import { fade } from "svelte/transition";
   import { buttonVariants } from "./button";
-  import { toast } from "svelte-sonner";
+  import { trackFileUpload } from "$lib/analytics-tracker";
   interface Props {
     accept?: string;
     multiple?: boolean;
@@ -124,6 +125,12 @@
 
     if (validFiles.length > 0) {
       files = [...files, ...validFiles];
+      
+      // Track file upload event in Google Analytics
+      validFiles.forEach((file) => {
+        trackFileUpload(file.name, file.size, file.type || 'unknown');
+      });
+      
       if (onFilesSelected) onFilesSelected(validFiles);
     }
   }

@@ -1,3 +1,4 @@
+import { trackFileDownload } from "$lib/analytics-tracker";
 import { isTauriApp } from "$lib/runtime/isTauri";
 
 export async function downloadBlobFile(blob: Blob, fileName: string) {
@@ -11,6 +12,9 @@ export async function downloadBlobFile(blob: Blob, fileName: string) {
 //  Browser  
 
 function downloadBlobWeb(blob: Blob, fileName: string) {
+    // Track download event in Google Analytics
+    trackFileDownload(fileName, blob.size, 'web');
+
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

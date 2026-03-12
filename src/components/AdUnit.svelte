@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { browser, dev } from "$app/environment";
+  import { dev } from "$app/environment";
   import { page } from "$app/state";
   import { cn } from "$lib/utils";
 
   import { config } from "$constants/app";
-  import { isTauriApp } from "$lib/runtime/isTauri";
+  import { appState } from "$stores/app-state.svelte";
 
   const adsTypes = {
     "display-horizontal": { adSlot: "6712325533", adFormat: "auto" },
@@ -25,13 +25,7 @@
   const id = crypto.randomUUID().slice(0, 8);
   const adsProps = $derived(adsTypes[adSlot]);
   let adRef: HTMLElement | undefined = $state();
-  let isTauri = false;
-
-  $effect(() => {
-    if (!browser) return;
-
-    isTauriApp().then((v) => (isTauri = v));
-  });
+  let isTauri = $derived(appState.isTauri);
 
   // Trigger ad load when path or slot changes
   $effect(() => {

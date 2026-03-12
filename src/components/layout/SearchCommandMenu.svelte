@@ -5,8 +5,10 @@
   import * as Dialog from "$components/ui/dialog";
   import { config } from "$constants/app";
   import { cn } from "$lib/utils";
+  import { appState } from "$stores/app-state.svelte";
   import { toolList } from "$tools/list";
   import { ChevronRight, FileText, Github, Search } from "@lucide/svelte";
+  import { openUrl } from "@tauri-apps/plugin-opener";
   import { onMount } from "svelte";
 
   interface CommandItem {
@@ -30,6 +32,7 @@
   let selectedIndex = $state(0);
   let filteredCommands = $state<CommandItem[]>([]);
   let { iconOnly } = $props<{ iconOnly?: boolean }>();
+  let isTauri = $derived(appState.isTauri);
 
   // PDF Tool commands - customize these based on your actual tools
   const commands: CommandItem[] = [
@@ -57,12 +60,32 @@
       keywords: ["home", "main page", "dashboard"],
     },
     {
+      id: "report:bug",
+      title: "Report a Bug",
+      description: "Found an issue? Let us know by reporting a bug.",
+      category: "Support",
+      action: () => {
+        if(isTauri){
+          openUrl(config.github + "/issues/new");
+        } else {
+          goto(config.github + "/issues/new");
+        }
+      },
+      icon: FileText,
+      keywords: ["report bug", "feedback", "issue","support","bug"],
+
+    },
+    {
       id: "github",
       title: "View on GitHub",
       description: "Check out the source code on GitHub.",
       category: "External",
       action: () => {
-        window.open(config.github, "_blank");
+        if(isTauri){
+          openUrl(config.github);
+        } else {
+          goto(config.github);
+        }
       },
       icon: Github,
       keywords: ["github", "source code", "repository"],

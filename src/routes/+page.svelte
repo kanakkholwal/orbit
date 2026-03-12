@@ -1,14 +1,9 @@
 <script lang="ts">
-  import { isTauriApp } from "$lib/runtime/isTauri";
-  import { onMount } from "svelte";
+  import { appState } from "$stores/app-state.svelte";
   import DesktopHome from "./Desktop.Home.svelte";
   import WebHome from "./Web.Home.svelte";
 
-  let isTauri = false;
-  onMount(async () => {
-    isTauri = await isTauriApp();
-  });
-
+  let isTauri = $derived(appState.isTauri);
 </script>
 
 {#if isTauri}

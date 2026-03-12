@@ -3,6 +3,7 @@
   import Navbar from "$components/common/navbar.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
+  import { trackNativeAppDownload } from "$lib/analytics-tracker";
   import { Download } from "@lucide/svelte";
 
   let { data } = $props();
@@ -15,7 +16,7 @@
         { label: "Download .msi (recommended)", url: data.downloads.windowsMsi },
         { label: "Download .exe", url: data.downloads.windowsExe },
       ],
-      requirements: "Windows 10 (64 bit)",
+      requirements: "Windows 10+ (64 bit)",
     },
     {
       name: "Linux",
@@ -40,7 +41,6 @@
   <main class="flex-1 pt-24 pb-20 md:pt-32">
     <div class="container mx-auto max-w-6xl px-6 lg:px-8">
 
-      <!-- Header -->
       <div class="mb-12 flex items-start justify-between">
         <div>
           <h1 class="text-4xl md:text-5xl font-semibold tracking-tight text-foreground leading-tight">
@@ -80,6 +80,11 @@
               {#each platform.downloads as dl}
                 <a
                   href={dl.url || "#"}
+                  onclick={() => {
+                    if (dl.url && dl.url !== "#") {
+                      trackNativeAppDownload(platform.name, dl.label.split(' ').pop() || 'unknown');
+                    }
+                  }}
                   class="inline-flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors group w-fit"
                   class:opacity-40={!dl.url || dl.url === "#"}
                   aria-disabled={!dl.url || dl.url === "#"}
@@ -92,7 +97,6 @@
           {/each}
         </div>
 
-        <!-- Requirements row -->
         <div class="grid grid-cols-[200px_1fr] md:grid-cols-[200px_1fr_1fr] divide-x divide-border bg-muted/20">
           <div class="p-5 text-sm font-semibold text-foreground">Minimum Requirements</div>
           {#each platforms as platform}
@@ -104,7 +108,6 @@
 
       </div>
 
-      <!-- Mobile coming soon note -->
       <p class="mt-6 text-sm text-muted-foreground/70 text-center">
         Mobile (Android &amp; iOS) — coming soon. Built with Tauri.
       </p>

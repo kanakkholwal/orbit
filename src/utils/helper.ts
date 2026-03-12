@@ -1,5 +1,3 @@
-import { resetState, state } from '$lib/state.svelte';
-import { hideLoader, showAlert, showLoader } from '$lib/store.svelte';
 import createModule from '@neslinesli93/qpdf-wasm';
 
 const STANDARD_SIZES = {
@@ -163,20 +161,13 @@ let qpdfInstance: any = null;
 export async function initializeQpdf() {
   if (qpdfInstance) return qpdfInstance;
 
-  showLoader('Initializing PDF engine...');
   try {
     qpdfInstance = await createModule({
       locateFile: () => "/wasm/qpdf.wasm",
     });
   } catch (error) {
     console.error('Failed to initialize qpdf-wasm:', error);
-    showAlert(
-      'Initialization Error',
-      'Could not load the PDF engine. Please refresh the page and try again.'
-    );
     throw error;
-  } finally {
-    hideLoader();
   }
 
   return qpdfInstance;
@@ -233,22 +224,7 @@ export function formatShortcutDisplay(
     .join(isMac ? '' : '+');
 }
 
-export function resetAndReloadTool(preResetCallback?: () => void) {
-  const toolid = state.activeTool;
 
-  if (preResetCallback) {
-    preResetCallback();
-  }
-
-  resetState();
-
-  if (toolid) {
-    const element = document.querySelector(
-      `[data-tool-id="${toolid}"]`
-    ) as HTMLElement;
-    if (element) element.click();
-  }
-}
 
 /**
  * Wrapper for pdfjsLib.getDocument that adds the required wasmUrl configuration.

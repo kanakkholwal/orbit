@@ -6,8 +6,8 @@
   import Button from "$components/ui/button/button.svelte";
   import * as Sidebar from "$components/ui/sidebar";
   import { config } from "$constants/app";
-  import { isTauriApp } from "$lib/runtime/isTauri";
   import { cn } from "$lib/utils";
+  import { appState } from "$stores/app-state.svelte";
   import { toolList } from "$tools/list";
   import {
     Chromium,
@@ -15,18 +15,15 @@
     GithubIcon,
     Star,
   } from "@lucide/svelte";
-  import { onMount } from "svelte";
+
   // Derived state for reactivity
   let currentPath = $derived(page.url.pathname);
-  let isTauri = $state(false);
+  let isTauri = $derived(appState.isTauri);
 
   // Helper for active state checking
   function isActive(path: string) {
     return currentPath.startsWith(path);
   }
-  onMount(async () => {
-    isTauri = await isTauriApp();
-  });
 </script>
 
 <Sidebar.Root

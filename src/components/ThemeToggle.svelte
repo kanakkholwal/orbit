@@ -1,7 +1,8 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
-  import { getTauriTheme, isTauriApp } from "$lib/runtime/isTauri";
+  import { getTauriTheme } from "$lib/runtime/isTauri";
   import { cn } from "$lib/utils";
+  import { appState } from "$stores/app-state.svelte";
   import { Monitor, Moon, Sun } from "@lucide/svelte";
   import { DropdownMenu } from "bits-ui";
   import { resetMode, setMode } from "mode-watcher";
@@ -10,7 +11,7 @@
 
   async function setSystemMode() {
     try {
-      if (await isTauriApp()) {
+      if (appState.isTauri) {
         const theme = await getTauriTheme();
         if (theme) {
           setMode(theme);

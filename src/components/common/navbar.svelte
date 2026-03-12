@@ -3,8 +3,8 @@
   import ThemeToggle from "$components/ThemeToggle.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
-  import { isTauriApp } from "$lib/runtime/isTauri";
   import { cn } from "$lib/utils";
+  import { appState } from "$stores/app-state.svelte";
   import {
     ChevronRight,
     Compass,
@@ -15,15 +15,15 @@
     MonitorDown,
     X
   } from "@lucide/svelte";
-  import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
   import { slide } from "svelte/transition";
 
   let isMobileOpen = $state(false);
   let scrollY = $state(0);
 
-  let isTauri = $state(false);
-  let mounted = $state(false);
+  let isTauri = $derived(appState.isTauri);
+  // We can treat mounted as true or derive from somewhere else if needed, but appState should be enough
+  let mounted = $state(true); 
 
   // Essential Web Navigation Links
   const navLinks = [
@@ -31,11 +31,6 @@
     { name: "Explore", href: "/explore", icon: Compass },
     { name: "Download", href: "/download", icon: MonitorDown },
   ];
-
-  onMount(async () => {
-    isTauri = await isTauriApp();
-    mounted = true;
-  });
 </script>
 
 <svelte:window bind:scrollY />
@@ -114,7 +109,7 @@
               class="hidden sm:inline-flex rounded-full px-5! font-semibold shadow-sm"
             >
               <DownloadIcon size={14} />
-              Native App
+              Download
             </Button>
 
             <button
@@ -193,7 +188,7 @@
                 onclick={() => (isMobileOpen = false)}
               >
                 <MonitorDown size={18} class="mr-2 text-muted-foreground" />
-                Download Native App
+                Download App
               </Button>
               <Button
                 href="/#tools"
