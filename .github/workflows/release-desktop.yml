@@ -14,6 +14,7 @@ env:
   # for web platform only, No tracking in desktop app, but these env vars are required by the frontend code, so we set them to empty strings
   PUBLIC_ADSENSE_PUBLISHER_ID: "" 
   PUBLIC_GOOGLE_ANALYTICS_ID: "" 
+
 jobs:
   # Windows build and release using Tauri's GitHub Action. This is separate to ensure we can sign the Windows executable properly.
   build-windows:
