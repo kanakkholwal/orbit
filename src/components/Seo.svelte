@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dev } from "$app/environment";
   import { page } from "$app/state";
-  import { config } from "$constants/app";
+  import { config, faqs } from "$constants/app";
 
   export let title = config.appName;
   export let description = config.appDescription;
@@ -30,9 +30,28 @@
     name: fullTitle,
     url: canonicalUrl,
     ...(image ? { image } : {}),
-    ...(type === "article" && author ? { author: { "@type": "Person", name: author } } : {}),
-    ...(type === "article" && publishedTime ? { datePublished: publishedTime } : {}),
-    ...(type === "article" && modifiedTime ? { dateModified: modifiedTime } : {}),
+    ...(type === "article" && author
+      ? { author: { "@type": "Person", name: author } }
+      : {}),
+    ...(type === "article" && publishedTime
+      ? { datePublished: publishedTime }
+      : {}),
+    ...(type === "article" && modifiedTime
+      ? { dateModified: modifiedTime }
+      : {}),
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
   };
 </script>
 
@@ -58,8 +77,14 @@
   {/if}
 
   {#if type === "article"}
-    {#if publishedTime}<meta property="article:published_time" content={publishedTime} />{/if}
-    {#if modifiedTime}<meta property="article:modified_time" content={modifiedTime} />{/if}
+    {#if publishedTime}<meta
+        property="article:published_time"
+        content={publishedTime}
+      />{/if}
+    {#if modifiedTime}<meta
+        property="article:modified_time"
+        content={modifiedTime}
+      />{/if}
     {#if author}<meta property="article:author" content={author} />{/if}
   {/if}
 
@@ -76,4 +101,5 @@
 
   <!-- Schema.org JSON-LD -->
   {@html `<script type="application/ld+json">${JSON.stringify(schemaOrg)}</script>`}
+  {@html `<script type="application/ld+json">${JSON.stringify(faqSchema)}</script>`}
 </svelte:head>

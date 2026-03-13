@@ -1,7 +1,9 @@
 <script lang="ts">
   import Footer from "$components/common/footer.svelte";
   import Navbar from "$components/common/navbar.svelte";
-  import { config } from "$constants/app";
+  import Seo from "$components/Seo.svelte";
+  import { Button } from "$components/ui/button";
+  import { config, faqs } from "$constants/app";
   import { toolList } from "$tools/list";
   import {
     ArrowRight,
@@ -14,19 +16,23 @@
     WifiOff,
     Zap,
   } from "@lucide/svelte";
-</script>
 
-<svelte:head>
-  <title>Documentation & User Guide | Privacy-First PDF Toolkit</title>
-  <meta
-    name="description"
-    content="Learn how to use our free, privacy-first PDF toolkit to manage your documents. Quick start guide, installation instructions, tool overviews, and FAQ."
-  />
-  <meta
-    name="keywords"
-    content="PDF tools documentation, free PDF editor offline, how to edit PDF locally, PDF toolkit user guide, open source PDF app"
-  />
-</svelte:head>
+
+
+
+</script>
+<Seo
+  title="Documentation & User Guide"
+  description="Learn how to use our free, privacy-first PDF toolkit to manage your documents. Quick start guide, installation instructions, tool overviews, and FAQ."
+  keywords={[
+    "PDF tools documentation",
+    "free PDF editor offline",
+    "how to edit PDF locally",
+    "PDF toolkit user guide",
+    "open source PDF app",
+  ]}
+/>
+
 
 <div class="relative flex min-h-screen w-full flex-col">
   <Navbar />
@@ -338,67 +344,34 @@
         </h2>
 
         <div class="space-y-6">
-          <div>
-            <h4 class="font-bold text-foreground text-lg mb-1">
-              Is this tool really free?
-            </h4>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              Yes! The platform is completely free and open source. There are no
-              hidden costs, subscriptions, paywalls, or premium-only features.
-              You can use it as much as you want.
-            </p>
-          </div>
-
-          <div>
-            <h4 class="font-bold text-foreground text-lg mb-1">
-              Does it work without internet?
-            </h4>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              Yes, the web app can be used offline once the initial page has
-              loaded. For reliable continuous offline usage, we highly recommend
-              installing the desktop application.
-            </p>
-          </div>
-
-          <div>
-            <h4 class="font-bold text-foreground text-lg mb-1">
-              What file formats are supported?
-            </h4>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              Primarily PDF files (.pdf). For specific tools like image
-              conversion, we also support JPG, PNG, and HEIC formats. Document
-              conversion handles Word (.docx) and PowerPoint (.pptx).
-            </p>
-          </div>
-
-          <div>
-            <h4 class="font-bold text-foreground text-lg mb-1">
-              Is there a file size limit?
-            </h4>
-            <p class="text-muted-foreground text-sm leading-relaxed">
-              No hard limits! Because processing happens on your machine, it is
-              limited only by your device's available RAM and CPU. Modern
-              computers can easily handle PDFs well over 500MB.
-            </p>
-          </div>
-
-          <div class="bg-muted/40 border border-border p-5 rounded-xl">
-            <h4 class="font-bold text-foreground flex items-center gap-2 mb-2">
-              Can I contribute or report issues?
-            </h4>
-            <p class="text-muted-foreground text-sm mb-4">
-              We welcome bug reports, feature requests, and code contributions
-              from the community.
-            </p>
-            <a
-              href={config.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-4 py-2 bg-foreground text-background rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
-            >
-              <Github size={16} /> View GitHub Repository
-            </a>
-          </div>
+          {#each faqs as faq, index}
+            {#if index < 4}
+              <div>
+                <h4 class="font-bold text-foreground text-lg mb-1">
+                  {faq.question}
+                </h4>
+                <p class="text-muted-foreground text-sm leading-relaxed">
+                  {faq.answer}
+                </p>
+              </div>
+            {:else}
+              <div class="bg-muted/40 border border-border p-5 rounded-xl">
+                <h4 class="font-bold text-foreground flex items-center gap-2 mb-2">
+                  {faq.question}
+                </h4>
+                <p class="text-muted-foreground text-sm mb-4">
+                  {faq.answer}
+                </p>
+                <Button
+                  href={config.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Github size={16} /> View GitHub Repository
+                </Button>
+              </div>
+            {/if}
+          {/each}
         </div>
       </section>
     </main>

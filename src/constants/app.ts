@@ -18,3 +18,29 @@ const config = {
 Object.freeze(config);
 
 export { config };
+
+const faqs = [
+     {
+      question: "Is this tool really free?",
+      answer: "Yes! The platform is completely free and open source. There are no hidden costs, subscriptions, paywalls, or premium-only features. You can use it as much as you want."
+    },
+    {
+      question: "Does it work without internet?",
+      answer: "Yes, the web app can be used offline once the initial page has loaded. For reliable continuous offline usage, we highly recommend installing the desktop application."
+    },
+    {
+      question: "What file formats are supported?",
+      answer: "Primarily PDF files (.pdf). For specific tools like image conversion, we also support JPG, PNG, and HEIC formats. Document conversion handles Word (.docx) and PowerPoint (.pptx)."
+    },
+    {
+      question: "Is there a file size limit?",
+      answer: "No hard limits! Because processing happens on your machine, it is limited only by your device's available RAM and CPU. Modern computers can easily handle PDFs well over 500MB."
+    },
+    {
+      question: "Can I contribute or report issues?",
+      answer: "We welcome bug reports, feature requests, and code contributions from the community. You can contribute on our GitHub repository."
+    }
+];
+Object.freeze(faqs);
+
+export { faqs };
