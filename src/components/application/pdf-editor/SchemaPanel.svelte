@@ -220,12 +220,12 @@
         {@const heightClass = sheetHeight === "full" ? "h-[100vh]" : "h-[50vh]"}
         {@const dragOffset = isDragging ? Math.max(0, currentY - startY) : 0}
 
-        <div
+        <button
             class="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
             onclick={onClose}
-            role="button"
             tabindex="-1"
-        />
+            title="Close"
+        ></button>
 
         <div
             class="fixed bottom-0 left-0 right-0 z-50 {heightClass} flex flex-col rounded-t-2xl bg-background shadow-2xl transition-all duration-300"
@@ -242,7 +242,7 @@
                 tabindex="-1"
             >
                 <div class="flex flex-1 justify-center">
-                    <div class="h-1 w-8 rounded-full bg-muted-foreground/25" />
+                    <div class="h-1 w-8 rounded-full bg-muted-foreground/25"></div>
                 </div>
                 <button
                     onclick={onClose}

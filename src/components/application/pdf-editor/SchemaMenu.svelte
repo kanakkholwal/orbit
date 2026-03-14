@@ -1,15 +1,15 @@
 <script lang="ts">
     import Icons from "$components/Icons.svelte";
-    import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@lucide/svelte";
     import { useCommand } from "@embedpdf/plugin-commands/svelte";
     import { useTranslations } from "@embedpdf/plugin-i18n/svelte";
     import {
-        type MenuItem,
-        type MenuRendererProps,
-        type MenuSchema,
-        getUIItemProps,
-        useUISchema,
+      type MenuItem,
+      type MenuRendererProps,
+      type MenuSchema,
+      getUIItemProps,
+      useUISchema,
     } from "@embedpdf/plugin-ui/svelte";
+    import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@lucide/svelte";
     import { onMount } from "svelte";
 
     interface Props extends MenuRendererProps {}
@@ -25,9 +25,7 @@
         title?: string;
     }
 
-    let menuStack = $state<MenuStackItem[]>([
-        { menuId: schema.id, schema, title: undefined },
-    ]);
+    let menuStack = $state<MenuStackItem[]>([]);
 
     $effect(() => {
         menuStack = [{ menuId: schema.id, schema, title: undefined }];
@@ -123,12 +121,12 @@
 
 {#if currentMenu}
     {#if isMobile}
-        <div
+        <button
             class="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
             onclick={onClose}
-            role="button"
             tabindex="-1"
-        ></div>
+            title="Close"
+        ></button>
 
         <div
             bind:this={menuRef}
@@ -173,7 +171,7 @@
         <div
             bind:this={menuRef}
             {...getUIItemProps(currentMenu.schema)}
-            class="animate-fade-in fixed z-50 min-w-[180px] rounded-lg border border-border bg-background shadow-lg"
+            class="animate-fade-in fixed z-50 min-w-45 rounded-lg border border-border bg-background shadow-lg"
             style:top={position ? `${position.top}px` : undefined}
             style:left={position ? `${position.left}px` : undefined}
             role="menu"
