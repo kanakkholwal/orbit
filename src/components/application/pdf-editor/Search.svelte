@@ -8,11 +8,11 @@
     import { useScrollCapability } from "@embedpdf/plugin-scroll/svelte";
     import { useSearch } from "@embedpdf/plugin-search/svelte";
     import {
-        ChevronDownIcon,
-        ChevronUpIcon,
-        LoaderCircleIcon,
-        SearchIcon,
-        XIcon,
+      ChevronDownIcon,
+      ChevronUpIcon,
+      LoaderCircleIcon,
+      SearchIcon,
+      XIcon,
     } from "@lucide/svelte";
     import { tick } from "svelte";
 
@@ -26,7 +26,7 @@
     const scrollCapability = useScrollCapability();
 
     let inputValue = $state(search.state.query || "");
-    let inputRef: HTMLInputElement | undefined;
+    let inputRef: HTMLInputElement | undefined = $state();
 
     $effect(() => {
         tick().then(() => {

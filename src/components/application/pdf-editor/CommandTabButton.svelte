@@ -17,7 +17,7 @@
         () => documentId,
     );
 
-    const finalItemId = itemId || commandId;
+    const finalItemId = $derived(itemId || commandId);
     const registerAnchor = useRegisterAnchor(
         () => documentId,
         () => finalItemId,

@@ -1,6 +1,5 @@
 <script lang="ts">
     import Icons from "$components/Icons.svelte";
-    import { buttonVariants } from "$components/ui/button";
     import { cn } from "$lib/utils";
     import { useCommand } from "@embedpdf/plugin-commands/svelte";
     import { useRegisterAnchor } from "@embedpdf/plugin-ui/svelte";
@@ -19,7 +18,7 @@
         () => documentId,
     );
 
-    const finalItemId = itemId || commandId;
+    const finalItemId = $derived(itemId || commandId);
     const registerAnchor = useRegisterAnchor(
         () => documentId,
         () => finalItemId,

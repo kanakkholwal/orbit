@@ -92,7 +92,6 @@
           variant={activeDocumentId === document.id ? "secondary" : "ghost"}
           size="icon-xs"
           aria-label="Close {document.name ?? 'document'}"
-          disabled={documentStates.length === 1}
         >
           <CloseIcon class="size-3.5" title="Close" />
         </Button>
