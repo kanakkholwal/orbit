@@ -22,57 +22,43 @@
     };
 </script>
 
-<div class="flex h-full w-56 flex-col border-r border-gray-300 bg-gray-50">
-    <!-- Thumbnails -->
-    <div class="flex-1 overflow-hidden">
-        <ThumbnailsPane {documentId} style="width: 100%; height: 100%;">
-            {#snippet children(meta: ThumbMeta)}
-                <!-- svelte-ignore a11y_no_static_element_interactions -->
-                <!-- svelte-ignore a11y_click_events_have_key_events -->
+<div class="flex h-full w-52 flex-col bg-background">
+    <ThumbnailsPane {documentId} style="width: 100%; height: 100%;">
+        {#snippet children(meta: ThumbMeta)}
+            <button
+                style:position="absolute"
+                style:width="100%"
+                style:height="{meta.wrapperHeight}px"
+                style:top="{meta.top}px"
+                style:display="flex"
+                style:flex-direction="column"
+                style:align-items="center"
+                style:padding="6px"
+                class="cursor-pointer"
+                onclick={() => handleClick(meta.pageIndex)}
+            >
                 <div
-                    role="button"
-                    tabindex={0}
-                    style:position="absolute"
-                    style:width="100%"
-                    style:height="{meta.wrapperHeight}px"
-                    style:top="{meta.top}px"
-                    style:display="flex"
-                    style:flex-direction="column"
-                    style:align-items="center"
-                    style:cursor="pointer"
-                    style:padding="8px"
-                    onclick={() => handleClick(meta.pageIndex)}
+                    style:width="{meta.width}px"
+                    style:height="{meta.height}px"
+                    class="overflow-hidden rounded transition-all {scroll.state
+                        .currentPage ===
+                    meta.pageIndex + 1
+                        ? 'ring-2 ring-primary ring-offset-1 ring-offset-background'
+                        : 'ring-1 ring-border'}"
                 >
-                    <div
-                        style:width="{meta.width}px"
-                        style:height="{meta.height}px"
-                        style:border="2px solid {scroll.state.currentPage ===
-                        meta.pageIndex + 1
-                            ? '#3b82f6'
-                            : '#d1d5db'}"
-                        style:border-radius="4px"
-                        style:overflow="hidden"
-                        style:box-shadow={scroll.state.currentPage ===
-                        meta.pageIndex + 1
-                            ? "0 0 0 2px rgba(59, 130, 246, 0.2)"
-                            : "none"}
-                        style:transition="all 0.2s"
-                    >
-                        <ThumbImg
-                            {meta}
-                            {documentId}
-                            style="width: 100%; height: 100%; display: block;"
-                        />
-                    </div>
-                    <div
-                        style:height="{meta.labelHeight}px"
-                        style:margin-top="4px"
-                        class="text-xs text-gray-600"
-                    >
-                        Page {meta.pageIndex + 1}
-                    </div>
+                    <ThumbImg
+                        {meta}
+                        {documentId}
+                        style="width: 100%; height: 100%; display: block;"
+                    />
                 </div>
-            {/snippet}
-        </ThumbnailsPane>
-    </div>
+                <span
+                    style:height="{meta.labelHeight}px"
+                    class="mt-1 text-[10px] tabular-nums text-muted-foreground"
+                >
+                    {meta.pageIndex + 1}
+                </span>
+            </button>
+        {/snippet}
+    </ThumbnailsPane>
 </div>

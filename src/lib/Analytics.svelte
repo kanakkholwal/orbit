@@ -9,15 +9,15 @@
     if (!browser || !googleAnalyticsId) return;
 
     window.dataLayer = window.dataLayer || [];
-    function gtag() {
+    window.gtag = function () {
       // @ts-ignore
       window.dataLayer.push(arguments);
-    }
+    };
     // @ts-ignore
-    gtag("js", new Date());
+    window.gtag("js", new Date());
 
     // @ts-ignore
-    gtag("config", googleAnalyticsId);
+    window.gtag("config", googleAnalyticsId);
   });
 </script>
 

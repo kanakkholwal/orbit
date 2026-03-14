@@ -10,15 +10,12 @@
 
     const zoom = useZoom(() => documentId);
 
-    // Calculate zoom percentage
     const zoomPercentage = $derived(
         Math.round((zoom.state.currentZoomLevel ?? 1) * 100),
     );
 
-    // Input value state
     let inputValue = $state("100");
 
-    // Sync input value with zoom state when it changes externally
     $effect(() => {
         inputValue = zoomPercentage.toString();
     });
@@ -26,7 +23,6 @@
     function handleZoomChange(e: SubmitEvent) {
         e.preventDefault();
         const value = parseFloat(inputValue);
-
         if (!isNaN(value) && value > 0 && zoom.provides) {
             zoom.provides.requestZoom(value / 100);
         }
@@ -34,13 +30,10 @@
 
     function handleInputChange(e: Event) {
         const target = e.target as HTMLInputElement;
-        // Only allow numbers
-        const value = target.value.replace(/[^0-9]/g, "");
-        inputValue = value;
+        inputValue = target.value.replace(/[^0-9]/g, "");
     }
 
     function handleBlur() {
-        // Reset to actual zoom if input is invalid
         if (!inputValue || parseFloat(inputValue) <= 0) {
             inputValue = zoomPercentage.toString();
         }
@@ -48,32 +41,27 @@
 </script>
 
 {#if zoom.provides}
-    <div class="relative">
-        <div class="flex items-center rounded bg-gray-100">
-            <!-- Editable Zoom Percentage Input -->
-            <form onsubmit={handleZoomChange} class="block">
-                <input
-                    name="zoom"
-                    type="text"
-                    inputmode="numeric"
-                    pattern="\d*"
-                    class="h-6 w-8 border-0 bg-transparent p-0 text-right text-sm outline-none focus:outline-none"
-                    aria-label="Set zoom"
-                    value={inputValue}
-                    oninput={handleInputChange}
-                    onblur={handleBlur}
-                />
-                <span class="text-sm">%</span>
-            </form>
-            <CommandButton
-                commandId="zoom:toggle-menu"
-                {documentId}
-                itemId="zoom-menu-button"
+    <div class="flex items-center gap-0.5 rounded-md bg-muted/60 px-1">
+        <form onsubmit={handleZoomChange} class="flex items-center">
+            <input
+                name="zoom"
+                type="text"
+                inputmode="numeric"
+                pattern="\d*"
+                class="h-6 w-8 border-0 bg-transparent p-0 text-right text-xs tabular-nums text-foreground outline-none"
+                aria-label="Set zoom"
+                value={inputValue}
+                oninput={handleInputChange}
+                onblur={handleBlur}
             />
-            <!-- Zoom Out Button -->
-            <CommandButton commandId="zoom:out" {documentId} />
-            <!-- Zoom In Button -->
-            <CommandButton commandId="zoom:in" {documentId} />
-        </div>
+            <span class="text-xs text-muted-foreground">%</span>
+        </form>
+        <CommandButton
+            commandId="zoom:toggle-menu"
+            {documentId}
+            itemId="zoom-menu-button"
+        />
+        <CommandButton commandId="zoom:out" {documentId} />
+        <CommandButton commandId="zoom:in" {documentId} />
     </div>
 {/if}

@@ -1,8 +1,19 @@
 <script lang="ts">
+    import { Button } from "$components/ui/button";
+    import { Checkbox } from "$components/ui/checkbox";
+    import { Input } from "$components/ui/input";
+    import { Label } from "$components/ui/label";
     import type { SearchResult } from "@embedpdf/models";
     import { MatchFlag } from "@embedpdf/models";
     import { useScrollCapability } from "@embedpdf/plugin-scroll/svelte";
     import { useSearch } from "@embedpdf/plugin-search/svelte";
+    import {
+        ChevronDownIcon,
+        ChevronUpIcon,
+        LoaderCircleIcon,
+        SearchIcon,
+        XIcon,
+    } from "@lucide/svelte";
     import { tick } from "svelte";
 
     interface SearchProps {
@@ -17,7 +28,6 @@
     let inputValue = $state(search.state.query || "");
     let inputRef: HTMLInputElement | undefined;
 
-    // Focus input when component mounts
     $effect(() => {
         tick().then(() => {
             inputRef?.focus();
@@ -25,7 +35,6 @@
         });
     });
 
-    // Watch for input changes and trigger search
     $effect(() => {
         if (inputValue === "") {
             search.provides?.stopSearch();
@@ -34,7 +43,6 @@
         }
     });
 
-    // Auto-scroll to active result when it changes
     $effect(() => {
         if (
             typeof search.state.activeResultIndex === "number" &&
@@ -52,11 +60,6 @@
         } else {
             search.provides?.setFlags(currentFlags.filter((f) => f !== flag));
         }
-    };
-
-    const clearInput = () => {
-        inputValue = "";
-        inputRef?.focus();
     };
 
     const scrollToItem = (index: number) => {
@@ -90,10 +93,6 @@
 
     const grouped = $derived(groupByPage(search.state.results));
 
-    const handleHitClick = (index: number) => {
-        search.provides?.goToResult(index);
-    };
-
     const isMatchCaseChecked = $derived(
         search.state.flags.includes(MatchFlag.MatchCase),
     );
@@ -102,191 +101,105 @@
     );
 </script>
 
-<div class="flex h-full flex-col bg-white p-1">
-    <!-- Search Input -->
-    <div class="p-3">
+<div class="flex h-full flex-col">
+    <div class="space-y-3 p-3">
         <div class="relative">
-            <input
-                bind:this={inputRef}
+            <SearchIcon class="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <Input
+                bind:ref={inputRef}
                 bind:value={inputValue}
                 type="text"
-                placeholder="Search"
-                class="w-full rounded border border-gray-300 py-2 pl-9 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                placeholder="Search in document"
+                class="h-8 pl-8 pr-8 text-sm"
             />
-            <svg
-                class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-            </svg>
             {#if inputValue}
-                <button
-                    onclick={clearInput}
-                    class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    aria-label="Clear search"
+                <Button
+                    variant="ghost"
+                    size="icon-xs"
+                    onclick={() => {
+                        inputValue = "";
+                        inputRef?.focus();
+                    }}
+                    class="absolute right-1.5 top-1/2 -translate-y-1/2"
                 >
-                    <svg
-                        class="h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    >
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
+                    <XIcon class="size-3" />
+                </Button>
             {/if}
         </div>
 
-        <!-- Search Options -->
-        <div class="mt-3 space-y-2">
-            <label class="flex items-center gap-2">
-                <input
-                    type="checkbox"
+        <div class="flex gap-4">
+            <Label class="flex items-center gap-1.5">
+                <Checkbox
                     checked={isMatchCaseChecked}
-                    onchange={(e) =>
-                        handleFlagChange(
-                            MatchFlag.MatchCase,
-                            e.currentTarget.checked,
-                        )}
-                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    onCheckedChange={(checked) =>
+                        handleFlagChange(MatchFlag.MatchCase, checked === true)}
                 />
-                <span class="text-sm text-gray-700">Case sensitive</span>
-            </label>
-            <label class="flex items-center gap-2">
-                <input
-                    type="checkbox"
+                <span class="text-xs text-muted-foreground">Case sensitive</span>
+            </Label>
+            <Label class="flex items-center gap-1.5">
+                <Checkbox
                     checked={isWholeWordChecked}
-                    onchange={(e) =>
+                    onCheckedChange={(checked) =>
                         handleFlagChange(
                             MatchFlag.MatchWholeWord,
-                            e.currentTarget.checked,
+                            checked === true,
                         )}
-                    class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span class="text-sm text-gray-700">Whole word</span>
-            </label>
+                <span class="text-xs text-muted-foreground">Whole word</span>
+            </Label>
         </div>
 
-        <div class="my-3 border-t border-gray-200"></div>
-
-        <!-- Results Summary -->
         {#if search.state.active && !search.state.loading}
             <div class="flex items-center justify-between">
-                <span class="text-sm text-blue-600">
+                <span class="text-xs text-muted-foreground">
                     {search.state.total} result{search.state.total !== 1
                         ? "s"
-                        : ""} found
+                        : ""}
                 </span>
                 {#if search.state.total > 1}
-                    <div class="flex gap-1">
-                        <button
+                    <div class="flex gap-0.5">
+                        <Button
+                            variant="ghost"
+                            size="icon-xs"
                             onclick={() => search.provides?.previousResult()}
-                            class="rounded p-1 text-gray-600 hover:bg-gray-100"
-                            title="Previous result"
                         >
-                            <svg
-                                class="h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <polyline points="18 15 12 9 6 15"></polyline>
-                            </svg>
-                        </button>
-                        <button
+                            <ChevronUpIcon class="size-3.5" />
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon-xs"
                             onclick={() => search.provides?.nextResult()}
-                            class="rounded p-1 text-gray-600 hover:bg-gray-100"
-                            title="Next result"
                         >
-                            <svg
-                                class="h-4 w-4"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                            >
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </button>
+                            <ChevronDownIcon class="size-3.5" />
+                        </Button>
                     </div>
                 {/if}
             </div>
         {/if}
     </div>
 
-    <!-- Results List -->
     <div class="flex-1 overflow-y-auto px-3 pb-3">
         {#if search.state.loading}
-            <div class="flex h-full items-center justify-center">
-                <svg
-                    class="h-6 w-6 animate-spin text-blue-600"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                >
-                    <circle
-                        class="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="4"
-                    ></circle>
-                    <path
-                        class="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                </svg>
+            <div class="flex h-32 items-center justify-center">
+                <LoaderCircleIcon class="size-4 animate-spin text-muted-foreground" />
             </div>
         {:else}
             {#each Object.entries(grouped) as [page, hits]}
-                <div class="mb-4">
-                    <div class="mb-2 text-xs font-medium text-gray-500">
+                <div class="mb-3">
+                    <div class="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                         Page {Number(page) + 1}
                     </div>
-
-                    <div class="space-y-2">
+                    <div class="space-y-1">
                         {#each hits as { hit, index }}
                             <button
-                                onclick={() => handleHitClick(index)}
-                                class="w-full cursor-pointer rounded border p-3 text-left text-sm transition-all hover:-translate-y-0.5 {index ===
-                                search.state.activeResultIndex
-                                    ? 'border-blue-500 bg-blue-50'
-                                    : 'border-gray-200 bg-white hover:border-gray-300'}"
+                                onclick={() =>
+                                    search.provides?.goToResult(index)}
+                                class="w-full rounded-md border px-2.5 py-2 text-left text-xs transition-colors
+                                    {index === search.state.activeResultIndex
+                                    ? 'border-primary/30 bg-primary/5'
+                                    : 'border-border hover:bg-accent'}"
                             >
-                                <div class="text-gray-700">
-                                    {#if hit.context.truncatedLeft}
-                                        <span>… </span>
-                                    {/if}
-                                    <span>{hit.context.before}</span>
-                                    <span class="font-bold text-blue-600"
-                                        >{hit.context.match}</span
-                                    >
-                                    <span>{hit.context.after}</span>
-                                    {#if hit.context.truncatedRight}
-                                        <span> …</span>
-                                    {/if}
-                                </div>
+                                {#if hit.context.truncatedLeft}<span class="text-muted-foreground">... </span>{/if}<span>{hit.context.before}</span><span class="font-semibold text-primary">{hit.context.match}</span><span>{hit.context.after}</span>{#if hit.context.truncatedRight}<span class="text-muted-foreground"> ...</span>{/if}
                             </button>
                         {/each}
                     </div>

@@ -1,6 +1,10 @@
 <script lang="ts">
+    import { Button } from "$components/ui/button";
+    import { Input } from "$components/ui/input";
+    import { Label } from "$components/ui/label";
     import type { DocumentState } from "@embedpdf/core";
     import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/svelte";
+    import { LockIcon } from "@lucide/svelte";
 
     interface DocumentPasswordPromptProps {
         documentState: DocumentState | null;
@@ -16,52 +20,46 @@
     const handleSubmit = (e: Event) => {
         e.preventDefault();
         if (!documentState?.id || !password) return;
-
         documentManager.provides?.retryDocument(documentState.id, { password });
         password = "";
         error = "";
     };
 </script>
 
-<div class="flex h-full items-center justify-center bg-gray-50 p-8">
-    <div class="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-        <h2 class="mb-4 text-xl font-semibold text-gray-900">
-            Document Password Required
+<div class="flex h-full items-center justify-center bg-muted/20 p-8">
+    <div class="w-full max-w-sm rounded-xl border border-border bg-background p-6">
+        <div class="mb-4 flex justify-center">
+            <div class="flex size-10 items-center justify-center rounded-full bg-muted">
+                <LockIcon class="size-4 text-muted-foreground" />
+            </div>
+        </div>
+        <h2 class="mb-1 text-center text-base font-semibold text-foreground">
+            Password Required
         </h2>
-        <p class="mb-4 text-sm text-gray-600">
-            This document is password protected. Please enter the password to
-            continue.
+        <p class="mb-5 text-center text-sm text-muted-foreground">
+            This document is password protected.
         </p>
 
-        <form onsubmit={handleSubmit} class="space-y-4">
-            <div>
-                <label
-                    for="password"
-                    class="block text-sm font-medium text-gray-700"
-                    >Password</label
-                >
-                <input
+        <form onsubmit={handleSubmit} class="space-y-3">
+            <div class="space-y-1.5">
+                <Label for="password" class="text-xs">Password</Label>
+                <Input
                     id="password"
                     type="password"
                     bind:value={password}
-                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                     placeholder="Enter password"
                     autocomplete="off"
+                    class="h-9"
                 />
             </div>
 
             {#if error}
-                <div class="rounded-md bg-red-50 p-3 text-sm text-red-700">
-                    {error}
-                </div>
+                <p class="text-xs text-destructive">{error}</p>
             {/if}
 
-            <button
-                type="submit"
-                class="w-full rounded-md bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-                Unlock Document
-            </button>
+            <Button type="submit" class="w-full" size="sm">
+                Unlock
+            </Button>
         </form>
     </div>
 </div>

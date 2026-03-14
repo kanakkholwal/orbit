@@ -1,50 +1,53 @@
 <script lang="ts">
     import { Button } from "$components/ui/button";
     import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/svelte";
-    import { FileTextIcon, Plus } from "@lucide/svelte";
-
-    interface EmptyStateProps {
-        onDocumentOpened?: (documentId: string) => void;
-    }
-
-    let { onDocumentOpened }: EmptyStateProps = $props();
+    import { FileTextIcon, PlusIcon } from "@lucide/svelte";
 
     const documentManagerCapability = useDocumentManagerCapability();
 
+    let fileInput: HTMLInputElement;
+
     const handleOpenFile = () => {
-        const provides = documentManagerCapability.provides;
-        const openTask = provides?.openFileDialog();
-        openTask?.wait(
-            (result) => {
-                onDocumentOpened?.(result.documentId);
-            },
-            (error) => {
-                console.error("Open file failed:", error);
-            },
-        );
+        fileInput?.click();
+    };
+
+    const handleFileChange = async (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        const file = target.files?.[0];
+        if (!file || !documentManagerCapability.provides) return;
+
+        const buffer = await file.arrayBuffer();
+        documentManagerCapability.provides.openDocumentBuffer({
+            buffer,
+            name: file.name,
+            autoActivate: true,
+        });
+        target.value = "";
     };
 </script>
 
-<div class="flex flex-1 items-center justify-center bg-card">
-    <div class="max-w-md text-center">
-        <div class="mb-6 flex justify-center">
-            <div class="rounded-full bg-primary/10 p-6">
-                <FileTextIcon class="h-16 w-16 text-primary" />
-            </div>
+<input
+    bind:this={fileInput}
+    type="file"
+    accept="application/pdf"
+    class="hidden"
+    onchange={handleFileChange}
+/>
+
+<div class="flex flex-1 items-center justify-center bg-muted/20">
+    <div class="max-w-xs text-center">
+        <div class="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-muted">
+            <FileTextIcon class="size-7 text-muted-foreground" />
         </div>
-        <h2 class="mb-3 text-2xl font-bold text-foreground">
+        <h2 class="mb-1.5 text-base font-semibold text-foreground">
             No Documents Open
         </h2>
-        <p class="mb-8 text-muted-foreground">
-            Get started by opening a PDF document. You can view multiple
-            documents at once using tabs and split views.
+        <p class="mb-6 text-sm text-muted-foreground">
+            Open a PDF to get started. You can view multiple documents using tabs.
         </p>
-        <Button onclick={handleOpenFile}>
-            <Plus />
-            Open PDF Document
+        <Button onclick={handleOpenFile} size="sm">
+            <PlusIcon class="size-4" />
+            Open PDF
         </Button>
-        <div class="mt-6 text-sm text-muted-foreground">
-            Supported format: PDF
-        </div>
     </div>
 </div>

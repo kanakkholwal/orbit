@@ -1,7 +1,6 @@
 <script lang="ts">
     import {
         type ToolbarRendererProps,
-        type ToolbarItem,
         getUIItemProps,
     } from "@embedpdf/plugin-ui/svelte";
     import { useItemRenderer } from "@embedpdf/plugin-ui/svelte";
@@ -17,36 +16,24 @@
     const { getCustomComponent: renderCustomComponent } = useItemRenderer();
 
     const isSecondarySlot = $derived(schema.position.slot === "secondary");
-    const placementClasses = $derived(
-        getPlacementClasses(schema.position.placement),
-    );
-    const slotClasses = $derived(isSecondarySlot ? "bg-[#f1f3f5]" : "");
 
-    /**
-     * Get placement classes for toolbar positioning
-     */
     function getPlacementClasses(
         placement: "top" | "bottom" | "left" | "right",
     ): string {
         switch (placement) {
             case "top":
-                return "border-b border-gray-300 bg-white px-3 py-2";
+                return "border-b border-border bg-background px-3 py-1.5";
             case "bottom":
-                return "border-t border-gray-300 bg-white px-3 py-2";
+                return "border-t border-border bg-background px-3 py-1.5";
             case "left":
-                return "border-r border-gray-300 bg-white px-2 py-3 flex-col";
+                return "border-r border-border bg-background px-1.5 py-3 flex-col";
             case "right":
-                return "border-l border-gray-300 bg-white px-2 py-3 flex-col";
+                return "border-l border-border bg-background px-1.5 py-3 flex-col";
         }
     }
 
-    /**
-     * Get alignment class for groups
-     */
     function getAlignmentClass(alignment?: "start" | "center" | "end"): string {
         switch (alignment) {
-            case "start":
-                return "justify-start";
             case "center":
                 return "justify-center";
             case "end":
@@ -55,12 +42,17 @@
                 return "justify-start";
         }
     }
+
+    const placementClasses = $derived(
+        getPlacementClasses(schema.position.placement),
+    );
+    const slotClasses = $derived(isSecondarySlot ? "bg-muted/40" : "");
 </script>
 
 {#if isOpen}
     <div
         {...getUIItemProps(schema, { "data-toolbar-id": schema.id })}
-        class={`flex items-center gap-2 ${placementClasses} ${slotClasses} ${className}`}
+        class="flex items-center gap-1 {placementClasses} {slotClasses} {className}"
     >
         {#each schema.items as item (item.id)}
             {#if item.type === "command-button"}
@@ -76,10 +68,10 @@
                 {@const alignmentClass = getAlignmentClass(item.alignment)}
                 <div
                     {...getUIItemProps(item)}
-                    class={`flex items-center ${alignmentClass}`}
+                    class="flex items-center {alignmentClass}"
                     role="tablist"
                 >
-                    <div class="flex rounded-lg bg-gray-100 p-1">
+                    <div class="flex rounded-lg bg-muted p-0.5">
                         {#each item.tabs as tab (tab.id)}
                             {#if tab.commandId}
                                 <div {...getUIItemProps(tab)}>
@@ -98,20 +90,20 @@
                 </div>
             {:else if item.type === "divider"}
                 <div {...getUIItemProps(item)}>
-                    <div class="h-6 w-px bg-gray-300"></div>
+                    <div class="mx-0.5 h-5 w-px bg-border"></div>
                 </div>
             {:else if item.type === "spacer"}
                 <div
                     {...getUIItemProps(item)}
-                    class={item.flex ? "flex-1" : "w-4"}
+                    class={item.flex ? "flex-1" : "w-3"}
                     aria-hidden="true"
                 ></div>
             {:else if item.type === "group"}
-                {@const gapClass = item.gap ? `gap-${item.gap}` : "gap-2"}
+                {@const gapClass = item.gap ? `gap-${item.gap}` : "gap-1"}
                 {@const alignmentClass = getAlignmentClass(item.alignment)}
                 <div
                     {...getUIItemProps(item)}
-                    class={`flex items-center ${gapClass} ${alignmentClass}`}
+                    class="flex items-center {gapClass} {alignmentClass}"
                 >
                     {#each item.items as childItem (childItem.id)}
                         {#if childItem.type === "command-button"}
@@ -127,7 +119,7 @@
                             </div>
                         {:else if childItem.type === "divider"}
                             <div {...getUIItemProps(childItem)}>
-                                <div class="h-6 w-px bg-gray-300"></div>
+                                <div class="mx-0.5 h-5 w-px bg-border"></div>
                             </div>
                         {:else if childItem.type === "custom"}
                             {#if childItem.componentId}

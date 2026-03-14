@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { useCommand } from "@embedpdf/plugin-commands/svelte";
     import Icons from "$components/Icons.svelte";
+    import { useCommand } from "@embedpdf/plugin-commands/svelte";
     import { useRegisterAnchor } from "@embedpdf/plugin-ui/svelte";
 
     interface Props {
@@ -17,8 +17,6 @@
         () => documentId,
     );
 
-    // Register this button with the anchor registry if itemId is provided
-    // This allows menus to anchor to it when opened via UI state changes
     const finalItemId = itemId || commandId;
     const registerAnchor = useRegisterAnchor(
         () => documentId,
@@ -31,24 +29,18 @@
         }
     }
 
-    // Tab button classes
     const className = $derived.by(() => {
-        if (!command)
-            return "px-3 py-1.5 text-sm font-medium opacity-50 cursor-not-allowed";
-
         const base =
-            "px-3 py-1.5 text-sm font-medium rounded transition-colors";
-        const state = command.current?.active
-            ? "bg-white text-gray-900 shadow-sm"
-            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50";
-        const disabled = command.current?.disabled
-            ? "opacity-50 cursor-not-allowed"
+            "rounded-md px-2.5 py-1 text-xs font-medium transition-colors";
+        const state = command?.current?.active
+            ? "bg-background text-foreground shadow-sm"
+            : "text-muted-foreground hover:text-foreground";
+        const disabled = command?.current?.disabled
+            ? "opacity-40 cursor-not-allowed"
             : "cursor-pointer";
-
         return `${base} ${state} ${disabled}`;
     });
 
-    // Safely access icon props
     const cmdIconProps = $derived(command?.current?.iconProps || {});
 </script>
 
@@ -67,7 +59,7 @@
         {#if command.current?.icon && variant === "icon"}
             <Icons
                 name={command.current.icon}
-                class="h-5 w-5"
+                class="size-4"
                 primaryColor={cmdIconProps.primaryColor}
                 secondaryColor={cmdIconProps.secondaryColor}
             />

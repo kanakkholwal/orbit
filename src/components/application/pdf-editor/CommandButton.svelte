@@ -19,8 +19,6 @@
         () => documentId,
     );
 
-    // Register this button with the anchor registry if itemId is provided
-    // This allows menus to anchor to it when opened via UI state changes
     const finalItemId = itemId || commandId;
     const registerAnchor = useRegisterAnchor(
         () => documentId,
@@ -36,27 +34,22 @@
     const baseClasses = $derived.by(() => {
         switch (variant) {
             case "text":
-                return "px-3 py-1.5 text-sm font-medium";
+                return "px-2.5 py-1 text-xs font-medium";
             case "icon-text":
-                return "flex items-center gap-2 px-3 py-1.5 text-sm font-medium";
+                return "flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium";
             default:
-                return "p-2";
+                return "p-1.5";
         }
     });
 
     const stateClasses = $derived.by(() => {
         const cmd = command?.current;
-        if (!cmd || cmd.disabled) return "opacity-50 cursor-not-allowed";
+        if (!cmd || cmd.disabled) return "opacity-40 cursor-not-allowed";
         if (cmd.active)
-            return "bg-blue-100 text-blue-600 hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-300";
-        return "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800";
+            return "bg-primary/10 text-primary hover:bg-primary/15";
+        return "text-muted-foreground hover:text-foreground hover:bg-accent";
     });
 
-    const className = $derived(
-        `inline-flex items-center justify-center rounded transition-colors ${baseClasses} ${stateClasses}`,
-    );
-
-    // Safely access icon props
     const cmdIconProps = $derived(command?.current?.iconProps || {});
 </script>
 
@@ -64,20 +57,20 @@
     <button
         use:registerAnchor
         type="button"
-        class={cn(buttonVariants({ size: "icon" }), className)}
+        class={cn(
+            "inline-flex items-center justify-center rounded-md transition-colors",
+            baseClasses,
+            stateClasses,
+        )}
         onclick={handleClick}
         disabled={command.current?.disabled}
         data-item-id={itemId}
         title={command.current?.label}
     >
         {#if command.current?.icon && (variant === "icon" || variant === "icon-text")}
-            <!-- 
-         The 'name' prop triggers the registry lookup.
-         The ...spread passes the styles down to the SVG. 
-      -->
             <Icons
                 name={command.current.icon}
-                class="h-5 w-5"
+                class="size-4"
                 primaryColor={cmdIconProps.primaryColor}
                 secondaryColor={cmdIconProps.secondaryColor}
             />

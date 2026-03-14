@@ -6,15 +6,28 @@
       "dependencies": {
         "@embedpdf/core": "^2.8.0",
         "@embedpdf/engines": "^2.8.0",
+        "@embedpdf/models": "^2.8.0",
+        "@embedpdf/plugin-annotation": "^2.8.0",
+        "@embedpdf/plugin-capture": "^2.8.0",
+        "@embedpdf/plugin-commands": "^2.8.0",
         "@embedpdf/plugin-document-manager": "^2.8.0",
         "@embedpdf/plugin-export": "^2.8.0",
+        "@embedpdf/plugin-fullscreen": "^2.8.0",
+        "@embedpdf/plugin-history": "^2.8.0",
+        "@embedpdf/plugin-i18n": "^2.8.0",
         "@embedpdf/plugin-interaction-manager": "^2.8.0",
         "@embedpdf/plugin-pan": "^2.8.0",
+        "@embedpdf/plugin-print": "^2.8.0",
+        "@embedpdf/plugin-redaction": "^2.8.0",
         "@embedpdf/plugin-render": "^2.8.0",
         "@embedpdf/plugin-rotate": "^2.8.0",
         "@embedpdf/plugin-scroll": "^2.8.0",
+        "@embedpdf/plugin-search": "^2.8.0",
         "@embedpdf/plugin-selection": "^2.8.0",
+        "@embedpdf/plugin-spread": "^2.8.0",
+        "@embedpdf/plugin-thumbnail": "^2.8.0",
         "@embedpdf/plugin-tiling": "^2.8.0",
+        "@embedpdf/plugin-ui": "^2.8.0",
         "@embedpdf/plugin-viewport": "^2.8.0",
         "@embedpdf/plugin-zoom": "^2.8.0",
         "@embedpdf/snippet": "^2.6.0",
@@ -118,33 +131,33 @@
 
     "@embedpdf/pdfium": ["@embedpdf/pdfium@2.8.0", "", {}, "sha512-RlNLRNboF1Y6fNDy4sJ/a/FEYxATZyeM+n25r3KZJjG+RaM6bxBWXvWlFlGBU5Vx2eqQ5AzDAmIE9cn1agFmqA=="],
 
-    "@embedpdf/plugin-annotation": ["@embedpdf/plugin-annotation@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0", "@embedpdf/utils": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-history": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "@embedpdf/plugin-selection": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FJgGy6lhKrWsiJjh7jZ92NwMBob5GOwfYejQl28JFk6muEQORLtysz5gaeyMpMIyxnfjlf9Eqv8Z6LBBfGLGOA=="],
+    "@embedpdf/plugin-annotation": ["@embedpdf/plugin-annotation@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0", "@embedpdf/utils": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-history": "2.8.0", "@embedpdf/plugin-interaction-manager": "2.8.0", "@embedpdf/plugin-selection": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-h31dT0pvQjFSwsBLytL4BBLf3WDdz9kmAYNKR10filikge7MpgTzgVYFD0C6AOyy2qK1Y/vqworCyh+emVD5aA=="],
 
     "@embedpdf/plugin-attachment": ["@embedpdf/plugin-attachment@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-6UZkj7jFWCruR69OPQFMqbJTgwdra4rnJSBfLA8yLxgz2zTsgt3owjfQDmlJvAQ7G1/rZM2T+EJeuozulj4NoQ=="],
 
     "@embedpdf/plugin-bookmark": ["@embedpdf/plugin-bookmark@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-4JmaFD+gFaLj8Bayi6Fm5qxMoRH+JUy+L3S6xk1KM8YWjJyzsoz9C2mHSXKJ0GBMgiOkjaBuJSWqLgMe/oz7OQ=="],
 
-    "@embedpdf/plugin-capture": ["@embedpdf/plugin-capture@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "@embedpdf/plugin-render": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-JqiL+FdPVFwN+uayP05BT0eoNYmfT9Bm9J2cqoLH7YvwKkIZWLb93iBgFXjqsmKy8nyvdpeuP0tSWdB8ADOoog=="],
+    "@embedpdf/plugin-capture": ["@embedpdf/plugin-capture@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-interaction-manager": "2.8.0", "@embedpdf/plugin-render": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-4PckZ05bZ841Ogcb2hAtmV4LAEP5+iwK9YGPKgdltoH4KaVETCnxKqqtYlsRQudI7LEdH/aegrUEoa5r+jRORQ=="],
 
-    "@embedpdf/plugin-commands": ["@embedpdf/plugin-commands@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FkrmZ6YyUOG+QkQQBpo9Gc02ujkF++qiaN7vK+vhZO/alBczlX9EiSh2IbwkxkBtUCpVCB+vOxkzeP4vYbp5Vg=="],
+    "@embedpdf/plugin-commands": ["@embedpdf/plugin-commands@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-qchRR5+9KfnJ1CKue/L8NVj0y9p6CM6aHlIFnY9Lc7/6QELGXi8vPREzLXOJxAWQ3jVs2iqPHZL6NtSGwvWYbQ=="],
 
     "@embedpdf/plugin-document-manager": ["@embedpdf/plugin-document-manager@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-SS+IKJ2+rk4dHM3PvQQrvnfNdb5oOF1INR5r2w0MKo22C9WPD8Ncg1Jak/mCrGbSrJemW3pkIrKZhoREQtSrbA=="],
 
     "@embedpdf/plugin-export": ["@embedpdf/plugin-export@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-AvqfyhB58HLoZMKyXLLT+1ebE7wrMEnIAjr+OqEuaNnekxvb8atD8EBByzgtXLiNLStlxFn5g1CKyQThpw4Pcw=="],
 
-    "@embedpdf/plugin-fullscreen": ["@embedpdf/plugin-fullscreen@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-RKBgCMv2PRs/KXy4+DPj9r3cuC7hdU+wpl774lEubcxY5eOsKXityl4VnQmTcmq0yAWyIoj4WPfAri/Q/Y6Ctw=="],
+    "@embedpdf/plugin-fullscreen": ["@embedpdf/plugin-fullscreen@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-xJqbZpWTgnLZwlLsYDY43tNQ5BJM51Xlr+fBK9OsSJJql+yGd9EquIdBC99KbkmVP78BG3OCOv0JkZ3C0ITQ4A=="],
 
-    "@embedpdf/plugin-history": ["@embedpdf/plugin-history@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-cfVoBjkIbFiRsQu/cwPEi0rrTAF7jriAGzABWawnSTKYEPFrU3LDHO7TewgBz45kHl9pSwvRexaIdTR8ECIKbQ=="],
+    "@embedpdf/plugin-history": ["@embedpdf/plugin-history@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-S6TO7DqMqVtBYsztgvPvq8BOJTMl8rWdGjVMuoxD93HZdSgogoculwCATrJGor/BC+X6Vmtaqg6NJWSdIAeBEQ=="],
 
-    "@embedpdf/plugin-i18n": ["@embedpdf/plugin-i18n@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-hbDEmfdX5O9NeIx5zXCp29SCSR8U0j+4RIIFdEWNY7ArLSgTHkGNnJa4QfYt5oHysu/ccFCCtOk4wXZx1U2FJw=="],
+    "@embedpdf/plugin-i18n": ["@embedpdf/plugin-i18n@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-DsqkkzsWYUfi0oVWT12Z5VcVuwIzXVNdcJ2OPHdPGS/a6M2bH63MV2YGSaVqm1jkV9B6CyND1zqgaaG5SUPHKw=="],
 
     "@embedpdf/plugin-interaction-manager": ["@embedpdf/plugin-interaction-manager@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-xdRTAp1YiXWm+3WVqIN8dkRT3I/dHTumLJy5Kvt7lc1W2XM3M5bfCk5eTTcjY1DPv2buyt44i/4XNWoXAgBXDg=="],
 
     "@embedpdf/plugin-pan": ["@embedpdf/plugin-pan@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-interaction-manager": "2.8.0", "@embedpdf/plugin-viewport": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-EFqTEHk9E7AMRwguRO24jRl0J/5+pG07wlAm5U2rB0LDk30oAqVklFuDygaALdi8ZRBdkWOfD3Wl3gurQvfwAA=="],
 
-    "@embedpdf/plugin-print": ["@embedpdf/plugin-print@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=18.0.0", "react-dom": ">=18.0.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-cgWRqVtRgCCLCn1ViuZEFr+ZJ3QI61/5s9tl3T9x81rwkBN4HT582BYzyRnLBzTMYKxkQZDr1WxfS8ctdlHEUQ=="],
+    "@embedpdf/plugin-print": ["@embedpdf/plugin-print@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=18.0.0", "react-dom": ">=18.0.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-PUdw2/1GwbewYrxVgsb+3lkYyYYcLU5qpazrBZjjx0v+SEpb2SMQOOPNUILeJGKbYUlxSz3qv/loFwqzALkUQA=="],
 
-    "@embedpdf/plugin-redaction": ["@embedpdf/plugin-redaction@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0", "@embedpdf/utils": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-annotation": "2.6.0", "@embedpdf/plugin-history": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "@embedpdf/plugin-selection": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-DdDnmOl9K0N4dpTeUohavxQyrfollhkjT+zdfkna3Fc7F4jfl3Vg6uKoGmT71A+Vp4uTGNLt6cNCscbJW9E9kQ=="],
+    "@embedpdf/plugin-redaction": ["@embedpdf/plugin-redaction@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0", "@embedpdf/utils": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-annotation": "2.8.0", "@embedpdf/plugin-history": "2.8.0", "@embedpdf/plugin-interaction-manager": "2.8.0", "@embedpdf/plugin-selection": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-pIDFNd9rX7cwrhY6rFCBa5MTnGdLZHX7magToqna/Ffs1KEr0CfNF8jIXG0/E6KB6SsppbHwC7AkwRVWz8NoHg=="],
 
     "@embedpdf/plugin-render": ["@embedpdf/plugin-render@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-jVGSuyg366LmFzbDpqszLbu3G6VOfv1u46D1C0ph6pL3jisTlRswRosaXS4eVE/fAYTryBrI0olCpVYYct4bQw=="],
 
@@ -152,17 +165,17 @@
 
     "@embedpdf/plugin-scroll": ["@embedpdf/plugin-scroll@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-viewport": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-l6hFH6lsAI+07ZGuOwbC8qcRNdYzWSIfRszjt9UmhKZbvXLEp6YJeS/XOUC/37Kqi30tsmLDyZhMW1AooGAr1A=="],
 
-    "@embedpdf/plugin-search": ["@embedpdf/plugin-search@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-GSzJkmuK9LE7LmlTwnDl71KdD9prHlCjgFs5Tm0K8qjELOSH+oduFXusIuf654+UQveDYczpzBVUcqb4yBf1xA=="],
+    "@embedpdf/plugin-search": ["@embedpdf/plugin-search@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-HZ7munHdAF2pJ1cT02yc5I0Xcr4b4CQ8GkhD4qhTpZK0yga/tQiDY2Jjstygv7XiZwHIDKvqOuQsQmOXDsEemw=="],
 
     "@embedpdf/plugin-selection": ["@embedpdf/plugin-selection@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0", "@embedpdf/utils": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-interaction-manager": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-DcPyOp2WKoVYVpbZIP5t+JsEmCL9Y7bxe8PmiEBtlm1lustuUezdWyA2G4wsGCR4I/5uNlY85qBGCBhL195sSA=="],
 
-    "@embedpdf/plugin-spread": ["@embedpdf/plugin-spread@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-0mzPCJlw1X7jWeDg5JssU6/HCFtyOP7scEdbIaASYzofGXa2Rj8/+L+UDBrb+KTF6CR4X6fEfeNmxWmAatOAWQ=="],
+    "@embedpdf/plugin-spread": ["@embedpdf/plugin-spread@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-0Ld5HERaG8cKyWW7ktojG3FK6angkzYnBnw7Rnqf4cQuNdO7nKSTslyxkrLzF3vvmKrB//2ghm/pRVkgci4BOw=="],
 
-    "@embedpdf/plugin-thumbnail": ["@embedpdf/plugin-thumbnail@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-render": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-Sj4jCV1MNk+19zKWX4KfSl5c0YHrqVG83pEYfqexjSkSX7y7HRwAOtMBtNd3uLInPPSBnzDxj+KlJlIe8RPPJw=="],
+    "@embedpdf/plugin-thumbnail": ["@embedpdf/plugin-thumbnail@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-render": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-Dq/Cqsn4GClRXNWerqlXNH8WDWK/TtHxwq6yr2kqgXPo1FyREto4I7GfdO1hygTu0Dl6HK2auEVHBVC8QT53fw=="],
 
     "@embedpdf/plugin-tiling": ["@embedpdf/plugin-tiling@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-render": "2.8.0", "@embedpdf/plugin-scroll": "2.8.0", "@embedpdf/plugin-viewport": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-gPe5mG6hyyruki1eSuQYD2KDbo0Z0TxzSk8TcHIdEYYF6NlI2OghuO8Vczz5WLU8clX8xzn8c/c+tQMHEXfbZA=="],
 
-    "@embedpdf/plugin-ui": ["@embedpdf/plugin-ui@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-render": "2.6.0", "@embedpdf/plugin-scroll": "2.6.0", "@embedpdf/plugin-viewport": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-I3txZAKX6JaqcPi+PwvBYGeQqe4jiQ682l4FHWqRPcGUd3Fax5azzdIe81t+maM3nMmU2PCsmU6uSj/pLSUxdA=="],
+    "@embedpdf/plugin-ui": ["@embedpdf/plugin-ui@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "@embedpdf/plugin-render": "2.8.0", "@embedpdf/plugin-scroll": "2.8.0", "@embedpdf/plugin-viewport": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-RukCJFWKpBCao8ksiXLViXQafAvTpMtpMDXy3wt5zJMuWjYPvjPOWswZeztjeucRfS1F9JDIZohiwj9iE0AZJw=="],
 
     "@embedpdf/plugin-viewport": ["@embedpdf/plugin-viewport@2.8.0", "", { "dependencies": { "@embedpdf/models": "2.8.0" }, "peerDependencies": { "@embedpdf/core": "2.8.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-E16hc4yPA54XQGHp0Dy3OYyE8ilBaJE7LJirVmha4kMkP7XBu6xHNOJrXtq4GsZmdLQkf+x8ie2DDbWS+tcwnw=="],
 
@@ -766,37 +779,9 @@
 
     "zlibjs": ["zlibjs@0.3.1", "", {}, "sha512-+J9RrgTKOmlxFSDHo0pI1xM6BLVUv+o0ZT9ANtCxGkjIVCCUdx9alUF8Gm+dGLKbkkkidWIHFDZHDMpfITt4+w=="],
 
-    "@embedpdf/plugin-annotation/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-annotation/@embedpdf/utils": ["@embedpdf/utils@2.6.0", "", { "peerDependencies": { "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FT6U6L3Et688urUTyISpYH05w4sG+WzoWxaI7aPU4ieh4c/vVgadUtjZj/QCC8v+DebPYRAX1gpUY7e0Y0HlTQ=="],
-
     "@embedpdf/plugin-attachment/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
 
     "@embedpdf/plugin-bookmark/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-capture/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-commands/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-fullscreen/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-history/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-i18n/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-print/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-redaction/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-redaction/@embedpdf/utils": ["@embedpdf/utils@2.6.0", "", { "peerDependencies": { "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FT6U6L3Et688urUTyISpYH05w4sG+WzoWxaI7aPU4ieh4c/vVgadUtjZj/QCC8v+DebPYRAX1gpUY7e0Y0HlTQ=="],
-
-    "@embedpdf/plugin-search/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-spread/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-thumbnail/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
-
-    "@embedpdf/plugin-ui/@embedpdf/models": ["@embedpdf/models@2.6.0", "", {}, "sha512-6zuoJE79WXyRXKhJXhl+8p4njuC1nxPpKYRIs54PRLgTkHOLaou+G+ZunEd99XOoVssHLCjxWBUpg46ihQwXDw=="],
 
     "@embedpdf/snippet/@embedpdf/core": ["@embedpdf/core@2.6.0", "", { "dependencies": { "@embedpdf/engines": "2.6.0", "@embedpdf/models": "2.6.0" }, "peerDependencies": { "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-859GUvZ3BLpJuKTiwcPPMNn9CSlMaPjQ4yXnyQRngfbvDAiijIIpVLaC98B08Nx6QsUcD3cs/6+wkB888lNsDw=="],
 
@@ -806,13 +791,29 @@
 
     "@embedpdf/snippet/@embedpdf/pdfium": ["@embedpdf/pdfium@2.6.0", "", {}, "sha512-eYXU1VvVI0e9OqOzvsTcsU6YSLq9F7jcAiIbtMB+NxApvvH3kHz3FPEcf8ha2ZiLftF5OAD8K89SSE5GLE6t1A=="],
 
+    "@embedpdf/snippet/@embedpdf/plugin-annotation": ["@embedpdf/plugin-annotation@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0", "@embedpdf/utils": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-history": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "@embedpdf/plugin-selection": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FJgGy6lhKrWsiJjh7jZ92NwMBob5GOwfYejQl28JFk6muEQORLtysz5gaeyMpMIyxnfjlf9Eqv8Z6LBBfGLGOA=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-capture": ["@embedpdf/plugin-capture@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "@embedpdf/plugin-render": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-JqiL+FdPVFwN+uayP05BT0eoNYmfT9Bm9J2cqoLH7YvwKkIZWLb93iBgFXjqsmKy8nyvdpeuP0tSWdB8ADOoog=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-commands": ["@embedpdf/plugin-commands@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FkrmZ6YyUOG+QkQQBpo9Gc02ujkF++qiaN7vK+vhZO/alBczlX9EiSh2IbwkxkBtUCpVCB+vOxkzeP4vYbp5Vg=="],
+
     "@embedpdf/snippet/@embedpdf/plugin-document-manager": ["@embedpdf/plugin-document-manager@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-fcx0JKDboEV8eQ4r++ksDHPDuUz40oOmtHDqxYLw6cpos0fqW0p55OP+fKp6LfC/bY7ULVDrmcEQf1cD9Qho4w=="],
 
     "@embedpdf/snippet/@embedpdf/plugin-export": ["@embedpdf/plugin-export@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-i1Xy7qUipVVLDPnnY22hm3RNMx33lvuNbCuPggql5Ws6WBLG9YhDsK+v0JVe2sDSlifa5SJwuBlMHZWPRTZyxg=="],
 
+    "@embedpdf/snippet/@embedpdf/plugin-fullscreen": ["@embedpdf/plugin-fullscreen@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-RKBgCMv2PRs/KXy4+DPj9r3cuC7hdU+wpl774lEubcxY5eOsKXityl4VnQmTcmq0yAWyIoj4WPfAri/Q/Y6Ctw=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-history": ["@embedpdf/plugin-history@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-cfVoBjkIbFiRsQu/cwPEi0rrTAF7jriAGzABWawnSTKYEPFrU3LDHO7TewgBz45kHl9pSwvRexaIdTR8ECIKbQ=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-i18n": ["@embedpdf/plugin-i18n@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-hbDEmfdX5O9NeIx5zXCp29SCSR8U0j+4RIIFdEWNY7ArLSgTHkGNnJa4QfYt5oHysu/ccFCCtOk4wXZx1U2FJw=="],
+
     "@embedpdf/snippet/@embedpdf/plugin-interaction-manager": ["@embedpdf/plugin-interaction-manager@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-9bruF6M6GKVdABRTinHsZ+izf2tDQwDEcNI0CHVc5gurrz3CQfAGP2sJkv8uQrXyYTK3zV2Oq6zGknk7Hdx9mA=="],
 
     "@embedpdf/snippet/@embedpdf/plugin-pan": ["@embedpdf/plugin-pan@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "@embedpdf/plugin-viewport": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-r8AXcXUy6NMYDaQeixScbeFfmZIvWpUUjx3gxjP4J90xfxXnuz/g/lnh4D2DBaiK4mt6crIVBpXU9IUwMIcUMQ=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-print": ["@embedpdf/plugin-print@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=18.0.0", "react-dom": ">=18.0.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-cgWRqVtRgCCLCn1ViuZEFr+ZJ3QI61/5s9tl3T9x81rwkBN4HT582BYzyRnLBzTMYKxkQZDr1WxfS8ctdlHEUQ=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-redaction": ["@embedpdf/plugin-redaction@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0", "@embedpdf/utils": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-annotation": "2.6.0", "@embedpdf/plugin-history": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "@embedpdf/plugin-selection": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-DdDnmOl9K0N4dpTeUohavxQyrfollhkjT+zdfkna3Fc7F4jfl3Vg6uKoGmT71A+Vp4uTGNLt6cNCscbJW9E9kQ=="],
 
     "@embedpdf/snippet/@embedpdf/plugin-render": ["@embedpdf/plugin-render@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-Rk4QCxDOzhQrvKPt/G3G+p5ELwnKFkC5ljHMd7ND23atR9E3wm5W3+Nx3FaAYYPrpfqQ7BrbKnfQ7SkUbDxS3w=="],
 
@@ -820,9 +821,17 @@
 
     "@embedpdf/snippet/@embedpdf/plugin-scroll": ["@embedpdf/plugin-scroll@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-viewport": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-BEgSy6cs9+MLCS0Z3/FYMdA4Ygt6ddYIAg28XlF20kN3tLj8BQUo5qx6adI+SlwrFFGY52VAjjK7VSBuGfn19g=="],
 
+    "@embedpdf/snippet/@embedpdf/plugin-search": ["@embedpdf/plugin-search@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-GSzJkmuK9LE7LmlTwnDl71KdD9prHlCjgFs5Tm0K8qjELOSH+oduFXusIuf654+UQveDYczpzBVUcqb4yBf1xA=="],
+
     "@embedpdf/snippet/@embedpdf/plugin-selection": ["@embedpdf/plugin-selection@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0", "@embedpdf/utils": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-interaction-manager": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-VrW0duVxLwaquInwmuNDMz8o0tfCDwe3j81fvTUDW/s7KqnzFbxK7vEuq5TEtxWuSng2DXxyX3r1ntCm4X/NCg=="],
 
+    "@embedpdf/snippet/@embedpdf/plugin-spread": ["@embedpdf/plugin-spread@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-0mzPCJlw1X7jWeDg5JssU6/HCFtyOP7scEdbIaASYzofGXa2Rj8/+L+UDBrb+KTF6CR4X6fEfeNmxWmAatOAWQ=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-thumbnail": ["@embedpdf/plugin-thumbnail@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-render": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-Sj4jCV1MNk+19zKWX4KfSl5c0YHrqVG83pEYfqexjSkSX7y7HRwAOtMBtNd3uLInPPSBnzDxj+KlJlIe8RPPJw=="],
+
     "@embedpdf/snippet/@embedpdf/plugin-tiling": ["@embedpdf/plugin-tiling@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-render": "2.6.0", "@embedpdf/plugin-scroll": "2.6.0", "@embedpdf/plugin-viewport": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-qyiHWljryHWQ7uzip2WDg4x28o/1QM0wh9oIyz5WlBnrDaK6bLJGsWUym5P6WfLp0Y8h6GFAslNNcgjBv6E3qw=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-ui": ["@embedpdf/plugin-ui@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "@embedpdf/plugin-render": "2.6.0", "@embedpdf/plugin-scroll": "2.6.0", "@embedpdf/plugin-viewport": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-I3txZAKX6JaqcPi+PwvBYGeQqe4jiQ682l4FHWqRPcGUd3Fax5azzdIe81t+maM3nMmU2PCsmU6uSj/pLSUxdA=="],
 
     "@embedpdf/snippet/@embedpdf/plugin-viewport": ["@embedpdf/plugin-viewport@2.6.0", "", { "dependencies": { "@embedpdf/models": "2.6.0" }, "peerDependencies": { "@embedpdf/core": "2.6.0", "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-Ea7s+LivQ4ph01mVngU2tu2Ni/zulxzIyiifCpMaBMHmvjGFQjJcNNYHR90YuM8keto82KCszxdNDuAEEzT6Wg=="],
 
@@ -857,6 +866,10 @@
     "vaul-svelte/runed": ["runed@0.23.4", "", { "dependencies": { "esm-env": "^1.0.0" }, "peerDependencies": { "svelte": "^5.7.0" } }, "sha512-9q8oUiBYeXIDLWNK5DfCWlkL0EW3oGbk845VdKlPeia28l751VpfesaB/+7pI6rnbx1I6rqoZ2fZxptOJLxILA=="],
 
     "vaul-svelte/svelte-toolbelt": ["svelte-toolbelt@0.7.1", "", { "dependencies": { "clsx": "^2.1.1", "runed": "^0.23.2", "style-to-object": "^1.0.8" }, "peerDependencies": { "svelte": "^5.0.0" } }, "sha512-HcBOcR17Vx9bjaOceUvxkY3nGmbBmCBBbuWLLEWO6jtmWH8f/QoWmbyUfQZrpDINH39en1b8mptfPQT9VKQ1xQ=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-annotation/@embedpdf/utils": ["@embedpdf/utils@2.6.0", "", { "peerDependencies": { "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FT6U6L3Et688urUTyISpYH05w4sG+WzoWxaI7aPU4ieh4c/vVgadUtjZj/QCC8v+DebPYRAX1gpUY7e0Y0HlTQ=="],
+
+    "@embedpdf/snippet/@embedpdf/plugin-redaction/@embedpdf/utils": ["@embedpdf/utils@2.6.0", "", { "peerDependencies": { "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FT6U6L3Et688urUTyISpYH05w4sG+WzoWxaI7aPU4ieh4c/vVgadUtjZj/QCC8v+DebPYRAX1gpUY7e0Y0HlTQ=="],
 
     "@embedpdf/snippet/@embedpdf/plugin-selection/@embedpdf/utils": ["@embedpdf/utils@2.6.0", "", { "peerDependencies": { "preact": "^10.26.4", "react": ">=16.8.0", "react-dom": ">=16.8.0", "svelte": ">=5 <6", "vue": ">=3.2.0" } }, "sha512-FT6U6L3Et688urUTyISpYH05w4sG+WzoWxaI7aPU4ieh4c/vVgadUtjZj/QCC8v+DebPYRAX1gpUY7e0Y0HlTQ=="],
 

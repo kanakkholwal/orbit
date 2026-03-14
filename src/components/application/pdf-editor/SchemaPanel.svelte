@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { CloseIcon } from "$components/icons/registry";
     import { useTranslations } from "@embedpdf/plugin-i18n/svelte";
     import {
         type SidebarRendererProps,
@@ -7,6 +6,7 @@
         useUICapability,
         useUIState,
     } from "@embedpdf/plugin-ui/svelte";
+    import { XIcon } from "@lucide/svelte";
     import { onMount } from "svelte";
 
     type BottomSheetHeight = "half" | "full";
@@ -22,24 +22,17 @@
 
     const scope = $derived(provides ? provides.forDocument(documentId) : null);
 
-    // Mobile detection - initialize immediately to prevent flash
     let isMobile = $state(
         typeof window !== "undefined" && window.innerWidth < 768,
     );
 
-    // Bottom sheet state for mobile
     let sheetHeight = $state<BottomSheetHeight>("half");
     let isDragging = $state(false);
     let startY = $state(0);
     let currentY = $state(0);
 
-    // Panel ref for gestures
-    let panelRef: HTMLDivElement | null = $state(null);
-
-    // Local active tab
     let localActiveTabId = $state<string | null>(null);
 
-    // Resolved active tab
     const resolvedActiveTabId = $derived.by(() => {
         if (schema.content.type !== "tabs") return null;
         const availableTabs = schema.content.tabs ?? [];
@@ -67,7 +60,6 @@
         );
     });
 
-    // Reset local tab when resolved changes
     $effect(() => {
         if (
             localActiveTabId !== null &&
@@ -80,13 +72,9 @@
     function handleTabSelect(tabId: string) {
         if (tabId === activeTabId) return;
         localActiveTabId = tabId;
-
-        if (scope) {
-            scope.setSidebarTab(schema.id, tabId);
-        }
+        if (scope) scope.setSidebarTab(schema.id, tabId);
     }
 
-    // Swipe gesture handlers
     function handleTouchStart(e: TouchEvent) {
         if (!e.touches[0]) return;
         isDragging = true;
@@ -102,24 +90,15 @@
     function handleTouchEnd() {
         if (!isDragging) return;
         isDragging = false;
-
         const deltaY = currentY - startY;
         const threshold = 100;
 
         if (deltaY > threshold) {
-            // Swiped down
-            if (sheetHeight === "full") {
-                sheetHeight = "half";
-            } else {
-                onClose?.();
-            }
+            if (sheetHeight === "full") sheetHeight = "half";
+            else onClose?.();
         } else if (deltaY < -threshold) {
-            // Swiped up
-            if (sheetHeight === "half") {
-                sheetHeight = "full";
-            }
+            if (sheetHeight === "half") sheetHeight = "full";
         }
-
         startY = 0;
         currentY = 0;
     }
@@ -138,22 +117,15 @@
     function handleMouseUp() {
         if (!isDragging) return;
         isDragging = false;
-
         const deltaY = currentY - startY;
         const threshold = 100;
 
         if (deltaY > threshold) {
-            if (sheetHeight === "full") {
-                sheetHeight = "half";
-            } else {
-                onClose?.();
-            }
+            if (sheetHeight === "full") sheetHeight = "half";
+            else onClose?.();
         } else if (deltaY < -threshold) {
-            if (sheetHeight === "half") {
-                sheetHeight = "full";
-            }
+            if (sheetHeight === "half") sheetHeight = "full";
         }
-
         startY = 0;
         currentY = 0;
     }
@@ -163,21 +135,15 @@
             isMobile = window.innerWidth < 768;
         };
         window.addEventListener("resize", checkMobile);
-
-        return () => {
-            window.removeEventListener("resize", checkMobile);
-        };
+        return () => window.removeEventListener("resize", checkMobile);
     });
 
-    // Mouse event listeners
     $effect(() => {
         if (isDragging) {
             const handleMove = (e: MouseEvent) => handleMouseMove(e);
             const handleUp = () => handleMouseUp();
-
             document.addEventListener("mousemove", handleMove);
             document.addEventListener("mouseup", handleUp);
-
             return () => {
                 document.removeEventListener("mousemove", handleMove);
                 document.removeEventListener("mouseup", handleUp);
@@ -190,15 +156,15 @@
     ): string {
         switch (placement) {
             case "left":
-                return "h-full border-r border-gray-300 bg-white";
+                return "h-full border-r border-border bg-background";
             case "right":
-                return "h-full border-l border-gray-300 bg-white";
+                return "h-full border-l border-border bg-background";
             case "top":
-                return "w-full border-b border-gray-300 bg-white";
+                return "w-full border-b border-border bg-background";
             case "bottom":
-                return "w-full border-t border-gray-300 bg-white";
+                return "w-full border-t border-border bg-background";
             default:
-                return "h-full bg-white";
+                return "h-full bg-background";
         }
     }
 
@@ -210,29 +176,64 @@
     );
 </script>
 
+{#snippet TabsHeader(availableTabs: any[])}
+    <div class="flex border-b border-border">
+        {#each availableTabs as tab (tab.id)}
+            {@const isActive = tab.id === (activeTab?.id ?? activeTabId)}
+            <button
+                type="button"
+                class="relative flex-1 px-3 py-2 text-xs font-medium transition-colors {isActive
+                    ? 'text-foreground'
+                    : 'text-muted-foreground hover:text-foreground'}"
+                onclick={() => handleTabSelect(tab.id)}
+                role="tab"
+                aria-selected={isActive}
+            >
+                {translate(tab.labelKey || tab.id, {
+                    fallback: tab.label || tab.id,
+                })}
+                {#if isActive}
+                    <span class="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-primary"></span>
+                {/if}
+            </button>
+        {/each}
+    </div>
+{/snippet}
+
+{#snippet TabContent()}
+    {#if activeTab?.componentId}
+        {@const Component = renderCustomComponent(activeTab.componentId)}
+        <div class="flex-1 overflow-auto">
+            {#if Component}
+                <Component
+                    {documentId}
+                    tabId={activeTab.id}
+                    {onClose}
+                />
+            {/if}
+        </div>
+    {/if}
+{/snippet}
+
 {#if isOpen}
     {#if isMobile}
         {@const heightClass = sheetHeight === "full" ? "h-[100vh]" : "h-[50vh]"}
         {@const dragOffset = isDragging ? Math.max(0, currentY - startY) : 0}
 
-        <!-- Backdrop -->
         <div
-            class="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm transition-opacity"
+            class="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
             onclick={onClose}
             role="button"
             tabindex="-1"
         />
 
-        <!-- Bottom Sheet -->
         <div
-            bind:this={panelRef}
-            class={`fixed bottom-0 left-0 right-0 z-50 ${heightClass} flex flex-col rounded-t-2xl bg-white shadow-2xl transition-all duration-300`}
-            style:transform={`translateY(${dragOffset}px)`}
+            class="fixed bottom-0 left-0 right-0 z-50 {heightClass} flex flex-col rounded-t-2xl bg-background shadow-2xl transition-all duration-300"
+            style:transform="translateY({dragOffset}px)"
             data-panel-id={schema.id}
         >
-            <!-- Drag Handle & Header -->
             <div
-                class="flex cursor-grab items-center justify-between border-b border-gray-200 px-4 py-3 active:cursor-grabbing"
+                class="flex cursor-grab items-center justify-between px-4 py-3 active:cursor-grabbing"
                 ontouchstart={handleTouchStart}
                 ontouchmove={handleTouchMove}
                 ontouchend={handleTouchEnd}
@@ -241,64 +242,24 @@
                 tabindex="-1"
             >
                 <div class="flex flex-1 justify-center">
-                    <div class="h-1.5 w-12 rounded-full bg-gray-300" />
+                    <div class="h-1 w-8 rounded-full bg-muted-foreground/25" />
                 </div>
                 <button
                     onclick={onClose}
-                    class="ml-2 rounded-full p-1 transition-colors hover:bg-gray-100"
+                    class="ml-2 rounded-md p-1 transition-colors hover:bg-accent"
                     aria-label="Close panel"
                 >
-                    <CloseIcon class="h-5 w-5 text-gray-600" />
+                    <XIcon class="size-4 text-muted-foreground" />
                 </button>
             </div>
 
             {#if schema.content.type === "tabs"}
                 {@const availableTabs = schema.content.tabs ?? []}
-
-                <!-- Tabs -->
-                <div class="flex gap-2 border-b border-gray-200 bg-gray-50 p-2">
-                    {#each availableTabs as tab (tab.id)}
-                        {@const isActive =
-                            tab.id === (activeTab?.id ?? activeTabId)}
-                        <button
-                            type="button"
-                            class={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                                isActive
-                                    ? "bg-white text-gray-900 shadow-sm"
-                                    : "text-gray-600 hover:text-gray-900"
-                            }`}
-                            onclick={() => handleTabSelect(tab.id)}
-                            role="tab"
-                            aria-selected={isActive}
-                        >
-                            {translate(tab.labelKey || tab.id, {
-                                fallback: tab.label || tab.id,
-                            })}
-                        </button>
-                    {/each}
-                </div>
-
-                <!-- Content -->
-                {#if activeTab?.componentId}
-                    {@const Component = renderCustomComponent(
-                        activeTab.componentId,
-                    )}
-                    <div class="flex-1 overflow-auto">
-                        {#if Component}
-                            <Component
-                                {documentId}
-                                tabId={activeTab.id}
-                                {onClose}
-                            />
-                        {/if}
-                    </div>
-                {/if}
+                {@render TabsHeader(availableTabs)}
+                {@render TabContent()}
             {:else if schema.content.type === "component"}
-                <!-- Content -->
                 {#if schema.content.componentId}
-                    {@const Component = renderCustomComponent(
-                        schema.content.componentId,
-                    )}
+                    {@const Component = renderCustomComponent(schema.content.componentId)}
                     <div class="flex-1 overflow-auto">
                         {#if Component}
                             <Component {documentId} {onClose} />
@@ -308,59 +269,21 @@
             {/if}
         </div>
     {:else}
-        <!-- Desktop rendering -->
         {#if schema.content.type === "tabs"}
             {@const availableTabs = schema.content.tabs ?? []}
-
             <div
-                class={`${positionClasses} flex h-full flex-col`}
+                class="{positionClasses} flex h-full flex-col"
                 style={widthStyle}
                 data-panel-id={schema.id}
             >
-                <div class="flex gap-2 border-b border-gray-200 bg-gray-50 p-2">
-                    {#each availableTabs as tab (tab.id)}
-                        {@const isActive =
-                            tab.id === (activeTab?.id ?? activeTabId)}
-                        <button
-                            type="button"
-                            class={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                                isActive
-                                    ? "bg-white text-gray-900 shadow-sm"
-                                    : "text-gray-600 hover:text-gray-900"
-                            }`}
-                            onclick={() => handleTabSelect(tab.id)}
-                            role="tab"
-                            aria-selected={isActive}
-                        >
-                            {translate(tab.labelKey || tab.id, {
-                                fallback: tab.label || tab.id,
-                            })}
-                        </button>
-                    {/each}
-                </div>
-
-                {#if activeTab?.componentId}
-                    {@const Component = renderCustomComponent(
-                        activeTab.componentId,
-                    )}
-                    <div class="flex-1 overflow-auto">
-                        {#if Component}
-                            <Component
-                                {documentId}
-                                tabId={activeTab.id}
-                                {onClose}
-                            />
-                        {/if}
-                    </div>
-                {/if}
+                {@render TabsHeader(availableTabs)}
+                {@render TabContent()}
             </div>
         {:else if schema.content.type === "component"}
             {#if schema.content.componentId}
-                {@const Component = renderCustomComponent(
-                    schema.content.componentId,
-                )}
+                {@const Component = renderCustomComponent(schema.content.componentId)}
                 <div
-                    class={`${positionClasses} h-full`}
+                    class="{positionClasses} h-full"
                     style={widthStyle}
                     data-panel-id={schema.id}
                 >

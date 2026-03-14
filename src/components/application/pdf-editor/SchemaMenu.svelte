@@ -1,10 +1,6 @@
 <script lang="ts">
     import Icons from "$components/Icons.svelte";
-    import {
-        CheckIcon,
-        ChevronLeftIcon,
-        ChevronRightIcon,
-    } from "$components/icons/registry";
+    import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@lucide/svelte";
     import { useCommand } from "@embedpdf/plugin-commands/svelte";
     import { useTranslations } from "@embedpdf/plugin-i18n/svelte";
     import {
@@ -29,12 +25,10 @@
         title?: string;
     }
 
-    // Navigation stack for mobile submenus
     let menuStack = $state<MenuStackItem[]>([
         { menuId: schema.id, schema, title: undefined },
     ]);
 
-    // Reset stack when schema changes
     $effect(() => {
         menuStack = [{ menuId: schema.id, schema, title: undefined }];
     });
@@ -44,10 +38,7 @@
     function navigateToSubmenu(submenuId: string, title: string) {
         if (!uiSchema?.schema) return;
         const submenuSchema = uiSchema.schema.menus[submenuId];
-        if (!submenuSchema) {
-            console.warn(`Submenu schema not found: ${submenuId}`);
-            return;
-        }
+        if (!submenuSchema) return;
         menuStack = [
             ...menuStack,
             { menuId: submenuId, schema: submenuSchema, title },
@@ -60,7 +51,6 @@
         }
     }
 
-    // Detect mobile/desktop
     let isMobile = $state(false);
 
     onMount(() => {
@@ -72,7 +62,6 @@
         return () => window.removeEventListener("resize", checkMobile);
     });
 
-    // Calculate menu position relative to anchor
     let menuRef: HTMLDivElement | null = $state(null);
     let position = $state<{ top: number; left: number } | null>(null);
 
@@ -89,9 +78,7 @@
             if (left + menuWidth > window.innerWidth) {
                 left = window.innerWidth - menuWidth - 8;
             }
-            if (left < 8) {
-                left = 8;
-            }
+            if (left < 8) left = 8;
 
             position = { top, left };
         };
@@ -99,14 +86,12 @@
         updatePosition();
         window.addEventListener("scroll", updatePosition);
         window.addEventListener("resize", updatePosition);
-
         return () => {
             window.removeEventListener("scroll", updatePosition);
             window.removeEventListener("resize", updatePosition);
         };
     });
 
-    // Close on outside click
     $effect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -122,20 +107,15 @@
         setTimeout(() => {
             document.addEventListener("mousedown", handleClickOutside);
         }, 0);
-
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     });
 
-    // Close on escape key
     onMount(() => {
         const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                onClose();
-            }
+            if (event.key === "Escape") onClose();
         };
-
         document.addEventListener("keydown", handleEscape);
         return () => document.removeEventListener("keydown", handleEscape);
     });
@@ -143,51 +123,41 @@
 
 {#if currentMenu}
     {#if isMobile}
-        <!-- Backdrop -->
         <div
-            class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity"
+            class="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
             onclick={onClose}
             role="button"
             tabindex="-1"
         ></div>
 
-        <!-- Bottom Sheet -->
         <div
             bind:this={menuRef}
             {...getUIItemProps(currentMenu.schema)}
-            class="animate-slide-up fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-white shadow-2xl"
+            class="animate-slide-up fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-background pb-safe shadow-2xl"
             role="menu"
         >
-            <!-- Header -->
             {#if menuStack.length > 1}
-                <!-- Submenu header with back button -->
-                <div
-                    class="flex items-center border-b border-gray-200 px-4 py-3"
-                >
+                <div class="flex items-center border-b border-border px-4 py-3">
                     <button
                         onclick={navigateBack}
-                        class="flex items-center gap-2 font-medium text-blue-600"
-                        aria-label="Go back"
+                        class="flex items-center gap-1.5 text-sm font-medium text-primary"
                     >
-                        <ChevronLeftIcon class="h-5 w-5" />
-                        <span>Back</span>
+                        <ChevronLeftIcon class="size-4" />
+                        Back
                     </button>
                     {#if currentMenu.title}
-                        <span
-                            class="ml-auto text-sm font-semibold text-gray-700"
-                        >
+                        <span class="ml-auto text-xs font-medium text-muted-foreground">
                             {currentMenu.title}
                         </span>
                     {/if}
                 </div>
             {:else}
-                <!-- Main menu handle bar -->
                 <div class="flex justify-center py-3">
-                    <div class="h-1.5 w-12 rounded-full bg-gray-300"></div>
+                    <div class="h-1 w-8 rounded-full bg-muted-foreground/25"></div>
                 </div>
             {/if}
 
-            <div class="pb-safe px-2">
+            <div class="px-1.5 pb-2">
                 {#each currentMenu.schema.items as item, index (item.type + "-" + index)}
                     {@render MenuItemRenderer({
                         item,
@@ -200,39 +170,32 @@
             </div>
         </div>
     {:else}
-        <!-- Desktop dropdown -->
         <div
             bind:this={menuRef}
             {...getUIItemProps(currentMenu.schema)}
-            class="animate-fade-in fixed z-50 min-w-[200px] rounded-lg border border-gray-200 bg-white shadow-lg"
+            class="animate-fade-in fixed z-50 min-w-[180px] rounded-lg border border-border bg-background shadow-lg"
             style:top={position ? `${position.top}px` : undefined}
             style:left={position ? `${position.left}px` : undefined}
             role="menu"
         >
-            <!-- Header for submenus -->
             {#if menuStack.length > 1}
-                <div
-                    class="flex items-center rounded-t-lg border-b border-gray-200 bg-gray-50 px-2 py-2"
-                >
+                <div class="flex items-center border-b border-border px-2 py-1.5">
                     <button
                         onclick={navigateBack}
-                        class="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700"
-                        aria-label="Go back"
+                        class="flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80"
                     >
-                        <ChevronLeftIcon class="h-4 w-4" />
-                        <span>Back</span>
+                        <ChevronLeftIcon class="size-3.5" />
+                        Back
                     </button>
                     {#if currentMenu.title}
-                        <span
-                            class="ml-auto text-xs font-semibold text-gray-600"
-                            >{currentMenu.title}</span
-                        >
+                        <span class="ml-auto text-xs text-muted-foreground">
+                            {currentMenu.title}
+                        </span>
                     {/if}
                 </div>
             {/if}
 
-            <!-- Menu items -->
-            <div class="py-1">
+            <div class="p-1">
                 {#each currentMenu.schema.items as item, index (item.type + "-" + index)}
                     {@render MenuItemRenderer({
                         item,
@@ -247,9 +210,6 @@
     {/if}
 {/if}
 
-<!-- ─────────────────────────────────────────────────────────
-     Menu Item Renderer Component
-     ───────────────────────────────────────────────────────── -->
 {#snippet MenuItemRenderer({
     item,
     documentId,
@@ -273,7 +233,10 @@
             onNavigateToSubmenu,
         })}
     {:else if item.type === "divider"}
-        {@render MenuDivider({ item, isMobile })}
+        <div
+            {...getUIItemProps(item)}
+            class="my-1 h-px bg-border"
+        ></div>
     {:else if item.type === "section"}
         {@render MenuSection({
             item,
@@ -285,9 +248,6 @@
     {/if}
 {/snippet}
 
-<!-- ─────────────────────────────────────────────────────────
-     Command Menu Item Component
-     ───────────────────────────────────────────────────────── -->
 {#snippet CommandMenuItem({
     item,
     documentId,
@@ -305,15 +265,6 @@
     )}
 
     {#if command?.current?.visible}
-        {@const baseClasses = isMobile
-            ? "flex items-center gap-3 px-4 py-3 text-base transition-colors active:bg-gray-100"
-            : "flex items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-gray-100"}
-        {@const disabledClasses = command.current?.disabled
-            ? "opacity-50 cursor-not-allowed"
-            : "cursor-pointer"}
-        {@const activeClasses = command.current?.active
-            ? "bg-blue-50 text-blue-600"
-            : "text-gray-700"}
         {@const iconProps = command.current?.iconProps || {}}
 
         <button
@@ -325,33 +276,34 @@
                 }
             }}
             disabled={command.current?.disabled}
-            class={`${baseClasses} ${disabledClasses} ${activeClasses} w-full text-left`}
+            class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors
+                {isMobile ? 'py-2.5 text-base' : ''}
+                {command.current?.disabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
+                {command.current?.active ? 'text-primary' : 'text-foreground'}
+                hover:bg-accent"
             role="menuitem"
         >
             {#if command.current?.icon}
                 <Icons
                     name={command.current.icon}
-                    class={isMobile ? "h-5 w-5" : "h-4 w-4"}
+                    class={isMobile ? "size-5" : "size-4"}
                     primaryColor={iconProps.primaryColor}
                     secondaryColor={iconProps.secondaryColor}
                 />
             {/if}
             <span class="flex-1">{command.current?.label}</span>
             {#if command.current?.active}
-                <CheckIcon class="h-4 w-4" />
+                <CheckIcon class="size-3.5 text-primary" />
             {/if}
-            {#if command.current?.shortcuts && command.current?.shortcuts.length > 0 && !isMobile}
-                <span class="text-xs text-gray-400"
-                    >{command.current?.shortcuts[0]}</span
-                >
+            {#if command.current?.shortcuts && command.current.shortcuts.length > 0 && !isMobile}
+                <kbd class="text-[10px] tracking-wide text-muted-foreground">
+                    {command.current.shortcuts[0]}
+                </kbd>
             {/if}
         </button>
     {/if}
 {/snippet}
 
-<!-- ─────────────────────────────────────────────────────────
-     Submenu Item Component
-     ───────────────────────────────────────────────────────── -->
 {#snippet SubmenuItem({
     item,
     documentId,
@@ -363,58 +315,32 @@
     isMobile: boolean;
     onNavigateToSubmenu?: (submenuId: string, title: string) => void;
 })}
-    {@const baseClasses = isMobile
-        ? "flex items-center gap-3 px-4 py-3 text-base transition-colors active:bg-gray-100"
-        : "flex items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-gray-100"}
-
     <button
         {...getUIItemProps(item)}
         onclick={() => {
-            if (onNavigateToSubmenu) {
-                onNavigateToSubmenu(
-                    item.menuId,
-                    translations.translate(item.labelKey || item.id, {
-                        fallback: item.label || item.id,
-                    }),
-                );
-            }
+            onNavigateToSubmenu?.(
+                item.menuId,
+                translations.translate(item.labelKey || item.id, {
+                    fallback: item.label || item.id,
+                }),
+            );
         }}
-        class={`${baseClasses} w-full cursor-pointer text-left text-gray-700`}
+        class="flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-foreground transition-colors hover:bg-accent
+            {isMobile ? 'py-2.5 text-base' : ''}"
         role="menuitem"
     >
         {#if item.icon}
-            <Icons name={item.icon} class={isMobile ? "h-5 w-5" : "h-4 w-4"} />
+            <Icons name={item.icon} class={isMobile ? "size-5" : "size-4"} />
         {/if}
         <span class="flex-1">
             {translations.translate(item.labelKey || item.id, {
                 fallback: item.label || item.id,
             })}
         </span>
-        <ChevronRightIcon class={isMobile ? "h-5 w-5" : "h-4 w-4"} />
+        <ChevronRightIcon class={isMobile ? "size-4" : "size-3.5"} />
     </button>
 {/snippet}
 
-<!-- ─────────────────────────────────────────────────────────
-     Menu Divider Component
-     ───────────────────────────────────────────────────────── -->
-{#snippet MenuDivider({
-    item,
-    isMobile,
-}: {
-    item: Extract<MenuItem, { type: "divider" }>;
-    isMobile: boolean;
-})}
-    <div
-        {...getUIItemProps(item)}
-        class={isMobile
-            ? "my-2 border-t border-gray-200"
-            : "my-1 border-t border-gray-200"}
-    ></div>
-{/snippet}
-
-<!-- ─────────────────────────────────────────────────────────
-     Menu Section Component
-     ───────────────────────────────────────────────────────── -->
 {#snippet MenuSection({
     item,
     documentId,
@@ -428,12 +354,10 @@
     isMobile: boolean;
     onNavigateToSubmenu?: (submenuId: string, title: string) => void;
 })}
-    <div {...getUIItemProps(item)} class={isMobile ? "py-2" : "py-1"}>
+    <div {...getUIItemProps(item)} class="py-1">
         {#if item.labelKey || item.label}
             <div
-                class={isMobile
-                    ? "px-4 py-2 text-xs font-semibold uppercase tracking-wider text-gray-500"
-                    : "px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-gray-500"}
+                class="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
             >
                 {translations.translate(item.labelKey || item.id, {
                     fallback: item.label || item.id,

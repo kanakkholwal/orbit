@@ -9,9 +9,7 @@
 </script>
 
 <div class="flex h-full flex-col">
-    <div class="flex-1 overflow-auto p-4">
-        <p class="text-sm text-gray-500">
-            Outline view coming soon for document: {documentId}
-        </p>
+    <div class="flex flex-1 items-center justify-center p-4">
+        <p class="text-xs text-muted-foreground">Outline not available</p>
     </div>
 </div>

@@ -1,6 +1,9 @@
 <script lang="ts">
+    import { Button } from "$components/ui/button";
+    import { Input } from "$components/ui/input";
     import { useViewportCapability } from "@embedpdf/plugin-viewport/svelte";
     import { useScroll } from "@embedpdf/plugin-scroll/svelte";
+    import { ChevronLeftIcon, ChevronRightIcon } from "@lucide/svelte";
 
     interface PageControlsProps {
         documentId: string;
@@ -16,23 +19,17 @@
     let hideTimeoutId: ReturnType<typeof setTimeout> | null = null;
     let inputValue = $state("1");
 
-    // Update input when current page changes
     $effect(() => {
         inputValue = scroll.state.currentPage.toString();
     });
 
     const startHideTimer = () => {
-        if (hideTimeoutId) {
-            clearTimeout(hideTimeoutId);
-        }
+        if (hideTimeoutId) clearTimeout(hideTimeoutId);
         hideTimeoutId = setTimeout(() => {
-            if (!isHovering) {
-                isVisible = false;
-            }
-        }, 4000);
+            if (!isHovering) isVisible = false;
+        }, 3000);
     };
 
-    // Watch for scroll activity
     $effect(() => {
         if (!viewport.provides) return;
 
@@ -44,54 +41,22 @@
         });
 
         return () => {
-            if (hideTimeoutId) {
-                clearTimeout(hideTimeoutId);
-            }
+            if (hideTimeoutId) clearTimeout(hideTimeoutId);
             unsubscribe?.();
         };
     });
 
-    const handleMouseEnter = () => {
-        isHovering = true;
-        isVisible = true;
-    };
-
-    const handleMouseLeave = () => {
-        isHovering = false;
-        startHideTimer();
-    };
-
     const handlePageSubmit = (e: Event) => {
         e.preventDefault();
         const page = parseInt(inputValue);
-
         if (!isNaN(page) && page >= 1 && page <= scroll.state.totalPages) {
-            scroll.provides?.scrollToPage?.({
-                pageNumber: page,
-            });
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (scroll.state.currentPage > 1) {
-            scroll.provides?.scrollToPage?.({
-                pageNumber: scroll.state.currentPage - 1,
-            });
-        }
-    };
-
-    const handleNextPage = () => {
-        if (scroll.state.currentPage < scroll.state.totalPages) {
-            scroll.provides?.scrollToPage?.({
-                pageNumber: scroll.state.currentPage + 1,
-            });
+            scroll.provides?.scrollToPage?.({ pageNumber: page });
         }
     };
 
     const handleInputChange = (e: Event) => {
         const target = e.target as HTMLInputElement;
-        const value = target.value.replace(/[^0-9]/g, "");
-        inputValue = value;
+        inputValue = target.value.replace(/[^0-9]/g, "");
     };
 </script>
 
@@ -99,70 +64,59 @@
     role="toolbar"
     aria-label="Page navigation"
     tabindex="-1"
-    class="pointer-events-auto absolute bottom-4 left-1/2 z-[1000] -translate-x-1/2 transition-opacity duration-200 ease-in-out"
-    style="opacity: {isVisible ? 1 : 0}"
-    onmouseenter={handleMouseEnter}
-    onmouseleave={handleMouseLeave}
+    class="pointer-events-auto absolute bottom-4 left-1/2 z-50 -translate-x-1/2 transition-all duration-200"
+    style="opacity: {isVisible ? 1 : 0}; transform: translateX(-50%) translateY({isVisible ? '0' : '4px'})"
+    onmouseenter={() => {
+        isHovering = true;
+        isVisible = true;
+    }}
+    onmouseleave={() => {
+        isHovering = false;
+        startHideTimer();
+    }}
 >
     <div
-        class="flex items-center gap-2 rounded border border-gray-300 bg-gray-50 p-1 shadow-md"
+        class="flex items-center gap-0.5 rounded-lg border border-border bg-background/95 p-0.5 shadow-lg backdrop-blur-sm"
     >
-        <!-- Previous Page Button -->
-        <button
-            class="flex h-8 w-8 items-center justify-center text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
-            onclick={handlePreviousPage}
+        <Button
+            variant="ghost"
+            size="icon-sm"
+            onclick={() => {
+                if (scroll.state.currentPage > 1)
+                    scroll.provides?.scrollToPage?.({
+                        pageNumber: scroll.state.currentPage - 1,
+                    });
+            }}
             disabled={scroll.state.currentPage === 1}
-            title="Previous Page"
         >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M15 6l-6 6l6 6" />
-            </svg>
-        </button>
+            <ChevronLeftIcon class="size-4" />
+        </Button>
 
-        <!-- Page Input Form -->
-        <form onsubmit={handlePageSubmit} class="flex items-center gap-2">
-            <input
+        <form onsubmit={handlePageSubmit} class="flex items-center gap-1">
+            <Input
                 type="text"
                 name="page"
                 value={inputValue}
                 oninput={handleInputChange}
-                class="h-7 w-10 rounded border border-gray-300 bg-white px-1 text-center text-sm focus:border-gray-400 focus:outline-none"
+                class="h-7 w-9 px-0 text-center text-xs tabular-nums"
             />
-            <span class="text-sm text-gray-600">{scroll.state.totalPages}</span>
+            <span class="pr-1 text-xs text-muted-foreground">
+                / {scroll.state.totalPages}
+            </span>
         </form>
 
-        <!-- Next Page Button -->
-        <button
-            class="flex h-8 w-8 items-center justify-center text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent"
-            onclick={handleNextPage}
+        <Button
+            variant="ghost"
+            size="icon-sm"
+            onclick={() => {
+                if (scroll.state.currentPage < scroll.state.totalPages)
+                    scroll.provides?.scrollToPage?.({
+                        pageNumber: scroll.state.currentPage + 1,
+                    });
+            }}
             disabled={scroll.state.currentPage === scroll.state.totalPages}
-            title="Next Page"
         >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M9 6l6 6l-6 6" />
-            </svg>
-        </button>
+            <ChevronRightIcon class="size-4" />
+        </Button>
     </div>
 </div>

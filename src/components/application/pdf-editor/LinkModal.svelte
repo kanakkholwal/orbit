@@ -1,5 +1,7 @@
 <script lang="ts">
     import { Button } from "$components/ui/button";
+    import { Input } from "$components/ui/input";
+    import { Label } from "$components/ui/label";
     import {
         Dialog,
         DialogContent,
@@ -32,7 +34,6 @@
         isOpen?: boolean;
         onClose?: () => void;
         onExited?: () => void;
-        /** Source context that triggered the modal */
         source?: LinkSource;
     }
 
@@ -65,7 +66,6 @@
         selectionCapability.provides?.forDocument(documentId),
     );
 
-    // Get context: selected annotation or text selection
     const selectedAnnotation = $derived(
         annotationScope?.getSelectedAnnotation(),
     );
@@ -73,7 +73,6 @@
         selectionScope?.getFormattedSelection() ?? [],
     );
 
-    // Reset state when modal opens
     $effect(() => {
         if (isOpen) {
             activeTab = "url";
@@ -85,35 +84,27 @@
     const canSubmit = $derived(activeTab === "page" || url.trim().length > 0);
 
     function handleSubmit() {
-        // Build the target based on active tab
         let target: PdfLinkTarget;
 
         if (activeTab === "url") {
             if (!url.trim()) return;
             target = {
                 type: "action",
-                action: {
-                    type: PdfActionType.URI,
-                    uri: url.trim(),
-                },
+                action: { type: PdfActionType.URI, uri: url.trim() },
             };
         } else {
             target = {
                 type: "destination",
                 destination: {
-                    pageIndex: pageNumber - 1, // Convert to 0-based
-                    zoom: {
-                        mode: PdfZoomMode.FitPage,
-                    },
+                    pageIndex: pageNumber - 1,
+                    zoom: { mode: PdfZoomMode.FitPage },
                     view: [],
                 },
             };
         }
 
-        // Helper to create link on annotation
         const createLinkOnAnnotation = () => {
             if (!selectedAnnotation) return false;
-
             const rects =
                 "segmentRects" in selectedAnnotation.object
                     ? selectedAnnotation.object.segmentRects
@@ -139,16 +130,12 @@
             return true;
         };
 
-        // Helper to create link from text selection
         const createLinkFromSelection = () => {
             if (textSelection.length === 0) return false;
-
             const selectionText = selectionScope?.getSelectedText();
 
-            // Create transparent highlight parent with IRT-linked links for each selection
             for (const sel of textSelection) {
                 selectionText?.wait((text) => {
-                    // Create invisible highlight as parent annotation
                     const highlightId = uuidV4();
                     annotationScope?.createAnnotation(sel.pageIndex, {
                         id: highlightId,
@@ -159,14 +146,11 @@
                         pageIndex: sel.pageIndex,
                         rect: sel.rect,
                         segmentRects: sel.segmentRects,
-                        strokeColor: "#FFFFFF", // White/transparent
-                        opacity: 0, // Fully transparent
-                        custom: {
-                            text: text.join("\n"),
-                        },
+                        strokeColor: "#FFFFFF",
+                        opacity: 0,
+                        custom: { text: text.join("\n") },
                     });
 
-                    // Create link annotations for each segment with IRT to the highlight
                     const segmentRects = sel.segmentRects ?? [sel.rect];
                     for (const segmentRect of segmentRects) {
                         annotationScope?.createAnnotation(sel.pageIndex, {
@@ -183,7 +167,6 @@
                         });
                     }
 
-                    // Select the highlight annotation
                     annotationScope?.selectAnnotation(
                         sel.pageIndex,
                         highlightId,
@@ -194,25 +177,17 @@
             return true;
         };
 
-        // Create links based on the source context passed when opening the modal
-        // This ensures the correct context is used even when both annotation and text are selected
         if (source === "annotation") {
             createLinkOnAnnotation();
         } else if (source === "selection") {
             createLinkFromSelection();
         } else {
-            // Fallback for backwards compatibility: annotation first, then selection
             if (!createLinkOnAnnotation()) {
                 createLinkFromSelection();
             }
         }
 
         onClose?.();
-    }
-
-    function handleFormSubmit(e: Event) {
-        e.preventDefault();
-        handleSubmit();
     }
 
     function handlePageInput(e: Event) {
@@ -229,91 +204,92 @@
             {translate("link.title") || "Insert Link"}
         </DialogTitle>
         <DialogDescription>
-            {translate("link.description") || "insert link to open on click"}
+            {translate("link.description") || "Add a link destination"}
         </DialogDescription>
     </DialogHeader>
     <DialogContent>
         {#snippet children()}
-            <form onsubmit={handleFormSubmit} class="space-y-6">
-                <!-- Tab buttons -->
-                <div class="flex border-b border-gray-200">
+            <form
+                onsubmit={(e) => {
+                    e.preventDefault();
+                    handleSubmit();
+                }}
+                class="space-y-4"
+            >
+                <div class="flex gap-0 border-b border-border">
                     <button
                         type="button"
-                        class="px-4 py-2 text-sm font-medium transition-colors {activeTab ===
+                        class="relative px-3 py-2 text-sm font-medium transition-colors {activeTab ===
                         'url'
-                            ? 'border-b-2 border-blue-500 text-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'}"
+                            ? 'text-foreground'
+                            : 'text-muted-foreground hover:text-foreground'}"
                         onclick={() => (activeTab = "url")}
                     >
                         {translate("link.url") || "URL"}
+                        {#if activeTab === "url"}
+                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-primary"></span>
+                        {/if}
                     </button>
                     <button
                         type="button"
-                        class="px-4 py-2 text-sm font-medium transition-colors {activeTab ===
+                        class="relative px-3 py-2 text-sm font-medium transition-colors {activeTab ===
                         'page'
-                            ? 'border-b-2 border-blue-500 text-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'}"
+                            ? 'text-foreground'
+                            : 'text-muted-foreground hover:text-foreground'}"
                         onclick={() => (activeTab = "page")}
                     >
                         {translate("link.page") || "Page"}
+                        {#if activeTab === "page"}
+                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-primary"></span>
+                        {/if}
                     </button>
                 </div>
 
-                <!-- Tab content -->
-                <div class="rounded-lg">
-                    {#if activeTab === "url"}
-                        <div>
-                            <label
-                                for="link-url-input"
-                                class="mb-2 block text-sm font-medium text-gray-700"
-                            >
-                                {translate("link.enterUrl") || "Enter URL"}
-                            </label>
-                            <input
-                                id="link-url-input"
-                                type="url"
-                                bind:value={url}
-                                placeholder="https://example.com"
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                        </div>
-                    {:else}
-                        <div>
-                            <label
-                                for="link-page-input"
-                                class="mb-2 block text-sm font-medium text-gray-700"
-                            >
-                                {translate("link.enterPage") ||
-                                    "Enter Page Number"}
-                            </label>
-                            <input
-                                id="link-page-input"
-                                type="number"
-                                min={1}
-                                max={totalPages}
-                                value={pageNumber}
-                                oninput={handlePageInput}
-                                class="w-full rounded-md border border-gray-300 px-3 py-2 text-base focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            />
-                            <p class="mt-1 text-xs text-gray-500">
-                                {translate("link.pageRange", {
-                                    params: { totalPages },
-                                }) || `Page 1 to ${totalPages}`}
-                            </p>
-                        </div>
-                    {/if}
-                </div>
+                {#if activeTab === "url"}
+                    <div class="space-y-1.5">
+                        <Label for="link-url-input" class="text-xs">
+                            {translate("link.enterUrl") || "Enter URL"}
+                        </Label>
+                        <Input
+                            id="link-url-input"
+                            type="url"
+                            bind:value={url}
+                            placeholder="https://example.com"
+                            class="h-9"
+                        />
+                    </div>
+                {:else}
+                    <div class="space-y-1.5">
+                        <Label for="link-page-input" class="text-xs">
+                            {translate("link.enterPage") || "Page Number"}
+                        </Label>
+                        <Input
+                            id="link-page-input"
+                            type="number"
+                            min={1}
+                            max={totalPages}
+                            value={pageNumber}
+                            oninput={handlePageInput}
+                            class="h-9"
+                        />
+                        <p class="text-xs text-muted-foreground">
+                            {translate("link.pageRange", {
+                                params: { totalPages },
+                            }) || `1 to ${totalPages}`}
+                        </p>
+                    </div>
+                {/if}
             </form>
         {/snippet}
     </DialogContent>
 
     <DialogFooter>
         {#snippet children()}
-            <Button variant="secondary" onclick={onClose}>
+            <Button variant="ghost" size="sm" onclick={onClose}>
                 {translate("common.cancel") || "Cancel"}
             </Button>
-            <Button disabled={!canSubmit} onclick={handleSubmit}>
-                {translate("link.link") || "Link"}
+            <Button size="sm" disabled={!canSubmit} onclick={handleSubmit}>
+                {translate("link.link") || "Insert Link"}
             </Button>
         {/snippet}
     </DialogFooter>
