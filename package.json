@@ -16,7 +16,10 @@
 		"tauri": "tauri",
 		"tauri:dev": "cross-env NODE_ENV=development tauri dev",
 		"tauri:build": "cross-env NODE_ENV=production tauri build",
-		"android:dev": "tauri android dev --open --host"
+		"android:dev": "tauri android dev --open --host",
+		"ext:dev": "cd extension && bun run dev",
+		"ext:watch": "cd extension && bun run dev",
+		"ext:build": "cd extension && bun run build"
 	},
 	"devDependencies": {
 		"@internationalized/date": "^3.10.0",

@@ -1,0 +1,118 @@
+name: Release Browser Extension
+on:
+  push:
+    tags:
+      - "ext-v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag (e.g. ext-v1.0.0)"
+        required: true
+        type: string
+
+jobs:
+  build-extension:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+      
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun
+            extension/node_modules
+          key: ${{ runner.os }}-bun-extension-${{ hashFiles('extension/bun.lockb', 'extension/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-extension-
+
+      - name: Install extension dependencies
+        working-directory: extension
+        run: bun install
+
+      - name: Build extension for Chrome
+        working-directory: extension
+        run: bun run build
+
+      - name: Build extension for Firefox
+        working-directory: extension
+        run: bun run build:firefox
+
+      - name: Create zip files
+        working-directory: extension
+        run: bun run zip
+
+      - name: Get version from package.json
+        id: package-version
+        working-directory: extension
+        run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          release_name: "Orbit PDF Extension - Release ${{ inputs.tag || github.ref_name }}"
+          body: |
+            ## 🎉 Orbit PDF Browser Extension Release ${{ inputs.tag || github.ref_name }}
+            
+            ### 📦 Available Downloads
+            
+            **Chrome/Edge/Brave**: Download the Chrome extension zip file
+            **Firefox**: Download the Firefox extension zip file
+            
+            ### 🚀 Installation
+            
+            #### Chrome/Edge/Brave
+            1. Download the `orbit-extension-${{ steps.package-version.outputs.version }}-chrome.zip` file
+            2. Extract the zip file
+            3. Open your browser and navigate to:
+               - Chrome: `chrome://extensions/`
+               - Edge: `edge://extensions/`
+               - Brave: `brave://extensions/`
+            4. Enable "Developer mode" (toggle in top right)
+            5. Click "Load unpacked" and select the extracted folder
+            
+            #### Firefox
+            1. Download the `orbit-extension-${{ steps.package-version.outputs.version }}-firefox.zip` file
+            2. Open Firefox and navigate to `about:addons`
+            3. Click the gear icon and select "Install Add-on From File"
+            4. Select the downloaded zip file
+            
+            ### ✨ Features
+            - PDF tools in your browser side panel
+            - Auto-opens when you view a PDF
+            - Seamless integration with your browser
+            
+            ### 📝 Additional Notes
+            - Visit our [documentation](https://orbit.nexonauts.com/docs) for more details
+            - Report issues on our [GitHub repository](https://github.com/kanakkholwal/orbit/issues)
+            
+            **Happy PDF processing! 📄✨**
+          draft: false
+          prerelease: false
+
+      - name: Upload Chrome Extension
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: extension/.output/orbit-extension-${{ steps.package-version.outputs.version }}-chrome.zip
+          asset_name: orbit-extension-${{ steps.package-version.outputs.version }}-chrome.zip
+          asset_content_type: application/zip
+
+      - name: Upload Firefox Extension
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: extension/.output/orbit-extension-${{ steps.package-version.outputs.version }}-firefox.zip
+          asset_name: orbit-extension-${{ steps.package-version.outputs.version }}-firefox.zip
+          asset_content_type: application/zip

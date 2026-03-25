@@ -1,0 +1,26 @@
+{
+  "name": "orbit-extension",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "postinstall": "wxt prepare || echo 'WXT prepare: run ext:dev or ext:build to generate types'"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^7.0.0",
+    "@wxt-dev/module-svelte": "^2.0.5",
+    "svelte": "^5.54.1",
+    "typescript": "^5.9.3",
+    "wxt": "^0.20.20"
+  },
+  "dependencies": {
+    "@fontsource-variable/google-sans": "^5.2.1",
+    "@lucide/svelte": "^0.577.0",
+    "@tailwindcss/vite": "^4.2.2",
+    "tailwindcss": "^4.2.2"
+  }
+}
