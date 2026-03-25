@@ -1,5 +1,5 @@
-import { defineConfig } from 'wxt';
 import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'wxt';
 
 export default defineConfig({
   modules: ['@wxt-dev/module-svelte'],
@@ -7,7 +7,7 @@ export default defineConfig({
     name: 'Orbit PDF',
     description: 'PDF tools in your browser side panel - auto-opens when you view a PDF.',
     version: '0.1.0',
-    permissions: ['sidePanel', 'tabs'],
+    permissions: ['sidePanel', 'tabs','notifications'],
     side_panel: {
       default_path: 'side-panel.html',
     },
