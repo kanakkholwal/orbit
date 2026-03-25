@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/* ── Light theme (matches src/app.css exactly) ─────────────────────────── */
+:root {
+  --background: hsl(40, 30%, 96%);
+  --foreground: hsl(0deg 0% 9.8%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(0deg 0% 9.8%);
+  --primary: hsl(175, 84%, 32%);
+  --primary-foreground: hsl(0deg 0% 92.16%);
+  --secondary: hsla(240 4.8% 95.9%);
+  --muted: hsl(0, 0%, 92%);
+  --muted-foreground: hsl(220 8.9% 46.1%);
+  --border: hsl(220 13% 91%);
+  --ring: var(--primary);
+  --radius: 0.75rem;
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────── */
+.dark {
+  --background: hsl(0deg 0% 7.06%);
+  --foreground: hsl(0deg 0% 92.16%);
+  --card: hsl(0deg 0% 9.8%);
+  --card-foreground: hsl(0deg 0% 92.16%);
+  --primary: hsl(175, 84%, 32%);
+  --primary-foreground: hsl(0deg 0% 92.16%);
+  --secondary: hsla(240 3.7% 15.9%);
+  --muted: hsl(0deg 0.01% 12.16%);
+  --muted-foreground: hsl(217.9 10.6% 64.9%);
+  --border: hsl(0, 0%, 14%);
+}
+
+/* ── Tailwind v4 theme bridge ───────────────────────────────────────────── */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: 'Google Sans Variable', 'Inter', 'Helvetica', 'Arial', sans-serif;
+}
+
+/* ── Base reset ─────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--primary) 50%, transparent) var(--muted);
+  }
+
+
+  /* Hide scrollbar completely (compact toolbar) */
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  
+  button, a, input {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    text-decoration: none;
+    outline: none;
+  }
+
+  button:not(:disabled), a { cursor: pointer; }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--background);
+  color: var(--foreground);
+}
