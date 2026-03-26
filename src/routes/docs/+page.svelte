@@ -38,7 +38,7 @@
   <Navbar />
 
   <div
-    class="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 lg:gap-16 pt-24 pb-20 md:pt-32"
+    class="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 lg:gap-16 pt-24 pb-20 md:pt-32 px-5 md:px-10"
   >
     <aside class="md:w-64 shrink-0">
       <div class="sticky top-28 space-y-8">

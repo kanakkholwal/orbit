@@ -25,6 +25,9 @@ const config = {
 			$tools: 'src/tools',
 			$stores: 'src/stores',
 			"@": "./src/@",
+		},
+		serviceWorker: {
+			register: true
 		}
 	}
 };

@@ -9,6 +9,7 @@
     ChevronRight,
     Compass,
     DownloadIcon,
+    FileArchiveIcon,
     Github,
     LayoutGrid,
     Menu,
@@ -29,7 +30,8 @@
   const navLinks = [
     { name: "Tools", href: "/#tools", icon: LayoutGrid },
     { name: "Explore", href: "/explore", icon: Compass },
-    { name: "Download", href: "/download", icon: MonitorDown },
+    { name: "Docs", href: "/docs", icon: FileArchiveIcon },
+    // { name: "Download", href: "/download", icon: MonitorDown },
   ];
 </script>
 

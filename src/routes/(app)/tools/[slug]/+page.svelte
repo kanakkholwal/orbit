@@ -4,9 +4,11 @@
 
   import AdUnit from "$components/AdUnit.svelte";
   import ShareButton from "$components/application/ShareButton.svelte";
+  import DownloadIcon from "$components/icons/registry/DownloadIcon.svelte";
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
+  import { appState } from "$stores/app-state.svelte";
   import {
     ArrowUpRight,
     ChevronLeft,
@@ -78,6 +80,16 @@
           >
             <Github class="size-3.5" />
             <span class="hidden md:inline-block">Star on Github</span>
+          </Button>
+          <Button
+            variant="dark"
+            size="sm"
+            href="/download"
+            hidden={appState.isTauri}
+      
+          >
+            <DownloadIcon class="size-3.5" />
+            <span class="hidden md:inline-block">Download App</span>
           </Button>
           <ShareButton
             data={{

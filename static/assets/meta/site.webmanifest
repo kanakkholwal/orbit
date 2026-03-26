@@ -1,21 +1,24 @@
 {
   "name": "Nexo PDF",
   "short_name": "Nexo PDF",
+  "description": "The professional PDF toolkit",
   "icons": [
     {
       "src": "/assets/meta/web-app-manifest-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable any"
     },
     {
       "src": "/assets/meta/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "maskable any"
     }
   ],
   "theme_color": "#ffffff",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/"
 }

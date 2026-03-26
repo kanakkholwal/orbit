@@ -53,7 +53,7 @@ export default defineBackground(() => {
         color: '#0d968b',
         tabId: tabId
       });
-      browser.sidePanel.open({ tabId }).catch((e: Error) => { console.error(e); });
+      // browser.sidePanel.open({ tabId }).catch((e: Error) => { console.error(e); });
     }else{
       browser.action.setBadgeText({
         text: '',
@@ -68,16 +68,16 @@ export default defineBackground(() => {
 
   // Fallback: content script message for pages where the URL alone is not
   // conclusive (e.g. document.contentType === 'application/pdf' on a generic URL)
-  browser.runtime.onMessage.addListener(
-    (message: unknown, sender: Browser.runtime.MessageSender) => {
-      if (
-        typeof message === 'object' &&
-        message !== null &&
-        (message as Record<string, unknown>).type === 'PDF_DETECTED' &&
-        sender.tab?.id != null
-      ) {
-        browser.sidePanel.open({ tabId: sender.tab.id }).catch((e: Error) => { console.error(e); });
-      }
-    },
-  );
+  // browser.runtime.onMessage.addListener(
+  //   (message: unknown, sender: Browser.runtime.MessageSender) => {
+  //     if (
+  //       typeof message === 'object' &&
+  //       message !== null &&
+  //       (message as Record<string, unknown>).type === 'PDF_DETECTED' &&
+  //       sender.tab?.id != null
+  //     ) {
+  //       browser.sidePanel.open({ tabId: sender.tab.id }).catch((e: Error) => { console.error(e); });
+  //     }
+  //   },
+  // );
 });

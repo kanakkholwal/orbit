@@ -30,7 +30,13 @@
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": [
+      "msi",
+      "nsis",
+      "appimage",
+      "deb",
+      "dmg"
+    ],
     "publisher": "Nexonauts",
     "icon": [
       "icons/128x128.png",

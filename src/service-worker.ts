@@ -14,9 +14,9 @@ import { build, files, version } from '$service-worker';
 
 // This gives `self` the correct types
 const self = globalThis.self as unknown as ServiceWorkerGlobalScope;
-const isTauri = 
-    self.location.protocol.includes('tauri') || 
-    self.location.hostname.includes('tauri.localhost');
+const isTauri =
+    (self.location.protocol.includes('tauri') ||
+    self.location.hostname.includes('tauri.localhost'));
 // Create a unique cache name for this deployment
 const CACHE = `orbit.nexonauts.cache-${version}`;
 
@@ -29,7 +29,7 @@ self.addEventListener('install', (event) => {
     // Create a new cache and add all files to it
     async function addFilesToCache() {
         const cache = await caches.open(CACHE);
-        await cache.addAll(ASSETS);
+        return await cache.addAll(ASSETS);
     }
 
     event.waitUntil(addFilesToCache());
@@ -55,7 +55,7 @@ self.addEventListener('fetch', (event) => {
     const { protocol } = new URL(event.request.url);
     if (protocol !== 'http:' && protocol !== 'https:') return;
 
-    
+
     async function respond() {
         const url = new URL(event.request.url);
         const cache = await caches.open(CACHE);
@@ -70,9 +70,9 @@ self.addEventListener('fetch', (event) => {
 
         // 2. HEAVY EXTERNAL ASSETS: Cache-First strategy
         // Add domains or file extensions you want to load instantly from cache after the first download
-        const isHeavyExternalAsset = 
-            url.hostname === 'unpkg.com' || 
-            url.hostname === 'cdn.jsdelivr.net' || 
+        const isHeavyExternalAsset =
+            url.hostname === 'unpkg.com' ||
+            url.hostname === 'cdn.jsdelivr.net' ||
             url.pathname.endsWith('.wasm') ||
             url.pathname.endsWith('.worker.js');
 
@@ -86,7 +86,6 @@ self.addEventListener('fetch', (event) => {
                 const networkResponse = await fetch(event.request);
                 // Only cache successful, non-opaque responses
                 if (networkResponse.status === 200) {
-                    
                     cache.put(event.request, networkResponse.clone());
                 }
                 return networkResponse;
@@ -100,7 +99,7 @@ self.addEventListener('fetch', (event) => {
             const response = await fetch(event.request);
 
             if (!(response instanceof Response)) {
-                throw new Error('invalid response from fetch');
+                throw new Error('invalid response from fetch',{ cause: { response } });
             }
 
             if (response.status === 200) {
