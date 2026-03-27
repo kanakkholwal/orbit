@@ -12,8 +12,8 @@ on:
 env:
   NODE_ENV: production
   # for web platform only, No tracking in desktop app, but these env vars are required by the frontend code, so we set them to empty strings
-  PUBLIC_ADSENSE_PUBLISHER_ID: "" 
-  PUBLIC_GOOGLE_ANALYTICS_ID: "" 
+  PUBLIC_ADSENSE_PUBLISHER_ID: ""
+  PUBLIC_GOOGLE_ANALYTICS_ID: ""
 
 jobs:
   # Windows build and release using Tauri's GitHub Action. This is separate to ensure we can sign the Windows executable properly.
@@ -38,6 +38,8 @@ jobs:
         run: bun install
       - name: Clean Rust build
         run: cd src-tauri && cargo clean
+      - name: Install msixbundle-cli
+        run: cargo install msixbundle-cli
       - name: Build and Release (Windows)
         uses: tauri-apps/tauri-action@v0
         env:
@@ -50,7 +52,18 @@ jobs:
           releaseBody: "## 🎉 Orbit PDF Release ${{ inputs.tag || github.ref_name }}\n\n### 📦 Available Downloads\n\n**Windows**: Download the `.msi` installer or `.exe` for your system.\n**macOS**: Download the `.dmg` for Intel/Apple Silicon Macs.\n**Linux**: Download the `.AppImage` for universal Linux support.\n\n### 🚀 Installation\n- **Windows**: Run the installer and follow the prompts.\n- **macOS**: Mount the `.dmg` file and drag Orbit PDF to Applications.\n- **Linux**: Make the AppImage executable and run it.\n\n### ⚠️ Important Note on Code Signing\nThese applications are signed with a **self-signed/dummy signing key** for testing purposes. We do not currently have the budget for professional code signing certificates. This means:\n- You may see security warnings when installing on Windows or macOS\n- This is normal and expected for open-source projects without commercial signing\n- The code is safe to use and can be verified from our public repository\n\n### 📝 Additional Notes\n- Visit our [documentation](https://orbit.nexonauts.com/docs) for more details.\n- Report issues on our [GitHub repository](https://github.com/kanakkholwal/orbit/issues).\n\n**Happy PDF processing! 📄✨**"
           releaseDraft: false
           prerelease: false
-  
+      - name: Install msixbundle-cli
+        run: cargo install msixbundle-cli
+
+      - name: Build MSIX bundle
+        run: bun tauri:windows:build --arch x64,arm64 --runner bun
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msix-bundle
+          path: src-tauri/target/msix/*.msixbundle
+
   # Linux build and release using Tauri's GitHub Action. This is separate to ensure we can build the Linux AppImage properly.
   build-linux:
     permissions:
