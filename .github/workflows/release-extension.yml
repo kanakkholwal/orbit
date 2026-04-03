@@ -2,7 +2,7 @@ name: Release Browser Extension
 on:
   push:
     tags:
-      - "ext-v*"
+      - "v*"
   workflow_dispatch:
     inputs:
       tag:
@@ -63,8 +63,7 @@ jobs:
             
             ### 📦 Available Downloads
             
-            **Chrome/Edge/Brave**: Download the Chrome extension zip file
-            **Firefox**: Download the Firefox extension zip file
+            **Chrome/Edge/Brave**: Download the extension zip file
             
             ### 🚀 Installation
             
@@ -78,11 +77,6 @@ jobs:
             4. Enable "Developer mode" (toggle in top right)
             5. Click "Load unpacked" and select the extracted folder
             
-            #### Firefox
-            1. Download the `orbit-extension-${{ steps.package-version.outputs.version }}-firefox.zip` file
-            2. Open Firefox and navigate to `about:addons`
-            3. Click the gear icon and select "Install Add-on From File"
-            4. Select the downloaded zip file
             
             ### ✨ Features
             - PDF tools in your browser side panel
@@ -97,22 +91,13 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Chrome Extension
+      - name: Upload Browser Extension
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: extension/.output/orbit-extension-${{ steps.package-version.outputs.version }}-chrome.zip
+          asset_path: extension/.output/orbit-extension-${{ steps.package-version.outputs.version }}.zip
           asset_name: orbit-extension-${{ steps.package-version.outputs.version }}-chrome.zip
           asset_content_type: application/zip
 
-      - name: Upload Firefox Extension
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: extension/.output/orbit-extension-${{ steps.package-version.outputs.version }}-firefox.zip
-          asset_name: orbit-extension-${{ steps.package-version.outputs.version }}-firefox.zip
-          asset_content_type: application/zip

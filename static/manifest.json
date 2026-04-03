@@ -16,9 +16,20 @@
       "purpose": "maskable any"
     }
   ],
-  "theme_color": "#ffffff",
+  "theme_color": "#0e968b",
   "background_color": "#ffffff",
-  "display": "standalone",
+  "display": "minimal-ui",
   "scope": "/",
-  "start_url": "/"
+  "start_url": "/",
+  "id": "com.nexonauts.orbit",
+  "dir": "auto",
+  "lang": "en",
+  "orientation": "portrait-primary",
+  "categories": [
+    "business",
+    "education",
+    "government",
+    "productivity",
+    "utilities"
+  ]
 }
