@@ -79,6 +79,17 @@ bun run preview
 
 Contributions are welcome! If you have an idea for a tool or a feature, feel free to open an issue or submit a pull request.
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=kanakkholwal%2Forbit&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=kanakkholwal/orbit&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=kanakkholwal/orbit&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=kanakkholwal/orbit&type=date&legend=top-left" />
+ </picture>
+</a>
+
+
 ## 📦 Dependency Licenses
 
 Orbit PDF uses a number of open-source dependencies. Because several dependencies use licenses other than MIT (Apache-2.0, OFL-1.1, MPL-2.0), the project as a whole is licensed under GPL-3.0. Below is a summary of the key dependency licenses:
