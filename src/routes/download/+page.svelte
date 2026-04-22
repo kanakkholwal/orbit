@@ -119,8 +119,9 @@
         <div class="flex flex-col items-center gap-4">
           <Button
             href={primaryDownload().link}
-            size="lg"
-            class="shadow shadow-primary/20 group rounded-full px-10"
+            variant="dark"
+            size="xl"
+            class="shadow shadow-primary/20 group rounded-full"
           >
             <Download
               class="mr-2 size-5 group-hover:-translate-y-0.5 transition-transform"
@@ -184,7 +185,7 @@
 							Installer (.exe)
 							<ArrowDownToLine class="size-4 opacity-50 group-hover:opacity-100 transition-opacity" />
 						</Button>
-						<Button href={data.downloads.windowsMsi} variant="outline" class="w-full justify-between group" disabled={!data.downloads.windowsMsi}>
+						<Button href={data.downloads.windowsMsi} variant="secondary" class="w-full justify-between group" disabled={!data.downloads.windowsMsi}>
 							Installer (.msi)
 							<ArrowDownToLine class="size-4 opacity-50 group-hover:opacity-100 transition-opacity" />
 						</Button>

@@ -89,7 +89,7 @@
         >
           <Button
             href="/explore"
-            class="h-12 px-8! shadow-lg shadow-primary/20 transition-all hover:scale-[1.02]"
+            class="h-12 px-8! shadow-lg shadow-brand transition-all hover:scale-[1.02] bg-brand"
           >
             Start Processing
             <ArrowRight class="ml-2 size-4" />
