@@ -55,6 +55,9 @@ jobs:
 
       - name: Build web
         run: bun run build
+        env:
+          PUBLIC_GOOGLE_ANALYTICS_ID: ${{ vars.PUBLIC_GOOGLE_ANALYTICS_ID }}
+          PUBLIC_ADSENSE_PUBLISHER_ID: ${{ vars.PUBLIC_ADSENSE_PUBLISHER_ID }}
 
       - name: Deploy via Wrangler
         uses: cloudflare/wrangler-action@v3
