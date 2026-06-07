@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { toast } from 'svelte-sonner';
 
 export interface ImageFile {
@@ -17,7 +17,7 @@ export const ACCEPTED_FORMATS = [
     '.jp2', '.jpx', '.jxr', '.tif', '.tiff', '.psd'
 ];
 
-export class JpgToPdfState extends BaseEngine {
+export class JpgToPdfState extends PdfEngine {
     files = $state<ImageFile[]>([]);
     quality = $state<Quality>('medium');
     isProcessing = $state(false);

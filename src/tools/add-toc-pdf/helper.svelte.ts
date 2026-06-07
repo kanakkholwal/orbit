@@ -1,4 +1,4 @@
-import { BaseEngine } from "$lib/base-engine.svelte";
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { toast } from "svelte-sonner";
 
 export interface TocStateData {
@@ -10,7 +10,7 @@ export interface TocStateData {
 
 }
 
-export class TableOfContentsState extends BaseEngine {
+export class TableOfContentsState extends PdfEngine {
     state = $state<TocStateData>({
         file: null,
         title: 'Table of Contents',

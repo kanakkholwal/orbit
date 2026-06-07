@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, PDFName } from 'pdf-lib';
 import { toast } from 'svelte-sonner';
 
@@ -9,7 +9,7 @@ export interface RemoveAnnotationsStateData {
     isProcessing: boolean;
 }
 
-export class RemoveAnnotationsState extends BaseEngine {
+export class RemoveAnnotationsState extends PdfEngine {
     state = $state<RemoveAnnotationsStateData>({
         file: null,
         pageCount: 0,

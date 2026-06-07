@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { toast } from 'svelte-sonner';
 
 export interface ExtractedImage {
@@ -9,7 +9,7 @@ export interface ExtractedImage {
     url: string; // Object URL for preview
 }
 
-export class ExtractImagesState extends BaseEngine {
+export class ExtractImagesState extends PdfEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
     extractedImages = $state<ExtractedImage[]>([]);
 

@@ -1,5 +1,5 @@
 
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import {
     initializeQpdf
 } from '$utils/helper';
@@ -13,7 +13,7 @@ export interface EncryptState {
     progress: string;
 }
 
-export class EncryptPdfState extends BaseEngine {
+export class EncryptPdfState extends PdfEngine {
     // Reactive State
     state = $state<EncryptState>({
         file: null,

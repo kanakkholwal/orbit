@@ -1,8 +1,8 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { loadPyMuPDF } from '$utils/pymupdf-loader';
 import { toast } from 'svelte-sonner';
 
-export class PdfToTextState extends BaseEngine{
+export class PdfToTextState extends PdfEngine{
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
     
 

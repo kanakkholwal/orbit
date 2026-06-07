@@ -1,9 +1,9 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { toast } from 'svelte-sonner';
 
 const RTL_PATTERN = /[\u0590-\u05FF\u0600-\u06FF\u0700-\u074F\u0750-\u077F\u0780-\u07BF\u07C0-\u07FF\u08A0-\u08FF\uFB1D-\uFB4F\uFB50-\uFDFF\uFE70-\uFEFF]/;
 
-export class TxtToPdfState extends BaseEngine {
+export class TxtToPdfState extends PdfEngine {
   mode = $state<'upload' | 'text'>('upload');
   files = $state<{ id: string; file: File; originalSize: number }[]>([]);
   textContent = $state('');

@@ -1,9 +1,9 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { loadPyMuPDF } from '$utils/pymupdf-loader';
 import { toast } from 'svelte-sonner';
 import * as XLSX from 'xlsx';
 
-export class PdfToExcelState extends BaseEngine {
+export class PdfToExcelState extends PdfEngine {
     file = $state<{ file: File; originalSize: number } | null>(null);
 
 

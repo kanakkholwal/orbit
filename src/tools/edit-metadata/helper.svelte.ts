@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, PDFName, PDFString } from 'pdf-lib';
 import { toast } from 'svelte-sonner';
 
@@ -8,7 +8,7 @@ export interface CustomField {
   value: string;
 }
 
-export class EditMetadataState extends BaseEngine {
+export class EditMetadataState extends PdfEngine {
   file = $state<{ file: File; originalSize: number } | null>(null);
   isProcessing = $state(false);
   pageCount = $state(0);

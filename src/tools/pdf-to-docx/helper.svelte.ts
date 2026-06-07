@@ -1,7 +1,7 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { toast } from 'svelte-sonner';
 
-export class PdfToWordState extends BaseEngine {
+export class PdfToWordState extends PdfEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
   
 

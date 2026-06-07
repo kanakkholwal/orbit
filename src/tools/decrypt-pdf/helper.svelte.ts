@@ -1,5 +1,5 @@
 
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { initializeQpdf } from '$utils/helper';
 import { toast } from 'svelte-sonner';
 
@@ -10,7 +10,7 @@ export interface DecryptState {
     progress: string;
 }
 
-export class DecryptPdfState extends BaseEngine {
+export class DecryptPdfState extends PdfEngine {
     // Reactive State
     state = $state<DecryptState>({
         file: null,

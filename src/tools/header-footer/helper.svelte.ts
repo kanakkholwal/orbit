@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { toast } from 'svelte-sonner';
 
@@ -23,7 +23,7 @@ export interface HeaderFooterStateData {
     isProcessing: boolean;
 }
 
-export class HeaderFooterState extends BaseEngine {
+export class HeaderFooterState extends PdfEngine {
     state = $state<HeaderFooterStateData>({
         file: null,
         pageCount: 0,

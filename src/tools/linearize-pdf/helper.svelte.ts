@@ -1,8 +1,8 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { initializeQpdf } from '$utils/helper';
 import { toast } from 'svelte-sonner';
 
-export class LinearizePdfState extends BaseEngine {
+export class LinearizePdfState extends PdfEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
   
 

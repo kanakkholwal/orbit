@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { performOcr } from '$utils/ocr';
 import { toast } from 'svelte-sonner';
 
@@ -12,7 +12,7 @@ export const whitelistPresets: Record<string, string> = {
     forms: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 .,()-_/@#:',
 };
 
-export class OcrPdfState  extends BaseEngine{
+export class OcrPdfState  extends PdfEngine{
     file = $state<{ file: File; originalSize: number } | null>(null);
     
     // Settings

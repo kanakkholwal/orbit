@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, rgb } from 'pdf-lib';
 
 export interface BackgroundColorStateData {
@@ -9,7 +9,7 @@ export interface BackgroundColorStateData {
     pageRange: string; 
 }
 
-export class BackgroundColorState extends BaseEngine {
+export class BackgroundColorState extends PdfEngine {
     state = $state<BackgroundColorStateData>({
         file: null,
         pageCount: 0,

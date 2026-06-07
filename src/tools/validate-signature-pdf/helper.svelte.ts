@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import type forgeType from 'node-forge';
 import type { pki } from 'node-forge'; 
 
@@ -37,7 +37,7 @@ export interface SignatureValidationResult {
     issuerOrg?: string;
 }
 
-export class ValidateSignatureState extends BaseEngine {
+export class ValidateSignatureState extends PdfEngine {
     file = $state<{ file: File; originalSize: number } | null>(null);
     certFile = $state<File | null>(null);
     trustedCert = $state<pki.Certificate | undefined>(undefined);

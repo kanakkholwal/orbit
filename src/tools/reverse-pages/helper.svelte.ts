@@ -1,8 +1,8 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument } from 'pdf-lib';
 import { toast } from 'svelte-sonner';
 
-export class ReversePagesState extends BaseEngine {
+export class ReversePagesState extends PdfEngine {
   files = $state<{ id: string; file: File; originalSize: number }[]>([]);
 
 

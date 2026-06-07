@@ -1,5 +1,5 @@
 import { PDFDocument } from 'pdf-lib';
-import { BaseEngine } from '$lib/base-engine.svelte'; 
+import { PdfEngine } from '$lib/pdf-engine.svelte'; 
 import { toast } from 'svelte-sonner';
 
 export interface PageData {
@@ -11,7 +11,7 @@ export interface PageData {
     rotation: number;
 }
 
-export class PageDimensionsState extends BaseEngine {
+export class PageDimensionsState extends PdfEngine {
     file = $state<{ file: File; originalSize: number } | null>(null);
     analyzedPagesData = $state<PageData[]>([]);
     selectedUnit = $state<'pt' | 'in' | 'mm' | 'px'>('in');

@@ -1,4 +1,4 @@
-import { BaseEngine } from '$lib/base-engine.svelte';
+import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { loadPyMuPDF } from '$utils/pymupdf-loader';
 import { toast } from 'svelte-sonner';
 
@@ -9,7 +9,7 @@ export interface DeskewResult {
     corrected: boolean[];
 }
 
-export class DeskewPdfState extends BaseEngine {
+export class DeskewPdfState extends PdfEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
     
     // Settings

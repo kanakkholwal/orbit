@@ -1,11 +1,8 @@
 import type * as PDFJS from 'pdfjs-dist';
 import { BaseEngine } from './base-engine.svelte';
 
-export interface ProgressState {
-    current: number;
-    total: number;
-    text: string;
-}
+// Single source of truth lives in base-engine; re-exported here for convenience.
+export type { ProgressState } from './base-engine.svelte';
 
 /**
  * Canonical base class for ALL tool state classes (`<Name>State extends PdfEngine`).
