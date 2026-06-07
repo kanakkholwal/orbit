@@ -90,7 +90,7 @@
     keywords={tool?.keywords}
   />
 
-  <div class="min-h-screen w-full" in:fade={{ duration: 220 }}>
+  <div class="min-h-screen w-full relative" in:fade={{ duration: 220 }}>
     <div class="flex flex-col gap-12 px-3 pb-[max(env(safe-area-inset-bottom),2rem)] pt-2 sm:px-5 sm:pt-4">
       <nav
         class="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-5"

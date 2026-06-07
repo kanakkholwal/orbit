@@ -1,0 +1,66 @@
+name: Deploy web
+
+# Manual-only. There is intentionally no `push:` or `pull_request:` trigger
+# — Cloudflare deploys are gated behind a human pressing "Run workflow"
+# in the GitHub UI (or via `gh workflow run deploy-web.yml`).
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - 'apps/web/**'  # Only trigger if changes in this directory
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment (e.g., production, staging)'
+        required: false
+        default: 'production'
+
+  
+concurrency:
+  group: deploy-web 
+  cancel-in-progress: false
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  
+jobs:
+  deploy:
+    name: Build & deploy to CF Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: ${{ inputs.environment }}
+      url: https://orbit.nexonauts.com
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Wrangler 4.x requires Node >= 22.
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build apps/web
+        run: pnpm -F @docvia/web build
+
+      - name: Deploy via Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/web
+          command: >-
+            deploy
+            ${{ inputs.environment != '' && format('--env {0}', inputs.environment) || '' }}

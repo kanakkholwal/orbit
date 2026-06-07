@@ -22,10 +22,12 @@ import {
     MoveIcon,
     PaintBucket,
     RefreshCw,
+    PenLine,
     RotateCw,
     ScanText,
     Scissors,
     Settings,
+    ShieldCheck,
     Text,
     Trash2,
     Unlock,
@@ -443,6 +445,26 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./pdf-to-md/tool.svelte'),
         color: 'text-green-500',
         keywords: ['pdf to markdown', 'pdf to md', 'convert pdf to markdown', 'extract markdown from pdf', 'pdf markdown converter', 'pdf to md file', 'pdf to text markdown', 'free pdf to markdown']
+    },
+    'esign-pdf': {
+        slug: 'esign-pdf',
+        title: 'Sign PDF (eSign)',
+        description: 'Add your signature to a PDF — draw it, type it, or upload an image — then place it on any page and download. A fast, free electronic signature that works entirely on your device.',
+        category: 'security',
+        icon: PenLine,
+        component: () => import('./esign-pdf/tool.svelte'),
+        color: 'text-blue-500',
+        keywords: ['sign pdf', 'esign pdf', 'electronic signature pdf', 'add signature to pdf', 'draw signature on pdf', 'fill and sign pdf', 'free pdf signature', 'sign document online']
+    },
+    'sign-pdf': {
+        slug: 'sign-pdf',
+        title: 'Digitally Sign PDF',
+        description: 'Apply a real cryptographic (PAdES) digital signature to a PDF using your certificate — tamper-evident and independently verifiable. Or generate a self-signed certificate in seconds. 100% on-device; your document and private key never leave the browser.',
+        category: 'security',
+        icon: ShieldCheck,
+        component: () => import('./sign-pdf/tool.svelte'),
+        color: 'text-green-500',
+        keywords: ['digital signature pdf', 'sign pdf with certificate', 'pades signature', 'pkcs7 pdf signature', 'cryptographic pdf signature', 'self-signed certificate pdf', 'tamper evident pdf', 'free digital signing']
     },
 };
 

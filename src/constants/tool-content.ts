@@ -174,6 +174,86 @@ const bespoke: Record<string, Partial<ToolContent>> = {
             }
         ]
     },
+    'esign-pdf': {
+        intro:
+            'Add your signature to a PDF in seconds — draw it with your mouse or finger, type your name in a signature font, or upload an image of your handwritten signature. Place it exactly where it needs to go on any page, then download. This is an electronic signature (e-signature), which is legally valid for most everyday agreements under the ESIGN Act and eIDAS. Everything happens locally in your browser; the document never leaves your device.',
+        howItWorks: [
+            'Open the PDF you need to sign.',
+            'Create your signature by drawing, typing, or uploading an image.',
+            'Drag it onto the right spot and resize it to fit, on any page.',
+            'Apply and download the signed PDF — processed entirely on your device.'
+        ],
+        useCases: [
+            {
+                title: 'Contracts and agreements',
+                body: 'Sign a lease, NDA, or offer letter and send it back in minutes without printing or scanning.'
+            },
+            {
+                title: 'Forms and consent',
+                body: 'Drop your signature onto consent forms, permission slips, or onboarding paperwork.'
+            },
+            {
+                title: 'No printer, no scanner',
+                body: 'Skip the print-sign-scan loop entirely — your signature goes straight onto the digital file.'
+            }
+        ],
+        faqs: [
+            {
+                q: 'Is an electronic signature legally binding?',
+                a: 'For most everyday agreements, yes — electronic signatures are recognised under the US ESIGN Act, the EU eIDAS regulation, and similar laws worldwide. For high-stakes legal documents you may want a certificate-based digital signature instead (see the Digitally Sign PDF tool).'
+            },
+            {
+                q: "What's the difference between this and a digital signature?",
+                a: 'This tool adds a visible signature mark (an e-signature). A digital signature additionally uses a cryptographic certificate to make the document tamper-evident and to prove who signed it — Orbit offers that separately in the Digitally Sign PDF tool.'
+            },
+            {
+                q: 'Can I place my signature on a specific page?',
+                a: 'Yes. Use the page controls to move to any page, then drag and resize the signature exactly where you want it.'
+            }
+        ]
+    },
+    'sign-pdf': {
+        intro:
+            'A digital signature is the cryptographic, certificate-based signature that paid PDF suites usually lock behind a subscription. Orbit does it for free, entirely in your browser: it embeds a PKCS#7/PAdES signature into the PDF using your certificate, making the document tamper-evident and independently verifiable. Your document and your private key never leave your device. No certificate? Generate a self-signed one in seconds, right here.',
+        howItWorks: [
+            'Open the PDF you want to sign.',
+            'Provide a PKCS#12 (.p12/.pfx) certificate and its passphrase — or generate a self-signed certificate on the spot.',
+            'Add optional details like reason and location.',
+            'Sign, and download the cryptographically signed PDF. Verify it anytime with the Validate Signature tool.'
+        ],
+        useCases: [
+            {
+                title: 'Tamper-evident documents',
+                body: 'Guarantee that a contract, invoice, or report cannot be altered after signing without detection.'
+            },
+            {
+                title: 'Verifiable identity',
+                body: 'With a certificate from a trusted authority, recipients can confirm exactly who signed the document.'
+            },
+            {
+                title: 'Privacy-critical signing',
+                body: 'Sign sensitive documents without ever uploading them or your private key to a third-party service.'
+            }
+        ],
+        faqs: [
+            {
+                q: 'Do I need a certificate to use this?',
+                a: 'You can use an existing PKCS#12 (.p12/.pfx) certificate, or generate a self-signed certificate directly in the tool. A self-signed certificate still makes the document tamper-evident; it just is not backed by a trusted authority, so validators will show "identity not verified".'
+            },
+            {
+                q: 'Is the signing really done in my browser?',
+                a: 'Yes. The cryptographic signature is produced locally with WebAssembly/JavaScript (node-forge). Your PDF and private key are never transmitted. You can read the source on GitHub.'
+            },
+            {
+                q: 'What about trusted timestamps?',
+                a: 'Trusted timestamps (RFC 3161) and revocation checks require contacting an external authority, which browsers block directly. Orbit routes only a hash — never your document — through a tiny, open-source same-origin proxy for those optional steps. The core signature works fully offline without them.'
+            },
+            {
+                q: 'How do I verify a signed PDF?',
+                a: 'Use the Validate Signature tool, or open the PDF in a reader like Adobe Acrobat, which will show the signature panel and validation status.'
+            }
+        ]
+    },
     'merge-pdf': {
         useCases: [
             {

@@ -262,7 +262,7 @@
   ></div>
 
   <div
-    class="fixed inset-0 z-100 flex items-start justify-center px-4 pt-[12vh]"
+    class="isolate fixed inset-0 z-100 flex items-start justify-center px-4 pt-[12vh]"
     role="dialog"
     aria-modal="true"
     aria-label="Command menu"
