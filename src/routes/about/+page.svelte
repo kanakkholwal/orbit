@@ -61,7 +61,7 @@
         About
       </span>
       <h1
-        class="max-w-2xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl"
+        class="max-w-2xl text-display-md text-foreground sm:text-display-lg"
       >
         A PDF toolkit that respects your
         <span class="text-primary">files and your time.</span>

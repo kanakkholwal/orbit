@@ -6,6 +6,7 @@
   import { ToolCard } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
+  import { getToolContent } from "$constants/tool-content";
   import { toolsCategories } from "$constants/tools";
   import { recordRecentTool } from "$lib/runtime/recent-tools.svelte";
   import { appState } from "$stores/app-state.svelte";
@@ -62,7 +63,25 @@
       tool.category ??
       "Utility"
   );
+
+  // Long-form SEO content (how-it-works, use cases, FAQ) + FAQPage structured data.
+  let toolContent = $derived(getToolContent(tool));
+  let faqJsonLd = $derived(
+    JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: toolContent.faqs.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    }).replace(/</g, "\\u003c")
+  );
 </script>
+
+<svelte:head>
+  {@html `<script type="application/ld+json">${faqJsonLd}</` + `script>`}
+</svelte:head>
 
 {#if tool}
   <Seo
@@ -239,6 +258,82 @@
           </div>
         {/if}
       </section>
+
+      <article class="flex flex-col gap-16">
+        <!-- Intro -->
+        <section class="flex flex-col gap-4">
+          <span class="label-eyebrow text-primary">About {tool.title}</span>
+          <p class="max-w-3xl text-lg leading-relaxed text-foreground/90">
+            {toolContent.intro}
+          </p>
+        </section>
+
+        <!-- How it works -->
+        <section class="flex flex-col gap-6">
+          <header class="flex flex-col gap-2 border-b border-border/60 pb-4">
+            <span class="label-eyebrow text-muted-foreground">How it works</span>
+            <h2 class="text-display-md text-foreground">
+              {tool.title} in a few steps
+            </h2>
+          </header>
+          <ol class="flex flex-col gap-5">
+            {#each toolContent.howItWorks as step, i (i)}
+              <li class="flex gap-4">
+                <span
+                  class="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 font-mono text-[12px] tabular-nums text-primary"
+                >
+                  {i + 1}
+                </span>
+                <p class="max-w-2xl text-base leading-relaxed text-muted-foreground">
+                  {step}
+                </p>
+              </li>
+            {/each}
+          </ol>
+        </section>
+
+        <!-- Use cases -->
+        <section class="flex flex-col gap-6">
+          <header class="flex flex-col gap-2 border-b border-border/60 pb-4">
+            <span class="label-eyebrow text-muted-foreground">Use cases</span>
+            <h2 class="text-display-md text-foreground">
+              What {tool.title} is good for
+            </h2>
+          </header>
+          <ul class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {#each toolContent.useCases as uc (uc.title)}
+              <li
+                class="flex flex-col gap-2 rounded-lg border border-border bg-card p-5"
+              >
+                <h3 class="text-title-sm text-foreground">{uc.title}</h3>
+                <p class="text-sm leading-relaxed text-muted-foreground">
+                  {uc.body}
+                </p>
+              </li>
+            {/each}
+          </ul>
+        </section>
+
+        <!-- FAQ -->
+        <section class="flex flex-col gap-6">
+          <header class="flex flex-col gap-2 border-b border-border/60 pb-4">
+            <span class="label-eyebrow text-muted-foreground">FAQ</span>
+            <h2 class="text-display-md text-foreground">
+              Frequently asked questions
+            </h2>
+          </header>
+          <dl class="flex flex-col divide-y divide-border/60">
+            {#each toolContent.faqs as faq (faq.q)}
+              <div class="flex flex-col gap-2 py-5 first:pt-0">
+                <dt class="text-title-sm text-foreground">{faq.q}</dt>
+                <dd class="max-w-3xl text-base leading-relaxed text-muted-foreground">
+                  {faq.a}
+                </dd>
+              </div>
+            {/each}
+          </dl>
+        </section>
+      </article>
 
       <section class="flex flex-col gap-6">
         <div class="flex items-baseline justify-between gap-3 border-b border-border/60 pb-3">

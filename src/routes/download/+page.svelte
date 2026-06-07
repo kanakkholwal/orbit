@@ -169,7 +169,7 @@
         </div>
 
         <h1
-          class="max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
+          class="max-w-3xl text-display-lg text-foreground sm:text-[3.25rem] sm:leading-[1.05] sm:tracking-[-0.025em] md:text-display-mega"
           in:fly={{ y: 16, duration: 600, delay: 120, easing: cubicOut }}
         >
           Get {config.appName}
@@ -272,7 +272,7 @@
               {isMobile ? "Web app" : "Platforms"}
             </span>
             <h2
-              class="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+              class="text-display-md text-foreground sm:text-display-lg"
             >
               {isMobile ? "Install on this device." : "Pick the right build for your machine."}
             </h2>
@@ -434,7 +434,7 @@
               Notes
             </span>
             <h2
-              class="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+              class="text-display-md text-foreground sm:text-display-lg"
             >
               About these builds.
             </h2>

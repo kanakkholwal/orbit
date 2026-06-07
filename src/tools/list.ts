@@ -424,6 +424,26 @@ const tools: Record<string, ToolConfig> = {
         color: 'text-pink-500',
         keywords: ['strip pdf', 'pdf page labels', 'keep last page of pdf', 'collapse pdf sections', 'pdf stripper', 'reduce pdf pages by label', 'remove pages by page label']
     },
+    'md-to-pdf': {
+        slug: 'md-to-pdf',
+        title: 'Markdown to PDF',
+        description: 'Convert Markdown into a clean, formatted PDF — headings, lists, code blocks, and emphasis are all rendered. Paste your Markdown or load a .md file. Free and fully offline; nothing is uploaded.',
+        category: 'conversion',
+        icon: FileText,
+        component: () => import('./md-to-pdf/tool.svelte'),
+        color: 'text-blue-500',
+        keywords: ['markdown to pdf', 'md to pdf', 'convert markdown to pdf', 'markdown pdf converter', 'render markdown as pdf', 'md file to pdf', 'export markdown to pdf', 'free markdown to pdf']
+    },
+    'pdf-to-md': {
+        slug: 'pdf-to-md',
+        title: 'PDF to Markdown',
+        description: 'Extract a text-based PDF into clean Markdown, with headings, lists, and paragraphs inferred automatically. Ideal for repurposing documents or preparing content for AI. Runs entirely in your browser.',
+        category: 'conversion',
+        icon: Text,
+        component: () => import('./pdf-to-md/tool.svelte'),
+        color: 'text-green-500',
+        keywords: ['pdf to markdown', 'pdf to md', 'convert pdf to markdown', 'extract markdown from pdf', 'pdf markdown converter', 'pdf to md file', 'pdf to text markdown', 'free pdf to markdown']
+    },
 };
 
 

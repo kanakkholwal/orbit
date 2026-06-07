@@ -10,7 +10,7 @@
     {
       title: "Product",
       links: [
-        { label: "All tools", href: "/#tools" },
+        { label: "All tools", href: "/explore" },
         { label: "Explore", href: "/explore" },
         { label: "Download", href: "/download" },
         { label: "Changelog", href: "/changelog" },
@@ -30,6 +30,13 @@
         { label: "Documentation", href: "/docs" },
         { label: "GitHub", href: config.github, external: true },
         { label: "Support", href: `mailto:${config.supportEmail}`, external: true },
+      ],
+    },
+    {
+      title: "Legal",
+      links: [
+        { label: "Privacy Policy", href: "/privacy" },
+        { label: "Terms of Use", href: "/terms" },
       ],
     },
   ];
@@ -62,7 +69,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+      <div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
         {#each columns as col, i (col.title)}
           <div class="flex flex-col gap-5">
             <div
@@ -113,9 +120,23 @@
       >
         © {currentYear} · {config.appName} · v{config.appVersion}
       </p>
-      <p class="font-mono text-[11px] text-muted-foreground/70">
-        GPL-3.0 · Built locally, runs locally.
-      </p>
+      <div class="flex items-center gap-4">
+        <a
+          href="/privacy"
+          class="font-mono text-[11px] text-muted-foreground/70 transition-colors hover:text-foreground"
+        >
+          Privacy
+        </a>
+        <a
+          href="/terms"
+          class="font-mono text-[11px] text-muted-foreground/70 transition-colors hover:text-foreground"
+        >
+          Terms
+        </a>
+        <span class="font-mono text-[11px] text-muted-foreground/70">
+          GPL-3.0
+        </span>
+      </div>
     </div>
   </div>
 </footer>

@@ -181,7 +181,7 @@
         </div>
 
         <h1
-          class="max-w-3xl text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
+          class="max-w-3xl text-display-lg text-foreground sm:text-[3.25rem] sm:leading-[1.05] sm:tracking-[-0.025em] md:text-display-mega"
           in:fly={{ y: 16, duration: 600, delay: 120, easing: cubicOut }}
         >
           Install {config.appName}
@@ -241,7 +241,7 @@
             <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
               How to install
             </span>
-            <h2 class="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            <h2 class="text-display-md text-foreground sm:text-display-lg">
               {activeGuide.title}
             </h2>
           </div>
@@ -298,7 +298,7 @@
             <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
               Why install
             </span>
-            <h2 class="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            <h2 class="text-display-md text-foreground sm:text-display-lg">
               What you get.
             </h2>
           </div>

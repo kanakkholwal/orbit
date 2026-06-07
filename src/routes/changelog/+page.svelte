@@ -94,7 +94,7 @@
         Changelog
       </span>
       <h1
-        class="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl"
+        class="text-display-md text-foreground sm:text-display-lg"
       >
         What's new in
         <span class="text-primary">Orbit</span>
