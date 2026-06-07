@@ -60,9 +60,7 @@
     <span class="label-eyebrow text-primary">Workspace</span>
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-2">
-        <h1
-          class="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
-        >
+        <h1 class="text-display-md text-foreground sm:text-display-lg">
           {greeting}.
         </h1>
         <p class="max-w-xl text-sm leading-relaxed text-muted-foreground">

@@ -162,7 +162,7 @@
 
           <div class="flex flex-col gap-3">
             <h1
-              class="text-3xl font-semibold leading-[1.1] tracking-tight text-foreground sm:text-4xl md:text-5xl"
+              class="text-display-md font-semibold text-foreground sm:text-display-lg"
             >
               {tool.title}
             </h1>

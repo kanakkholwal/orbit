@@ -110,7 +110,7 @@
 
     <div class="flex max-w-2xl flex-col items-center gap-3">
       <h1
-        class="text-3xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-4xl md:text-5xl"
+        class="text-display-md text-foreground sm:text-display-lg md:text-display-mega md:leading-[1.05]"
       >
         Find the right tool
         <span class="text-primary">in two keystrokes.</span>

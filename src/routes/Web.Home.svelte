@@ -79,7 +79,7 @@
         </div>
 
         <h1
-          class="max-w-4xl text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
+          class="max-w-4xl text-display-lg text-foreground sm:text-[3.25rem] sm:leading-[1.05] sm:tracking-[-0.025em] md:text-display-mega"
           in:fly={{ y: 16, duration: 600, delay: 120, easing: cubicOut }}
         >
           A PDF toolkit that works
@@ -160,7 +160,7 @@
               Tools
             </span>
             <h2
-              class="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+              class="text-display-md text-foreground sm:text-display-lg"
             >
               Eight tools, one quiet interface.
             </h2>
@@ -232,7 +232,7 @@
               Architecture
             </span>
             <h2
-              class="max-w-2xl text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+              class="max-w-2xl text-display-md text-foreground sm:text-display-lg"
             >
               Privacy is not a setting.
               <span class="text-primary">It is the architecture.</span>
@@ -298,7 +298,7 @@
             Get started
           </span>
           <h2
-            class="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl"
+            class="mt-3 text-display-md text-foreground sm:text-display-lg"
           >
             Drop a file. Keep your privacy.
           </h2>
