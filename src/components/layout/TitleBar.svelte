@@ -1,5 +1,4 @@
 <script lang="ts">
-  import Logo from "$components/Logo.svelte";
   import { config } from "$constants/app";
   import { appState } from "$stores/app-state.svelte";
   import { Copy, Minus, Square, X } from "@lucide/svelte";
@@ -48,9 +47,9 @@
     data-tauri-drag-region
     class="flex h-8 shrink-0 select-none items-center justify-between border-b border-border/60 bg-background-inset/80 pl-3 backdrop-blur-xl"
   >
-    <div data-tauri-drag-region class="flex items-center gap-2">
+    <!-- <div data-tauri-drag-region class="flex items-center gap-2">
       <Logo size="sm" />
-    </div>
+    </div> -->
 
     <span
       data-tauri-drag-region
@@ -59,7 +58,7 @@
       {config.appName}
     </span>
 
-    <div class="flex items-center">
+    <div class="flex items-center ml-auto">
       <button
         type="button"
         class={ctrl}

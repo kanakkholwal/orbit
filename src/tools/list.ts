@@ -414,6 +414,16 @@ const tools: Record<string, ToolConfig> = {
         keywords: ['validate pdf signature', 'verify digital signature', 'pdf signature validation', 'check pdf signature authenticity', 'pdf document integrity', 'signature verification tool', 'trusted pdf signatures']
         
     },
+    'strip-pdf': {
+        slug: 'strip-pdf',
+        title: 'Strip PDF',
+        description: 'Strip a PDF down to the last page of each page-label range, keeping the final page. Ideal for collapsing labeled sections — like batched scans or multi-page records — to one representative page each. Runs entirely in your browser.',
+        category: 'pdf-management',
+        icon: Scissors,
+        component: () => import('./strip-pdf/tool.svelte'),
+        color: 'text-pink-500',
+        keywords: ['strip pdf', 'pdf page labels', 'keep last page of pdf', 'collapse pdf sections', 'pdf stripper', 'reduce pdf pages by label', 'remove pages by page label']
+    },
 };
 
 

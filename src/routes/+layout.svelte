@@ -15,8 +15,8 @@
   import { ModeWatcher, setMode } from "mode-watcher";
   import { onMount, tick } from "svelte";
 // import { ProgressBar } from "@prgm/sveltekit-progress-bar";
-  import Loader from "$components/common/loader.svelte";
   import FeedbackPrompt from "$components/common/feedback-prompt.svelte";
+  import Loader from "$components/common/loader.svelte";
   import TitleBar from "$components/layout/TitleBar.svelte";
   import { initTauriFileDrop } from "$lib/runtime/file-drop.svelte";
   import { loadRecentTools } from "$lib/runtime/recent-tools.svelte";
@@ -68,9 +68,9 @@
 
 {#if isTauri}
   <!-- Desktop: frameless window → custom title bar + fixed app frame -->
-  <div class="flex h-screen w-full flex-col overflow-hidden">
+  <div class="flex h-screen w-full flex-col overflow-hidden fixed inset-0 bg-background">
     <TitleBar />
-    <div class="relative flex min-h-0 w-full flex-1 flex-col overflow-y-auto">
+    <div class="relative flex min-h-0 w-full flex-1 flex-col">
       {@render children()}
     </div>
   </div>
