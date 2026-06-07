@@ -18,7 +18,7 @@
     Share2,
     ShieldCheck,
   } from "@lucide/svelte";
-  import type { Component } from "svelte";
+  import { untrack, type Component } from "svelte";
   import { cubicOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";
   import type { PageProps } from "./$types";
@@ -48,9 +48,13 @@
       .finally(() => (loading = false));
   });
 
-  // Record the visit for the workspace "jump back in" row.
+  // Record the visit for the workspace "jump back in" row. `untrack` the call
+  // so this effect depends ONLY on tool.slug — recordRecentTool both reads and
+  // writes the recent-tools state, which would otherwise self-trigger the
+  // effect into an infinite update loop.
   $effect(() => {
-    if (tool?.slug) recordRecentTool(tool.slug);
+    const slug = tool?.slug;
+    if (slug) untrack(() => recordRecentTool(slug));
   });
 
   let categoryName = $derived(

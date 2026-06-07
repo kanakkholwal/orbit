@@ -39,6 +39,14 @@ export function sortableList(node: HTMLElement, params: SortableListParams) {
     const sortable = Sortable.create(node, {
         animation: 150,
         ghostClass: 'opacity-50',
+        // Use the pointer-based fallback instead of the HTML5 Drag-and-Drop API.
+        // Tauri's native drag-drop (dragDropEnabled, also used for file intake)
+        // intercepts HTML5 DnD inside the WebView — especially Windows WebView2 —
+        // so without this, dragging silently does nothing on the desktop build.
+        // The fallback drives sorting from mouse/touch events and works in both
+        // the browser and Tauri.
+        forceFallback: true,
+        fallbackTolerance: 3,
         ...params.options,
         onEnd: (evt) => {
             const { oldIndex, newIndex, item, from } = evt;
