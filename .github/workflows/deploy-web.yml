@@ -65,6 +65,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           packageManager: bun
-          command: >-
-            deploy
-            ${{ inputs.environment != '' && format('--env {0}', inputs.environment) || '' }}
+          wranglerVersion: "4"
+          command: deploy

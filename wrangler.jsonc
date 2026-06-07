@@ -1,0 +1,23 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "orbit-web",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_date": "2026-06-07",
+	"compatibility_flags": ["nodejs_compat"],
+	"routes": [
+		// Hostname-only mappings → Custom Domains (Cloudflare manages the DNS
+		// record + cert automatically). These cannot include a path.
+		{ "pattern": "orbit.nexonauts.com", "custom_domain": true },
+		{ "pattern": "pdf.nexonauts.com", "custom_domain": true },
+		{ "pattern": "pdf.multi-tools.eu.org", "custom_domain": true },
+		// Path-scoped mapping → a regular route (needs zone_name, not custom_domain).
+		{ "pattern": "multi-tools.eu.org/pdf/*", "zone_name": "multi-tools.eu.org" }
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"observability": {
+		"enabled": true
+	}
+}

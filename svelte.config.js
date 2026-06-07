@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-auto';
+import adapterCloudflare from '@sveltejs/adapter-cloudflare';
 import adapterStatic from '@sveltejs/adapter-static';
 
 // const isTauri = process.env.BUILD_TARGET === 'tauri';
@@ -8,15 +8,14 @@ const isTauri = !!process.env.TAURI_ENV_PLATFORM;
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
-		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
+		// Tauri ships a fully static client bundle; the web build targets
+		// Cloudflare Workers (see wrangler.jsonc + .github/workflows/deploy-web.yml).
 		adapter: isTauri
 			? adapterStatic({
 				pages: 'build',
 				assets: 'build',
 				fallback: 'index.html'
-			}) : adapter(),
+			}) : adapterCloudflare(),
 		alias: {
 			$components: 'src/components',
 			$utils: 'src/utils',
