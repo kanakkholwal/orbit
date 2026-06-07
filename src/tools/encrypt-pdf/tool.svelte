@@ -144,7 +144,7 @@
 
     <ToolFooter
       hint={store.isProcessing
-        ? store.progress
+        ? store.progressLabel
         : store.state.userPassword
           ? "Lock the document"
           : "Set a user password to continue"}
@@ -157,7 +157,7 @@
       >
         {#if store.isProcessing}
           <LoaderCircle class="size-4 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           <ShieldCheck class="size-4" />
           Encrypt

@@ -208,7 +208,7 @@
     </div>
 
     <ToolFooter
-      hint={store.isProcessing ? store.progress : "Add page numbers"}
+      hint={store.isProcessing ? store.progressLabel : "Add page numbers"}
     >
       <Button
         size="lg"
@@ -218,7 +218,7 @@
       >
         {#if store.isProcessing}
           <LoaderCircle class="size-4 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           Add page numbers
           <ArrowRight class="size-4" />

@@ -78,7 +78,7 @@
       >
         {#if store.state.isDetecting}
           <LoaderCircle class="size-3.5 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           <Search class="size-3.5" />
           Detect blank pages
@@ -142,7 +142,7 @@
         >
           {#if store.isProcessing}
             <LoaderCircle class="size-4 animate-spin" />
-            {store.progress}
+            {store.progressLabel}
           {:else}
             <Zap class="size-4" />
             Remove selected

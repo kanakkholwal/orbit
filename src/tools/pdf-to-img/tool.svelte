@@ -121,7 +121,7 @@
       </dl>
     </ToolPanel>
 
-    <ToolFooter hint={store.isProcessing ? store.progress : "Convert pages to images"}>
+    <ToolFooter hint={store.isProcessing ? store.progressLabel : "Convert pages to images"}>
       <Button
         size="lg"
         class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
@@ -130,7 +130,7 @@
       >
         {#if store.isProcessing}
           <LoaderCircle class="size-4 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           Convert
           <ArrowRight class="size-4" />

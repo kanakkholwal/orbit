@@ -3,13 +3,12 @@
   import AdUnit from "$components/AdUnit.svelte";
   import ShareButton from "$components/application/ShareButton.svelte";
   import Seo from "$components/Seo.svelte";
+  import { ToolCard } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
-  import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
   import {
-    ArrowUpRight,
     ChevronLeft,
     CircleAlert,
     DownloadIcon,
@@ -246,56 +245,11 @@
         {/key}
 
         <ul
-          class="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-3"
+          class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-3"
         >
           {#each data.recommended as rec, i (rec.slug)}
-            {@const Icon = rec.icon}
-            <li>
-              <a
-                href={`/tools/${rec.slug}`}
-                class="group flex h-full flex-col gap-4 bg-card p-5 transition-colors duration-300 hover:bg-muted/40 active:scale-[0.99]"
-                in:fly={{
-                  y: 8,
-                  duration: 360,
-                  delay: 60 + i * 40,
-                  easing: cubicOut,
-                }}
-              >
-                <div class="flex items-start justify-between gap-3">
-                  <span
-                    class="inline-flex size-8 items-center justify-center rounded-sm bg-primary/10 text-primary transition-colors group-hover:bg-primary/15"
-                  >
-                    {#if Icon}<Icon size={16} />{/if}
-                  </span>
-                  <span
-                    class="font-mono text-[10px] tabular-nums text-muted-foreground/50"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <div class="flex flex-1 flex-col gap-1.5">
-                  <h3 class="text-base font-medium tracking-tight text-foreground">
-                    {rec.title}
-                  </h3>
-                  <p class="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                    {rec.description}
-                  </p>
-                </div>
-                <div
-                  class={cn(
-                    "flex items-center justify-between border-t border-border/40 pt-3"
-                  )}
-                >
-                  <span
-                    class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60 transition-colors group-hover:text-primary"
-                  >
-                    Open
-                  </span>
-                  <ArrowUpRight
-                    class="size-3.5 text-muted-foreground/50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
-                  />
-                </div>
-              </a>
+            <li class="contents">
+              <ToolCard tool={rec} index={i} delay={60 + i * 40} />
             </li>
           {/each}
         </ul>

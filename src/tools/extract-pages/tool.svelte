@@ -82,7 +82,7 @@
 
     <ToolFooter
       hint={store.isProcessing
-        ? store.progress
+        ? store.progressLabel
         : store.state.pagesToExtract
           ? `Extract ${store.state.pagesToExtract}`
           : "Enter a range to begin"}
@@ -95,7 +95,7 @@
       >
         {#if store.isProcessing}
           <LoaderCircle class="size-4 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           Extract pages
           <ArrowRight class="size-4" />

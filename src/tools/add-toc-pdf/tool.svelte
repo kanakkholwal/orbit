@@ -143,7 +143,7 @@
       </div>
     </ToolPanel>
 
-    <ToolFooter hint={store.isProcessing ? store.progress : "Generate TOC page"}>
+    <ToolFooter hint={store.isProcessing ? store.progressLabel : "Generate TOC page"}>
       <Button
         size="lg"
         class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
@@ -152,7 +152,7 @@
       >
         {#if store.isProcessing}
           <LoaderCircle class="size-4 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           Generate TOC
           <ArrowRight class="size-4" />

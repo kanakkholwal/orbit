@@ -10,6 +10,17 @@ export class BaseEngine {
     // Shared State
     isProcessing = $state(false);
     progress = $state<ProgressState>({ current: 0, total: 0, text: '' });
+
+    /**
+     * Human-readable, reactive progress string for UI surfaces (ToolFooter
+     * hint, in-button label, etc.). Use this instead of rendering the raw
+     * `progress` object. Returns the step text, with a count when available.
+     */
+    get progressLabel(): string {
+        const { current, total, text } = this.progress;
+        const base = text || 'Processing…';
+        return total > 0 ? `${base} ${current}/${total}` : base;
+    }
     /**
      * Standardized runner for async tasks with toast notifications.
      */

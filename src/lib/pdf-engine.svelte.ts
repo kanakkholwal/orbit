@@ -7,6 +7,16 @@ export interface ProgressState {
     text: string;
 }
 
+/**
+ * Canonical base class for ALL tool state classes (`<Name>State extends PdfEngine`).
+ *
+ * It inherits the generic runtime from {@link BaseEngine} (isProcessing,
+ * progress/progressLabel, handleProcess, downloadBlob) and adds PDF-specific
+ * helpers (lazy pdf.js, thumbnail rendering, page-range parsing). pdf.js is
+ * dynamically imported only when `getPdfJs()` is first called, so tools that
+ * never render thumbnails pay no bundle cost — there is therefore no reason to
+ * extend BaseEngine directly. One base, no decision.
+ */
 export class PdfEngine extends BaseEngine {
 
     // Protected so subclasses (MergeState, SplitState) can access it

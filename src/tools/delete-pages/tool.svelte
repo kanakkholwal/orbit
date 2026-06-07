@@ -75,7 +75,7 @@
 
     <ToolFooter
       hint={store.isProcessing
-        ? store.progress
+        ? store.progressLabel
         : `${store.state.pagesToDelete.size} page${store.state.pagesToDelete.size === 1 ? "" : "s"} marked`}
     >
       <Button
@@ -86,7 +86,7 @@
       >
         {#if store.isProcessing}
           <LoaderCircle class="size-4 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           Delete & download
           <ArrowRight class="size-4" />

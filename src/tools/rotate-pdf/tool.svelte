@@ -71,7 +71,7 @@
     </ToolPanel>
 
     <ToolFooter
-      hint={store.isProcessing ? store.progress : "Apply rotations"}
+      hint={store.isProcessing ? store.progressLabel : "Apply rotations"}
     >
       <Button
         size="lg"
@@ -81,7 +81,7 @@
       >
         {#if store.isProcessing}
           <LoaderCircle class="size-4 animate-spin" />
-          {store.progress}
+          {store.progressLabel}
         {:else}
           Apply & download
           <ArrowRight class="size-4" />

@@ -103,8 +103,9 @@
   }
 
   .adsbygoogle {
-    display: block;
+    display: none!important; /* hide till approved */
     width: 100%; /* okay for responsive ads */
     margin: auto;
+
   }
 </style>

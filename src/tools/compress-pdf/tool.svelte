@@ -50,7 +50,7 @@
           <li>
             <FileRow
               name={file.file.name}
-              onRemove={file.status === "idle"
+              onRemove={file.status === "pending"
                 ? () => store.removeFile(file.id)
                 : undefined}
             >

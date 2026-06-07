@@ -15,7 +15,6 @@
     DownloadIcon,
     GithubIcon,
     HomeIcon,
-    LayoutGrid,
     Search,
   } from "@lucide/svelte";
   import { cubicOut } from "svelte/easing";
@@ -34,9 +33,8 @@
   );
 
   const primaryNav = [
-    { label: "Home", href: "/", icon: HomeIcon, exact: true },
+    { label: "Home", href: "/home", icon: HomeIcon, exact: true },
     { label: "Explore", href: "/explore", icon: Compass },
-    { label: "All tools", href: "/#tools", icon: LayoutGrid },
   ];
 
   const navLink =
