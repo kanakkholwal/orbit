@@ -10,8 +10,6 @@
 		{ "pattern": "orbit.nexonauts.com", "custom_domain": true },
 		{ "pattern": "pdf.nexonauts.com", "custom_domain": true },
 		{ "pattern": "pdf.multi-tools.eu.org", "custom_domain": true },
-		// Path-scoped mapping → a regular route (needs zone_name, not custom_domain).
-		{ "pattern": "multi-tools.eu.org/pdf/*", "zone_name": "multi-tools.eu.org" }
 	],
 	"assets": {
 		"binding": "ASSETS",
