@@ -1,13 +1,18 @@
 <script lang="ts">
   import { ToolCard } from "$components/tool";
   import { Input } from "$components/ui/input";
-  import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
+  import { recentTools } from "$lib/runtime/recent-tools.svelte";
   import { cn } from "$lib/utils";
-  import { toolList } from "$tools/list";
-  import { ArrowUpRight, Search } from "@lucide/svelte";
+  import { getTool, toolList } from "$tools/list";
+  import { ArrowUpRight, History, Search } from "@lucide/svelte";
   import { cubicOut } from "svelte/easing";
   import { fly } from "svelte/transition";
+
+  // "Jump back in" — recently opened tools (persisted, see recent-tools store).
+  let recent = $derived(
+    recentTools.items.map((r) => getTool(r.slug)).filter((t) => t !== null)
+  );
 
   let searchQuery = $state("");
   let activeCategory = $state<string>("all");
@@ -83,6 +88,27 @@
       </div>
     </div>
   </header>
+
+  {#if recent.length > 0}
+    <section
+      class="flex flex-col gap-4"
+      in:fly={{ y: 8, duration: 480, delay: 60, easing: cubicOut }}
+    >
+      <div class="flex items-center gap-2">
+        <History class="size-3.5 text-muted-foreground/70" />
+        <span class="label-eyebrow text-muted-foreground">Jump back in</span>
+      </div>
+      <ul
+        class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      >
+        {#each recent as tool (tool.slug)}
+          <li class="contents">
+            <ToolCard {tool} delay={null} />
+          </li>
+        {/each}
+      </ul>
+    </section>
+  {/if}
 
   <nav
     class="-mx-1 flex flex-wrap items-center gap-1 overflow-x-auto px-1 pb-1 sm:overflow-visible"

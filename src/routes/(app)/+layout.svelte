@@ -2,11 +2,20 @@
   import AppSidebar from "$components/layout/AppSidebar.svelte";
   import MobileHeader from "$components/layout/MobileHeader.svelte";
   import * as Sidebar from "$components/ui/sidebar";
+  import { cn } from "$lib/utils";
+  import { appState } from "$stores/app-state.svelte";
   let { children } = $props();
+
+  // On desktop the app lives inside the title-bar frame (a flex-1 box), so the
+  // shell fills its parent (h-full). On web it owns the viewport (h-screen).
+  let isTauri = $derived(appState.isTauri);
 </script>
 
 <Sidebar.Provider
-  class="flex h-screen w-full flex-col md:flex-row overflow-hidden"
+  class={cn(
+    "flex w-full flex-col md:flex-row overflow-hidden",
+    isTauri ? "h-full" : "h-screen"
+  )}
 >
   <AppSidebar />
   <main

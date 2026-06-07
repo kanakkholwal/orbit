@@ -1,8 +1,10 @@
 <script lang="ts">
   import { trackFileUpload } from "$lib/analytics-tracker";
+  import { fileDropState, registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { cn } from "$lib/utils";
+  import { appState } from "$stores/app-state.svelte";
   import { UploadCloud } from "@lucide/svelte";
-  import type { Snippet } from "svelte";
+  import { onMount, type Snippet } from "svelte";
   import { toast } from "svelte-sonner";
   import { fade } from "svelte/transition";
   import { buttonVariants } from "./button";
@@ -39,6 +41,17 @@
 
   let isDragging = $state(false);
   let fileInput: HTMLInputElement;
+
+  // On desktop, Tauri intercepts HTML drag/drop — register this area as the
+  // active native-drop intake target and mirror the native drag state.
+  onMount(() => {
+    if (!appState.isTauri || disabled) return;
+    return registerFileDrop((dropped) => validateAndEmit(dropped));
+  });
+
+  let dragActive = $derived(
+    isDragging || (appState.isTauri && fileDropState.isDragging)
+  );
 
   export const click = () => {
     if (!disabled && fileInput) fileInput.click();
@@ -128,7 +141,7 @@
   type="button"
   class={cn(
     "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
-    isDragging
+    dragActive
       ? "border-primary/60 bg-primary/5"
       : "border-border/70 bg-muted/20 hover:border-primary/40 hover:bg-muted/30",
     disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
@@ -146,7 +159,7 @@
       <span
         class={cn(
           "inline-flex size-12 items-center justify-center rounded-sm transition-colors",
-          isDragging
+          dragActive
             ? "bg-primary/15 text-primary"
             : "bg-muted/60 text-foreground/80 group-hover:bg-primary/10 group-hover:text-primary"
         )}
@@ -160,10 +173,10 @@
       <span
         class={cn(
           "font-mono text-[10px] font-medium uppercase tracking-[0.2em] transition-colors",
-          isDragging ? "text-primary" : "text-muted-foreground/70"
+          dragActive ? "text-primary" : "text-muted-foreground/70"
         )}
       >
-        {isDragging ? "Drop to upload" : "Upload"} · {acceptLabel}
+        {dragActive ? "Drop to upload" : "Upload"} · {acceptLabel}
       </span>
     </div>
 
@@ -219,7 +232,7 @@
     onchange={handleInputChange}
   />
 
-  {#if isDragging}
+  {#if dragActive}
     <div
       class="pointer-events-none absolute inset-0 z-0 bg-primary/5"
       transition:fade={{ duration: 150 }}

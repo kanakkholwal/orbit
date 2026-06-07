@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import { arrayMove, sortableList } from "$lib/actions/sortable-list";
   import { cn } from "$lib/utils";
   import {
     CheckSquare,
@@ -15,7 +16,6 @@
     Undo2,
     UploadCloud,
   } from "@lucide/svelte";
-  import Sortable from "sortablejs";
   import { setContext } from "svelte";
   import { fade, slide } from "svelte/transition";
   import { PDF_STATE_KEY, PdfEditorState } from "./helper.svelte";
@@ -23,24 +23,6 @@
 
   const pdfState = new PdfEditorState();
   setContext(PDF_STATE_KEY, pdfState);
-
-  function sortable(node: HTMLElement) {
-    const sortableInstance = new Sortable(node, {
-      animation: 150,
-      ghostClass: "opacity-50",
-      onEnd: (evt) => {
-        if (evt.oldIndex !== undefined && evt.newIndex !== undefined) {
-          const pages = [...pdfState.pages];
-          if (pages[evt.oldIndex]) {
-            const [moved] = pages.splice(evt.oldIndex, 1);
-            pages.splice(evt.newIndex, 0, moved);
-            pdfState.pages = pages;
-          }
-        }
-      },
-    });
-    return { destroy: () => sortableInstance.destroy() };
-  }
 
   let uploadArea: ReturnType<typeof UploadArea>;
 
@@ -70,7 +52,9 @@
     </div>
 
     <div
-      use:sortable
+      use:sortableList={{
+        onReorder: (o, n) => (pdfState.pages = arrayMove(pdfState.pages, o, n)),
+      }}
       class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 3xl:grid-cols-6"
     >
       {#each pdfState.pages as page, i (page?.id || i)}

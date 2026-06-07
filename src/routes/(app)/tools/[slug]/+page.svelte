@@ -7,6 +7,7 @@
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
+  import { recordRecentTool } from "$lib/runtime/recent-tools.svelte";
   import { appState } from "$stores/app-state.svelte";
   import {
     ChevronLeft,
@@ -45,6 +46,11 @@
         error = true;
       })
       .finally(() => (loading = false));
+  });
+
+  // Record the visit for the workspace "jump back in" row.
+  $effect(() => {
+    if (tool?.slug) recordRecentTool(tool.slug);
   });
 
   let categoryName = $derived(

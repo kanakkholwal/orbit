@@ -9,30 +9,13 @@
     SelectTrigger,
   } from "$components/ui/select";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import { arrayMove, sortableList } from "$lib/actions/sortable-list";
   import { formatBytes } from "$utils/helper";
   import { ArrowRight, FileIcon, LoaderCircle, Plus, Trash2 } from "@lucide/svelte";
-  import Sortable from "sortablejs";
   import { ACCEPTED_FORMATS, JpgToPdfState } from "./helper.svelte";
 
   const store = new JpgToPdfState();
   let uploadArea: ReturnType<typeof UploadArea>;
-
-  function sortable(node: HTMLElement) {
-    const sort = Sortable.create(node, {
-      animation: 150,
-      ghostClass: "opacity-50",
-      handle: ".drag-handle",
-      onEnd: (evt) => {
-        if (evt.oldIndex !== undefined && evt.newIndex !== undefined) {
-          const items = [...store.files];
-          const [moved] = items.splice(evt.oldIndex, 1);
-          items.splice(evt.newIndex, 0, moved);
-          store.files = items;
-        }
-      },
-    });
-    return { destroy: () => sort.destroy() };
-  }
 </script>
 
 <UploadArea
@@ -89,7 +72,10 @@
 
     <ToolPanel title="Pages" counter={store.files.length}>
       <div
-        use:sortable
+        use:sortableList={{
+          onReorder: (o, n) => (store.files = arrayMove(store.files, o, n)),
+          options: { handle: ".drag-handle" },
+        }}
         class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4"
       >
         {#each store.files as item, i (item.id)}

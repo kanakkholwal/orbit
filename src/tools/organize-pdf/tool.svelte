@@ -4,12 +4,12 @@
   import { Input } from "$components/ui/input";
   import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import { sortableList } from "$lib/actions/sortable-list";
   import {
     ArrowRight,
     LoaderCircle,
     Settings2,
   } from "@lucide/svelte";
-  import Sortable from "sortablejs";
   import { slide } from "svelte/transition";
   import { OrganizePdfState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
@@ -18,24 +18,6 @@
 
   let customOrderInput = $state("");
   let showAdvanced = $state(false);
-
-  function setupSortable(node: HTMLElement) {
-    const sortable = Sortable.create(node, {
-      animation: 150,
-      ghostClass: "opacity-50",
-      onEnd: (evt) => {
-        const { oldIndex, newIndex } = evt;
-        if (
-          oldIndex !== undefined &&
-          newIndex !== undefined &&
-          oldIndex !== newIndex
-        ) {
-          store.movePage(oldIndex, newIndex);
-        }
-      },
-    });
-    return { destroy: () => sortable.destroy() };
-  }
 
   function handleCustomOrder() {
     if (customOrderInput) {
@@ -106,7 +88,7 @@
 
     <ToolPanel title="Pages" counter={store.state.pages.length}>
       <div
-        use:setupSortable
+        use:sortableList={{ onReorder: (o, n) => store.movePage(o, n) }}
         class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
       >
         {#each store.state.pages as page, i (page.id)}

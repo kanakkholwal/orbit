@@ -2,6 +2,7 @@
   import { ToolBar, ToolFooter, ToolPanel } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import { arrayMove, sortableList } from "$lib/actions/sortable-list";
   import { cn } from "$lib/utils";
   import {
     ArrowRight,
@@ -10,7 +11,6 @@
     LoaderCircle,
     Plus,
   } from "@lucide/svelte";
-  import Sortable from "sortablejs";
   import { setContext } from "svelte";
   import FileModeItem from "./FileModeItem.svelte";
   import { MERGE_STATE_KEY, MergeState } from "./helper.svelte";
@@ -21,42 +21,28 @@
 
   let uploadArea: ReturnType<typeof UploadArea>;
 
-  function sortableList(node: HTMLElement) {
-    const sort = Sortable.create(node, {
+  const fileListSort = {
+    onReorder: (o: number, n: number) =>
+      (localStore.files = arrayMove(localStore.files, o, n)),
+    options: {
       handle: ".drag-handle",
       animation: 200,
       ghostClass: "opacity-40",
       dragClass: "cursor-grabbing",
-      onEnd: (evt) => {
-        if (evt.oldIndex !== undefined && evt.newIndex !== undefined) {
-          const items = [...localStore.files];
-          const [moved] = items.splice(evt.oldIndex, 1);
-          items.splice(evt.newIndex, 0, moved);
-          localStore.files = items;
-        }
-      },
-    });
-    return { destroy: () => sort.destroy() };
-  }
+    },
+  };
 
-  function sortableGrid(node: HTMLElement) {
-    const sort = Sortable.create(node, {
+  const pageGridSort = {
+    onReorder: (o: number, n: number) =>
+      (localStore.allPages = arrayMove(localStore.allPages, o, n)),
+    options: {
       animation: 200,
       ghostClass: "opacity-40",
       dragClass: "cursor-grabbing",
       delay: 100,
       delayOnTouchOnly: true,
-      onEnd: (evt) => {
-        if (evt.oldIndex !== undefined && evt.newIndex !== undefined) {
-          const items = [...localStore.allPages];
-          const [moved] = items.splice(evt.oldIndex, 1);
-          items.splice(evt.newIndex, 0, moved);
-          localStore.allPages = items;
-        }
-      },
-    });
-    return { destroy: () => sort.destroy() };
-  }
+    },
+  };
 </script>
 
 <UploadArea
@@ -117,7 +103,7 @@
     >
       <div class="rounded-md border border-border/60 bg-muted/10 p-3 sm:p-4">
         {#if localStore.mode === "file"}
-          <div class="flex flex-col gap-2" use:sortableList>
+          <div class="flex flex-col gap-2" use:sortableList={fileListSort}>
             {#each localStore.files as file (file.id)}
               <FileModeItem
                 {file}
@@ -154,7 +140,7 @@
         {:else}
           <div
             class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-            use:sortableGrid
+            use:sortableList={pageGridSort}
           >
             {#each localStore.allPages as item (item.id)}
               <PageModeThumbnail {item} store={localStore} />

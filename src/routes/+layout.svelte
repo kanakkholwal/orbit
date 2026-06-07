@@ -17,6 +17,11 @@
 // import { ProgressBar } from "@prgm/sveltekit-progress-bar";
   import Loader from "$components/common/loader.svelte";
   import FeedbackPrompt from "$components/common/feedback-prompt.svelte";
+  import TitleBar from "$components/layout/TitleBar.svelte";
+  import { initTauriFileDrop } from "$lib/runtime/file-drop.svelte";
+  import { loadRecentTools } from "$lib/runtime/recent-tools.svelte";
+
+  let isTauri = $derived(appState.isTauri);
 
   // Attach the beforeinstallprompt listener at hydration time (before onMount)
   // so we don't miss the event when the browser fires it early.
@@ -30,7 +35,13 @@
     // Initialize global app state
     await appState.init();
 
+    // Recently-used tools (workspace "jump back in")
+    loadRecentTools();
+
     if (appState.isTauri) {
+      // Native drag-from-Explorer file drop bridge
+      initTauriFileDrop();
+
       const theme = await getTauriTheme();
       const stored = localStorage.getItem("mode-watcher-mode");
       if (theme && (!stored || stored === "system")) {
@@ -55,9 +66,20 @@
 <ModeWatcher />
 <Toaster position="top-right" richColors />
 
-<div class="relative flex min-h-screen w-full flex-col">
-  {@render children()}
-</div>
+{#if isTauri}
+  <!-- Desktop: frameless window → custom title bar + fixed app frame -->
+  <div class="flex h-screen w-full flex-col overflow-hidden">
+    <TitleBar />
+    <div class="relative flex min-h-0 w-full flex-1 flex-col overflow-y-auto">
+      {@render children()}
+    </div>
+  </div>
+{:else}
+  <!-- Web: normal document flow (unchanged) -->
+  <div class="relative flex min-h-screen w-full flex-col">
+    {@render children()}
+  </div>
+{/if}
 
 <FeedbackPrompt />
 
