@@ -185,6 +185,16 @@ const tools: Record<string, ToolConfig> = {
         color: 'text-blue-500',
         keywords: ['edit pdf', 'pdf editor', 'edit pdf online', 'add text to pdf', 'pdf annotation', 'modify pdf', 'free pdf editor', 'edit pdf text', 'pdf markup tool']
     },
+    "view-pdf": {
+        slug: "view-pdf",
+        title: "View PDF",
+        description: "Open PDFs in a dedicated desktop-style viewer with thumbnails, outline, search, zoom controls, spread layouts, and multiple reading modes.",
+        category: 'essentials',
+        icon: Eye,
+        component: () => import('./view-pdf/tool.svelte'),
+        color: 'text-sky-500',
+        keywords: ['view pdf', 'pdf viewer', 'open pdf', 'read pdf', 'pdf reader', 'thumbnail view pdf', 'pdf layout modes', 'offline pdf viewer']
+    },
     "bookmark-pdf": {
         slug: "bookmark-pdf",
         title: "Bookmark PDF",

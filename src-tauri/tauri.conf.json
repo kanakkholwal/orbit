@@ -54,6 +54,20 @@
     "linux": {
       "appimage": {}
     },
+    "fileAssociations": [
+      {
+        "ext": [
+          "pdf"
+        ],
+        "mimeType": "application/pdf",
+        "name": "PDF Document",
+        "description": "Portable Document Format",
+        "role": "Viewer",
+        "contentTypes": [
+          "com.adobe.pdf"
+        ]
+      }
+    ],
     "createUpdaterArtifacts": true
   },
   "plugins": {

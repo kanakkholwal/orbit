@@ -63,6 +63,7 @@
       tool.category ??
       "Utility"
   );
+  let isPdfViewer = $derived(tool.slug === "view-pdf");
 
   // Long-form SEO content (how-it-works, use cases, FAQ) + FAQPage structured data.
   let toolContent = $derived(getToolContent(tool));
@@ -90,7 +91,99 @@
     keywords={tool?.keywords}
   />
 
-  <div class="min-h-screen w-full relative" in:fade={{ duration: 220 }}>
+  {#if isPdfViewer}
+    <div class="flex h-full min-h-0 w-full flex-col bg-background" in:fade={{ duration: 180 }}>
+      <nav
+        class="flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3 md:px-5"
+        aria-label="PDF viewer toolbar"
+      >
+        <a
+          href="/explore"
+          class="group inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ChevronLeft
+            class="size-3.5 transition-transform duration-300 group-hover:-translate-x-0.5"
+          />
+          Back to library
+        </a>
+
+        <div class="flex items-center gap-3">
+          <div class="hidden items-center gap-2 md:flex">
+            <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+              Dedicated viewer
+            </span>
+            <span class="text-muted-foreground/40">·</span>
+            <span class="text-sm text-muted-foreground">
+              Open PDFs directly from Orbit or your OS
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            href={config.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded-sm text-muted-foreground hover:text-foreground"
+          >
+            <Github class="size-3.5" />
+            <span class="hidden sm:inline">GitHub</span>
+          </Button>
+        </div>
+      </nav>
+
+      <section class="min-h-0 flex-1">
+        {#if loading}
+          <div class="flex h-full flex-col items-center justify-center gap-4">
+            <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
+              <LoaderCircle class="size-4 animate-spin" />
+            </span>
+            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70">
+              Loading viewer
+            </p>
+          </div>
+        {:else if error}
+          <div
+            in:fade={{ duration: 200 }}
+            class="flex h-full flex-col items-center justify-center gap-4 px-6 text-center"
+          >
+            <span class="inline-flex size-10 items-center justify-center rounded-sm bg-destructive/10 text-destructive">
+              <CircleAlert class="size-4" />
+            </span>
+            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-destructive">
+              Failed to load
+            </p>
+            <p class="max-w-sm text-sm text-muted-foreground">
+              Something went wrong while loading
+              <span class="font-medium text-foreground">{tool.title}</span>.
+            </p>
+            <div class="mt-2 flex flex-wrap items-center justify-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onclick={() => window.location.reload()}
+                class="rounded-sm"
+              >
+                Try again
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                href="/explore"
+                class="rounded-sm text-muted-foreground hover:text-foreground"
+              >
+                Browse tools
+              </Button>
+            </div>
+          </div>
+        {:else if ToolComponent}
+          <div class="h-full">
+            <ToolComponent />
+          </div>
+        {/if}
+      </section>
+    </div>
+  {:else}
+    <div class="min-h-screen w-full relative" in:fade={{ duration: 220 }}>
     <div class="flex flex-col gap-12 px-3 pb-[max(env(safe-area-inset-bottom),2rem)] pt-2 sm:px-5 sm:pt-4">
       <nav
         class="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-5"
@@ -373,5 +466,6 @@
         </p>
       </div>
     </div>
-  </div>
+    </div>
+  {/if}
 {/if}

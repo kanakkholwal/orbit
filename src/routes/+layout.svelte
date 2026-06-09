@@ -21,6 +21,7 @@
   import TitleBar from "$components/layout/TitleBar.svelte";
   import { initTauriFileDrop } from "$lib/runtime/file-drop.svelte";
   import { loadRecentTools } from "$lib/runtime/recent-tools.svelte";
+  import { initTauriOpenedPdfs } from "$lib/runtime/tauri-opened-pdf.svelte";
 
   let isTauri = $derived(appState.isTauri);
 
@@ -42,6 +43,7 @@
     if (appState.isTauri) {
       // Native drag-from-Explorer file drop bridge
       initTauriFileDrop();
+      initTauriOpenedPdfs();
 
       const theme = await getTauriTheme();
       const stored = localStorage.getItem("mode-watcher-mode");

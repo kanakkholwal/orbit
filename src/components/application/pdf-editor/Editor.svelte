@@ -35,6 +35,7 @@
   import {
     DocumentContent,
     DocumentManagerPluginPackage,
+    useDocumentManagerCapability,
     type InitialDocumentOptions,
   } from "@embedpdf/plugin-document-manager/svelte";
   import { ExportPluginPackage } from "@embedpdf/plugin-export/svelte";
@@ -103,13 +104,18 @@
   import SchemaSelectionMenu from "./SchemaSelectionMenu.svelte";
   import SchemaToolbar from "./SchemaToolbar.svelte";
 
-  let { initialDocuments = $bindable<InitialDocumentOptions[]>([]) } = $props<{
+  let {
+    initialDocuments = $bindable<InitialDocumentOptions[]>([]),
+    incomingDocuments = $bindable<InitialDocumentOptions[]>([]),
+  } = $props<{
     initialDocuments: InitialDocumentOptions[];
+    incomingDocuments?: InitialDocumentOptions[];
   }>();
 
   const logger = new ConsoleLogger();
 
   const pdfEngine = usePdfiumEngine({ logger });
+  const documentManager = useDocumentManagerCapability();
 
   const uiComponents: UIComponents = {
     "zoom-toolbar": CustomZoomToolbar,
@@ -183,6 +189,24 @@
   ];
 
   async function handleInitialized() {}
+
+  $effect(() => {
+    const provides = documentManager.provides;
+    if (!provides || incomingDocuments.length === 0) return;
+
+    const pending = [...incomingDocuments];
+    incomingDocuments = [];
+
+    for (const document of pending) {
+      if ("buffer" in document && document.buffer) {
+        provides.openDocumentBuffer({
+          buffer: document.buffer,
+          name: document.name,
+          autoActivate: document.autoActivate ?? true,
+        });
+      }
+    }
+  });
 </script>
 
 {#if pdfEngine.error}
