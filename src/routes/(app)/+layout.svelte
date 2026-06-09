@@ -13,16 +13,16 @@
 
 <Sidebar.Provider
   class={cn(
-    "flex w-full flex-col md:flex-row overflow-hidden",
+    "flex w-full flex-col overflow-hidden bg-background-inset md:flex-row",
     isTauri ? "h-full" : "h-screen"
   )}
 >
   <AppSidebar />
   <main
-    class="flex-1 overflow-y-auto overflow-x-hidden relative pt-0"
+    class="relative flex-1 overflow-y-auto overflow-x-hidden bg-background pt-0 md:border-l md:border-border/60"
   >
     <MobileHeader />
-    <div class="mx-auto max-w-app h-full flex flex-col p-4 md:p-6 lg:p-8">
+    <div class="mx-auto flex h-full max-w-[min(1720px,96vw)] flex-col px-4 py-4 md:px-8 md:py-6 lg:px-10 lg:py-8 xl:px-12">
       {@render children?.()}
     </div>
   </main>
