@@ -6,13 +6,13 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { cn } from "$lib/utils";
   import {
-    CheckCircle2,
-    FileStack,
-    Grid,
-    Layers,
-    LoaderCircle,
-    RefreshCcw,
-  } from "@lucide/svelte";
+    IconCircleCheck as CheckCircle2,
+    IconFileStack as FileStack,
+    IconLayoutGrid as Grid,
+    IconStack2 as Layers,
+    IconLoader2 as LoaderCircle,
+    IconRefresh as RefreshCcw,
+  } from "@tabler/icons-svelte";
   import { SplitState } from "./helper.svelte";
 
   const store = new SplitState();
@@ -73,7 +73,7 @@
             type="button"
             onclick={() => (store.mode = mode.id)}
             class={cn(
-              "inline-flex flex-1 items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors",
+              "inline-flex flex-1 items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 label-eyebrow transition-colors",
               store.mode === mode.id
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
@@ -115,7 +115,7 @@
             bind:value={store.nTimesValue}
             class="h-11 w-32 rounded-sm font-mono text-sm tabular-nums"
           />
-          <span class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+          <span class="label-eyebrow text-muted-foreground">
             pages per file
           </span>
         </div>

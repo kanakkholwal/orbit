@@ -7,14 +7,14 @@
   import { PROXY_SOURCE_URL } from "$lib/runtime/proxy-url";
   import { cn } from "$lib/utils";
   import {
-    BadgeCheck,
-    DownloadIcon,
-    ExternalLink,
-    FileUp,
-    Info,
-    LoaderCircle,
-    ShieldCheck,
-  } from "@lucide/svelte";
+    IconRosetteDiscountCheck as BadgeCheck,
+    IconDownload as DownloadIcon,
+    IconExternalLink as ExternalLink,
+    IconFileUpload as FileUp,
+    IconInfoCircle as Info,
+    IconLoader2 as LoaderCircle,
+    IconShieldCheck as ShieldCheck,
+  } from "@tabler/icons-svelte";
   import { SignPdfState } from "./helper.svelte";
 
   const store = new SignPdfState();

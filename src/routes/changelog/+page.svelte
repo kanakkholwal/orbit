@@ -89,7 +89,7 @@
       in:fly={{ y: 12, duration: 500, easing: cubicOut }}
     >
       <span
-        class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
+        class="label-eyebrow text-primary"
       >
         Changelog
       </span>
@@ -155,7 +155,7 @@
               <li class="flex items-start gap-3 text-sm">
                 <span
                   class={cn(
-                    "mt-0.5 inline-flex shrink-0 items-center rounded-sm px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider",
+                    "mt-0.5 inline-flex shrink-0 items-center rounded-sm px-2 py-0.5 label-eyebrow",
                     tagStyles[item.tag]
                   )}
                 >
@@ -173,7 +173,7 @@
       class="mt-20 rounded-md border border-border/60 bg-muted/40 p-6"
       in:fade={{ duration: 400, delay: 360 }}
     >
-      <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70">
+      <p class="label-eyebrow text-muted-foreground">
         Subscribe
       </p>
       <p class="mt-2 text-sm text-foreground/90">

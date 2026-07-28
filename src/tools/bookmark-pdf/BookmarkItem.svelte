@@ -1,13 +1,13 @@
 <script lang="ts">
   import {
-    ChevronDown,
-    ChevronRight,
-    Crosshair,
-    Edit2,
-    GripVertical,
-    Plus,
-    Trash2,
-  } from "@lucide/svelte";
+    IconChevronDown as ChevronDown,
+    IconChevronRight as ChevronRight,
+    IconCrosshair as Crosshair,
+    IconPencil as Edit2,
+    IconGripVertical as GripVertical,
+    IconPlus as Plus,
+    IconTrash as Trash2,
+  } from "@tabler/icons-svelte";
   import { slide } from "svelte/transition";
   import BookmarkItem from "./BookmarkItem.svelte";
   import type { BookmarkNode, BookmarkPdfState } from "./helper.svelte";

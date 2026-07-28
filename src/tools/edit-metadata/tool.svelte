@@ -5,7 +5,7 @@
   import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { LoaderCircle, Plus, Save, Trash2 } from "@lucide/svelte";
+  import { IconLoader2 as LoaderCircle, IconPlus as Plus, IconDeviceFloppy as Save, IconTrash as Trash2 } from "@tabler/icons-svelte";
   import { EditMetadataState } from "./helper.svelte";
 
   const store = new EditMetadataState();
@@ -66,9 +66,7 @@
         <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
           <LoaderCircle class="size-4 animate-spin" />
         </span>
-        <p
-          class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
-        >
+        <p class="label-eyebrow text-muted-foreground">
           Reading metadata
         </p>
       </div>
@@ -79,7 +77,7 @@
             <div class="flex flex-col gap-2">
               <Label
                 for={`meta-${field.key}`}
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 {field.label}
               </Label>
@@ -95,7 +93,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for="meta-creation"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Created
             </Label>
@@ -109,7 +107,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for="meta-mod"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Modified
             </Label>
@@ -158,7 +156,7 @@
               class="rounded-sm border border-dashed border-border/60 bg-muted/20 px-4 py-6 text-center"
             >
               <p
-                class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
+                class="label-eyebrow text-muted-foreground"
               >
                 No custom fields
               </p>

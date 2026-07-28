@@ -8,12 +8,12 @@
     import { useScrollCapability } from "@embedpdf/plugin-scroll/svelte";
     import { useSearch } from "@embedpdf/plugin-search/svelte";
     import {
-      ChevronDownIcon,
-      ChevronUpIcon,
-      LoaderCircleIcon,
-      SearchIcon,
-      XIcon,
-    } from "@lucide/svelte";
+      IconChevronDown as ChevronDownIcon,
+      IconChevronUp as ChevronUpIcon,
+      IconLoader2 as LoaderCircleIcon,
+      IconSearch as SearchIcon,
+      IconX as XIcon,
+    } from "@tabler/icons-svelte";
     import { tick } from "svelte";
 
     interface SearchProps {

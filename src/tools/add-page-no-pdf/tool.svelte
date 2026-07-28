@@ -6,7 +6,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { ArrowRight, LoaderCircle } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
   import { PageNumberState, type Position } from "./helper.svelte";
 
   const store = new PageNumberState();
@@ -74,7 +74,7 @@
             </div>
 
             <div
-              class="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60"
+              class="text-center label-eyebrow text-muted-foreground"
             >
               Select position
             </div>
@@ -98,7 +98,7 @@
           </div>
         </div>
         <p
-          class="mt-3 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70"
+          class="mt-3 label-eyebrow text-muted-foreground"
         >
           Active · {store.state.position.replace("-", " ")}
         </p>
@@ -116,7 +116,7 @@
                   type="button"
                   onclick={() => (store.state.format = opt.id as any)}
                   class={cn(
-                    "rounded-sm px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors",
+                    "rounded-sm px-3 py-1.5 label-eyebrow transition-colors",
                     store.state.format === opt.id
                       ? "bg-card text-foreground shadow-sm"
                       : "text-muted-foreground hover:text-foreground"
@@ -130,7 +130,7 @@
             <div class="flex flex-col gap-2">
               <Label
                 for="start-page"
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Start from page
               </Label>
@@ -151,7 +151,7 @@
             <div class="flex flex-col gap-2">
               <Label
                 for="font-size"
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Size · pt
               </Label>
@@ -167,7 +167,7 @@
             <div class="flex flex-col gap-2">
               <Label
                 for="margin"
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Margin · px
               </Label>
@@ -185,7 +185,7 @@
           <div class="mt-4 flex flex-col gap-2">
             <Label
               for="color"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Color
             </Label>

@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import { Input } from "$components/ui/input";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { ArrowRight, Info, LoaderCircle } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconInfoCircle as Info, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
   import { DeletePagesState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 
@@ -39,7 +39,7 @@
         />
         {#if store.state.pagesToDelete.size > 0}
           <span
-            class="inline-flex shrink-0 items-center gap-1.5 rounded-sm bg-destructive/10 px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.16em] text-destructive"
+            class="inline-flex shrink-0 items-center gap-1.5 rounded-sm bg-destructive/10 px-2.5 py-1 label-eyebrow text-destructive"
           >
             -{store.state.pagesToDelete.size} pages
           </span>
@@ -60,7 +60,7 @@
         >
           <Info class="size-3.5 text-primary" />
           <p
-            class="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Click pages to mark for deletion
           </p>

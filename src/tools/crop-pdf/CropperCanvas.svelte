@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Loader2 } from "@lucide/svelte";
+  import { IconLoader2 as Loader2 } from "@tabler/icons-svelte";
   import Cropper from "cropperjs";
   import "cropperjs/dist/cropper.css";
   import { onDestroy } from "svelte";

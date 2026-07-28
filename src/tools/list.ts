@@ -1,40 +1,40 @@
 import {
-    AlignLeft,
-    ArrowDownUp,
-    Bookmark,
-    BookMinus,
-    Copy,
-    CropIcon,
-    Edit3Icon,
-    Eye,
-    FileIcon,
-    FileMinus2,
-    FileStack,
-    FileText,
-    Gauge,
-    Highlighter,
-    ImageIcon,
-    Info,
-    Layers,
-    LayoutTemplate,
-    Lock,
-    Maximize2,
-    MoveIcon,
-    PaintBucket,
-    RefreshCw,
-    PenLine,
-    RotateCw,
-    ScanText,
-    Scissors,
-    Settings,
-    ShieldCheck,
-    Text,
-    Trash2,
-    Unlock,
-    WandIcon,
-    Zap,
+    IconAlignLeft as AlignLeft,
+    IconArrowsUpDown as ArrowDownUp,
+    IconBookmark as Bookmark,
+    IconBookmarkOff as BookMinus,
+    IconCopy as Copy,
+    IconCrop as CropIcon,
+    IconPencil as Edit3Icon,
+    IconEye as Eye,
+    IconFile as FileIcon,
+    IconFileMinus as FileMinus2,
+    IconFileStack as FileStack,
+    IconFileText as FileText,
+    IconGauge as Gauge,
+    IconHighlight as Highlighter,
+    IconPhoto as ImageIcon,
+    IconInfoCircle as Info,
+    IconStack2 as Layers,
+    IconTemplate as LayoutTemplate,
+    IconLock as Lock,
+    IconMaximize as Maximize2,
+    IconArrowsMove as MoveIcon,
+    IconBucketDroplet as PaintBucket,
+    IconRefresh as RefreshCw,
+    IconPencil as PenLine,
+    IconRotateClockwise as RotateCw,
+    IconScan as ScanText,
+    IconScissors as Scissors,
+    IconSettings as Settings,
+    IconShieldCheck as ShieldCheck,
+    IconLetterT as Text,
+    IconTrash as Trash2,
+    IconLockOpen as Unlock,
+    IconWand as WandIcon,
+    IconBolt as Zap,
     type Icon
-} from '@lucide/svelte';
+} from '@tabler/icons-svelte';
 import type { Component } from 'svelte';
 
 
@@ -43,7 +43,7 @@ export interface ToolConfig {
     slug: string;
     title: string;
     description: string;
-    icon: typeof Icon;
+    icon: Icon;
     component: () => Promise<{ default: Component }>;
     color: string;
     category: string;

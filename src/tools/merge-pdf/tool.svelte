@@ -5,12 +5,12 @@
   import { arrayMove, sortableList } from "$lib/actions/sortable-list";
   import { cn } from "$lib/utils";
   import {
-    ArrowRight,
-    FileStack,
-    Grid,
-    LoaderCircle,
-    Plus,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconFileStack as FileStack,
+    IconLayoutGrid as Grid,
+    IconLoader2 as LoaderCircle,
+    IconPlus as Plus,
+  } from "@tabler/icons-svelte";
   import { setContext } from "svelte";
   import FileModeItem from "./FileModeItem.svelte";
   import { MERGE_STATE_KEY, MergeState } from "./helper.svelte";
@@ -71,7 +71,7 @@
               type="button"
               onclick={() => (localStore.mode = opt.id as any)}
               class={cn(
-                "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors",
+                "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 label-eyebrow transition-colors",
                 localStore.mode === opt.id
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -121,9 +121,7 @@
               <FileStack class="size-3.5" />
             </span>
             <div class="flex flex-col gap-1.5 text-xs leading-relaxed text-muted-foreground">
-              <span
-                class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70"
-              >
+              <span class="label-eyebrow text-muted-foreground">
                 Quick tips
               </span>
               <ul class="ml-4 list-disc space-y-1">
@@ -150,9 +148,7 @@
           {#if localStore.allPages.length === 0}
             <div class="flex flex-col items-center gap-2 py-16 text-muted-foreground">
               <LoaderCircle class="size-4 animate-spin text-primary" />
-              <p
-                class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
-              >
+              <p class="label-eyebrow text-muted-foreground">
                 Loading pages
               </p>
             </div>
@@ -168,7 +164,7 @@
     >
       <Button
         size="lg"
-        class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
+        class="rounded-sm px-6"
         onclick={() => localStore.mergeAndDownload()}
         disabled={localStore.isProcessing}
       >

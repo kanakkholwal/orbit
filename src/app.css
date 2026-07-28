@@ -1,18 +1,8 @@
 @import "tailwindcss";
 @import 'tw-animate-css';
 
-/* ============================================================================
-   ORBIT DESIGN LANGUAGE — "editorial calm" (per DESIGN.md)
-   ----------------------------------------------------------------------------
-   Warm cream canvas, warm near-black ink, hairline-only depth (no heavy
-   shadows), magazine display type at weight 400 with negative tracking,
-   compact 8px CTA / 12px card radii.
-
-   DEVIATION FROM DESIGN.md (intentional, per product owner): the single brand
-   voltage stays the existing TEAL — NOT Cursor Orange. `--primary` /
-   `--primary-active` are the greenish-teal; everything else follows the spec.
-   Sans = Google Sans (kept); mono = Source Code Pro (Google-Fonts pairing).
-   ========================================================================== */
+/* Orbit design tokens — Apple-style: SF/system sans, neutral system-gray
+   surfaces, soft continuous-corner radii, teal as the single accent. */
 
 @custom-variant dark (&:where(.dark, [data-theme="dark"], .dark *, [data-theme="dark"] *));
 
@@ -20,24 +10,24 @@
 [data-theme="light"] {
   --brand-hue: 178; /* teal brand */
 
-  /* Surfaces (cream canvas → white cards) */
-  --background-inset: #f1f0ea;   /* sidebar / window well — deeper cream */
-  --background: #f7f7f4;          /* canvas: warm cream page floor */
-  --background-muted: #efeee8;    /* muted band */
+  /* Surfaces — Apple system light (cool neutral gray → white cards) */
+  --background-inset: #ececef;    /* sidebar / window well */
+  --background: #f5f5f7;          /* canvas: Apple system gray */
+  --background-muted: #ececef;    /* muted band */
   --card: #ffffff;                /* surface-card: pure white */
   --popover: #ffffff;
-  --muted: #efeee8;
-  --secondary: #e6e5e0;           /* surface-strong: badges, secondary pills */
-  --accent: #efeee8;              /* neutral hover wash (no 2nd brand color) */
+  --muted: #ececef;
+  --secondary: #e3e3e8;           /* secondary pills / badges */
+  --accent: #ececef;              /* neutral hover wash */
 
-  /* Ink (warm near-black, never pure black) */
-  --foreground: #26251e;          /* ink: display + body emphasis */
-  --foreground-muted: #5a5852;    /* body: running text */
-  --card-foreground: #26251e;
-  --popover-foreground: #26251e;
-  --muted-foreground: #5a5852;
-  --secondary-foreground: #26251e;
-  --accent-foreground: #26251e;
+  /* Ink — Apple label greys */
+  --foreground: #1d1d1f;          /* label */
+  --foreground-muted: #6e6e73;    /* secondary label */
+  --card-foreground: #1d1d1f;
+  --popover-foreground: #1d1d1f;
+  --muted-foreground: #6e6e73;
+  --secondary-foreground: #1d1d1f;
+  --accent-foreground: #1d1d1f;
 
   /* Brand — TEAL (kept). Used scarcely, per spec. */
   --primary: oklch(0.565 0.105 var(--brand-hue));
@@ -45,18 +35,18 @@
   --primary-active: oklch(0.50 0.10 var(--brand-hue)); /* press state */
 
   /* Hairlines & focus */
-  --border: #e6e5e0;              /* hairline */
-  --input: #cfcdc4;               /* hairline-strong (input outline) */
+  --border: #e3e3e8;              /* Apple separator hairline */
+  --input: #c7c7cc;               /* control outline */
   --ring: oklch(0.565 0.105 var(--brand-hue) / 0.55);
 
-  /* Semantic */
-  --destructive: #cf2d56;
+  /* Semantic — Apple system colours (tuned to read as text and as fills) */
+  --destructive: #e5484d;
   --destructive-foreground: #ffffff;
-  --success: #1f8a65;
+  --success: #1a9e5a;
   --success-foreground: #ffffff;
-  --warning: #b07d1d;
+  --warning: #c88a00;
   --warning-foreground: #ffffff;
-  --info: #3a6ea5;
+  --info: #0a84ff;
   --info-foreground: #ffffff;
 
   /* AI-timeline pastels (signature; reserved for product timeline UI) */
@@ -66,16 +56,16 @@
   --timeline-edit: #c0a8dd;
   --timeline-done: #c08532;
 
-  /* Inverse surface (button variant="dark" / download CTA = ink-on-cream) */
-  --dark: #26251e;
-  --dark-foreground: #f7f7f4;
+  /* Inverse surface (button variant="dark") */
+  --dark: #1d1d1f;
+  --dark-foreground: #f5f5f7;
 
   /* Fixed (don't invert with theme) */
   --fixed-light: #ffffff;
-  --fixed-dark: #26251e;
+  --fixed-dark: #1d1d1f;
 
-  /* Sidebar (maps onto the inset cream) */
-  --sidebar: #f1f0ea;
+  /* Sidebar (maps onto the inset gray) */
+  --sidebar: #ececef;
   --sidebar-background: var(--sidebar);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
@@ -86,39 +76,39 @@
   --sidebar-ring: var(--ring);
 
   /* Layout & texture (flat — hairline depth only) */
-  --radius: 0.5rem;               /* 8px = CTA/input md */
+  --radius: 0.625rem;             /* 10px = CTA/input md */
   --max-app-width: clamp(1280px, 80vw, 1920px);
-  --noise-bg: linear-gradient(#f7f7f4, #f7f7f4);
+  --noise-bg: linear-gradient(#f5f5f7, #f5f5f7);
 
-  /* Elevation — soft + warm-tinted, much flatter than a typical app. Cards rely
-     on hairlines; shadow is reserved for genuinely-floating overlays. */
-  --shadow-xs: 0 1px 1px rgba(38, 37, 30, 0.03);
-  --shadow-sm: 0 1px 2px rgba(38, 37, 30, 0.05);
-  --shadow-md: 0 2px 8px rgba(38, 37, 30, 0.06);
-  --shadow-lg: 0 8px 24px rgba(38, 37, 30, 0.08);
-  --shadow-xl: 0 16px 40px rgba(38, 37, 30, 0.10);
-  --shadow-2xl: 0 24px 56px rgba(38, 37, 30, 0.12);
+  /* Elevation — soft, neutral, Apple ambient. Cards rely on hairlines; deeper
+     shadow is reserved for floating overlays (menus, sheets, dialogs). */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10);
+  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.12);
+  --shadow-2xl: 0 32px 64px rgba(0, 0, 0, 0.16);
 }
 
 .dark,
 [data-theme="dark"] {
-  /* Desktop-native graphite dark: flatter, cooler, and less theatrical. */
-  --background-inset: #111315;
-  --background: #17191c;
-  --background-muted: #1d2024;
-  --card: #1b1e22;
-  --popover: #20242a;
-  --muted: #22262b;
-  --secondary: #20242a;
-  --accent: #22262b;
+  /* Apple system dark: layered near-blacks (base → elevated card). */
+  --background-inset: #000000;
+  --background: #1c1c1e;
+  --background-muted: #2c2c2e;
+  --card: #2c2c2e;
+  --popover: #2c2c2e;
+  --muted: #2c2c2e;
+  --secondary: #3a3a3c;
+  --accent: #2c2c2e;
 
-  --foreground: #ebeef2;
-  --foreground-muted: #9aa2ad;
-  --card-foreground: #ebeef2;
-  --popover-foreground: #ebeef2;
-  --muted-foreground: #9aa2ad;
-  --secondary-foreground: #ebeef2;
-  --accent-foreground: #ebeef2;
+  --foreground: #f5f5f7;
+  --foreground-muted: #98989d;
+  --card-foreground: #f5f5f7;
+  --popover-foreground: #f5f5f7;
+  --muted-foreground: #98989d;
+  --secondary-foreground: #f5f5f7;
+  --accent-foreground: #f5f5f7;
 
   --primary: oklch(0.72 0.1 var(--brand-hue));
   --primary-foreground: #0f1615;
@@ -128,21 +118,21 @@
   --input: oklch(1 0 0 / 0.12);
   --ring: oklch(0.68 0.12 var(--brand-hue) / 0.55);
 
-  --destructive: #e35b7d;
-  --destructive-foreground: #1a0f12;
-  --success: #36b88a;
+  --destructive: #ff453a;
+  --destructive-foreground: #ffffff;
+  --success: #30d158;
   --success-foreground: #07120d;
-  --warning: #d8a23f;
+  --warning: #ff9f0a;
   --warning-foreground: #1a1407;
-  --info: #7ba6d6;
-  --info-foreground: #0a131c;
+  --info: #0a84ff;
+  --info-foreground: #ffffff;
 
-  --dark: #ebeef2;
-  --dark-foreground: #17191c;
+  --dark: #f5f5f7;
+  --dark-foreground: #1c1c1e;
 
-  --sidebar: #13161a;
+  --sidebar: #000000;
 
-  --noise-bg: linear-gradient(#17191c, #17191c);
+  --noise-bg: linear-gradient(#1c1c1e, #1c1c1e);
 
   --shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.22);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
@@ -212,43 +202,44 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* ---- Radius scale (DESIGN.md: 4 / 6 / 8 / 12 / 16 px) ---- */
-  --radius-xs: 0.25rem;   /* 4px  inline tags */
-  --radius-sm: 0.375rem;  /* 6px  compact rows */
-  --radius-md: 0.5rem;    /* 8px  CTA, inputs */
-  --radius-lg: 0.75rem;   /* 12px cards, panes */
-  --radius-xl: 1rem;      /* 16px larger cards */
-  --radius-2xl: 1.25rem;  /* 20px */
-  --radius-3xl: 1.5rem;   /* 24px */
+  --radius-xs: 0.375rem;  /* 6px  inline tags */
+  --radius-sm: 0.5rem;    /* 8px  compact rows */
+  --radius-md: 0.625rem;  /* 10px CTA, inputs */
+  --radius-lg: 0.875rem;  /* 14px cards, panes */
+  --radius-xl: 1.125rem;  /* 18px larger cards */
+  --radius-2xl: 1.375rem; /* 22px */
+  --radius-3xl: 1.75rem;  /* 28px */
   --radius-full: 9999px;
 
   /* ---- Layout / spacing ---- */
   --spacing-app: var(--max-app-width);
+  --spacing-app-content: min(1600px, 96vw); /* the one in-shell content column */
   --spacing-section: 5rem; /* 80px section rhythm */
 
   /* ---- Typography ---- */
-  --font-sans: 'Google Sans Variable', system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-mono: 'Source Code Pro Variable', 'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Google Sans Variable', system-ui, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Source Code Pro Variable', ui-monospace, 'JetBrains Mono', 'Menlo', monospace;
 
-  /* Editorial type ramp — display stays at weight 400 with negative tracking */
+  /* Display ramp — Apple large-title voice: semibold with negative tracking */
   --text-display-mega: 4.5rem;
   --text-display-mega--line-height: 1.1;
   --text-display-mega--letter-spacing: -0.03em;
-  --text-display-mega--font-weight: 400;
+  --text-display-mega--font-weight: 600;
 
   --text-display-lg: 2.25rem;
   --text-display-lg--line-height: 1.2;
   --text-display-lg--letter-spacing: -0.02em;
-  --text-display-lg--font-weight: 400;
+  --text-display-lg--font-weight: 600;
 
   --text-display-md: 1.625rem;
   --text-display-md--line-height: 1.25;
   --text-display-md--letter-spacing: -0.0125em;
-  --text-display-md--font-weight: 400;
+  --text-display-md--font-weight: 600;
 
   --text-display-sm: 1.375rem;
   --text-display-sm--line-height: 1.3;
   --text-display-sm--letter-spacing: -0.006em;
-  --text-display-sm--font-weight: 400;
+  --text-display-sm--font-weight: 600;
 
   --text-title-md: 1.125rem;
   --text-title-md--line-height: 1.4;
@@ -274,7 +265,7 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
-  --shadow-button: 0 1px 1px rgba(38, 37, 30, 0.04), 0 0 0 1px rgba(38, 37, 30, 0.04);
+  --shadow-button: 0 1px 1px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04);
 
   /* ---- Keyframe animations ---- */
   --animate-accordion-down: accordion-down 0.2s var(--ease-gentle);
@@ -327,11 +318,10 @@
     @apply border-border outline-ring/50;
   }
 
-  /* Editorial defaults: display headings sit at weight 400 with tight tracking
-     unless a component opts into a heavier title weight. Magazine voice. */
+  /* Apple large-title voice: headings semibold with tight negative tracking. */
   h1, h2, h3 {
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.021em;
   }
 
   html {
@@ -398,17 +388,16 @@
 }
 
 @utility shadow-brand {
-  box-shadow: 0 1px 2px rgba(38, 37, 30, 0.08), 0 8px 24px -8px oklch(0.565 0.105 var(--brand-hue) / 0.30);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 8px 24px -8px oklch(0.565 0.105 var(--brand-hue) / 0.30);
 }
 
-/* Section/eyebrow label — caption-uppercase (11px / 600 / 0.08em) */
+/* The one small label. Quiet SF caption — no monospace, no all-caps. Colour is
+   set by the caller (text-muted-foreground / text-primary). */
 @utility label-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem; /* 11px */
-  line-height: 1.4;
+  font-size: 0.75rem; /* 12px caption */
+  line-height: 1.35;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: -0.005em;
 }
 
 body {

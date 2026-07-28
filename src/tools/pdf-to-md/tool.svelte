@@ -2,7 +2,7 @@
   import { ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { Copy, DownloadIcon, LoaderCircle } from "@lucide/svelte";
+  import { IconCopy as Copy, IconDownload as DownloadIcon, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
   import { PdfToMdState } from "./helper.svelte";
 
   const store = new PdfToMdState();
@@ -54,7 +54,7 @@
           class="flex min-h-105 items-center justify-center rounded-lg border border-dashed border-border bg-muted/20"
         >
           <span
-            class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground"
+            class="inline-flex items-center gap-2 label-eyebrow text-xs text-muted-foreground"
           >
             <LoaderCircle class="size-4 animate-spin" />
             {store.progressLabel}

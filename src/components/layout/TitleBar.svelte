@@ -1,7 +1,8 @@
 <script lang="ts">
   import { config } from "$constants/app";
+  import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { Copy, Minus, Square, X } from "@lucide/svelte";
+  import { IconCopy as Copy, IconMinus as Minus, IconSquare as Square, IconX as X } from "@tabler/icons-svelte";
   import { onMount } from "svelte";
 
   // Custom window chrome for the frameless Tauri window (decorations: false).
@@ -81,7 +82,7 @@
       </button>
       <button
         type="button"
-        class="inline-flex h-8 w-12 items-center justify-center text-muted-foreground transition-colors hover:bg-destructive hover:text-white focus-visible:outline-none"
+        class={cn(ctrl, "hover:bg-destructive hover:text-white")}
         onclick={() => win?.close()}
         aria-label="Close"
       >

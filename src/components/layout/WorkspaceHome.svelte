@@ -5,7 +5,7 @@
   import { recentTools } from "$lib/runtime/recent-tools.svelte";
   import { cn } from "$lib/utils";
   import { getTool, toolList } from "$tools/list";
-  import { ArrowUpRight, History, Search } from "@lucide/svelte";
+  import { IconArrowUpRight as ArrowUpRight, IconHistory as History, IconSearch as Search } from "@tabler/icons-svelte";
   import { cubicOut } from "svelte/easing";
   import { fly } from "svelte/transition";
 
@@ -76,7 +76,7 @@
           type="search"
           placeholder="Search {toolList.length} tools…"
           bind:value={searchQuery}
-          class="h-10 rounded-md pl-9 pr-12 text-sm placeholder:text-muted-foreground/60"
+          class="h-11 rounded-xl pl-9 pr-12 text-sm placeholder:text-muted-foreground/60"
         />
         <kbd
           class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-xs border border-border/60 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 lg:inline-block"
@@ -97,7 +97,7 @@
         <span class="label-eyebrow text-muted-foreground">Jump back in</span>
       </div>
       <ul
-        class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
         {#each recent as tool (tool.slug)}
           <li class="contents">
@@ -118,7 +118,7 @@
         onclick={() => (activeCategory = tab.id)}
         aria-pressed={activeCategory === tab.id}
         class={cn(
-          "inline-flex shrink-0 items-center gap-2 rounded-md px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors duration-200 active:scale-[0.97]",
+          "inline-flex shrink-0 items-center gap-2 rounded-md px-3 py-1.5 label-eyebrow transition-colors duration-200",
           activeCategory === tab.id
             ? "bg-primary/10 text-primary"
             : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
@@ -160,7 +160,7 @@
         class="flex flex-col items-center gap-3 rounded-lg border border-border/60 bg-muted/20 px-6 py-16 text-center"
       >
         <Search class="size-5 text-muted-foreground/50" />
-        <p class="label-eyebrow text-muted-foreground/70">No matches</p>
+        <p class="label-eyebrow text-muted-foreground">No matches</p>
         <p class="max-w-xs text-sm text-muted-foreground">
           Nothing found for
           <span class="font-mono text-foreground">"{searchQuery}"</span>. Try a
@@ -172,7 +172,7 @@
             searchQuery = "";
             activeCategory = "all";
           }}
-          class="mt-2 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.16em] text-primary transition-colors hover:text-primary/80"
+          class="mt-2 inline-flex items-center gap-1 label-eyebrow text-primary transition-colors hover:text-primary/80"
         >
           Reset filters
           <ArrowUpRight class="size-3" />
@@ -180,7 +180,7 @@
       </div>
     {:else}
       <ul
-        class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
         {#each filteredTools as tool, i (tool.slug)}
           <li class="contents">

@@ -3,7 +3,7 @@
   import { fileDropState, registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { UploadCloud } from "@lucide/svelte";
+  import { IconCloudUpload as UploadCloud } from "@tabler/icons-svelte";
   import { onMount, type Snippet } from "svelte";
   import { toast } from "svelte-sonner";
   import { fade } from "svelte/transition";
@@ -125,16 +125,23 @@
     }
   }
 
-  let acceptLabel = $derived(
-    accept === "application/pdf"
-      ? "PDF only"
-      : accept
-          .split(",")
-          .map((t) => t.trim().replace("application/", "").replace(".", ""))
+  let acceptLabel = $derived.by(() => {
+    if (!accept || accept === "*" || accept === "*/*") return "Any file";
+    const types = accept.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
+    if (types.every((t) => t.includes("pdf"))) return "PDF";
+    const imageRe = /^image\/|\.(png|jpe?g|gif|bmp|tiff?|webp|hei[cf]|ico|psd|jxr|jp2|jpx)$/;
+    if (types.every((t) => imageRe.test(t))) return "Images";
+    const exts = [
+      ...new Set(
+        types
+          .map((t) => (t.includes("/") ? t.split("/")[1] : t.replace(".", "")))
           .filter(Boolean)
-          .join(" · ")
-          .toUpperCase()
-  );
+      ),
+    ];
+    return exts.length > 3
+      ? `${exts.slice(0, 3).map((e) => e.toUpperCase()).join(", ")} +${exts.length - 3}`
+      : exts.map((e) => e.toUpperCase()).join(", ");
+  });
 </script>
 
 <button
@@ -167,13 +174,13 @@
         {#if icon}
           {@render icon()}
         {:else}
-          <UploadCloud class="size-5" strokeWidth={1.5} />
+          <UploadCloud class="size-5" stroke={1.5} />
         {/if}
       </span>
       <span
         class={cn(
-          "font-mono text-[10px] font-medium uppercase tracking-[0.2em] transition-colors",
-          dragActive ? "text-primary" : "text-muted-foreground/70"
+          "label-eyebrow transition-colors",
+          dragActive ? "text-primary" : "text-muted-foreground"
         )}
       >
         {dragActive ? "Drop to upload" : "Upload"} · {acceptLabel}
@@ -205,7 +212,7 @@
         <span
           class={cn(
             buttonVariants({ variant: "default", size: "default" }),
-            "rounded-sm bg-primary px-5 text-primary-foreground shadow-sm shadow-primary/15 hover:bg-primary/90"
+            "rounded-sm"
           )}
         >
           Select files
@@ -214,9 +221,7 @@
       {#if hint}
         {@render hint()}
       {:else if maxSize !== Infinity}
-        <p
-          class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60"
-        >
+        <p class="label-eyebrow text-muted-foreground">
           Max {(maxSize / (1024 * 1024)).toFixed(0)} MB per file
         </p>
       {/if}

@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { AlertTriangle, LoaderCircle, Plus, Zap } from "@lucide/svelte";
+  import { IconAlertTriangle as AlertTriangle, IconLoader2 as LoaderCircle, IconPlus as Plus, IconBolt as Zap } from "@tabler/icons-svelte";
   import { PdfToTextState } from "./helper.svelte";
 
   const store = new PdfToTextState();

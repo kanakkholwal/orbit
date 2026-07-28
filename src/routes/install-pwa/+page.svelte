@@ -14,20 +14,20 @@
     type PwaPlatform,
   } from "$lib/pwa.svelte";
   import {
-    Apple,
-    ArrowDownToLine,
-    ArrowUpRight,
-    Check,
-    ChevronRight,
-    Download,
-    HardDriveDownload,
-    Layers,
-    Monitor,
-    Share,
-    Smartphone,
-    Wifi,
-    Zap,
-  } from "@lucide/svelte";
+    IconApple as Apple,
+    IconArrowBarToDown as ArrowDownToLine,
+    IconArrowUpRight as ArrowUpRight,
+    IconCheck as Check,
+    IconChevronRight as ChevronRight,
+    IconDownload as Download,
+    IconDeviceDesktopDown as HardDriveDownload,
+    IconStack2 as Layers,
+    IconDeviceDesktop as Monitor,
+    IconShare as Share,
+    IconDeviceMobile as Smartphone,
+    IconWifi as Wifi,
+    IconBolt as Zap,
+  } from "@tabler/icons-svelte";
   import { cubicOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";
   import { toast } from "svelte-sonner";
@@ -171,11 +171,11 @@
             <span class="absolute inline-flex size-full animate-ping rounded-full bg-primary/40"></span>
             <span class="relative inline-flex size-1.5 rounded-full bg-primary"></span>
           </span>
-          <span class="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-primary">
+          <span class="label-eyebrow text-primary">
             Install · PWA
           </span>
           <span class="text-muted-foreground/40">·</span>
-          <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          <span class="label-eyebrow text-muted-foreground">
             {statusLabel}
           </span>
         </div>
@@ -201,7 +201,7 @@
           in:fly={{ y: 12, duration: 520, delay: 320, easing: cubicOut }}
         >
           <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-            <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
+            <span class="label-eyebrow text-muted-foreground">
               Detected
             </span>
             <span class="font-mono text-sm tabular-nums text-foreground">
@@ -238,7 +238,7 @@
       <div class="mx-auto w-full max-w-5xl">
         <div class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4">
           <div class="flex flex-col gap-2">
-            <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+            <span class="label-eyebrow text-primary">
               How to install
             </span>
             <h2 class="text-display-md text-foreground sm:text-display-lg">
@@ -262,7 +262,7 @@
               <h3 class="text-base font-medium tracking-tight text-foreground">{step.title}</h3>
               <p class="text-sm leading-relaxed text-muted-foreground">{step.body}</p>
               {#if i === 0 && activeGuide.id === "ios-safari"}
-                <span class="mt-1 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-primary">
+                <span class="mt-1 inline-flex items-center gap-1.5 label-eyebrow text-primary">
                   <Share class="size-3" />
                   Share sheet
                 </span>
@@ -272,13 +272,13 @@
         </ol>
 
         <div class="mt-6 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-          <span class="font-mono uppercase tracking-[0.16em] text-muted-foreground/60">Other platforms</span>
+          <span class="label-eyebrow text-muted-foreground">Other platforms</span>
           {#each guides as g (g.id)}
             {#if g.id !== activeGuide.id}
               <button
                 type="button"
                 class={cn(
-                  "inline-flex items-center gap-1.5 rounded-sm border border-border/60 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors hover:border-primary/40 hover:text-primary"
+                  "inline-flex items-center gap-1.5 rounded-sm border border-border/60 px-2.5 py-1 label-eyebrow text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
                 )}
                 onclick={() => (activeGuide = g)}
               >
@@ -295,7 +295,7 @@
       <div class="mx-auto w-full max-w-5xl">
         <div class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4">
           <div class="flex flex-col gap-2">
-            <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary">
+            <span class="label-eyebrow text-primary">
               Why install
             </span>
             <h2 class="text-display-md text-foreground sm:text-display-lg">

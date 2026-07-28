@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
   import { cn } from "$lib/utils";
-  import { Trash2 } from "@lucide/svelte";
+  import { IconTrash as Trash2 } from "@tabler/icons-svelte";
   import type { Snippet } from "svelte";
 
   interface Props {
@@ -25,14 +25,12 @@
 
 <div
   class={cn(
-    "sticky top-0 z-20 -mx-1 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 bg-card/70 px-3 py-2 backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55 sm:-mx-2",
+    "sticky top-0 z-20 -mx-1 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 bg-card/70 px-3 py-2 backdrop-blur-lg backdrop-saturate-150 supports-backdrop-filter:bg-card/55 sm:-mx-2",
     className
   )}
 >
   <div class="flex items-baseline gap-3">
-    <span
-      class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
-    >
+    <span class="label-eyebrow text-primary">
       {label}
     </span>
     {#if count !== undefined}

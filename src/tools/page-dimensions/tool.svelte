@@ -12,11 +12,11 @@
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
-    AlertTriangle,
-    Download,
-    FileImage,
-    LoaderCircle,
-  } from "@lucide/svelte";
+    IconAlertTriangle as AlertTriangle,
+    IconDownload as Download,
+    IconPhoto as FileImage,
+    IconLoader2 as LoaderCircle,
+  } from "@tabler/icons-svelte";
   import { slide } from "svelte/transition";
   import { PageDimensionsState } from "./helper.svelte";
 
@@ -60,7 +60,7 @@
           <LoaderCircle class="size-4 animate-spin" />
         </span>
         <p
-          class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
+          class="label-eyebrow text-muted-foreground"
         >
           Analyzing dimensions
         </p>
@@ -71,7 +71,7 @@
           class="grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-border/60 bg-border/60 sm:grid-cols-3"
         >
           <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+            <dt class="label-eyebrow text-muted-foreground">
               Total pages
             </dt>
             <dd class="font-mono text-2xl tabular-nums text-foreground">
@@ -79,7 +79,7 @@
             </dd>
           </div>
           <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+            <dt class="label-eyebrow text-muted-foreground">
               Unique sizes
             </dt>
             <dd class="font-mono text-2xl tabular-nums text-foreground">
@@ -87,7 +87,7 @@
             </dd>
           </div>
           <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+            <dt class="label-eyebrow text-muted-foreground">
               Document
             </dt>
             <dd
@@ -117,7 +117,7 @@
               </span>
               <div class="flex flex-col gap-2">
                 <span
-                  class="font-mono text-[10px] uppercase tracking-[0.18em] text-warning"
+                  class="label-eyebrow text-warning"
                 >
                   Mixed page sizes
                 </span>
@@ -149,7 +149,7 @@
           <div class="flex items-center gap-2">
             <Label
               for="units-select"
-              class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Units
             </Label>
@@ -184,7 +184,7 @@
         >
           <table class="w-full text-left text-sm">
             <thead
-              class="border-b border-border/60 bg-muted/30 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+              class="border-b border-border/60 bg-muted/30 label-eyebrow text-muted-foreground"
             >
               <tr>
                 <th class="px-4 py-2.5 font-medium">Page</th>
@@ -210,7 +210,7 @@
                   <td class="px-4 py-2.5">
                     <span
                       class={cn(
-                        "inline-flex items-center rounded-xs px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]",
+                        "inline-flex items-center rounded-xs px-1.5 py-0.5 label-eyebrow",
                         page.standardSize === "Custom"
                           ? "bg-muted/60 text-muted-foreground"
                           : "bg-primary/10 text-primary"

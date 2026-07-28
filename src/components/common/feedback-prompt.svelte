@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
-  import GithubIcon from "@lucide/svelte/icons/github";
-  import HeartIcon from "@lucide/svelte/icons/heart";
-  import XIcon from "@lucide/svelte/icons/x";
+  import { IconBrandGithub as GithubIcon } from "@tabler/icons-svelte";
+  import { IconHeart as HeartIcon } from "@tabler/icons-svelte";
+  import { IconX as XIcon } from "@tabler/icons-svelte";
   import { onMount } from "svelte";
 
   const STORAGE_KEY = "orbit:feedback-prompt:dismissed";

@@ -11,7 +11,7 @@
   } from "$components/ui/select";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { LoaderCircle, Zap } from "@lucide/svelte";
+  import { IconLoader2 as LoaderCircle, IconBolt as Zap } from "@tabler/icons-svelte";
   import { slide } from "svelte/transition";
   import { FixPageSizeState } from "./helper.svelte";
 
@@ -55,7 +55,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="target-size"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Target size
           </Label>
@@ -78,7 +78,7 @@
               <div class="flex flex-col gap-1.5">
                 <Label
                   for="custom-width"
-                  class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                  class="label-eyebrow text-muted-foreground"
                 >
                   Width
                 </Label>
@@ -94,7 +94,7 @@
               <div class="flex flex-col gap-1.5">
                 <Label
                   for="custom-height"
-                  class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                  class="label-eyebrow text-muted-foreground"
                 >
                   Height
                 </Label>
@@ -110,7 +110,7 @@
               <div class="flex flex-col gap-1.5">
                 <Label
                   for="custom-units"
-                  class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                  class="label-eyebrow text-muted-foreground"
                 >
                   Units
                 </Label>
@@ -131,7 +131,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="orientation"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Orientation
           </Label>
@@ -153,7 +153,7 @@
 
         <div class="flex flex-col gap-2 sm:col-span-2">
           <Label
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Content scaling
           </Label>
@@ -196,7 +196,7 @@
         <div class="flex flex-col gap-2 sm:col-span-2">
           <Label
             for="bg-color"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Background color
           </Label>
@@ -214,7 +214,7 @@
                 {store.backgroundColor}
               </span>
               <span
-                class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60"
+                class="label-eyebrow text-muted-foreground"
               >
                 Applied to empty margins when fitting
               </span>

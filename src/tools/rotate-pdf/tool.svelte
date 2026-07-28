@@ -3,12 +3,12 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import {
-    ArrowRight,
-    LoaderCircle,
-    RefreshCcw,
-    RotateCcw,
-    RotateCw,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconLoader2 as LoaderCircle,
+    IconRefresh as RefreshCcw,
+    IconRotate2 as RotateCcw,
+    IconRotateClockwise as RotateCw,
+  } from "@tabler/icons-svelte";
   import { RotatePdfState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 

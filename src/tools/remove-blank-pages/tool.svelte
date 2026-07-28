@@ -5,11 +5,11 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
   import {
-    FileQuestion,
-    LoaderCircle,
-    Search,
-    Zap,
-  } from "@lucide/svelte";
+    IconFileUnknown as FileQuestion,
+    IconLoader2 as LoaderCircle,
+    IconSearch as Search,
+    IconBolt as Zap,
+  } from "@tabler/icons-svelte";
   import { RemoveBlankPagesState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 
@@ -47,7 +47,7 @@
         <div class="flex items-center justify-between">
           <Label
             for="sensitivity"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Sensitivity
           </Label>
@@ -98,7 +98,7 @@
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-muted/60 text-muted-foreground">
               <FileQuestion class="size-4" />
             </span>
-            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70">
+            <p class="label-eyebrow text-muted-foreground">
               No blank pages found
             </p>
             <p class="max-w-xs text-xs text-muted-foreground">
@@ -107,7 +107,7 @@
           </div>
         {:else}
           <div
-            class="rounded-sm border border-primary/20 bg-primary/5 px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-primary"
+            class="rounded-sm border border-primary/20 bg-primary/5 px-4 py-2.5 label-eyebrow text-primary"
           >
             Found {store.state.detectedPages.length} potentially blank page{store
               .state.detectedPages.length === 1

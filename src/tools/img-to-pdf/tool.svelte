@@ -11,7 +11,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { arrayMove, sortableList } from "$lib/actions/sortable-list";
   import { formatBytes } from "$utils/helper";
-  import { ArrowRight, FileIcon, LoaderCircle, Plus, Trash2 } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconFile as FileIcon, IconLoader2 as LoaderCircle, IconPlus as Plus, IconTrash as Trash2 } from "@tabler/icons-svelte";
   import { ACCEPTED_FORMATS, JpgToPdfState } from "./helper.svelte";
 
   const store = new JpgToPdfState();
@@ -50,7 +50,7 @@
       <div class="flex flex-col gap-2">
         <Label
           for="quality-select"
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           PDF quality
         </Label>
@@ -93,7 +93,7 @@
                 class="flex h-full w-full flex-col items-center justify-center bg-muted/40 text-muted-foreground"
               >
                 <FileIcon class="size-7" />
-                <span class="mt-2 font-mono text-[10px] uppercase tracking-[0.18em]">
+                <span class="mt-2 label-eyebrow text-muted-foreground">
                   {item.file.name.split(".").pop()}
                 </span>
               </div>
@@ -124,7 +124,7 @@
                 {item.file.name}
               </p>
               <p
-                class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70"
+                class="label-eyebrow text-muted-foreground"
               >
                 {formatBytes(item.file.size)}
               </p>

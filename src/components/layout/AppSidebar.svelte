@@ -10,14 +10,13 @@
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
   import {
-    ArrowUpRight,
-    Compass,
-    DownloadIcon,
-    GithubIcon,
-    HomeIcon,
-    Search,
-    Star,
-  } from "@lucide/svelte";
+    IconBrandGithub as GithubIcon,
+    IconCompass as Compass,
+    IconDownload as DownloadIcon,
+    IconHome as HomeIcon,
+    IconSearch as Search,
+    IconStar as Star,
+  } from "@tabler/icons-svelte";
   import { cubicOut } from "svelte/easing";
   import { slide } from "svelte/transition";
 
@@ -39,7 +38,7 @@
   ];
 
   const navLink =
-    "group/item relative flex min-h-10 items-center gap-3 rounded-md px-3 text-sm transition-colors duration-200 active:scale-[0.99] group-data-[state=collapsed]:justify-center group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:size-9 group-data-[state=collapsed]:gap-0";
+    "group/item relative flex min-h-9 items-center gap-3 rounded-lg px-3 text-sm transition-[background-color,color,box-shadow] duration-200 ease-snappy group-data-[state=collapsed]:justify-center group-data-[state=collapsed]:px-0 group-data-[state=collapsed]:size-9 group-data-[state=collapsed]:gap-0";
 </script>
 
 <Sidebar.Root
@@ -65,9 +64,7 @@
     </div>
 
     <div class="hidden px-0.5 group-data-[state=collapsed]:block">
-      <span
-        class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/55"
-      >
+      <span class="label-eyebrow text-muted-foreground">
         Index
       </span>
     </div>
@@ -109,9 +106,7 @@
   >
     <section class="flex flex-col gap-2">
       <div class="px-1 group-data-[state=collapsed]:hidden">
-        <span
-          class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60"
-        >
+        <span class="label-eyebrow text-muted-foreground">
           Browse
         </span>
       </div>
@@ -129,8 +124,8 @@
               class={cn(
                 navLink,
                 active
-                  ? "bg-card text-foreground"
-                  : "text-muted-foreground hover:bg-card/50 hover:text-foreground"
+                  ? "bg-card font-medium text-foreground shadow-sm"
+                  : "text-muted-foreground hover:bg-card/60 hover:text-foreground"
               )}
             >
               <item.icon
@@ -152,9 +147,7 @@
       <div
         class="flex items-center justify-between px-1 group-data-[state=collapsed]:hidden"
       >
-        <span
-          class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60"
-        >
+        <span class="label-eyebrow text-muted-foreground">
           Categories
         </span>
         <span class="font-mono text-[10px] text-muted-foreground/45">
@@ -173,9 +166,7 @@
               aria-controls={`group-${cat.id}`}
               class="flex w-full items-center justify-between gap-2 rounded-md px-2 py-2 text-left transition-colors hover:bg-card/40 hover:text-foreground group-data-[state=collapsed]:hidden"
             >
-              <span
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/75"
-              >
+              <span class="label-eyebrow text-muted-foreground">
                 {cat.name}
               </span>
               <span
@@ -206,16 +197,10 @@
                       class={cn(
                         navLink,
                         active
-                          ? "bg-card text-foreground"
-                          : "text-muted-foreground hover:bg-card/50 hover:text-foreground"
+                          ? "bg-card font-medium text-foreground shadow-sm"
+                          : "text-muted-foreground hover:bg-card/60 hover:text-foreground"
                       )}
                     >
-                      {#if active}
-                        <span
-                          class="absolute inset-y-2 left-0 w-0.5 rounded-r-full bg-primary group-data-[state=collapsed]:hidden"
-                          aria-hidden="true"
-                        ></span>
-                      {/if}
                       {#if tool.icon}
                         {@const Icon = tool.icon}
                         <Icon
@@ -249,28 +234,23 @@
         href={config.github}
         target="_blank"
         rel="noopener noreferrer"
-        class="flex items-center justify-between rounded-lg border border-sidebar-border/70 bg-card/50 px-3 py-2.5 transition-colors hover:bg-card"
+        class="group flex items-center justify-between rounded-lg border border-sidebar-border/70 bg-card/50 px-3 py-2.5 transition-colors hover:bg-card"
       >
         <span class="flex items-center gap-2.5">
           <GithubIcon class="size-4 text-muted-foreground" />
-          <span class="text-sm text-foreground">Star repository</span>
+          <span class="text-sm text-foreground">Star on GitHub</span>
         </span>
-        <span
-          class="inline-flex items-center gap-1 rounded-full border border-sidebar-border/70 bg-background px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground"
-        >
-          <Star class="size-3 fill-current" />
-          Star
-        </span>
+        <Star
+          class="size-4 text-muted-foreground/60 transition-colors group-hover:text-primary"
+        />
       </a>
       <div class="flex items-center justify-between gap-2">
-        <p
-          class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60"
-        >
+        <p class="label-eyebrow text-muted-foreground">
           v{config.appVersion} · GPL-3.0
         </p>
         <a
           href="/changelog"
-          class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-primary"
+          class="label-eyebrow text-muted-foreground transition-colors hover:text-primary"
         >
           Changelog
         </a>

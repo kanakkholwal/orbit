@@ -6,7 +6,7 @@
         useUICapability,
         useUIState,
     } from "@embedpdf/plugin-ui/svelte";
-    import { XIcon } from "@lucide/svelte";
+    import { IconX as XIcon } from "@tabler/icons-svelte";
     import { onMount } from "svelte";
 
     type BottomSheetHeight = "half" | "full";

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
-  import { CopyPlus, Loader2, Trash2 } from "@lucide/svelte";
+  import { IconCopyPlus as CopyPlus, IconLoader2 as Loader2, IconTrash as Trash2 } from "@tabler/icons-svelte";
   import type { OrganizePdfState, PageItem } from "./helper.svelte";
 
   let { store, page, index } = $props<{

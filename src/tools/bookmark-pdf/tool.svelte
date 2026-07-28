@@ -9,7 +9,7 @@
   } from "$components/ui/dialog";
   import { Input } from "$components/ui/input";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { FolderTree, Plus, Redo, Save, Undo } from "@lucide/svelte";
+  import { IconFolders as FolderTree, IconPlus as Plus, IconArrowForwardUp as Redo, IconDeviceFloppy as Save, IconArrowBackUp as Undo } from "@tabler/icons-svelte";
   import { onMount } from "svelte";
   import BookmarkItem from "./BookmarkItem.svelte";
   import { BookmarkPdfState, type BookmarkNode } from "./helper.svelte";
@@ -91,7 +91,7 @@
             <FolderTree class="size-3.5" />
           </span>
           <span
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-foreground"
+            class="label-eyebrow text-foreground"
           >
             Bookmarks
           </span>
@@ -142,7 +142,7 @@
         {#if store.state.bookmarks.length === 0}
           <div class="mt-10 flex flex-col items-center gap-3 text-center">
             <p
-              class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
+              class="label-eyebrow text-muted-foreground"
             >
               No bookmarks yet
             </p>

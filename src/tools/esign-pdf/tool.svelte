@@ -5,14 +5,14 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { cn } from "$lib/utils";
   import {
-    ChevronLeft,
-    ChevronRight,
-    Eraser,
-    LoaderCircle,
-    PenLine,
-    Type,
-    Upload,
-  } from "@lucide/svelte";
+    IconChevronLeft as ChevronLeft,
+    IconChevronRight as ChevronRight,
+    IconEraser as Eraser,
+    IconLoader2 as LoaderCircle,
+    IconPencil as PenLine,
+    IconLetterT as Type,
+    IconUpload as Upload,
+  } from "@tabler/icons-svelte";
   import { EsignPdfState } from "./helper.svelte";
 
   const store = new EsignPdfState();

@@ -4,12 +4,12 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
   import {
-    ArrowRight,
-    DownloadIcon,
-    FileArchive,
-    LoaderCircle,
-    Scissors,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconDownload as DownloadIcon,
+    IconFileZip as FileArchive,
+    IconLoader2 as LoaderCircle,
+    IconScissors as Scissors,
+  } from "@tabler/icons-svelte";
   import type { StripStatus } from "./helper.svelte";
   import { StripPdfState } from "./helper.svelte";
 

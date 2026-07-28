@@ -13,15 +13,15 @@
   import { tesseractLanguages } from "$constants/tesseract-languages";
   import { formatBytes } from "$utils/helper";
   import {
-    Check,
-    ChevronDown,
-    ChevronUp,
-    ClipboardCopy,
-    Download,
-    LoaderCircle,
-    ScanText,
-    Settings2,
-  } from "@lucide/svelte";
+    IconCheck as Check,
+    IconChevronDown as ChevronDown,
+    IconChevronUp as ChevronUp,
+    IconClipboardCopy as ClipboardCopy,
+    IconDownload as Download,
+    IconLoader2 as LoaderCircle,
+    IconScan as ScanText,
+    IconSettings2 as Settings2,
+  } from "@tabler/icons-svelte";
   import { slide } from "svelte/transition";
   import { OcrPdfState } from "./helper.svelte";
 
@@ -99,7 +99,7 @@
             {/each}
           </div>
           <p
-            class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+            class="label-eyebrow text-muted-foreground"
           >
             Selected ·
             <span class="text-foreground">
@@ -121,7 +121,7 @@
           <span class="inline-flex items-center gap-2">
             <Settings2 class="size-3.5 text-primary" />
             <span
-              class="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground"
+              class="label-eyebrow text-foreground"
             >
               Tuning options
             </span>
@@ -145,7 +145,7 @@
               <div class="flex flex-col gap-2">
                 <Label
                   for="ocr-resolution"
-                  class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                  class="label-eyebrow text-muted-foreground"
                 >
                   Resolution
                 </Label>
@@ -191,7 +191,7 @@
               <div class="flex flex-col gap-2">
                 <Label
                   for="whitelist-preset"
-                  class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                  class="label-eyebrow text-muted-foreground"
                 >
                   Character preset
                 </Label>
@@ -229,7 +229,7 @@
               <div class="flex flex-col gap-2">
                 <Label
                   for="ocr-whitelist"
-                  class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                  class="label-eyebrow text-muted-foreground"
                 >
                   Custom whitelist
                 </Label>
@@ -243,7 +243,7 @@
                   class="h-10 rounded-sm font-mono text-sm"
                 />
                 <p
-                  class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60"
+                  class="label-eyebrow text-muted-foreground"
                 >
                   Only listed characters will be recognized.
                 </p>
@@ -263,7 +263,7 @@
             <LoaderCircle class="size-4 animate-spin" />
           </span>
           <div class="flex w-full max-w-md flex-col gap-2">
-            <div class="flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.16em]">
+            <div class="flex items-center justify-between label-eyebrow text-muted-foreground">
               <span class="text-muted-foreground">{store.progressStatus}</span>
               <span class="tabular-nums text-primary">
                 {store.progressPercent.toFixed(0)}%
@@ -300,7 +300,7 @@
           </span>
           <div class="flex flex-col gap-0.5">
             <h3
-              class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-success"
+              class="label-eyebrow text-success"
             >
               OCR complete
             </h3>
@@ -313,7 +313,7 @@
         <div class="mt-5 flex flex-col gap-2">
           <div class="flex items-center justify-between">
             <Label
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Extracted text
             </Label>

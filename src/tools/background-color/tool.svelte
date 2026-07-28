@@ -5,7 +5,7 @@
   import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { LoaderCircle, PaintBucket, Zap } from "@lucide/svelte";
+  import { IconLoader2 as LoaderCircle, IconBucketDroplet as PaintBucket, IconBolt as Zap } from "@tabler/icons-svelte";
   import { BackgroundColorState } from "./helper.svelte";
 
   const store = new BackgroundColorState();
@@ -42,7 +42,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="page-range"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Pages to color
           </Label>
@@ -58,7 +58,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="bg-color"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Color
           </Label>
@@ -74,7 +74,7 @@
                 {store.state.colorHex}
               </span>
               <span
-                class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60"
+                class="label-eyebrow text-muted-foreground"
               >
                 Click swatch to choose
               </span>

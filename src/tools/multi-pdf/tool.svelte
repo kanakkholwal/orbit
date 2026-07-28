@@ -4,18 +4,18 @@
   import { arrayMove, sortableList } from "$lib/actions/sortable-list";
   import { cn } from "$lib/utils";
   import {
-    CheckSquare,
-    Download,
-    FilePlus,
-    LoaderCircle,
-    Redo2,
-    RotateCcw,
-    RotateCw,
-    Square,
-    Trash2,
-    Undo2,
-    UploadCloud,
-  } from "@lucide/svelte";
+    IconSquareCheck as CheckSquare,
+    IconDownload as Download,
+    IconFilePlus as FilePlus,
+    IconLoader2 as LoaderCircle,
+    IconArrowForwardUp as Redo2,
+    IconRotate2 as RotateCcw,
+    IconRotateClockwise as RotateCw,
+    IconSquare as Square,
+    IconTrash as Trash2,
+    IconArrowBackUp as Undo2,
+    IconCloudUpload as UploadCloud,
+  } from "@tabler/icons-svelte";
   import { setContext } from "svelte";
   import { fade, slide } from "svelte/transition";
   import { PDF_STATE_KEY, PdfEditorState } from "./helper.svelte";
@@ -27,7 +27,7 @@
   let uploadArea: ReturnType<typeof UploadArea>;
 
   const toolbarBtn =
-    "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors text-muted-foreground hover:bg-muted/60 hover:text-foreground";
+    "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 label-eyebrow transition-colors text-muted-foreground hover:bg-muted/60 hover:text-foreground";
 </script>
 
 <UploadArea
@@ -42,7 +42,7 @@
       class="sticky top-0 z-20 flex items-baseline justify-between gap-3 border-b border-border/60 bg-card/70 py-2 backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55"
     >
       <span
-        class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
+        class="label-eyebrow text-primary"
       >
         Pages
       </span>
@@ -204,7 +204,7 @@
         <LoaderCircle class="size-4 animate-spin" />
       </span>
       <p
-        class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+        class="label-eyebrow text-muted-foreground"
       >
         Processing
       </p>

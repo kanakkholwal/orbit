@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
   import { cn } from "$lib/utils";
-  import { FileText, Trash2 } from "@lucide/svelte";
+  import { IconFileText as FileText, IconTrash as Trash2 } from "@tabler/icons-svelte";
   import type { Snippet } from "svelte";
 
   interface Props {

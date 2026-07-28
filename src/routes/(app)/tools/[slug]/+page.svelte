@@ -11,14 +11,14 @@
   import { recordRecentTool } from "$lib/runtime/recent-tools.svelte";
   import { appState } from "$stores/app-state.svelte";
   import {
-    ChevronLeft,
-    CircleAlert,
-    DownloadIcon,
-    Github,
-    LoaderCircle,
-    Share2,
-    ShieldCheck,
-  } from "@lucide/svelte";
+    IconChevronLeft as ChevronLeft,
+    IconAlertCircle as CircleAlert,
+    IconDownload as DownloadIcon,
+    IconBrandGithub as Github,
+    IconLoader2 as LoaderCircle,
+    IconShare as Share2,
+    IconShieldCheck as ShieldCheck,
+  } from "@tabler/icons-svelte";
   import { untrack, type Component } from "svelte";
   import { cubicOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";
@@ -99,7 +99,7 @@
       >
         <a
           href="/explore"
-          class="group inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+          class="group inline-flex items-center gap-1.5 label-eyebrow text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronLeft
             class="size-3.5 transition-transform duration-300 group-hover:-translate-x-0.5"
@@ -109,7 +109,7 @@
 
         <div class="flex items-center gap-3">
           <div class="hidden items-center gap-2 md:flex">
-            <span class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+            <span class="label-eyebrow text-muted-foreground">
               Dedicated viewer
             </span>
             <span class="text-muted-foreground/40">·</span>
@@ -137,7 +137,7 @@
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
               <LoaderCircle class="size-4 animate-spin" />
             </span>
-            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70">
+            <p class="label-eyebrow text-muted-foreground">
               Loading viewer
             </p>
           </div>
@@ -149,7 +149,7 @@
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-destructive/10 text-destructive">
               <CircleAlert class="size-4" />
             </span>
-            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-destructive">
+            <p class="label-eyebrow text-destructive">
               Failed to load
             </p>
             <p class="max-w-sm text-sm text-muted-foreground">
@@ -192,7 +192,7 @@
       >
         <a
           href="/explore"
-          class="group inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+          class="group inline-flex items-center gap-1.5 label-eyebrow text-muted-foreground transition-colors hover:text-foreground"
         >
           <ChevronLeft
             class="size-3.5 transition-transform duration-300 group-hover:-translate-x-0.5"
@@ -244,19 +244,15 @@
         in:fly={{ y: 10, duration: 480, delay: 60, easing: cubicOut }}
       >
         <div class="flex flex-wrap items-center gap-3">
-          <span
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-primary"
-          >
+          <span class="label-eyebrow text-primary">
             Tool
           </span>
           <span class="text-muted-foreground/40">·</span>
-          <span
-            class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
-          >
+          <span class="label-eyebrow text-muted-foreground">
             {categoryName}
           </span>
           <span class="text-muted-foreground/40">·</span>
-          <span class="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground/80">
+          <span class="inline-flex items-center gap-1.5 label-eyebrow text-muted-foreground">
             <ShieldCheck class="size-3 text-primary" />
             Client-side
           </span>
@@ -273,9 +269,7 @@
           </div>
 
           <div class="flex flex-col gap-3">
-            <h1
-              class="text-display-md font-semibold text-foreground sm:text-display-lg"
-            >
+            <h1 class="text-display-md text-foreground sm:text-display-lg">
               {tool.title}
             </h1>
             <p class="max-w-2xl text-base leading-relaxed text-muted-foreground">
@@ -303,7 +297,7 @@
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
               <LoaderCircle class="size-4 animate-spin" />
             </span>
-            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70">
+            <p class="label-eyebrow text-muted-foreground">
               Loading tool
             </p>
             <p class="text-sm text-muted-foreground">
@@ -318,7 +312,7 @@
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-destructive/10 text-destructive">
               <CircleAlert class="size-4" />
             </span>
-            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-destructive">
+            <p class="label-eyebrow text-destructive">
               Failed to load
             </p>
             <p class="max-w-sm text-sm text-muted-foreground">
@@ -430,7 +424,7 @@
 
       <section class="flex flex-col gap-6">
         <div class="flex items-baseline justify-between gap-3 border-b border-border/60 pb-3">
-          <span class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <span class="label-eyebrow text-muted-foreground">
             Recommended
           </span>
           <span class="font-mono text-[11px] tabular-nums text-muted-foreground/50">
@@ -443,7 +437,7 @@
         {/key}
 
         <ul
-          class="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-3"
+          class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
           {#each data.recommended as rec, i (rec.slug)}
             <li class="contents">
@@ -456,9 +450,7 @@
       <div
         class="mt-2 flex flex-col items-center gap-2 border-t border-border/60 pt-8 text-center"
       >
-        <p
-          class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60"
-        >
+        <p class="label-eyebrow text-muted-foreground">
           Privacy by architecture
         </p>
         <p class="text-xs text-muted-foreground">

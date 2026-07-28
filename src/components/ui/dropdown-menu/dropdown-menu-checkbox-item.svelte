@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
-	import CheckIcon from "@lucide/svelte/icons/check";
-	import MinusIcon from "@lucide/svelte/icons/minus";
+	import { IconCheck as CheckIcon } from "@tabler/icons-svelte";
+	import { IconMinus as MinusIcon } from "@tabler/icons-svelte";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
 	import type { Snippet } from "svelte";
 

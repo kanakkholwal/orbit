@@ -12,12 +12,12 @@
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
-    AlignLeft,
-    CheckCircle2,
-    LoaderCircle,
-    MinusCircle,
-    Plus,
-  } from "@lucide/svelte";
+    IconAlignLeft as AlignLeft,
+    IconCircleCheck as CheckCircle2,
+    IconLoader2 as LoaderCircle,
+    IconCircleMinus as MinusCircle,
+    IconPlus as Plus,
+  } from "@tabler/icons-svelte";
   import { DeskewPdfState } from "./helper.svelte";
 
   const store = new DeskewPdfState();
@@ -91,7 +91,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="deskew-threshold"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Threshold · degrees
           </Label>
@@ -114,7 +114,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="deskew-dpi"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Quality · DPI
           </Label>
@@ -142,7 +142,7 @@
           class="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border/60 bg-border/60"
         >
           <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+            <dt class="label-eyebrow text-muted-foreground">
               Total pages
             </dt>
             <dd class="font-mono text-2xl tabular-nums text-foreground">
@@ -150,7 +150,7 @@
             </dd>
           </div>
           <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+            <dt class="label-eyebrow text-muted-foreground">
               Corrected
             </dt>
             <dd class="font-mono text-2xl tabular-nums text-success">
@@ -165,7 +165,7 @@
           {#each store.lastResult.angles as angle, idx}
             <li class="flex items-center justify-between px-4 py-2">
               <span
-                class="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Page {String(idx + 1).padStart(2, "0")}
               </span>
@@ -182,7 +182,7 @@
                 </span>
                 {#if store.lastResult.corrected[idx]}
                   <span
-                    class="rounded-xs bg-success/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-success"
+                    class="rounded-xs bg-success/15 px-1.5 py-0.5 label-eyebrow text-success"
                   >
                     Fixed
                   </span>

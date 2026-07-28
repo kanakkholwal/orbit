@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Command as CommandPrimitive } from "bits-ui";
-	import SearchIcon from "@lucide/svelte/icons/search";
+	import { IconSearch as SearchIcon } from "@tabler/icons-svelte";
 	import { cn } from "$lib/utils.js";
 
 	let {

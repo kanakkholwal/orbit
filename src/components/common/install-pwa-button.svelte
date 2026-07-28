@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button, type ButtonSize, type ButtonVariant } from "$components/ui/button";
   import { canInstallNatively, needsManualInstall, promptInstall, pwa } from "$lib/pwa.svelte";
-  import { ArrowUpRight, Download, Smartphone } from "@lucide/svelte";
+  import { IconArrowUpRight as ArrowUpRight, IconDownload as Download, IconDeviceMobile as Smartphone } from "@tabler/icons-svelte";
   import { toast } from "svelte-sonner";
 
   type Props = {

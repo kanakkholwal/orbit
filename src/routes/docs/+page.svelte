@@ -7,13 +7,13 @@
   import { cn } from "$lib/utils";
   import { toolList } from "$tools/list";
   import {
-    ArrowUpRight,
-    Github,
-    Infinity as InfinityIcon,
-    Shield,
-    WifiOff,
-    Zap,
-  } from "@lucide/svelte";
+    IconArrowUpRight as ArrowUpRight,
+    IconBrandGithub as Github,
+    IconInfinity as InfinityIcon,
+    IconShield as Shield,
+    IconWifiOff as WifiOff,
+    IconBolt as Zap,
+  } from "@tabler/icons-svelte";
   import { cubicOut } from "svelte/easing";
   import { fly } from "svelte/transition";
 
@@ -104,7 +104,7 @@
           class="flex items-baseline justify-between border-b border-border/60 pb-3"
         >
           <span
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             On this page
           </span>
@@ -141,7 +141,7 @@
         in:fly={{ y: 12, duration: 500, easing: cubicOut }}
       >
         <span
-          class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
+          class="label-eyebrow text-primary"
         >
           Documentation
         </span>
@@ -165,7 +165,7 @@
           class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
         >
           <h2
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Getting started
           </h2>
@@ -210,7 +210,7 @@
           class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
         >
           <h2
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Installation
           </h2>
@@ -233,7 +233,7 @@
               }}
             >
               <span
-                class="font-mono text-[11px] uppercase tracking-[0.18em] text-primary"
+                class="label-eyebrow text-primary"
               >
                 Step {step.label}
               </span>
@@ -251,7 +251,7 @@
           class="mt-8 rounded-md border border-warning/30 bg-warning/5 p-5 text-sm leading-relaxed text-warning-foreground"
           in:fly={{ y: 8, duration: 420, delay: 320, easing: cubicOut }}
         >
-          <p class="font-mono text-[10px] uppercase tracking-[0.18em] text-warning">
+          <p class="label-eyebrow text-warning">
             Note
           </p>
           <p class="mt-2 text-foreground/90">
@@ -267,7 +267,7 @@
           class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
         >
           <h2
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Tools
           </h2>
@@ -319,7 +319,7 @@
           class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
         >
           <h2
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Privacy
           </h2>
@@ -366,7 +366,7 @@
           class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
         >
           <h2
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             FAQ
           </h2>
@@ -404,7 +404,7 @@
         >
           <div>
             <p
-              class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
+              class="label-eyebrow text-muted-foreground"
             >
               Still stuck?
             </p>

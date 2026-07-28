@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Loader2, Trash2 } from "@lucide/svelte";
+  import { IconLoader2 as Loader2, IconTrash as Trash2 } from "@tabler/icons-svelte";
   import type { DeletePagesState } from "./helper.svelte";
 
   let { store, index } = $props<{ store: DeletePagesState; index: number }>();

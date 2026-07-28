@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Check, Loader2 } from "@lucide/svelte";
+  import { IconCheck as Check, IconLoader2 as Loader2 } from "@tabler/icons-svelte";
   import type { RemoveBlankPagesState } from "./helper.svelte";
 
   let { store, pageInfo } = $props<{
@@ -70,7 +70,7 @@
       <div
         class="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full w-5 h-5 flex items-center justify-center shadow-md"
       >
-        <Check size={12} strokeWidth={3} />
+        <Check size={12} stroke={3} />
       </div>
     {/if}
   </div>

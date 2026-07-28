@@ -4,7 +4,7 @@
   import ResponsiveDialog from "$components/ui/ResponsiveDialog.svelte";
   import { useShare } from "$lib/hooks/use-share.svelte";
   import { cn } from "$lib/utils";
-  import { Check, Copy, Share2 } from "@lucide/svelte";
+  import { IconCheck as Check, IconCopy as Copy, IconShare as Share2 } from "@tabler/icons-svelte";
   import type { Snippet } from "svelte";
   import type { HTMLButtonAttributes } from "svelte/elements";
   import { toast } from "svelte-sonner";
@@ -77,129 +77,78 @@
     }}
     class="flex flex-col gap-6"
   >
-    <section class="flex flex-col gap-3">
-      <div class="flex items-baseline justify-between border-b border-border/60 pb-2">
-        <span
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+    <div class="grid grid-cols-4 gap-3 sm:grid-cols-5">
+      {#each socials as social}
+        <a
+          href={social.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          title={`Share on ${social.name}`}
+          class="group flex flex-col items-center gap-2 outline-none"
         >
-          Networks
-        </span>
-        <span class="font-mono text-[10px] tabular-nums text-muted-foreground/50">
-          {String(socials.length + (isNativeShareSupported ? 1 : 0)).padStart(
-            2,
-            "0"
-          )}
-        </span>
-      </div>
-
-      <div class="grid grid-cols-4 gap-2 sm:grid-cols-5">
-        {#each socials as social}
-          <a
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            title={`Share on ${social.name}`}
-            class={cn(
-              "group flex aspect-square flex-col items-center justify-center gap-1.5 rounded-sm border border-border/60 bg-card transition-colors",
-              "hover:border-primary/40 hover:bg-primary/5"
-            )}
+          <span
+            class="flex size-12 items-center justify-center rounded-2xl bg-muted text-foreground transition-all duration-200 ease-snappy group-hover:bg-primary/10 group-hover:text-primary group-active:scale-95"
           >
-            <span
-              class="inline-flex size-7 items-center justify-center rounded-sm bg-muted/60 text-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary"
-            >
-              <social.icon class="size-3.5" />
-            </span>
-            <span
-              class="font-mono text-[9px] uppercase tracking-[0.14em] text-muted-foreground transition-colors group-hover:text-primary"
-            >
-              {social.name}
-            </span>
-            <span class="sr-only">Share on {social.name}</span>
-          </a>
-        {/each}
+            <social.icon class="size-5" />
+          </span>
+          <span class="truncate text-[11px] text-muted-foreground transition-colors group-hover:text-foreground">
+            {social.name}
+          </span>
+          <span class="sr-only">Share on {social.name}</span>
+        </a>
+      {/each}
 
-        {#if isNativeShareSupported}
-          <button
-            type="button"
-            onclick={() => share()}
-            title="Share via system"
-            class="group flex aspect-square flex-col items-center justify-center gap-1.5 rounded-sm border border-primary/30 bg-primary/5 transition-colors hover:bg-primary/10"
-          >
-            <span
-              class="inline-flex size-7 items-center justify-center rounded-sm bg-primary/15 text-primary"
-            >
-              <Share2 class="size-3.5" />
-            </span>
-            <span
-              class="font-mono text-[9px] uppercase tracking-[0.14em] text-primary"
-            >
-              System
-            </span>
-            <span class="sr-only">Native share</span>
-          </button>
-        {/if}
-      </div>
-    </section>
-
-    <section class="flex flex-col gap-3">
-      <div class="flex items-baseline justify-between border-b border-border/60 pb-2">
-        <span
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+      {#if isNativeShareSupported}
+        <button
+          type="button"
+          onclick={() => share()}
+          title="Share via system"
+          class="group flex flex-col items-center gap-2 outline-none"
         >
-          Direct link
-        </span>
-        <span class="font-mono text-[10px] tabular-nums text-muted-foreground/50">
-          {copied ? "Copied" : "Copy"}
-        </span>
-      </div>
+          <span
+            class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-200 ease-snappy group-hover:bg-primary/15 group-active:scale-95"
+          >
+            <Share2 class="size-5" />
+          </span>
+          <span class="text-[11px] text-muted-foreground transition-colors group-hover:text-foreground">
+            More
+          </span>
+          <span class="sr-only">Native share</span>
+        </button>
+      {/if}
+    </div>
 
-      <div
-        class={cn(
-          "flex w-full items-center gap-2 rounded-sm border border-border/60 bg-muted/30 px-3 py-2 transition-colors",
-          copied ? "border-success/40 bg-success/5" : "hover:border-primary/40"
-        )}
+    <div
+      class={cn(
+        "flex items-center gap-2 rounded-xl border py-1.5 pl-4 pr-1.5 transition-colors",
+        copied ? "border-success/40 bg-success/5" : "border-border bg-muted/40"
+      )}
+    >
+      <p class="flex-1 truncate text-sm text-muted-foreground" title={shareUrl}>
+        {shareUrl}
+      </p>
+      <Button
+        variant="secondary"
+        size="sm"
+        class={cn("shrink-0 rounded-lg", copied && "text-success")}
+        onclick={handleCopy}
       >
-        <p
-          class="flex-1 truncate font-mono text-xs tabular-nums text-foreground"
-          title={shareUrl}
-        >
-          {shareUrl}
-        </p>
-        <Button
-          variant="ghost"
-          size="sm"
-          class={cn(
-            "h-7 shrink-0 rounded-sm font-mono text-[10px] uppercase tracking-[0.14em]",
-            copied
-              ? "text-success hover:text-success"
-              : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
-          )}
-          onclick={handleCopy}
-        >
-          {#if copied}
-            <Check class="size-3" />
-            Copied
-          {:else}
-            <Copy class="size-3" />
-            Copy
-          {/if}
-        </Button>
-      </div>
-    </section>
+        {#if copied}
+          <Check class="size-3.5" />
+          Copied
+        {:else}
+          <Copy class="size-3.5" />
+          Copy
+        {/if}
+      </Button>
+    </div>
   </ResponsiveDialog>
 {/if}
 
 {#snippet shareTitle()}
-  <div class="flex flex-col gap-1">
-    <span
-      class="font-mono text-[10px] font-medium uppercase tracking-[0.2em] text-primary"
-    >
-      Share
-    </span>
-    <span class="text-base font-semibold tracking-tight text-foreground">
-      {data.title || "Share this page"}
-    </span>
-  </div>
+  <span class="text-base font-semibold tracking-tight text-foreground">
+    {data.title ? `Share “${data.title}”` : "Share this page"}
+  </span>
 {/snippet}
 
 {#snippet defaultTriggerLabel()}

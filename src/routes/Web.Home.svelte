@@ -6,13 +6,13 @@
   import { config } from "$constants/app";
   import { toolList } from "$tools/list";
   import {
-    ArrowRight,
-    ArrowUpRight,
-    Github,
-    Globe,
-    Lock,
-    Zap
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconArrowUpRight as ArrowUpRight,
+    IconBrandGithub as Github,
+    IconWorld as Globe,
+    IconLock as Lock,
+    IconBolt as Zap
+  } from "@tabler/icons-svelte";
   import { cubicOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";
 
@@ -55,10 +55,10 @@
   <Navbar />
 
   <main class="flex-1">
-    <section class="relative px-5 pb-24 pt-32 md:px-8 md:pt-44 lg:pt-52">
-      <div class="mx-auto flex w-full max-w-5xl flex-col gap-10">
+    <section class="relative px-5 pb-20 pt-32 md:px-8 md:pb-28 md:pt-44 lg:pt-52">
+      <div class="mx-auto flex w-full max-w-3xl flex-col items-center gap-7 text-center">
         <div
-          class="flex items-center gap-3"
+          class="flex items-center gap-2"
           in:fade={{ duration: 400, delay: 60 }}
         >
           <span
@@ -71,15 +71,13 @@
             <span class="relative inline-flex size-1.5 rounded-full bg-primary"
             ></span>
           </span>
-          <span
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground"
-          >
+          <span class="label-eyebrow text-muted-foreground">
             v{config.appVersion} · Open preview
           </span>
         </div>
 
         <h1
-          class="max-w-4xl text-display-lg text-foreground sm:text-[3.25rem] sm:leading-[1.05] sm:tracking-[-0.025em] md:text-display-mega"
+          class="text-balance text-display-lg text-foreground md:text-display-mega"
           in:fly={{ y: 16, duration: 600, delay: 120, easing: cubicOut }}
         >
           A PDF toolkit that works
@@ -87,7 +85,7 @@
         </h1>
 
         <p
-          class="max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+          class="max-w-xl text-lg leading-relaxed text-muted-foreground"
           in:fly={{ y: 12, duration: 520, delay: 220, easing: cubicOut }}
         >
           Edit, convert, sign, and merge documents with a quiet, fast interface
@@ -95,15 +93,12 @@
         </p>
 
         <div
-          class="flex flex-wrap items-center gap-2"
+          class="mt-1 flex flex-wrap items-center justify-center gap-2"
           in:fly={{ y: 12, duration: 520, delay: 320, easing: cubicOut }}
         >
-          <Button
-            href="/explore"
-            class="h-12 px-8! shadow-lg shadow-brand transition-all hover:scale-[1.02] bg-brand"
-          >
+          <Button href="/explore" variant="brand" size="lg" class="h-12 px-8">
             Start Processing
-            <ArrowRight/>
+            <ArrowRight />
           </Button>
           <Button
             href={config.github}
@@ -111,41 +106,34 @@
             rel="noopener noreferrer"
             variant="dark"
             size="lg"
-            class="h-12 px-8!"
+            class="h-12 px-8"
           >
             <Github size={16} />
             Star on GitHub
           </Button>
         </div>
-
-        <dl
-          class="mt-12 grid grid-cols-2 gap-x-8 gap-y-6 border-t border-border/60 pt-10 sm:grid-cols-4"
-          in:fade={{ duration: 500, delay: 460 }}
-        >
-          {#each stats as [val, label], i}
-            <div
-              class="flex flex-col gap-1"
-              in:fly={{
-                y: 8,
-                duration: 420,
-                delay: 480 + i * 60,
-                easing: cubicOut,
-              }}
-            >
-              <dt
-                class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60"
-              >
-                {label}
-              </dt>
-              <dd
-                class={`font-mono text-2xl font-medium tabular-nums tracking-tight sm:text-3xl ${i === 0 ? "text-primary" : "text-foreground"}`}
-              >
-                {val}
-              </dd>
-            </div>
-          {/each}
-        </dl>
       </div>
+
+      <dl
+        class="mx-auto mt-16 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-8 border-t border-border/60 pt-10 text-center sm:grid-cols-4"
+        in:fade={{ duration: 500, delay: 460 }}
+      >
+        {#each stats as [val, label], i}
+          <div
+            class="flex flex-col items-center gap-1"
+            in:fly={{ y: 8, duration: 420, delay: 480 + i * 60, easing: cubicOut }}
+          >
+            <dd
+              class={`font-mono text-3xl font-medium tabular-nums tracking-tight ${i === 0 ? "text-primary" : "text-foreground"}`}
+            >
+              {val}
+            </dd>
+            <dt class="label-eyebrow text-muted-foreground">
+              {label}
+            </dt>
+          </div>
+        {/each}
+      </dl>
     </section>
 
     <section id="tools" class="px-5 py-24 md:px-8">
@@ -154,9 +142,7 @@
           class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4"
         >
           <div class="flex flex-col gap-2">
-            <span
-              class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
-            >
+            <span class="label-eyebrow text-primary">
               Tools
             </span>
             <h2
@@ -226,9 +212,7 @@
           class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4"
         >
           <div class="flex flex-col gap-2">
-            <span
-              class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
-            >
+            <span class="label-eyebrow text-primary">
               Architecture
             </span>
             <h2
@@ -265,14 +249,9 @@
             >
               <div class="flex items-center gap-3">
                 <span
-                  class="inline-flex size-7 items-center justify-center rounded-sm bg-primary/10 text-primary"
+                  class="inline-flex size-9 items-center justify-center rounded-md bg-primary/10 text-primary"
                 >
-                  <feat.icon class="size-3.5" />
-                </span>
-                <span
-                  class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70"
-                >
-                  {String(i + 1).padStart(2, "0")}
+                  <feat.icon class="size-4" />
                 </span>
               </div>
               <h3 class="text-lg font-medium tracking-tight text-foreground">
@@ -292,9 +271,7 @@
         class="mx-auto flex w-full max-w-5xl flex-col items-start gap-6 border-t border-border/60 pt-12 sm:flex-row sm:items-end sm:justify-between"
       >
         <div class="max-w-xl">
-          <span
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
-          >
+          <span class="label-eyebrow text-muted-foreground">
             Get started
           </span>
           <h2
@@ -313,7 +290,7 @@
           </Button>
           <Button
             href="/download"
-            class="rounded-sm bg-primary text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
+            class="rounded-sm"
           >
             Download app
             <ArrowUpRight size={16} />

@@ -36,7 +36,7 @@
         "flex h-full flex-col",
         isPdfViewerRoute
           ? "w-full"
-          : "mx-auto max-w-[min(1720px,96vw)] px-4 py-4 md:px-8 md:py-6 lg:px-10 lg:py-8 xl:px-12",
+          : "mx-auto w-full max-w-app-content px-4 py-4 md:px-8 md:py-6 lg:px-10 lg:py-8 xl:px-12",
       )}
     >
       {@render children?.()}

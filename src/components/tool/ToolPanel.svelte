@@ -30,9 +30,7 @@
     >
       <div class="flex flex-col gap-1">
         {#if title}
-          <span
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
-          >
+          <span class="label-eyebrow text-muted-foreground">
             {title}
           </span>
         {/if}

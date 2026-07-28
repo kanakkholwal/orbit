@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { ArrowRight, FileUp, LoaderCircle, Sparkles } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconFileUpload as FileUp, IconLoader2 as LoaderCircle, IconSparkles as Sparkles } from "@tabler/icons-svelte";
   import { MdToPdfState } from "./helper.svelte";
 
   const store = new MdToPdfState();

@@ -4,7 +4,7 @@
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
-  import { ArrowUpRight, Github } from "@lucide/svelte";
+  import { IconArrowUpRight as ArrowUpRight, IconBrandGithub as Github } from "@tabler/icons-svelte";
   import { cubicOut } from "svelte/easing";
   import { fly } from "svelte/transition";
 
@@ -56,7 +56,7 @@
       in:fly={{ y: 12, duration: 500, easing: cubicOut }}
     >
       <span
-        class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
+        class="label-eyebrow text-primary"
       >
         About
       </span>
@@ -77,7 +77,7 @@
     <section class="mt-16">
       <div class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4">
         <h2
-          class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           Principles
         </h2>
@@ -111,7 +111,7 @@
     <section class="mt-20">
       <div class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4">
         <h2
-          class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           Stack
         </h2>
@@ -134,7 +134,7 @@
             }}
           >
             <dt
-              class="col-span-1 font-mono text-[11px] uppercase tracking-wider text-muted-foreground/70"
+              class="col-span-1 label-eyebrow text-muted-foreground"
             >
               {row.label}
             </dt>

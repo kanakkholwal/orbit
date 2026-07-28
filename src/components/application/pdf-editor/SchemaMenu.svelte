@@ -9,7 +9,7 @@
       getUIItemProps,
       useUISchema,
     } from "@embedpdf/plugin-ui/svelte";
-    import { CheckIcon, ChevronLeftIcon, ChevronRightIcon } from "@lucide/svelte";
+    import { IconCheck as CheckIcon, IconChevronLeft as ChevronLeftIcon, IconChevronRight as ChevronRightIcon } from "@tabler/icons-svelte";
     import { onMount } from "svelte";
 
     interface Props extends MenuRendererProps {}

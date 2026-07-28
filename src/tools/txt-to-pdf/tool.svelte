@@ -13,11 +13,11 @@
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
-    Keyboard,
-    LoaderCircle,
-    UploadCloud,
-    Zap,
-  } from "@lucide/svelte";
+    IconKeyboard as Keyboard,
+    IconLoader2 as LoaderCircle,
+    IconCloudUpload as UploadCloud,
+    IconBolt as Zap,
+  } from "@tabler/icons-svelte";
   import { TxtToPdfState } from "./helper.svelte";
 
   const store = new TxtToPdfState();
@@ -41,7 +41,7 @@
           type="button"
           onclick={() => (store.mode = opt.id as any)}
           class={cn(
-            "inline-flex items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors",
+            "inline-flex items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 label-eyebrow transition-colors",
             store.mode === opt.id
               ? "bg-card text-foreground shadow-sm"
               : "text-muted-foreground hover:text-foreground"
@@ -93,7 +93,7 @@
           placeholder="Start typing or paste text…"
         ></textarea>
         <p
-          class="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60"
+          class="mt-2 label-eyebrow text-muted-foreground"
         >
           Auto-detects RTL · Arabic · Hebrew · Persian
         </p>
@@ -106,7 +106,7 @@
       <div class="flex flex-col gap-2">
         <Label
           for="font-family"
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           Font family
         </Label>
@@ -126,7 +126,7 @@
       <div class="flex flex-col gap-2">
         <Label
           for="font-size"
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           Size · pt
         </Label>
@@ -143,7 +143,7 @@
       <div class="flex flex-col gap-2">
         <Label
           for="text-color"
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           Color
         </Label>
@@ -163,7 +163,7 @@
       <div class="flex flex-col gap-2">
         <Label
           for="page-size"
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           Page size
         </Label>

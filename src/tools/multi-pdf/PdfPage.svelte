@@ -1,14 +1,14 @@
 <script lang="ts">
   import {
-    CheckSquare,
-    Copy,
-    Loader2,
-    RotateCcw,
-    RotateCw,
-    Scissors,
-    Square,
-    Trash2,
-  } from "@lucide/svelte";
+    IconSquareCheck as CheckSquare,
+    IconCopy as Copy,
+    IconLoader2 as Loader2,
+    IconRotate2 as RotateCcw,
+    IconRotateClockwise as RotateCw,
+    IconScissors as Scissors,
+    IconSquare as Square,
+    IconTrash as Trash2,
+  } from "@tabler/icons-svelte";
   import { getContext } from "svelte";
   import {
     PDF_STATE_KEY,

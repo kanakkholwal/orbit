@@ -1,7 +1,7 @@
 <script lang="ts">
     import { Button } from "$components/ui/button";
     import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/svelte";
-    import { FileTextIcon, PlusIcon } from "@lucide/svelte";
+    import { IconFileText as FileTextIcon, IconPlus as PlusIcon } from "@tabler/icons-svelte";
 
     const documentManagerCapability = useDocumentManagerCapability();
 

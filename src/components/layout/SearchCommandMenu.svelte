@@ -6,14 +6,14 @@
   import { appState } from "$stores/app-state.svelte";
   import { toolList } from "$tools/list";
   import {
-    BugIcon,
-    ChevronRight,
-    CornerDownLeft,
-    FileText,
-    Github,
-    HomeIcon,
-    Search,
-  } from "@lucide/svelte";
+    IconBug as BugIcon,
+    IconChevronRight as ChevronRight,
+    IconCornerDownLeft as CornerDownLeft,
+    IconFileText as FileText,
+    IconBrandGithub as Github,
+    IconHome as HomeIcon,
+    IconSearch as Search,
+  } from "@tabler/icons-svelte";
   import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
   import { fade, scale } from "svelte/transition";
@@ -228,7 +228,7 @@
     onclick={open}
     aria-label="Open command menu"
     title="Open command menu (⌘K)"
-    class="inline-flex size-9 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground active:scale-[0.97]"
+    class="inline-flex size-9 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
   >
     <Search class="size-4" />
   </button>
@@ -241,7 +241,7 @@
     class="group flex h-9 w-full items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-3 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
   >
     <Search class="size-3.5 shrink-0 opacity-70 transition-opacity group-hover:opacity-100" />
-    <span class="flex-1 truncate font-mono text-[11px] uppercase tracking-[0.14em]">
+    <span class="flex-1 truncate label-eyebrow text-muted-foreground">
       Search…
     </span>
     <kbd
@@ -306,7 +306,7 @@
               {#each groupedResults as group (group.name)}
                 <div class="flex flex-col">
                   <div
-                    class="px-3 pb-1.5 pt-2 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/60"
+                    class="px-3 pb-1.5 pt-2 label-eyebrow text-muted-foreground"
                   >
                     {group.name}
                   </div>
@@ -377,7 +377,7 @@
           {:else if query}
             <div class="px-4 py-10 text-center">
               <p
-                class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
+                class="label-eyebrow text-muted-foreground"
               >
                 No matches
               </p>
@@ -400,7 +400,7 @@
             >
               <CornerDownLeft class="size-2.5" />
             </kbd>
-            <span class="font-mono uppercase tracking-[0.14em]">Open</span>
+            <span class="label-eyebrow text-muted-foreground">Open</span>
           </span>
           <span class="inline-flex items-center gap-1.5">
             <kbd
@@ -413,11 +413,11 @@
             >
               ↓
             </kbd>
-            <span class="font-mono uppercase tracking-[0.14em]">Navigate</span>
+            <span class="label-eyebrow text-muted-foreground">Navigate</span>
           </span>
         </div>
         <span
-          class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60"
+          class="label-eyebrow text-muted-foreground"
         >
           {results.length} / {commands.length}
         </span>

@@ -5,11 +5,11 @@
   import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import {
-    ArrowRight,
-    ChevronLeft,
-    ChevronRight,
-    LoaderCircle,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconChevronLeft as ChevronLeft,
+    IconChevronRight as ChevronRight,
+    IconLoader2 as LoaderCircle,
+  } from "@tabler/icons-svelte";
   import CropperCanvas from "./CropperCanvas.svelte";
   import { CropPdfState } from "./helper.svelte";
 
@@ -63,7 +63,7 @@
       <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
         <Label class="flex cursor-pointer items-center gap-2 text-sm">
           <Checkbox bind:checked={store.state.applyToAll} />
-          <span class="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground">
+          <span class="label-eyebrow text-foreground">
             Apply to all pages
           </span>
         </Label>
@@ -75,7 +75,7 @@
           title="Converts pages to images. Fixes stubborn PDFs but removes text selection."
         >
           <Checkbox bind:checked={store.state.isDestructive} />
-          <span class="font-mono text-[11px] uppercase tracking-[0.16em] text-foreground">
+          <span class="label-eyebrow text-foreground">
             Flatten · destructive
           </span>
         </Label>

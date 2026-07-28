@@ -5,7 +5,7 @@
   import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { LoaderCircle, Zap } from "@lucide/svelte";
+  import { IconLoader2 as LoaderCircle, IconBolt as Zap } from "@tabler/icons-svelte";
   import { HeaderFooterState } from "./helper.svelte";
 
   const store = new HeaderFooterState();
@@ -59,7 +59,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="page-range"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Page range
           </Label>
@@ -77,7 +77,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="font-size"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Font size · pt
           </Label>
@@ -93,7 +93,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="font-color"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Color
           </Label>
@@ -118,7 +118,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for={`hdr-${slot.bind}`}
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               {slot.label}
             </Label>
@@ -140,7 +140,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for={`ftr-${slot.bind}`}
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               {slot.label}
             </Label>

@@ -7,11 +7,11 @@
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
-    ArrowRight,
-    Image as ImageIcon,
-    LoaderCircle,
-    Type,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconPhoto as ImageIcon,
+    IconLoader2 as LoaderCircle,
+    IconLetterT as Type,
+  } from "@tabler/icons-svelte";
   import { AddWatermarkState } from "./helper.svelte";
 
   const store = new AddWatermarkState();
@@ -49,7 +49,7 @@
             type="button"
             onclick={() => (store.state.watermarkType = opt.id as any)}
             class={cn(
-              "inline-flex items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors",
+              "inline-flex items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 label-eyebrow transition-colors",
               store.state.watermarkType === opt.id
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
@@ -68,7 +68,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for="wm-text"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Text
             </Label>
@@ -84,7 +84,7 @@
             <div class="flex flex-col gap-2">
               <Label
                 for="wm-size"
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Size · pt
               </Label>
@@ -100,7 +100,7 @@
             <div class="flex flex-col gap-2">
               <Label
                 for="wm-color"
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Color
               </Label>
@@ -123,7 +123,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for="input:watermark"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Watermark image
             </Label>
@@ -143,7 +143,7 @@
             <div class="flex items-center justify-between">
               <Label
                 for="wm-scale"
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Scale
               </Label>
@@ -169,7 +169,7 @@
           <div class="flex items-center justify-between">
             <Label
               for="wm-opacity"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Opacity
             </Label>
@@ -192,7 +192,7 @@
           <div class="flex items-center justify-between">
             <Label
               for="wm-rotation"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Rotation
             </Label>

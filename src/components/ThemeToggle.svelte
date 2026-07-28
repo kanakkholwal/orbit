@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
   import { cn } from "$lib/utils";
-  import { Moon, Sun } from "@lucide/svelte";
+  import { IconMoon as Moon, IconSun as Sun } from "@tabler/icons-svelte";
   import { mode, setMode } from "mode-watcher";
 
   let { class: className, variant = "ghost" } = $props<{

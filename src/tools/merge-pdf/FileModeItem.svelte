@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Input } from '$components/ui/input';
   import { Label } from '$components/ui/label';
-  import { GripVertical, Trash2 } from '@lucide/svelte';
+  import { IconGripVertical as GripVertical, IconTrash as Trash2 } from '@tabler/icons-svelte';
   import type { UploadedFile } from './helper.svelte';
 
   let { file, onRemove } = $props<{ 
@@ -25,7 +25,7 @@
   </div>
 
   <div class="flex flex-col items-end gap-1">
-    <Label for="range-{file.id}" class="text-[10px] uppercase tracking-wider text-muted-foreground">
+    <Label for="range-{file.id}" class="label-eyebrow text-muted-foreground">
       Pages (e.g. 1-3, 5)
     </Label>
     <Input

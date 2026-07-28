@@ -5,18 +5,18 @@
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
-    BadgeCheck,
-    Building2,
-    Calendar,
-    FileSignature,
-    Hash,
-    LoaderCircle,
-    ShieldAlert,
-    ShieldCheck,
-    ShieldQuestion,
-    ShieldX,
-    XCircle,
-  } from "@lucide/svelte";
+    IconRosetteDiscountCheck as BadgeCheck,
+    IconBuilding as Building2,
+    IconCalendar as Calendar,
+    IconSignature as FileSignature,
+    IconHash as Hash,
+    IconLoader2 as LoaderCircle,
+    IconShieldExclamation as ShieldAlert,
+    IconShieldCheck as ShieldCheck,
+    IconShieldQuestion as ShieldQuestion,
+    IconShieldX as ShieldX,
+    IconCircleX as XCircle,
+  } from "@tabler/icons-svelte";
   import { ValidateSignatureState } from "./helper.svelte";
 
   const store = new ValidateSignatureState();
@@ -135,7 +135,7 @@
                 <div class="flex flex-col gap-0.5">
                   <h3
                     class={cn(
-                      "font-mono text-[11px] font-medium uppercase tracking-[0.18em]",
+                      "label-eyebrow",
                       t === "ok" && "text-success",
                       t === "warn" && "text-warning",
                       t === "bad" && "text-destructive"
@@ -170,7 +170,7 @@
                 <div class="flex flex-col gap-4">
                   <div class="flex flex-col gap-0.5">
                     <span
-                      class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70"
+                      class="label-eyebrow text-muted-foreground"
                     >
                       Signer
                     </span>
@@ -188,7 +188,7 @@
                   </div>
                   <div class="flex flex-col gap-0.5">
                     <span
-                      class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70"
+                      class="label-eyebrow text-muted-foreground"
                     >
                       Issuer
                     </span>
@@ -201,7 +201,7 @@
                   </div>
                   <div class="flex flex-col gap-0.5">
                     <span
-                      class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70"
+                      class="label-eyebrow text-muted-foreground"
                     >
                       Reason / Location
                     </span>
@@ -221,7 +221,7 @@
                 >
                   <div class="flex items-center justify-between px-3 py-2">
                     <dt
-                      class="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                      class="flex items-center gap-1.5 label-eyebrow text-muted-foreground"
                     >
                       <Calendar class="size-3" />
                       Valid from
@@ -232,7 +232,7 @@
                   </div>
                   <div class="flex items-center justify-between px-3 py-2">
                     <dt
-                      class="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                      class="flex items-center gap-1.5 label-eyebrow text-muted-foreground"
                     >
                       <Calendar class="size-3" />
                       Valid to
@@ -250,7 +250,7 @@
                   </div>
                   <div class="flex items-center justify-between px-3 py-2">
                     <dt
-                      class="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                      class="flex items-center gap-1.5 label-eyebrow text-muted-foreground"
                     >
                       <Hash class="size-3" />
                       Algorithms
@@ -261,7 +261,7 @@
                   </div>
                   <div class="flex items-center justify-between gap-3 px-3 py-2">
                     <dt
-                      class="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                      class="flex items-center gap-1.5 label-eyebrow text-muted-foreground"
                     >
                       <FileSignature class="size-3" />
                       Coverage

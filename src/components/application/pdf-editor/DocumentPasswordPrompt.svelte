@@ -4,7 +4,7 @@
     import { Label } from "$components/ui/label";
     import type { DocumentState } from "@embedpdf/core";
     import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/svelte";
-    import { LockIcon } from "@lucide/svelte";
+    import { IconLock as LockIcon } from "@tabler/icons-svelte";
 
     interface DocumentPasswordPromptProps {
         documentState: DocumentState | null;

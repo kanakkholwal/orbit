@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { ArrowUpDown, LoaderCircle, Plus, Zap } from "@lucide/svelte";
+  import { IconArrowsUpDown as ArrowUpDown, IconLoader2 as LoaderCircle, IconPlus as Plus, IconBolt as Zap } from "@tabler/icons-svelte";
   import { ReversePagesState } from "./helper.svelte";
 
   const store = new ReversePagesState();

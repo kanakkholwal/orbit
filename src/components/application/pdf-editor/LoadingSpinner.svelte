@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { LoaderCircleIcon } from "@lucide/svelte";
+    import { IconLoader2 as LoaderCircleIcon } from "@tabler/icons-svelte";
 
     interface LoadingSpinnerProps {
         size?: "sm" | "md" | "lg";

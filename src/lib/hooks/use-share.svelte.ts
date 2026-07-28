@@ -1,9 +1,9 @@
 import {
-  Facebook,
-  Linkedin,
-  Mail,
-  Twitter,
-} from '@lucide/svelte';
+  IconBrandFacebook as Facebook,
+  IconBrandLinkedin as Linkedin,
+  IconMail as Mail,
+  IconBrandTwitter as Twitter,
+} from '@tabler/icons-svelte';
 
 type ShareData = {
   title?: string;

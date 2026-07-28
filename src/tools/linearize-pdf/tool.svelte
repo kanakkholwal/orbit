@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { FastForward, LoaderCircle, Plus, Zap } from "@lucide/svelte";
+  import { IconPlayerTrackNext as FastForward, IconLoader2 as LoaderCircle, IconPlus as Plus, IconBolt as Zap } from "@tabler/icons-svelte";
   import { LinearizePdfState } from "./helper.svelte";
 
   const store = new LinearizePdfState();

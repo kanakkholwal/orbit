@@ -2,7 +2,7 @@
   import Logo from "$components/Logo.svelte";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
-  import { Github } from "@lucide/svelte";
+  import { IconBrandGithub as Github } from "@tabler/icons-svelte";
 
   const currentYear = new Date().getFullYear();
 
@@ -76,7 +76,7 @@
               class="flex items-baseline justify-between border-b border-border/60 pb-3"
             >
               <span
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/70"
+                class="label-eyebrow text-muted-foreground"
               >
                 {col.title}
               </span>
@@ -116,7 +116,7 @@
       class="mt-16 flex flex-col items-start justify-between gap-4 border-t border-border/60 pt-6 sm:flex-row sm:items-center"
     >
       <p
-        class="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground/70"
+        class="label-eyebrow text-muted-foreground"
       >
         © {currentYear} · {config.appName} · v{config.appVersion}
       </p>

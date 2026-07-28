@@ -5,7 +5,7 @@
   import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { ArrowRight, Eye, EyeOff, LoaderCircle, Unlock } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconEye as Eye, IconEyeOff as EyeOff, IconLoader2 as LoaderCircle, IconLockOpen as Unlock } from "@tabler/icons-svelte";
   import { DecryptPdfState } from "./helper.svelte";
 
   const store = new DecryptPdfState();
@@ -42,7 +42,7 @@
       <div class="flex flex-col gap-2">
         <Label
           for="pwd-input"
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           PDF password
           <span class="text-destructive">*</span>
@@ -83,7 +83,7 @@
         </span>
         <div class="flex flex-col gap-1">
           <span
-            class="font-mono text-[10px] uppercase tracking-[0.18em] text-warning"
+            class="label-eyebrow text-warning"
           >
             Local only
           </span>

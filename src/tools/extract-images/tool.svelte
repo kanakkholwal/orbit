@@ -4,12 +4,12 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
   import {
-    Download,
-    FileQuestion,
-    LoaderCircle,
-    Plus,
-    Zap,
-  } from "@lucide/svelte";
+    IconDownload as Download,
+    IconFileUnknown as FileQuestion,
+    IconLoader2 as LoaderCircle,
+    IconPlus as Plus,
+    IconBolt as Zap,
+  } from "@tabler/icons-svelte";
   import { ExtractImagesState } from "./helper.svelte";
 
   const store = new ExtractImagesState();
@@ -81,7 +81,7 @@
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-muted/60 text-muted-foreground">
               <FileQuestion class="size-4" />
             </span>
-            <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70">
+            <p class="label-eyebrow text-muted-foreground">
               No images found
             </p>
             <p class="max-w-sm text-sm text-muted-foreground">

@@ -1,19 +1,19 @@
 import { getToolsByCategory } from "$tools/list";
 import {
-  FileText,
-  Icon,
-  PenLineIcon,
-  RotateCw,
-  Shield
-} from "@lucide/svelte";
+  IconFileText as FileText,
+  IconPencil as PenLineIcon,
+  IconRotateClockwise as RotateCw,
+  IconShield as Shield,
+  type Icon
+} from "@tabler/icons-svelte";
 
 
 interface ToolCategory {
   id: string;
   name: string;
   description: string;
-  icon: typeof Icon; 
-  tools?: ReturnType<typeof getToolsByCategory>; 
+  icon: Icon;
+  tools?: ReturnType<typeof getToolsByCategory>;
 }
 
 const toolsCategories: ToolCategory[] = [

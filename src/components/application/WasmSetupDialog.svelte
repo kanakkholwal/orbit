@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { wasmStore } from '$stores/wasm-store.svelte';
-    import { AlertTriangle, Check } from '@lucide/svelte';
+    import { IconAlertTriangle as AlertTriangle, IconCheck as Check } from '@tabler/icons-svelte';
     import { fade, scale } from 'svelte/transition';
  // Assuming SvelteKit
 

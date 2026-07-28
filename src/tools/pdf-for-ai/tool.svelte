@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { BrainCircuit, LoaderCircle, Plus, Zap } from "@lucide/svelte";
+  import { IconBrain as BrainCircuit, IconLoader2 as LoaderCircle, IconPlus as Plus, IconBolt as Zap } from "@tabler/icons-svelte";
   import { PdfForAiState } from "./helper.svelte";
 
   const store = new PdfForAiState();

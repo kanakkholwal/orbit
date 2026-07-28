@@ -11,7 +11,7 @@
   } from "$components/ui/select";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { ArrowRight, BookmarkPlus, LoaderCircle } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconBookmarkPlus as BookmarkPlus, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
   import { TableOfContentsState } from "./helper.svelte";
 
   const store = new TableOfContentsState();
@@ -54,7 +54,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="toc-title"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             TOC title
           </Label>
@@ -70,7 +70,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for="font-size"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Font size
             </Label>
@@ -89,7 +89,7 @@
           <div class="flex flex-col gap-2">
             <Label
               for="font-family"
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Font family
             </Label>

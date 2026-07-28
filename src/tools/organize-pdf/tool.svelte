@@ -6,10 +6,10 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { sortableList } from "$lib/actions/sortable-list";
   import {
-    ArrowRight,
-    LoaderCircle,
-    Settings2,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconLoader2 as LoaderCircle,
+    IconSettings2 as Settings2,
+  } from "@tabler/icons-svelte";
   import { slide } from "svelte/transition";
   import { OrganizePdfState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
@@ -63,7 +63,7 @@
             <div class="flex flex-1 flex-col gap-1.5">
               <Label
                 for="order-input"
-                class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+                class="label-eyebrow text-muted-foreground"
               >
                 Page order
               </Label>

@@ -3,13 +3,13 @@
   import "@fontsource-variable/google-sans";
 
   import {
-    AlertTriangle,
-    ArrowLeft,
-    Construction,
-    FileQuestion,
-    Home,
-    RefreshCcw,
-  } from "@lucide/svelte";
+    IconAlertTriangle as AlertTriangle,
+    IconArrowLeft as ArrowLeft,
+    IconBarrierBlock as Construction,
+    IconFileUnknown as FileQuestion,
+    IconHome as Home,
+    IconRefresh as RefreshCcw,
+  } from "@tabler/icons-svelte";
   import "../app.css";
 
   // Derived state for error details
@@ -46,11 +46,11 @@
           class="mb-8 flex h-24 w-24 items-center justify-center rounded-3xl bg-card shadow-lg"
         >
           {#if isNotFound}
-            <FileQuestion class="h-10 w-10 text-blue-500" strokeWidth={1.5} />
+            <FileQuestion class="h-10 w-10 text-blue-500" stroke={1.5} />
           {:else if isServerError}
-            <Construction class="h-10 w-10 text-orange-500" strokeWidth={1.5} />
+            <Construction class="h-10 w-10 text-orange-500" stroke={1.5} />
           {:else}
-            <AlertTriangle class="h-10 w-10 text-red-500" strokeWidth={1.5} />
+            <AlertTriangle class="h-10 w-10 text-red-500" stroke={1.5} />
           {/if}
         </div>
 
@@ -78,7 +78,7 @@
         <div class="flex w-full flex-col gap-3 sm:flex-row">
           <button
             on:click={goBack}
-            class="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-border/60 bg-card/50 px-4 py-3 text-sm font-semibold text-card-foreground shadow-sm transition-all hover:bg-card hover:text-foreground hover:shadow-md active:scale-95"
+            class="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-border/60 bg-card/50 px-4 py-3 text-sm font-semibold text-card-foreground shadow-sm transition-all hover:bg-card hover:text-foreground hover:shadow-md active:brightness-95"
           >
             <ArrowLeft
               size={16}
@@ -89,7 +89,7 @@
 
           <a
             href="/"
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-card shadow-lg shadow-foreground/20 transition-all hover:bg-foreground hover:shadow-xl active:scale-95"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-card shadow-lg shadow-foreground/20 transition-all hover:bg-foreground hover:shadow-xl active:brightness-95"
           >
             <Home size={16} />
             Home

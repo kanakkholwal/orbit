@@ -7,13 +7,15 @@
   import { tv, type VariantProps } from "tailwind-variants";
 
   export const buttonVariants = tv({
-    base: "gap-2 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all active:scale-95 outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    base: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all duration-200 ease-snappy active:brightness-90 active:duration-100 outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     variants: {
       variant: {
         default:
           "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs",
         default_soft:
           "bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/10 dark:text-primary hover:dark:bg-primary/5 hover:dark:text-primary",
+        brand:
+          "bg-brand text-primary-foreground shadow-brand hover:brightness-[1.05] active:brightness-95",
         destructive:
           "bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white shadow-xs",
         destructive_soft:
@@ -26,23 +28,16 @@
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
         dark: "bg-dark text-dark-foreground hover:bg-dark/80 shadow-xs",
-        success: "bg-emerald-600 hover:bg-emerald-500 text-emerald-100",
-        success_soft:
-          "bg-emerald-600/10 text-emerald-600 hover:bg-emerald-600/20",
-        info: "bg-sky-600 hover:bg-sky-500 text-sky-100",
-        info_soft: "bg-sky-600/10 text-sky-600 hover:bg-sky-600/20",
-        warning: "bg-amber-600 hover:bg-amber-500 text-amber-100",
-        warning_soft: "bg-amber-600/10 text-amber-600 hover:bg-amber-600/20",
         raw: "",
       },
       size: {
         default: "h-10 px-5 py-2.5 [&>svg]:size-5",
         xs: "h-7 px-4 py-2 [&>svg]:size-3",
-        sm: "h-8 gap-1.5 rounded-md px-3  text-xs font-medium",
-        lg: "h-10 rounded-md px-6 [&>svg]:size-5",
+        sm: "h-8 gap-1.5 rounded-md px-3 text-xs font-medium [&>svg]:size-4",
+        lg: "h-11 rounded-md px-6 [&>svg]:size-5",
         xl: "h-12 rounded-md px-8 [&>svg]:size-6 text-lg font-medium",
         icon: "size-10 [&>svg]:size-5",
-        "icon-xs": "size-5 rounded-sm [&>svg]:size-3",
+        "icon-xs": "size-6 rounded-sm [&>svg]:size-3",
         "icon-sm": "size-8 [&>svg]:size-4",
         "icon-lg": "size-12 [&>svg]:size-6",
       },

@@ -3,7 +3,7 @@
     import { Input } from "$components/ui/input";
     import { useViewportCapability } from "@embedpdf/plugin-viewport/svelte";
     import { useScroll } from "@embedpdf/plugin-scroll/svelte";
-    import { ChevronLeftIcon, ChevronRightIcon } from "@lucide/svelte";
+    import { IconChevronLeft as ChevronLeftIcon, IconChevronRight as ChevronRightIcon } from "@tabler/icons-svelte";
 
     interface PageControlsProps {
         documentId: string;

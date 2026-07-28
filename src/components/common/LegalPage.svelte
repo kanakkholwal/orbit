@@ -35,7 +35,7 @@
       <p class="max-w-2xl text-base leading-relaxed text-muted-foreground">
         {intro}
       </p>
-      <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground/60">
+      <p class="label-eyebrow text-muted-foreground">
         Last updated · {updated}
       </p>
     </header>

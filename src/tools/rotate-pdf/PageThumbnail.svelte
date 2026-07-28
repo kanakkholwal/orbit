@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Loader2, RotateCcw, RotateCw } from "@lucide/svelte";
+  import { IconLoader2 as Loader2, IconRotate2 as RotateCcw, IconRotateClockwise as RotateCw } from "@tabler/icons-svelte";
   import type { RotatePdfState } from "./helper.svelte";
 
   let { store, index } = $props<{ store: RotatePdfState; index: number }>();

@@ -6,12 +6,12 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
   import {
-    ArrowRight,
-    Eye,
-    EyeOff,
-    LoaderCircle,
-    ShieldCheck,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconEye as Eye,
+    IconEyeOff as EyeOff,
+    IconLoader2 as LoaderCircle,
+    IconShieldCheck as ShieldCheck,
+  } from "@tabler/icons-svelte";
   import { EncryptPdfState } from "./helper.svelte";
 
   const store = new EncryptPdfState();
@@ -50,7 +50,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="user-pwd"
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             User password
             <span class="text-destructive">*</span>
@@ -84,7 +84,7 @@
         <div class="flex flex-col gap-2">
           <Label
             for="owner-pwd"
-            class="flex items-center gap-2 font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="flex items-center gap-2 label-eyebrow text-muted-foreground"
           >
             Owner password
             <span class="font-mono text-[9px] tracking-[0.16em] text-muted-foreground/60">
@@ -130,7 +130,7 @@
         ] as [k, v]}
           <li class="grid grid-cols-3 gap-3 px-4 py-2.5 sm:grid-cols-4">
             <span
-              class="col-span-1 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70"
+              class="col-span-1 label-eyebrow text-muted-foreground"
             >
               {k}
             </span>

@@ -5,7 +5,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { ArrowRight, LoaderCircle } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
   import { PdfToJpgState } from "./helper.svelte";
 
   const store = new PdfToJpgState();
@@ -47,7 +47,7 @@
             type="button"
             onclick={() => (store.state.format = fmt)}
             class={cn(
-              "rounded-sm px-3 py-1.5 font-mono text-[11px] uppercase tracking-[0.16em] transition-colors",
+              "rounded-sm px-3 py-1.5 label-eyebrow transition-colors",
               store.state.format === fmt
                 ? "bg-card text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
@@ -62,7 +62,7 @@
         <div class="mt-5 flex flex-col gap-2">
           <div class="flex items-center justify-between">
             <span
-              class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+              class="label-eyebrow text-muted-foreground"
             >
               Quality
             </span>
@@ -80,7 +80,7 @@
             class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted/60 accent-primary"
           />
           <div
-            class="flex justify-between font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60"
+            class="flex justify-between label-eyebrow text-muted-foreground"
           >
             <span>Low</span>
             <span>Balanced</span>
@@ -93,7 +93,7 @@
     <ToolPanel title="Summary">
       <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border/60 bg-border/60 sm:grid-cols-3">
         <div class="flex flex-col gap-1 bg-card px-4 py-3">
-          <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+          <dt class="label-eyebrow text-muted-foreground">
             Format
           </dt>
           <dd class="font-mono text-sm uppercase tabular-nums text-foreground">
@@ -102,7 +102,7 @@
         </div>
         {#if store.state.format !== "png"}
           <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+            <dt class="label-eyebrow text-muted-foreground">
               Quality
             </dt>
             <dd class="font-mono text-sm tabular-nums text-foreground">
@@ -111,7 +111,7 @@
           </div>
         {/if}
         <div class="flex flex-col gap-1 bg-card px-4 py-3">
-          <dt class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+          <dt class="label-eyebrow text-muted-foreground">
             Output
           </dt>
           <dd class="font-mono text-sm tabular-nums text-foreground">

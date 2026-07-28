@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { Check, Copy, FileSearch, LoaderCircle } from "@lucide/svelte";
+  import { IconCheck as Check, IconCopy as Copy, IconFileSearch as FileSearch, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
   import { ViewMetadataState } from "./helper.svelte";
 
   const store = new ViewMetadataState();
@@ -46,7 +46,7 @@
           <LoaderCircle class="size-4 animate-spin" />
         </span>
         <p
-          class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground/70"
+          class="label-eyebrow text-muted-foreground"
         >
           Reading metadata
         </p>
@@ -81,7 +81,7 @@
               >
                 <FileSearch class="size-3.5 text-primary" />
                 <h3
-                  class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-foreground"
+                  class="label-eyebrow text-foreground"
                 >
                   {store.infoDictionary.title}
                 </h3>
@@ -97,7 +97,7 @@
                       class="grid grid-cols-1 gap-1 px-4 py-3 transition-colors hover:bg-muted/20 sm:grid-cols-3"
                     >
                       <span
-                        class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                        class="label-eyebrow text-muted-foreground"
                       >
                         {item.key}
                       </span>
@@ -120,7 +120,7 @@
               >
                 <FileSearch class="size-3.5 text-primary" />
                 <h3
-                  class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-foreground"
+                  class="label-eyebrow text-foreground"
                 >
                   {store.xmpMetadata.title}
                 </h3>
@@ -129,7 +129,7 @@
                 {#if store.xmpMetadata.items.length === 0}
                   {#if store.xmpMetadata.rawString}
                     <li class="p-4">
-                      <p class="mb-2 font-mono text-[10px] uppercase tracking-[0.16em] text-destructive">
+                      <p class="mb-2 label-eyebrow text-destructive">
                         Could not parse XML — raw XMP
                       </p>
                       <pre
@@ -152,7 +152,7 @@
                         </span>
                       {:else}
                         <span
-                          class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                          class="label-eyebrow text-muted-foreground"
                         >
                           {item.key}
                         </span>
@@ -176,7 +176,7 @@
               >
                 <FileSearch class="size-3.5 text-primary" />
                 <h3
-                  class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-foreground"
+                  class="label-eyebrow text-foreground"
                 >
                   {store.formFields.title}
                 </h3>
@@ -186,9 +186,7 @@
                   <li
                     class="grid grid-cols-1 gap-1 px-4 py-3 transition-colors hover:bg-muted/20 sm:grid-cols-3"
                   >
-                    <span
-                      class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
-                    >
+                    <span class="label-eyebrow text-muted-foreground">
                       {item.key}
                     </span>
                     <span class="break-all text-sm text-foreground sm:col-span-2">

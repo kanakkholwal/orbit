@@ -1,10 +1,10 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
   import {
-    CircleAlert,
-    CircleCheck,
-    LoaderCircle,
-  } from "@lucide/svelte";
+    IconAlertCircle as CircleAlert,
+    IconCircleCheck as CircleCheck,
+    IconLoader2 as LoaderCircle,
+  } from "@tabler/icons-svelte";
 
   type Status = "idle" | "processing" | "done" | "error";
 
@@ -33,7 +33,7 @@
 
 <span
   class={cn(
-    "inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em]",
+    "inline-flex items-center gap-1.5 rounded-sm px-2 py-0.5 label-eyebrow",
     tone[status],
     className
   )}

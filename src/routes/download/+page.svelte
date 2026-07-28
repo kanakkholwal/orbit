@@ -8,14 +8,14 @@
   import { pwa } from "$lib/pwa.svelte";
   import { cn } from "$lib/utils";
   import {
-    Apple,
-    ArrowDownToLine,
-    ArrowUpRight,
-    Github,
-    Monitor,
-    Smartphone,
-    Terminal,
-  } from "@lucide/svelte";
+    IconApple as Apple,
+    IconArrowBarToDown as ArrowDownToLine,
+    IconArrowUpRight as ArrowUpRight,
+    IconBrandGithub as Github,
+    IconDeviceDesktop as Monitor,
+    IconDeviceMobile as Smartphone,
+    IconTerminal as Terminal,
+  } from "@tabler/icons-svelte";
   import { cubicOut } from "svelte/easing";
   import { fade, fly } from "svelte/transition";
 
@@ -139,9 +139,9 @@
 
   <main class="flex-1">
     <section class="px-5 pb-16 pt-32 md:px-8 md:pt-44 lg:pt-52">
-      <div class="mx-auto flex w-full max-w-5xl flex-col gap-10">
+      <div class="mx-auto flex w-full max-w-3xl flex-col items-center gap-8 text-center">
         <div
-          class="flex flex-wrap items-center gap-3"
+          class="flex flex-wrap items-center justify-center gap-3"
           in:fade={{ duration: 400, delay: 60 }}
         >
           <span
@@ -156,20 +156,20 @@
             ></span>
           </span>
           <span
-            class="font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-primary"
+            class="label-eyebrow text-primary"
           >
             Download
           </span>
           <span class="text-muted-foreground/40">·</span>
           <span
-            class="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
           >
             Latest release {data.version}
           </span>
         </div>
 
         <h1
-          class="max-w-3xl text-display-lg text-foreground sm:text-[3.25rem] sm:leading-[1.05] sm:tracking-[-0.025em] md:text-display-mega"
+          class="text-balance text-display-lg text-foreground md:text-display-mega"
           in:fly={{ y: 16, duration: 600, delay: 120, easing: cubicOut }}
         >
           Get {config.appName}
@@ -179,7 +179,7 @@
         </h1>
 
         <p
-          class="max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+          class="max-w-xl text-lg leading-relaxed text-muted-foreground"
           in:fly={{ y: 12, duration: 520, delay: 220, easing: cubicOut }}
         >
           {#if isMobile}
@@ -192,26 +192,26 @@
         </p>
 
         <div
-          class="flex flex-col gap-5 border-t border-border/60 pt-10"
+          class="flex w-full flex-col items-center gap-5 border-t border-border/60 pt-10"
           in:fly={{ y: 12, duration: 520, delay: 320, easing: cubicOut }}
         >
-          <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <span
-              class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60"
+              class="label-eyebrow text-muted-foreground"
             >
               {#if isMobile}We detected{:else if detectedOS !== "Unknown"}We detected{:else}Auto-detect{/if}
             </span>
             <span class="font-mono text-sm tabular-nums text-foreground">
               {#if isMobile}{pwa.platform === "ios" ? "iOS" : "Android"}{:else if detectedOS !== "Unknown"}{detectedOS}{:else}Unavailable{/if}
             </span>
-            <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40">
+            <span class="label-eyebrow text-muted-foreground">
               {isMobile ? "PWA · install in-place" : primaryDownload().tag}
             </span>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center justify-center gap-2">
             {#if isMobile}
-              <InstallPwaButton size="lg" class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90" />
+              <InstallPwaButton size="lg" class="rounded-sm px-6" />
               <Button href="/install-pwa" variant="outline" size="lg" class="rounded-sm px-5">
                 <Smartphone size={16} />
                 Install instructions
@@ -220,7 +220,7 @@
               <Button
                 href={primaryDownload().link!}
                 size="lg"
-                class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
+                class="rounded-sm px-6"
               >
                 <ArrowDownToLine size={16} />
                 {primaryDownload().label}
@@ -233,7 +233,7 @@
               <Button
                 href="#all-platforms"
                 size="lg"
-                class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
+                class="rounded-sm px-6"
               >
                 Choose platform
                 <ArrowUpRight size={16} />
@@ -267,7 +267,7 @@
         >
           <div class="flex flex-col gap-2">
             <span
-              class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
+              class="label-eyebrow text-primary"
             >
               {isMobile ? "Web app" : "Platforms"}
             </span>
@@ -277,11 +277,6 @@
               {isMobile ? "Install on this device." : "Pick the right build for your machine."}
             </h2>
           </div>
-          <span
-            class="hidden font-mono text-[11px] tabular-nums text-muted-foreground/50 sm:inline"
-          >
-            01
-          </span>
         </div>
 
         <!-- PWA card — visible on every device. -->
@@ -308,14 +303,14 @@
         </div>
 
         {#if !isMobile}
-        <ul class="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border/60 bg-border/60 md:grid-cols-3">
+        <ul class="grid grid-cols-1 gap-4 md:grid-cols-3">
           {#each platforms as platform, i (platform.id)}
             {@const Icon = platform.icon}
             {@const isDetected = detectedOS === platform.id}
             <li
               class={cn(
-                "flex flex-col gap-6 bg-card p-6 transition-colors",
-                isDetected && "bg-primary/5"
+                "flex flex-col gap-6 rounded-xl border border-border bg-card p-6 shadow-sm transition-colors",
+                isDetected && "border-primary/40 bg-primary/5"
               )}
               in:fly={{
                 y: 12,
@@ -337,16 +332,10 @@
                 </span>
                 {#if isDetected}
                   <span
-                    class="inline-flex items-center gap-1.5 rounded-sm bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-primary"
+                    class="inline-flex items-center gap-1.5 rounded-sm bg-primary/10 px-2 py-0.5 label-eyebrow text-primary"
                   >
                     <span class="size-1 rounded-full bg-primary"></span>
                     Detected
-                  </span>
-                {:else}
-                  <span
-                    class="font-mono text-[11px] tabular-nums text-muted-foreground/50"
-                  >
-                    {String(i + 1).padStart(2, "0")}
                   </span>
                 {/if}
               </div>
@@ -375,7 +364,7 @@
                     <span>{platform.primary.label}</span>
                     {#if platform.primary.tag}
                       <span
-                        class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/70"
+                        class="label-eyebrow text-muted-foreground"
                       >
                         {platform.primary.tag}
                       </span>
@@ -401,7 +390,7 @@
                       <span>{opt.label}</span>
                       {#if opt.tag}
                         <span
-                          class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60"
+                          class="label-eyebrow text-muted-foreground"
                         >
                           {opt.tag}
                         </span>
@@ -429,7 +418,7 @@
         >
           <div class="flex flex-col gap-2">
             <span
-              class="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary"
+              class="label-eyebrow text-primary"
             >
               Notes
             </span>
@@ -439,11 +428,6 @@
               About these builds.
             </h2>
           </div>
-          <span
-            class="hidden font-mono text-[11px] tabular-nums text-muted-foreground/50 sm:inline"
-          >
-            02
-          </span>
         </div>
 
         <dl class="divide-y divide-border/60 rounded-md border border-border/60 bg-muted/20">
@@ -465,7 +449,7 @@
               }}
             >
               <dt
-                class="col-span-1 font-mono text-[11px] uppercase tracking-[0.16em] text-muted-foreground/70"
+                class="col-span-1 label-eyebrow text-muted-foreground"
               >
                 {label}
               </dt>

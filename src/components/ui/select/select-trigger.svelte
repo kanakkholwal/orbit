@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cn, type WithoutChild } from "$lib/utils.js";
-	import ChevronDownIcon from "@lucide/svelte/icons/chevron-down";
+	import { IconChevronDown as ChevronDownIcon } from "@tabler/icons-svelte";
 	import { Select as SelectPrimitive } from "bits-ui";
 
 	let {

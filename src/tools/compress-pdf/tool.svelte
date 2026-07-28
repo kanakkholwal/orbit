@@ -18,11 +18,11 @@
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
-    ArrowRight,
-    LoaderCircle,
-    Settings2,
-    Zap,
-  } from "@lucide/svelte";
+    IconArrowRight as ArrowRight,
+    IconLoader2 as LoaderCircle,
+    IconSettings2 as Settings2,
+    IconBolt as Zap,
+  } from "@tabler/icons-svelte";
   import { slide } from "svelte/transition";
   import { CompressState } from "./helper.svelte";
 
@@ -90,7 +90,7 @@
       <div class="grid gap-5 sm:grid-cols-2">
         <div class="flex flex-col gap-2">
           <Label
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
             for="settings.algorithm">Algorithm</Label
           >
           <div class="grid grid-cols-2 gap-1 rounded-sm bg-muted/40 p-1">
@@ -121,7 +121,7 @@
 
         <div class="flex flex-col gap-2">
           <Label
-            class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+            class="label-eyebrow text-muted-foreground"
             for="settings.level">Compression level</Label
           >
           <Select type="single" bind:value={store.settings.level}>
@@ -142,7 +142,7 @@
         <button
           type="button"
           onclick={() => (showAdvanced = !showAdvanced)}
-          class="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.16em] text-primary transition-colors hover:text-primary/80"
+          class="inline-flex items-center gap-1.5 label-eyebrow text-primary transition-colors hover:text-primary/80"
           aria-expanded={showAdvanced}
         >
           <Settings2 class="size-3" />
@@ -187,7 +187,7 @@
     >
       <Button
         size="lg"
-        class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
+        class="rounded-sm px-6"
         onclick={() => store.process()}
         disabled={store.isProcessing}
       >

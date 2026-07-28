@@ -5,7 +5,7 @@
   import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { ArrowRight, LoaderCircle } from "@lucide/svelte";
+  import { IconArrowRight as ArrowRight, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
   import { ExtractPagesState } from "./helper.svelte";
 
   const store = new ExtractPagesState();
@@ -42,7 +42,7 @@
       <div class="flex flex-col gap-2">
         <Label
           for="pages-input"
-          class="font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground"
+          class="label-eyebrow text-muted-foreground"
         >
           Range
         </Label>
@@ -54,7 +54,7 @@
           class="h-10 rounded-sm font-mono text-sm"
         />
         <p
-          class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60"
+          class="label-eyebrow text-muted-foreground"
         >
           {store.state.pageCount} pages available
         </p>

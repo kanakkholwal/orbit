@@ -4,10 +4,10 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
   import {
-    FileSpreadsheet,
-    LoaderCircle,
-    TableProperties,
-  } from "@lucide/svelte";
+    IconFileSpreadsheet as FileSpreadsheet,
+    IconLoader2 as LoaderCircle,
+    IconTableOptions as TableProperties,
+  } from "@tabler/icons-svelte";
   import { PdfToExcelState } from "./helper.svelte";
 
   const store = new PdfToExcelState();

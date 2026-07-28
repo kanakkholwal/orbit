@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { LoaderCircle, MessageSquareOff, Zap } from "@lucide/svelte";
+  import { IconLoader2 as LoaderCircle, IconMessageOff as MessageSquareOff, IconBolt as Zap } from "@tabler/icons-svelte";
   import { RemoveAnnotationsState } from "./helper.svelte";
 
   const store = new RemoveAnnotationsState();
@@ -49,7 +49,7 @@
         </span>
         <div class="flex flex-col gap-1">
           <span
-            class="font-mono text-[10px] uppercase tracking-[0.18em] text-destructive"
+            class="label-eyebrow text-destructive"
           >
             Permanent
           </span>
