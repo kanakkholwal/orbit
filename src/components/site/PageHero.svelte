@@ -41,7 +41,7 @@
       </h1>
 
       {#if lede}
-        <p class="max-w-2xl text-pretty text-body-lg leading-relaxed text-muted-foreground">
+        <p class="max-w-2xl text-pretty text-body-xl leading-relaxed text-muted-foreground">
           {lede}
         </p>
       {/if}

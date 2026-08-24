@@ -147,7 +147,7 @@
 <button
   type="button"
   class={cn(
-    "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
+    "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     dragActive
       ? "border-primary/60 bg-primary/5"
       : "border-border bg-muted/20 hover:border-primary/40 hover:bg-muted/30",

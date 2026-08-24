@@ -152,7 +152,7 @@
 
           <ul class="mt-1 flex flex-col gap-2.5">
             {#each entry.items as item}
-              <li class="flex items-start gap-3 text-body-sm">
+              <li class="flex items-start gap-3 text-body">
                 <span
                   class={cn(
                     "mt-0.5 inline-flex shrink-0 items-center rounded-sm px-2 py-0.5 label-eyebrow",
@@ -176,7 +176,7 @@
       <p class="label-eyebrow text-muted-foreground">
         Subscribe
       </p>
-      <p class="mt-2 text-body-sm text-foreground">
+      <p class="mt-2 text-body text-foreground">
         Follow development on
         <a
           href="https://github.com/kanakkholwal/orbit/releases"

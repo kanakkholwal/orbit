@@ -13,7 +13,7 @@
   const widths = {
     narrow: "max-w-3xl",
     default: "max-w-5xl",
-    wide: "max-w-6xl",
+    wide: "max-w-page",
   } as const;
 </script>
 

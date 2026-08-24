@@ -20,7 +20,7 @@
   )}
 >
   <div class="flex items-baseline gap-4">
-    <span class="font-display text-heading-sm font-bold tabular-nums text-foreground">
+    <span class="text-heading-sm font-medium tabular-nums text-foreground">
       {index}
     </span>
     <span class="label-eyebrow text-muted-foreground">{label}</span>

@@ -78,7 +78,7 @@
         <div class="flex w-full flex-col gap-3 sm:flex-row">
           <button
             on:click={goBack}
-            class="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/50 px-4 py-3 text-body-sm font-semibold text-card-foreground shadow-sm transition-all hover:bg-card hover:text-foreground hover:shadow-md active:brightness-95"
+            class="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/50 px-4 py-3 text-body font-semibold text-card-foreground shadow-sm transition-all hover:bg-card hover:text-foreground hover:shadow-md active:brightness-95"
           >
             <ArrowLeft
               size={16}
@@ -89,7 +89,7 @@
 
           <a
             href="/"
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-body-sm font-semibold text-card shadow-lg shadow-foreground/20 transition-all hover:bg-foreground hover:shadow-xl active:brightness-95"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-body font-semibold text-card shadow-lg shadow-foreground/20 transition-all hover:bg-foreground hover:shadow-xl active:brightness-95"
           >
             <Home size={16} />
             Home

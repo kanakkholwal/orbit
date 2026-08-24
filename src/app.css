@@ -1,61 +1,59 @@
 @import "tailwindcss";
 @import 'tw-animate-css';
 
-
-
 @custom-variant dark (&:where(.dark, [data-theme="dark"], .dark *, [data-theme="dark"] *));
 
 :root,
 [data-theme="light"] {
-  --brand-hue: 178; /* teal brand */
+  --brand-hue: 178;
 
-  /* Surfaces */
-  --background: #f5f5f7;             
-  --card: oklch(100% 0 0);          
-  --paper: oklch(94% 0 0);           
-  --background-muted: var(--paper);
-  --background-inset: var(--paper);
-  --popover: oklch(100% 0 0);
-  --muted: var(--paper);
-  --secondary: oklch(94% 0 0);
-  --accent: var(--paper);
+  --background: #ffffff;
+  --paper: #f5f5f5;
+  --background-muted: #f5f5f5;
+  --background-inset: #f5f5f5;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --muted: #f5f5f5;
+  --secondary: #f5f5f5;
+  --accent: #f5f5f5;
 
-  /* Ink */
-  --foreground: oklch(20.5% 0 0);
-  --card-foreground: var(--foreground);
-  --popover-foreground: var(--foreground);
-  --secondary-foreground: var(--foreground);
-  --accent-foreground: var(--foreground);
+  --foreground: #171717;
+  --card-foreground: #171717;
+  --popover-foreground: #171717;
+  --secondary-foreground: #171717;
+  --accent-foreground: #171717;
+  --muted-foreground: #525252;
+  --foreground-muted: #525252;
+  --placeholder: #737373;
 
-  --muted-foreground: oklch(54% 0 0);
-  --foreground-muted: var(--muted-foreground);
-
-   --primary: oklch(0.52 0.105 var(--brand-hue));
-  --primary-foreground: oklch(100% 0 0);
+  --primary: oklch(0.52 0.105 var(--brand-hue));
+  --primary-foreground: #ffffff;
   --primary-active: oklch(0.46 0.105 var(--brand-hue));
 
-  /* Hairlines & focus — full strength, always. Never diluted with an opacity. */
-  --border: oklch(89.5% 0 0);          
-  --border-emphasis: oklch(84.5% 0 0); 
-  --border-strong: var(--border-emphasis);
-  --input: var(--border-emphasis);
-  --ring: var(--primary);              /* a focus ring needs 3:1; no alpha */
+  --action: #0a0a0a;
+  --action-foreground: #ffffff;
+  --dark: #0a0a0a;
+  --dark-foreground: #ffffff;
 
-  /* Semantic — each value doubles as ink on a neutral surface and as a fill
-     under white text, so both jobs clear 4.5:1 from one token. */
+  --border: #e5e5e5;
+  --border-strong: #d4d4d4;
+  --border-emphasis: #d4d4d4;
+  --input: #0a0a0a;
+  --ring: oklch(0.52 0.105 var(--brand-hue));
+
   --destructive: #c0242a;
-  --destructive-foreground: oklch(100% 0 0);
+  --destructive-foreground: #ffffff;
   --success: #0a7d47;
-  --success-foreground: oklch(100% 0 0);
+  --success-foreground: #ffffff;
   --warning: #8a5c00;
-  --warning-foreground: oklch(100% 0 0);
+  --warning-foreground: #ffffff;
   --info: #0060c9;
-  --info-foreground: oklch(100% 0 0);
+  --info-foreground: #ffffff;
 
-  /* Feature-tag hues. One per tag, never two on one component, always duotone. */
-  --tag-tangerine: oklch(64.6% 0.1943 41.1);
-  --tag-lavender: oklch(54.1% 0.2466 293);
-  --tag-green: oklch(62.7% 0.1699 149.2);
+  --tag-tangerine: #ea580c;
+  --tag-lavender: #7c3aed;
+  --tag-green: #16a34a;
+  --tint-mint: #dcfce7;
 
   --timeline-thinking: #dfa88f;
   --timeline-grep: #9fc9a2;
@@ -63,72 +61,70 @@
   --timeline-edit: #c0a8dd;
   --timeline-done: #c08532;
 
-  /* Inverse surface (button variant="dark") */
-  --dark: oklch(20.5% 0 0);
-  --dark-foreground: oklch(98% 0 0);
+  --fixed-light: #ffffff;
+  --fixed-dark: #0a0a0a;
 
-  /* Fixed (don't invert with theme) */
-  --fixed-light: oklch(100% 0 0);
-  --fixed-dark: oklch(20.5% 0 0);
-
-  /* Sidebar */
-  --sidebar: var(--paper);
-  --sidebar-background: var(--sidebar);
-  --sidebar-foreground: var(--foreground);
+  --sidebar: #f5f5f5;
+  --sidebar-background: #f5f5f5;
+  --sidebar-foreground: #171717;
   --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: var(--accent);
-  --sidebar-accent-foreground: var(--accent-foreground);
-  --sidebar-border: var(--border);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ffffff;
+  --sidebar-accent-foreground: #171717;
+  --sidebar-border: #e5e5e5;
   --sidebar-ring: var(--ring);
 
   --radius: 0.75rem;
-  --max-app-width: clamp(1280px, 80vw, 1920px);
+  --max-app-width: 1200px;
 
-  /* Elevation. Borders define containers; these are the three allowed lifts. */
-  --shadow-craft-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-craft-floating: 0 0 0 4px oklch(20.5% 0 0 / 0.06);
-  --shadow-xs: var(--shadow-craft-sm);
-  --shadow-sm: var(--shadow-craft-sm);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10);
-  --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.12);
-  --shadow-2xl: 0 32px 64px rgba(0, 0, 0, 0.16);
+  --shadow-subtle: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-ring: rgba(0, 0, 0, 0.1) 0px 0px 0px 4px;
+  --shadow-xs: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-sm: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+  --shadow-md: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.1) 0px 2px 4px -2px;
+  --shadow-lg: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.1) 0px 4px 6px -4px;
+  --shadow-xl: rgba(0, 0, 0, 0.09) 0px 20px 20px 0px;
+  --shadow-2xl: rgba(0, 0, 0, 0.09) 0px 20px 20px 0px;
 
-  --grid-line: oklch(20.5% 0 0 / 0.035);
+  --dot-grid: rgba(10, 10, 10, 0.07);
 }
 
 .dark,
 [data-theme="dark"] {
-  --background: #1c1c1e;
-  --card: #1c1c1e;                 
-  --paper: oklch(26% 0 0);
-  --background-muted: var(--paper);
-  --background-inset: oklch(18% 0 0);
-  --popover: oklch(26% 0 0);
-  --muted: var(--paper);
-  --secondary: oklch(30% 0 0);
-  --accent: var(--paper);
+  --background: #0a0a0a;
+  --paper: #171717;
+  --background-muted: #171717;
+  --background-inset: #171717;
+  --card: #0a0a0a;
+  --popover: #171717;
+  --muted: #171717;
+  --secondary: #171717;
+  --accent: #171717;
 
-  --foreground: oklch(96% 0 0);
-  --card-foreground: var(--foreground);
-  --popover-foreground: var(--foreground);
-  --secondary-foreground: var(--foreground);
-  --accent-foreground: var(--foreground);
-  --muted-foreground: oklch(68% 0 0);
-  --foreground-muted: var(--muted-foreground);
+  --foreground: #fafafa;
+  --card-foreground: #fafafa;
+  --popover-foreground: #fafafa;
+  --secondary-foreground: #fafafa;
+  --accent-foreground: #fafafa;
+  --muted-foreground: #a3a3a3;
+  --foreground-muted: #a3a3a3;
+  --placeholder: #737373;
 
   --primary: oklch(0.72 0.1 var(--brand-hue));
-  --primary-foreground: oklch(18% 0.02 var(--brand-hue));
+  --primary-foreground: #0a0a0a;
   --primary-active: oklch(0.64 0.095 var(--brand-hue));
 
-  --border: oklch(37.5% 0 0);
-  --border-emphasis: oklch(49.5% 0 0);
-  --border-strong: var(--border-emphasis);
-  --input: var(--border-emphasis);
-  --ring: var(--primary);
+  --action: #fafafa;
+  --action-foreground: #0a0a0a;
+  --dark: #fafafa;
+  --dark-foreground: #0a0a0a;
 
-  /* Fills carry near-black ink in dark; the same value reads as text at 5:1+. */
+  --border: #262626;
+  --border-strong: #383838;
+  --border-emphasis: #383838;
+  --input: #525252;
+  --ring: oklch(0.72 0.1 var(--brand-hue));
+
   --destructive: #ff6b61;
   --destructive-foreground: #1a0706;
   --success: #30d158;
@@ -138,26 +134,31 @@
   --info: #409cff;
   --info-foreground: #04203f;
 
-  /* Lifted: the light-mode tag values sit at 54-64% L and go to mud on a dark canvas. */
-  --tag-tangerine: oklch(75% 0.145 41.1);
-  --tag-lavender: oklch(74% 0.145 293);
-  --tag-green: oklch(74% 0.135 149.2);
+  --tag-tangerine: #fb923c;
+  --tag-lavender: #a78bfa;
+  --tag-green: #4ade80;
+  --tint-mint: #14321f;
 
-  --dark: oklch(96% 0 0);
-  --dark-foreground: #1c1c1e;
+  --fixed-light: #ffffff;
+  --fixed-dark: #0a0a0a;
 
-  --sidebar: oklch(18% 0 0);
+  --sidebar: #171717;
+  --sidebar-background: #171717;
+  --sidebar-foreground: #fafafa;
+  --sidebar-accent: #0a0a0a;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: #262626;
 
-  --shadow-craft-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
-  --shadow-craft-floating: 0 0 0 4px oklch(100% 0 0 / 0.08);
-  --shadow-xs: var(--shadow-craft-sm);
-  --shadow-sm: var(--shadow-craft-sm);
-  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.32);
-  --shadow-lg: 0 8px 22px rgba(0, 0, 0, 0.38);
-  --shadow-xl: 0 14px 34px rgba(0, 0, 0, 0.44);
-  --shadow-2xl: 0 22px 52px rgba(0, 0, 0, 0.5);
+  --shadow-subtle: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+  --shadow-ring: rgba(255, 255, 255, 0.08) 0px 0px 0px 4px;
+  --shadow-xs: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+  --shadow-sm: rgba(0, 0, 0, 0.5) 0px 1px 2px 0px;
+  --shadow-md: rgba(0, 0, 0, 0.55) 0px 4px 6px -1px, rgba(0, 0, 0, 0.5) 0px 2px 4px -2px;
+  --shadow-lg: rgba(0, 0, 0, 0.6) 0px 10px 15px -3px, rgba(0, 0, 0, 0.5) 0px 4px 6px -4px;
+  --shadow-xl: rgba(0, 0, 0, 0.6) 0px 20px 20px 0px;
+  --shadow-2xl: rgba(0, 0, 0, 0.6) 0px 20px 20px 0px;
 
-  --grid-line: oklch(100% 0 0 / 0.04);
+  --dot-grid: rgba(250, 250, 250, 0.08);
 }
 
 @theme inline {
@@ -170,6 +171,7 @@
   --color-paper: var(--paper);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
+  --color-placeholder: var(--placeholder);
 
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
@@ -186,6 +188,13 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
+  --color-action: var(--action);
+  --color-action-foreground: var(--action-foreground);
+  --color-dark: var(--dark);
+  --color-dark-foreground: var(--dark-foreground);
+  --color-fixed-light: var(--fixed-light);
+  --color-fixed-dark: var(--fixed-dark);
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -198,6 +207,7 @@
   --color-tag-tangerine: var(--tag-tangerine);
   --color-tag-lavender: var(--tag-lavender);
   --color-tag-green: var(--tag-green);
+  --color-tint-mint: var(--tint-mint);
 
   --color-timeline-thinking: var(--timeline-thinking);
   --color-timeline-grep: var(--timeline-grep);
@@ -205,14 +215,9 @@
   --color-timeline-edit: var(--timeline-edit);
   --color-timeline-done: var(--timeline-done);
 
-  --color-dark: var(--dark);
-  --color-dark-foreground: var(--dark-foreground);
-  --color-fixed-light: var(--fixed-light);
-  --color-fixed-dark: var(--fixed-dark);
-
   --color-border: var(--border);
   --color-border-low: var(--border);
-  --color-border-strong: var(--border-emphasis);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
@@ -225,64 +230,84 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* ---- Shape: five radii, nothing else ---- */
-  --radius-xs: 0.375rem;   /* 6px  inputs */
-  --radius-sm: 0.375rem;   /* 6px  inputs */
-  --radius-md: 0.75rem;    /* 12px buttons, cards */
-  --radius-lg: 0.75rem;    /* 12px buttons, cards */
-  --radius-xl: 1rem;       /* 16px feature surfaces, mockups */
+  --radius-xs: 0.375rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
   --radius-2xl: 1rem;
   --radius-3xl: 1rem;
   --radius-full: 9999px;
 
-  /* ---- Layout / spacing ---- */
   --spacing-app: var(--max-app-width);
-  --spacing-app-content: min(1600px, 96vw);
-  --spacing-section: 5rem;
+  --spacing-page: 75rem;
+  --spacing-app-content: min(1200px, 96vw);
+  --spacing-section: 4rem;
 
-  /* ---- Typography ---- */
-  /* One face. Google Sans carries display and body; hierarchy comes from
-     weight, size and tracking rather than from a second family. */
-  --font-sans: 'Google Sans Variable', 'Google Sans', system-ui, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-sans: 'Google Sans Variable', 'Google Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-display: var(--font-sans);
   --font-heading: var(--font-sans);
-  --font-mono: 'Source Code Pro Variable', ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+  --font-mono: 'Source Code Pro Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Ten steps. Line height rides along, so no call site needs a leading- utility. */
-  --text-caption: 0.6875rem;   /* 11px */
+  --text-caption: 0.6875rem;
   --text-caption--line-height: 1.5;
 
-  --text-body-sm: 0.875rem;    /* 14px */
-  --text-body-sm--line-height: 1.43;
+  --text-body: 0.875rem;
+  --text-body--line-height: 1.43;
 
-  --text-body: 1rem;           /* 16px — the canonical body size */
-  --text-body--line-height: 1.5;
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.5;
 
-  --text-body-lg: 1.125rem;    /* 18px */
-  --text-body-lg--line-height: 1.56;
+  --text-body-xl: 1.125rem;
+  --text-body-xl--line-height: 1.56;
 
-  --text-subheading: 1.25rem;  /* 20px */
+  --text-subheading: 1.25rem;
   --text-subheading--line-height: 1.4;
 
-  --text-heading-sm: 1.5rem;   /* 24px */
+  --text-heading-sm: 1.5rem;
   --text-heading-sm--line-height: 1.33;
 
-  --text-heading: 1.875rem;    /* 30px */
-  --text-heading--line-height: 1.25;
+  --text-heading: 1.875rem;
+  --text-heading--line-height: 1.38;
 
-  --text-heading-lg: 2.25rem;  /* 36px — section h2 */
+  --text-heading-lg: 2.25rem;
   --text-heading-lg--line-height: 1.11;
 
-  --text-display: 3rem;        /* 48px — hero h1 only */
-  --text-display--line-height: 1.04;
+  --text-display: 3rem;
+  --text-display--line-height: 1;
 
-  --text-display-lg: 3.75rem;  /* 60px */
-  --text-display-lg--line-height: 1.02;
+  --text-xs: var(--text-caption);
+  --text-xs--line-height: 1.5;
+  --text-sm: var(--text-body);
+  --text-sm--line-height: 1.43;
+  --text-base: var(--text-body-lg);
+  --text-base--line-height: 1.5;
+  --text-lg: var(--text-body-xl);
+  --text-lg--line-height: 1.56;
+  --text-xl: var(--text-subheading);
+  --text-xl--line-height: 1.4;
+  --text-2xl: var(--text-heading-sm);
+  --text-2xl--line-height: 1.33;
+  --text-3xl: var(--text-heading);
+  --text-3xl--line-height: 1.38;
+  --text-4xl: var(--text-heading-lg);
+  --text-4xl--line-height: 1.11;
+  --text-5xl: var(--text-display);
+  --text-5xl--line-height: 1;
+  --text-6xl: var(--text-display);
+  --text-6xl--line-height: 1;
+  --text-7xl: var(--text-display);
+  --text-7xl--line-height: 1;
+  --text-8xl: var(--text-display);
+  --text-8xl--line-height: 1;
+  --text-9xl: var(--text-display);
+  --text-9xl--line-height: 1;
 
-  /* Legacy Orbit names, mapped onto the ten steps so no call site is off-scale. */
+  --text-body-sm: var(--text-body);
+  --text-body-sm--line-height: 1.43;
   --text-micro: var(--text-caption);
   --text-micro--line-height: 1.5;
-  --text-title-sm: var(--text-body);
+  --text-title-sm: var(--text-body-lg);
   --text-title-sm--line-height: 1.5;
   --text-title-sm--font-weight: 600;
   --text-title-md: var(--text-subheading);
@@ -291,37 +316,38 @@
   --text-display-sm: var(--text-heading-sm);
   --text-display-sm--line-height: 1.33;
   --text-display-md: var(--text-heading);
-  --text-display-md--line-height: 1.25;
+  --text-display-md--line-height: 1.38;
+  --text-display-lg: var(--text-heading-lg);
+  --text-display-lg--line-height: 1.11;
   --text-display-xl: var(--text-display);
-  --text-display-xl--line-height: 1.04;
+  --text-display-xl--line-height: 1;
   --text-display-mega: var(--text-display);
-  --text-display-mega--line-height: 1.04;
+  --text-display-mega--line-height: 1;
 
-  /* ---- Motion: one ease ---- */
-  --ease-craft: cubic-bezier(0.625, 0.05, 0, 1);
+  --ease-craft: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-snappy: var(--ease-craft);
   --ease-emphasized: var(--ease-craft);
   --ease-out-quart: var(--ease-craft);
   --ease-gentle: var(--ease-craft);
 
-  --duration-hover: 200ms;      /* hover / state colour change */
-  --duration-crossfade: 360ms;  /* skin swaps, clip changes */
+  --duration-hover: 200ms;
+  --duration-crossfade: 300ms;
   --duration-overlay-in: 200ms;
   --duration-overlay-out: 150ms;
   --duration-sheet: 300ms;
 
-  /* ---- Elevation ---- */
-  --shadow-craft-sm: var(--shadow-craft-sm);
-  --shadow-craft-floating: var(--shadow-craft-floating);
+  --shadow-subtle: var(--shadow-subtle);
+  --shadow-ring: var(--shadow-ring);
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
-  --shadow-button: var(--shadow-craft-sm);
+  --shadow-button: var(--shadow-subtle);
+  --shadow-craft-sm: var(--shadow-subtle);
+  --shadow-craft-floating: var(--shadow-ring);
 
-  /* ---- Keyframe animations ---- */
   --animate-accordion-down: accordion-down 0.2s var(--ease-craft);
   --animate-accordion-up: accordion-up 0.2s var(--ease-craft);
   --animate-accordion-fade-in: accordion-fade-in 0.2s var(--ease-craft);
@@ -372,23 +398,14 @@
     @apply border-border outline-ring/50;
   }
 
-  /* Tailwind's preflight resets headings to font-weight: inherit, so a display
-     heading with no weight class would render at body weight. */
   h1, h2 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  h3 {
-    font-family: var(--font-display);
     font-weight: 500;
-    letter-spacing: -0.008em;
+    letter-spacing: -0.02em;
   }
 
-  h4, h5, h6 {
+  h3, h4, h5, h6 {
     font-weight: 600;
-    letter-spacing: -0.011em;
+    letter-spacing: -0.01em;
   }
 
   html {
@@ -432,6 +449,10 @@
     color: inherit;
   }
 
+  ::placeholder {
+    color: var(--placeholder);
+  }
+
   *:autofill,
   *:-webkit-autofill,
   *:-internal-autofill-selected {
@@ -448,8 +469,6 @@
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 }
 
-/* ---- Utilities ---- */
-
 @utility font-display {
   font-family: var(--font-display);
 }
@@ -459,10 +478,9 @@
 }
 
 @utility shadow-brand {
-  box-shadow: var(--shadow-craft-sm);
+  box-shadow: var(--shadow-subtle);
 }
 
-/* The one small label. Sentence case, never uppercase, never letter-spaced. */
 @utility label-eyebrow {
   font-size: var(--text-caption);
   line-height: 1.5;
@@ -470,13 +488,9 @@
   letter-spacing: 0;
 }
 
-/* Duotone glyph: full-strength stroke over a translucent fill of the same hue.
-   No tinted tile behind the icon. */
 @utility glyph-duotone {
   & path { fill: currentColor; fill-opacity: 0.2; }
 }
-
-/* ---- Surfaces ---- */
 
 @utility surface {
   background-color: var(--card);
@@ -490,7 +504,6 @@
   border-radius: var(--radius-xl);
 }
 
-/* Nested tonal panel. Paper, no border — a border inside a border is two edges. */
 @utility surface-alt {
   background-color: var(--paper);
   border-radius: var(--radius-xl);
@@ -500,27 +513,32 @@
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-craft-sm);
 }
 
 @utility mockup-frame {
   background-color: var(--card);
-  border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-craft-floating);
+  box-shadow: var(--shadow-ring);
 }
 
 @utility pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
+  gap: 0.5rem;
+  border-radius: var(--radius-full);
+  padding: 0.5rem 1rem;
+}
+
+@utility pill-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background-color: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  padding: 0.25rem 0.625rem;
+  padding: 0.25rem 0.75rem;
 }
 
-/* Press feedback for anything pressable that isn't a Button. 2%, never smaller. */
 @utility pressable {
   transition: transform var(--duration-hover) var(--ease-craft);
   &:active {
@@ -529,27 +547,23 @@
   }
 }
 
-/* ---- The always-dark band ----
-   A surface that flips colour mid-page must carry literal values: an @theme
-   alias resolves against :root, so a token overridden on a nested element can
-   never reach an aliased utility. */
 .band-dark {
-  --band-ink: oklch(96% 0 0);
-  --band-muted: oklch(68% 0 0);
-  --band-line: oklch(37.5% 0 0);
-  background-color: #1c1c1e;
+  --band-ink: #fafafa;
+  --band-muted: #a3a3a3;
+  --band-line: #262626;
+  background-color: #0a0a0a;
   color: var(--band-ink);
 }
 
 .band-muted { color: var(--band-muted); }
-.band-rule { border-color: var(--band-line); }   /* hairline as a border */
-.band-gap { background-color: var(--band-line); } /* hairline as a gap-px background */
-.band-surface { background-color: #1c1c1e; }
+.band-rule { border-color: var(--band-line); }
+.band-gap { background-color: var(--band-line); }
+.band-surface { background-color: #0a0a0a; }
 
 body {
   font-family: var(--font-sans);
   font-weight: 400;
-  font-size: var(--text-body);
+  font-size: var(--text-body-lg);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -558,22 +572,16 @@ body {
   @apply bg-background text-foreground selection:bg-primary/75 selection:text-fixed-light antialiased;
 }
 
-/* The blueprint signature: one faint 56px line grid, radially faded, applied
-   once. Not a gradient wash, not an aurora, not a photo. */
-.bg-blueprint {
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 56px 56px;
+.bg-dot-grid {
+  background-image: radial-gradient(var(--dot-grid) 1px, transparent 1px);
+  background-size: 16px 16px;
   mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);
 }
 
 .bg-grid-pattern {
-  background-size: 56px 56px;
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-image: radial-gradient(var(--dot-grid) 1px, transparent 1px);
+  background-size: 16px 16px;
   mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
 }
 
@@ -605,9 +613,6 @@ li:has([class]) {
   list-style: none;
 }
 
-/* ---- Accessibility guards ----
-   Svelte `transition:` directives run on WAAPI and bypass this block; gate
-   those in JS with prefersReducedMotion() from $lib/motion. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
@@ -621,17 +626,9 @@ li:has([class]) {
   }
 }
 
-@media (prefers-reduced-transparency: reduce) {
-  .surface-chrome {
-    background-color: var(--card);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-}
-
 @media (prefers-contrast: more) {
   :root,
-  [data-theme="light"] { --border: oklch(60% 0 0); --border-emphasis: oklch(45% 0 0); }
+  [data-theme="light"] { --border: #a3a3a3; --border-strong: #737373; }
   .dark,
-  [data-theme="dark"] { --border: oklch(60% 0 0); --border-emphasis: oklch(72% 0 0); }
+  [data-theme="dark"] { --border: #737373; --border-strong: #a3a3a3; }
 }

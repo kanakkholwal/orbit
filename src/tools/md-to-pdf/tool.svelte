@@ -59,7 +59,7 @@
       bind:value={store.markdown}
       spellcheck="false"
       placeholder="# Start typing Markdown…&#10;&#10;Paste or load a .md file, then convert to a clean PDF — entirely on your device."
-      class="min-h-105 w-full resize-y rounded-lg border border-border bg-card p-4 font-mono text-caption leading-relaxed text-foreground shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring/30"
+      class="min-h-105 w-full resize-y rounded-lg border border-border bg-card p-4 font-mono text-caption leading-relaxed text-foreground shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
     ></textarea>
   </div>
 

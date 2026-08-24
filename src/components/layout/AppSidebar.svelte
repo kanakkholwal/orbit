@@ -53,7 +53,7 @@
     <div class="flex w-full items-start justify-between gap-2">
       <a
         href="/"
-        class="group flex min-w-0 items-center gap-2 overflow-hidden rounded-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+        class="group flex min-w-0 items-center gap-2 overflow-hidden rounded-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={`${config.appName} home`}
       >
         <Logo size="md" textClassName="group-data-[state=collapsed]:hidden" />

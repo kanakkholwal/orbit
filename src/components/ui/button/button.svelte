@@ -11,26 +11,27 @@
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary-active",
+          "bg-action text-action-foreground shadow-subtle hover:opacity-90",
+        primary:
+          "bg-primary text-primary-foreground shadow-subtle hover:bg-primary-active",
         default_soft:
           "bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/10 dark:text-primary hover:dark:bg-primary/5 hover:dark:text-primary",
         brand:
           "bg-brand text-primary-foreground shadow-brand hover:brightness-[1.05] active:brightness-95",
         destructive:
-          "bg-destructive hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 text-white shadow-xs",
+          "bg-destructive text-destructive-foreground shadow-subtle hover:opacity-90",
         destructive_soft:
           "bg-destructive/10 text-destructive hover:bg-destructive/20",
         outline:
-          "border border-border bg-card text-foreground shadow-xs hover:border-border-strong hover:bg-accent",
+          "border border-border bg-card text-foreground shadow-subtle hover:bg-paper",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs",
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+          "bg-paper text-foreground hover:bg-border",
+        ghost: "text-foreground hover:bg-paper",
         link: "text-primary underline-offset-4 hover:underline",
-        dark: "bg-dark text-dark-foreground shadow-xs hover:opacity-90",
+        dark: "bg-action text-action-foreground shadow-subtle hover:opacity-90",
         // The primary action on .band-dark. Fixed values: the band does not
         // flip the theme, so bg-dark there would render near-black on near-black.
-        light: "bg-fixed-light text-fixed-dark shadow-xs hover:opacity-90",
+        light: "bg-fixed-light text-fixed-dark shadow-subtle hover:opacity-90",
         raw: "",
       },
       size: {

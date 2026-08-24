@@ -114,7 +114,7 @@
             <a
               href={`#${s.id}`}
               class={cn(
-                "group flex items-baseline justify-between border-b border-border py-2.5 text-body-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
+                "group flex items-baseline justify-between border-b border-border py-2.5 text-body text-muted-foreground transition-colors duration-300 hover:text-foreground"
               )}
             >
               <span class="relative">
@@ -197,7 +197,7 @@
                 <g.icon class="size-3.5" />
               </span>
               <h3 class="text-body font-medium text-foreground">{g.title}</h3>
-              <p class="text-body-sm leading-relaxed text-muted-foreground">
+              <p class="text-body leading-relaxed text-muted-foreground">
                 {g.body}
               </p>
             </li>
@@ -240,7 +240,7 @@
               <h3 class="text-xl font-medium tracking-tight text-foreground">
                 {step.title}
               </h3>
-              <p class="max-w-2xl text-body-sm leading-relaxed text-muted-foreground">
+              <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
                 {step.body}
               </p>
             </li>
@@ -248,7 +248,7 @@
         </ol>
 
         <div
-          class="mt-8 rounded-md border border-warning/30 bg-warning/5 p-5 text-body-sm leading-relaxed text-warning-foreground"
+          class="mt-8 rounded-md border border-warning/30 bg-warning/5 p-5 text-body leading-relaxed text-warning-foreground"
           in:fly={{ y: 8, duration: 420, delay: 320, easing: cubicOut }}
         >
           <p class="label-eyebrow text-warning">
@@ -300,7 +300,7 @@
                     <span class="text-body font-medium text-foreground">
                       {tool.title}
                     </span>
-                    <span class="text-body-sm text-muted-foreground">
+                    <span class="text-body text-muted-foreground">
                       {tool.description.split(". ")[0]}
                     </span>
                   </div>
@@ -352,7 +352,7 @@
                 {p.title}
               </h3>
               <p
-                class="col-span-1 max-w-xl text-body-sm leading-relaxed text-muted-foreground sm:col-span-3"
+                class="col-span-1 max-w-xl text-body leading-relaxed text-muted-foreground sm:col-span-3"
               >
                 {p.body}
               </p>
@@ -391,7 +391,7 @@
               <h3 class="text-body font-medium text-foreground">
                 {faq.question}
               </h3>
-              <p class="max-w-2xl text-body-sm leading-relaxed text-muted-foreground">
+              <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
                 {faq.answer}
               </p>
             </li>
@@ -408,7 +408,7 @@
             >
               Still stuck?
             </p>
-            <p class="mt-1 text-body-sm text-foreground">
+            <p class="mt-1 text-body text-foreground">
               Open an issue or peek at how it's built.
             </p>
           </div>

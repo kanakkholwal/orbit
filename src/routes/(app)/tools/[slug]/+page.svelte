@@ -113,7 +113,7 @@
               Dedicated viewer
             </span>
             <span class="text-muted-foreground">·</span>
-            <span class="text-body-sm text-muted-foreground">
+            <span class="text-body text-muted-foreground">
               Open PDFs directly from Orbit or your OS
             </span>
           </div>
@@ -152,7 +152,7 @@
             <p class="label-eyebrow text-destructive">
               Failed to load
             </p>
-            <p class="max-w-sm text-body-sm text-muted-foreground">
+            <p class="max-w-sm text-body text-muted-foreground">
               Something went wrong while loading
               <span class="font-medium text-foreground">{tool.title}</span>.
             </p>
@@ -300,7 +300,7 @@
             <p class="label-eyebrow text-muted-foreground">
               Loading tool
             </p>
-            <p class="text-body-sm text-muted-foreground">
+            <p class="text-body text-muted-foreground">
               Spinning up the {tool.title.toLowerCase()} workspace…
             </p>
           </div>
@@ -315,7 +315,7 @@
             <p class="label-eyebrow text-destructive">
               Failed to load
             </p>
-            <p class="max-w-sm text-body-sm text-muted-foreground">
+            <p class="max-w-sm text-body text-muted-foreground">
               Something went wrong while loading
               <span class="font-medium text-foreground">{tool.title}</span>.
               Refresh or pick another tool.
@@ -393,7 +393,7 @@
                 class="flex flex-col gap-2 rounded-lg border border-border bg-card p-5"
               >
                 <h3 class="text-body font-semibold text-foreground">{uc.title}</h3>
-                <p class="text-body-sm leading-relaxed text-muted-foreground">
+                <p class="text-body leading-relaxed text-muted-foreground">
                   {uc.body}
                 </p>
               </li>

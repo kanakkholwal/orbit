@@ -201,7 +201,7 @@
             >
               {#if isMobile}We detected{:else if detectedOS !== "Unknown"}We detected{:else}Auto-detect{/if}
             </span>
-            <span class="font-mono text-body-sm tabular-nums text-foreground">
+            <span class="font-mono text-body tabular-nums text-foreground">
               {#if isMobile}{pwa.platform === "ios" ? "iOS" : "Android"}{:else if detectedOS !== "Unknown"}{detectedOS}{:else}Unavailable{/if}
             </span>
             <span class="label-eyebrow text-muted-foreground">
@@ -289,7 +289,7 @@
               <h3 class="text-body font-medium tracking-tight text-foreground">
                 Orbit PDF Web App
               </h3>
-              <p class="text-body-sm text-muted-foreground">
+              <p class="text-body text-muted-foreground">
                 Install in any modern browser. Offline-first, works on mobile, tablet, and desktop.
               </p>
             </div>
@@ -354,7 +354,7 @@
                   href={platform.primary.url ?? undefined}
                   aria-disabled={!platform.primary.url}
                   class={cn(
-                    "group flex items-center justify-between rounded-sm border border-border bg-background px-4 py-3 text-body-sm font-medium text-foreground transition-colors",
+                    "group flex items-center justify-between rounded-sm border border-border bg-background px-4 py-3 text-body font-medium text-foreground transition-colors",
                     platform.primary.url
                       ? "hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
                       : "pointer-events-none opacity-50"
@@ -380,7 +380,7 @@
                     href={opt.url ?? undefined}
                     aria-disabled={!opt.url}
                     class={cn(
-                      "group flex items-center justify-between rounded-sm px-4 py-2.5 text-body-sm text-muted-foreground transition-colors",
+                      "group flex items-center justify-between rounded-sm px-4 py-2.5 text-body text-muted-foreground transition-colors",
                       opt.url
                         ? "hover:bg-muted/60 hover:text-foreground"
                         : "pointer-events-none opacity-50"
@@ -453,7 +453,7 @@
               >
                 {label}
               </dt>
-              <dd class="col-span-2 text-body-sm text-foreground sm:col-span-3">
+              <dd class="col-span-2 text-body text-foreground sm:col-span-3">
                 {value}
               </dd>
             </div>
@@ -463,7 +463,7 @@
         <div
           class="mt-10 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between"
         >
-          <p class="text-body-sm text-muted-foreground">
+          <p class="text-body text-muted-foreground">
             Prefer the web app? Every tool runs in the browser too.
           </p>
           <div class="flex flex-wrap gap-2">

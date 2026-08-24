@@ -39,7 +39,7 @@
 
       {#if open === i}
         <div id={`faq-panel-${i}`} transition:slide={{ duration }}>
-          <p class="max-w-2xl text-pretty pb-5 text-body-sm leading-relaxed text-muted-foreground">
+          <p class="max-w-2xl text-pretty pb-5 text-body leading-relaxed text-muted-foreground">
             {item.a}
           </p>
         </div>

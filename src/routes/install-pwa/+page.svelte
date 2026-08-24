@@ -204,7 +204,7 @@
             <span class="label-eyebrow text-muted-foreground">
               Detected
             </span>
-            <span class="font-mono text-body-sm tabular-nums text-foreground">
+            <span class="font-mono text-body tabular-nums text-foreground">
               {pwa.platform === "unknown" ? "—" : pwa.platform} · {pwa.browserKind}
             </span>
           </div>
@@ -260,7 +260,7 @@
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 class="text-body font-medium tracking-tight text-foreground">{step.title}</h3>
-              <p class="text-body-sm leading-relaxed text-muted-foreground">{step.body}</p>
+              <p class="text-body leading-relaxed text-muted-foreground">{step.body}</p>
               {#if i === 0 && activeGuide.id === "ios-safari"}
                 <span class="mt-1 inline-flex items-center gap-1.5 label-eyebrow text-primary">
                   <Share class="size-3" />
@@ -319,7 +319,7 @@
               </span>
               <div class="flex flex-col gap-1">
                 <h3 class="text-body font-medium tracking-tight text-foreground">{f.label}</h3>
-                <p class="text-body-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                <p class="text-body leading-relaxed text-muted-foreground">{f.body}</p>
               </div>
               <Check class="mt-auto size-4 text-primary/70" />
             </li>
@@ -327,7 +327,7 @@
         </ul>
 
         <div class="mt-10 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-body-sm text-muted-foreground">
+          <p class="text-body text-muted-foreground">
             Need a real desktop app instead? Tauri-built installers are signed and sit alongside this PWA.
           </p>
           <div class="flex flex-wrap gap-2">

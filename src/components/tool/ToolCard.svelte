@@ -38,7 +38,7 @@
 
   <div class="flex flex-1 flex-col gap-1.5">
     <h3 class="text-body font-semibold text-foreground">{tool.title}</h3>
-    <p class="line-clamp-2 text-pretty text-body-sm leading-relaxed text-muted-foreground">
+    <p class="line-clamp-2 text-pretty text-body leading-relaxed text-muted-foreground">
       {tool.description}
     </p>
   </div>

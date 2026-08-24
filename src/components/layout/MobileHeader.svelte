@@ -13,7 +13,7 @@
   <div class="flex h-12 items-center justify-between gap-2 px-3">
     <a
       href="/"
-      class="flex items-center gap-2 rounded-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+      class="flex items-center gap-2 rounded-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       aria-label={`${config.appName} home`}
     >
       <Logo size="md" />

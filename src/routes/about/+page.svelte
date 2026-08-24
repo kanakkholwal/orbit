@@ -100,7 +100,7 @@
             <h3 class="text-xl font-medium tracking-tight text-foreground">
               {p.title}
             </h3>
-            <p class="text-body-sm leading-relaxed text-muted-foreground">
+            <p class="text-body leading-relaxed text-muted-foreground">
               {p.body}
             </p>
           </li>
@@ -138,7 +138,7 @@
             >
               {row.label}
             </dt>
-            <dd class="col-span-2 text-body-sm text-foreground sm:col-span-3">
+            <dd class="col-span-2 text-body text-foreground sm:col-span-3">
               {row.value}
             </dd>
           </div>
@@ -156,7 +156,7 @@
         >
           Get involved
         </h2>
-        <p class="mt-2 text-body-sm leading-relaxed text-muted-foreground">
+        <p class="mt-2 text-body leading-relaxed text-muted-foreground">
           File issues, suggest tools, or open a pull request. The codebase is
           documented and the maintainers read every thread.
         </p>

@@ -75,7 +75,7 @@
   const faqs = [
     {
       q: "Are my files uploaded anywhere?",
-      a: "No. Every tool runs in your browser through WebAssembly. There is no upload endpoint, no relay server and no queue — the document is read into memory by the page and written back to your disk.",
+      a: "No. Every tool runs in your browser through WebAssembly. There is no upload endpoint, no relay server and no queue: the document is read into memory by the page and written back to your disk.",
     },
     {
       q: "Is Orbit really free?",
@@ -111,10 +111,10 @@
   <Navbar />
 
   <main class="flex-1">
-    <!-- Hero — unchanged -->
+    <!-- Hero: unchanged -->
     <section class="px-5 pb-16 pt-32 md:px-8 md:pb-20 md:pt-44">
       <div class="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 text-center">
-        <span class="pill label-eyebrow bg-card text-muted-foreground" in:fly={rise(6)}>
+        <span class="pill-outline label-eyebrow text-foreground" in:fly={rise(6)}>
           <span class="relative flex size-1.5" aria-hidden="true">
             <span
               class="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-60 motion-reduce:animate-none"
@@ -133,7 +133,7 @@
         </h1>
 
         <p
-          class="max-w-xl text-pretty text-body-lg leading-relaxed text-muted-foreground"
+          class="max-w-xl text-pretty text-body-xl leading-relaxed text-muted-foreground"
           in:fly={rise(10, 110)}
         >
           Edit, convert, sign, and merge documents with a quiet, fast interface
@@ -178,7 +178,7 @@
       </dl>
     </section>
 
-    <!-- 01 · Tools — a gap-px hairline grid, not a stack of floating cards -->
+    <!-- 01 · Tools: a gap-px hairline grid, not a stack of floating cards -->
     <Section id="tools">
       <Container width="wide">
         <ChapterRule index="01" label="Tools">
@@ -215,7 +215,7 @@
                     <span class="tabular-nums text-caption text-muted-foreground">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <span class="min-w-0 flex-1 truncate text-body-sm font-medium text-foreground">
+                    <span class="min-w-0 flex-1 truncate text-body font-medium text-foreground">
                       {tool.title}
                     </span>
                     <ArrowUpRight
@@ -230,7 +230,7 @@
       </Container>
     </Section>
 
-    <!-- 02 · Architecture — full-bleed tonal band, editorial split -->
+    <!-- 02 · Architecture: full-bleed tonal band, editorial split -->
     <Section band>
       <Container width="wide">
         <ChapterRule index="02" label="Architecture" />
@@ -261,7 +261,7 @@
                       <h3 class="text-body font-semibold text-foreground">
                         {pillar.title}
                       </h3>
-                      <p class="text-pretty text-body-sm leading-relaxed text-muted-foreground">
+                      <p class="text-pretty text-body leading-relaxed text-muted-foreground">
                         {pillar.body}
                       </p>
                     </div>
@@ -285,15 +285,13 @@
           {#each steps as step, i (step.n)}
             <li class="bg-card p-6">
               <Reveal delay={stagger(i, 70)}>
-                <span
-                  class="font-display text-heading-sm font-bold tabular-nums text-border-strong"
-                >
+                <span class="text-heading-sm font-medium tabular-nums text-border-strong">
                   {step.n}
                 </span>
                 <h3 class="mt-3 text-body font-semibold text-foreground">
                   {step.title}
                 </h3>
-                <p class="mt-1.5 text-pretty text-body-sm leading-relaxed text-muted-foreground">
+                <p class="mt-1.5 text-pretty text-body leading-relaxed text-muted-foreground">
                   {step.body}
                 </p>
               </Reveal>
@@ -303,7 +301,7 @@
       </Container>
     </Section>
 
-    <!-- 04 · FAQ — sticky title left, single-open accordion right -->
+    <!-- 04 · FAQ: sticky title left, single-open accordion right -->
     <Section band>
       <Container width="wide">
         <div class="grid gap-10 md:grid-cols-12">
@@ -313,7 +311,7 @@
               <h2 class="mt-3 text-balance text-heading text-foreground">
                 Everything people ask first.
               </h2>
-              <p class="mt-4 max-w-xs text-pretty text-body-sm leading-relaxed text-muted-foreground">
+              <p class="mt-4 max-w-xs text-pretty text-body leading-relaxed text-muted-foreground">
                 Still stuck? Write to
                 <a
                   href={`mailto:${config.supportEmail}`}
@@ -332,51 +330,47 @@
       </Container>
     </Section>
 
-    <!-- Closing CTA — the page's one dark band, bookending the hero -->
-    <section class="band-dark">
-      <Container width="wide" class="py-20 md:py-28">
+    <!-- Closing CTA: paper band, one filled dark action -->
+    <Section band spacing="loose">
+      <Container width="wide">
         <div
           class="flex flex-col items-start gap-8 lg:flex-row lg:items-end lg:justify-between"
         >
           <div class="max-w-xl">
-            <span class="label-eyebrow band-muted">Get started</span>
-            <h2 class="mt-3 text-balance text-heading md:text-heading-lg">
+            <span class="label-eyebrow text-muted-foreground">Get started</span>
+            <h2 class="mt-3 text-balance text-heading text-foreground md:text-heading-lg">
               Drop a file. Keep your privacy.
             </h2>
-            <p class="band-muted mt-4 text-pretty leading-relaxed">
-              No account. No upload. Open a tool, work, close the tab — there is
+            <p class="mt-4 text-pretty leading-relaxed text-muted-foreground">
+              No account. No upload. Open a tool, work, close the tab: there is
               nothing left behind.
             </p>
           </div>
 
           <div class="flex flex-wrap gap-2">
-            <Button href="/explore" variant="light">
+            <Button href="/explore">
               Start processing
               <ArrowRight />
             </Button>
-            <Button
-              href="/download"
-              variant="raw"
-              class="band-rule inline-flex h-10 items-center justify-center gap-2 rounded-md border px-5 text-body-sm font-medium text-current transition-colors duration-200 hover:bg-white/10"
-            >
+            <Button href="/download" variant="outline">
               Download app
-              <ArrowUpRight class="size-4" />
+              <ArrowUpRight />
             </Button>
           </div>
         </div>
 
-        <ul class="band-rule mt-14 grid grid-cols-1 gap-6 border-t pt-6 sm:grid-cols-3">
+        <ul class="mt-12 grid grid-cols-1 gap-6 border-t border-border pt-6 sm:grid-cols-3">
           {#each steps as step (step.n)}
             <li class="flex items-baseline gap-3">
-              <span class="band-muted font-display text-caption font-bold tabular-nums">
+              <span class="tabular-nums text-caption text-muted-foreground">
                 {step.n}
               </span>
-              <span class="text-body-sm">{step.title}</span>
+              <span class="text-body text-foreground">{step.title}</span>
             </li>
           {/each}
         </ul>
       </Container>
-    </section>
+    </Section>
   </main>
 
   <Footer />

@@ -20,9 +20,9 @@
   }: Props = $props();
 
   const pad = {
-    tight: "py-12 md:py-16",
-    default: "py-16 md:py-24",
-    loose: "py-24 md:py-32",
+    tight: "py-10 md:py-12",
+    default: "py-16",
+    loose: "py-16 md:py-24",
     none: "",
   } as const;
 </script>
@@ -31,7 +31,7 @@
   {id}
   class={cn(
     pad[spacing],
-    band && "border-y border-border bg-background-muted",
+    band && "border-y border-border bg-paper",
     className
   )}
 >

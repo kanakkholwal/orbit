@@ -96,7 +96,7 @@
       <h1 class="max-w-2xl text-balance text-heading-lg text-foreground">
         Every tool, in one place.
       </h1>
-      <p class="max-w-xl text-pretty text-body-lg leading-relaxed text-muted-foreground">
+      <p class="max-w-xl text-pretty text-body-xl leading-relaxed text-muted-foreground">
         {toolList.length} tools that run entirely on your device. Search, or browse
         by category.
       </p>
@@ -133,7 +133,7 @@
             <button
               type="button"
               onclick={() => handleSearch(suggestion)}
-              class="text-body-sm text-muted-foreground underline decoration-border-strong underline-offset-4 transition-colors duration-200 hover:text-foreground hover:decoration-current"
+              class="text-body text-muted-foreground underline decoration-border-strong underline-offset-4 transition-colors duration-200 hover:text-foreground hover:decoration-current"
             >
               {suggestion}
             </button>
@@ -163,7 +163,7 @@
           onclick={() => updateCategory(tab.id)}
           aria-pressed={activeCategory === tab.id}
           class={cn(
-            "pressable inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-body-sm font-medium transition-[background-color,color,box-shadow] duration-200",
+            "pressable inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-body font-medium transition-[background-color,color,box-shadow] duration-200",
             activeCategory === tab.id
               ? "bg-card text-foreground shadow-craft-sm"
               : "text-muted-foreground hover:text-foreground"
@@ -185,7 +185,7 @@
     >
       <Search class="size-5 text-muted-foreground" />
       <p class="text-body font-semibold text-foreground">No tools found</p>
-      <p class="max-w-sm text-pretty text-body-sm text-muted-foreground">
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
         Nothing matches “{searchQuery}”. Try another keyword, or clear the
         filters to see all {toolList.length} tools.
       </p>
@@ -195,7 +195,7 @@
     </div>
   {:else}
     {#if normalizedQuery}
-      <p class="text-body-sm text-muted-foreground" aria-live="polite">
+      <p class="text-body text-muted-foreground" aria-live="polite">
         {resultCount}
         {resultCount === 1 ? "tool" : "tools"} matching “{searchQuery}”
       </p>
