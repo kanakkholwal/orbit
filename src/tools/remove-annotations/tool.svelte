@@ -31,7 +31,7 @@
         <span class="font-mono tabular-nums">
           {formatBytes(store.state.originalSize)}
         </span>
-        <span class="text-muted-foreground/40">·</span>
+        <span class="text-muted-foreground">·</span>
         <span class="font-mono tabular-nums">
           {store.state.pageCount} pages
         </span>

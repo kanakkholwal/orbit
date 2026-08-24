@@ -99,9 +99,9 @@
           />
           <p class="text-xs leading-relaxed text-muted-foreground">
             Use commas for separate pages
-            <code class="rounded-xs bg-muted/60 px-1 font-mono text-[10px] text-foreground">1, 3, 5</code>
+            <code class="rounded-xs bg-muted/60 px-1 font-mono text-caption text-foreground">1, 3, 5</code>
             and hyphens for ranges
-            <code class="rounded-xs bg-muted/60 px-1 font-mono text-[10px] text-foreground">1-5</code>.
+            <code class="rounded-xs bg-muted/60 px-1 font-mono text-caption text-foreground">1-5</code>.
           </p>
         </div>
       </ToolPanel>
@@ -142,7 +142,7 @@
                 "group relative flex aspect-3/4 cursor-pointer flex-col overflow-hidden rounded-sm border transition-colors",
                 isSelected
                   ? "border-primary bg-primary/5 ring-2 ring-primary/30"
-                  : "border-border/60 bg-card hover:border-primary/40"
+                  : "border-border bg-card hover:border-primary/40"
               )}
             >
               <canvas class="h-full w-full object-contain"></canvas>
@@ -162,14 +162,14 @@
                     </span>
                   {:else}
                     <span
-                      class="inline-block size-4 rounded-xs border border-border/80 bg-background/60"
+                      class="inline-block size-4 rounded-xs border border-border bg-background/60"
                     ></span>
                   {/if}
                 </div>
               </div>
 
               <div
-                class="absolute inset-x-0 bottom-0 bg-card/90 py-1 text-center font-mono text-[10px] tabular-nums text-muted-foreground backdrop-blur-sm"
+                class="absolute inset-x-0 bottom-0 bg-card/90 py-1 text-center font-mono text-caption tabular-nums text-muted-foreground backdrop-blur-sm"
               >
                 {String(i + 1).padStart(2, "0")}
               </div>

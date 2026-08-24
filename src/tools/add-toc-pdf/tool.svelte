@@ -108,7 +108,7 @@
         </div>
 
         <label
-          class="flex cursor-pointer items-start gap-3 rounded-sm border border-border/60 bg-muted/20 px-4 py-3 text-sm transition-colors hover:bg-muted/30"
+          class="flex cursor-pointer items-start gap-3 rounded-sm border border-border bg-muted/20 px-4 py-3 text-sm transition-colors hover:bg-muted/30"
         >
           <input
             type="checkbox"
@@ -129,7 +129,7 @@
 
     <ToolPanel title="Note">
       <div
-        class="flex items-start gap-3 rounded-sm border border-border/60 bg-muted/20 px-4 py-3"
+        class="flex items-start gap-3 rounded-sm border border-border bg-muted/20 px-4 py-3"
       >
         <span
           class="inline-flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary"

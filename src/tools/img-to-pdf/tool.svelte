@@ -80,7 +80,7 @@
       >
         {#each store.files as item, i (item.id)}
           <div
-            class="drag-handle group relative aspect-3/4 cursor-move overflow-hidden rounded-sm border border-border/60 bg-card transition-colors hover:border-primary/40"
+            class="drag-handle group relative aspect-3/4 cursor-move overflow-hidden rounded-sm border border-border bg-card transition-colors hover:border-primary/40"
           >
             {#if item.previewUrl}
               <img
@@ -100,7 +100,7 @@
             {/if}
 
             <span
-              class="absolute left-2 top-2 inline-flex size-5 items-center justify-center rounded-xs bg-background/85 font-mono text-[10px] tabular-nums text-foreground shadow-sm backdrop-blur-sm"
+              class="absolute left-2 top-2 inline-flex size-5 items-center justify-center rounded-xs bg-background/85 font-mono text-caption tabular-nums text-foreground shadow-sm backdrop-blur-sm"
             >
               {String(i + 1).padStart(2, "0")}
             </span>
@@ -118,9 +118,9 @@
             </button>
 
             <div
-              class="absolute inset-x-0 bottom-0 border-t border-border/60 bg-card/90 px-2.5 py-1.5 backdrop-blur-sm"
+              class="absolute inset-x-0 bottom-0 border-t border-border bg-card/90 px-2.5 py-1.5 backdrop-blur-sm"
             >
-              <p class="truncate font-mono text-[10px] tabular-nums text-foreground">
+              <p class="truncate font-mono text-caption tabular-nums text-foreground">
                 {item.file.name}
               </p>
               <p

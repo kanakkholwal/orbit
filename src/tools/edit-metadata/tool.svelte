@@ -52,7 +52,7 @@
         <span class="font-mono tabular-nums">
           {formatBytes(store.file.originalSize)}
         </span>
-        <span class="text-muted-foreground/40">·</span>
+        <span class="text-muted-foreground">·</span>
         <span class="font-mono tabular-nums">
           {store.pageCount} pages
         </span>
@@ -61,7 +61,7 @@
 
     {#if store.isProcessing}
       <div
-        class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border/60 bg-muted/20 px-6 py-16"
+        class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border bg-muted/20 px-6 py-16"
       >
         <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
           <LoaderCircle class="size-4 animate-spin" />
@@ -153,7 +153,7 @@
 
           {#if store.customFields.length === 0}
             <div
-              class="rounded-sm border border-dashed border-border/60 bg-muted/20 px-4 py-6 text-center"
+              class="rounded-sm border border-dashed border-border bg-muted/20 px-4 py-6 text-center"
             >
               <p
                 class="label-eyebrow text-muted-foreground"

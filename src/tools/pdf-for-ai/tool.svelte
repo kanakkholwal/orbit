@@ -58,7 +58,7 @@
 
     <ToolPanel title="Output format">
       <div
-        class="flex items-start gap-3 rounded-sm border border-border/60 bg-muted/20 px-4 py-3"
+        class="flex items-start gap-3 rounded-sm border border-border bg-muted/20 px-4 py-3"
       >
         <span
           class="inline-flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary"
@@ -72,7 +72,7 @@
       </div>
 
       <ul
-        class="mt-4 flex flex-col divide-y divide-border/60 overflow-hidden rounded-sm border border-border/60 bg-muted/10"
+        class="mt-4 flex flex-col divide-y divide-border overflow-hidden rounded-sm border border-border bg-muted/10"
       >
         {#each [
           ["text", "Extracted text content per page."],
@@ -81,7 +81,7 @@
         ] as [key, body]}
           <li class="flex items-start gap-3 px-4 py-2.5 text-xs">
             <code
-              class="rounded-xs bg-card px-1.5 py-0.5 font-mono text-[10px] text-foreground"
+              class="rounded-xs bg-card px-1.5 py-0.5 font-mono text-caption text-foreground"
             >
               {key}
             </code>

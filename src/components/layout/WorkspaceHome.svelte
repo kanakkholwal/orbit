@@ -54,7 +54,7 @@
 
 <div class="flex w-full flex-col gap-10">
   <header
-    class="flex flex-col gap-5 border-b border-border/60 pb-8"
+    class="flex flex-col gap-5 border-b border-border pb-8"
     in:fly={{ y: 10, duration: 480, easing: cubicOut }}
   >
     <span class="label-eyebrow text-primary">Workspace</span>
@@ -76,10 +76,10 @@
           type="search"
           placeholder="Search {toolList.length} tools…"
           bind:value={searchQuery}
-          class="h-11 rounded-xl pl-9 pr-12 text-sm placeholder:text-muted-foreground/60"
+          class="h-11 rounded-xl pl-9 pr-12 text-sm placeholder:text-muted-foreground"
         />
         <kbd
-          class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-xs border border-border/60 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70 lg:inline-block"
+          class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-xs border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-caption uppercase tracking-wider text-muted-foreground lg:inline-block"
         >
           /
         </kbd>
@@ -93,7 +93,7 @@
       in:fly={{ y: 8, duration: 480, delay: 60, easing: cubicOut }}
     >
       <div class="flex items-center gap-2">
-        <History class="size-3.5 text-muted-foreground/70" />
+        <History class="size-3.5 text-muted-foreground" />
         <span class="label-eyebrow text-muted-foreground">Jump back in</span>
       </div>
       <ul
@@ -127,10 +127,10 @@
         <span>{tab.name}</span>
         <span
           class={cn(
-            "tabular-nums text-[10px]",
+            "tabular-nums text-caption",
             activeCategory === tab.id
               ? "text-primary/70"
-              : "text-muted-foreground/50"
+              : "text-muted-foreground"
           )}
         >
           {String(tab.count).padStart(2, "0")}
@@ -141,14 +141,14 @@
 
   <section in:fly={{ y: 10, duration: 480, delay: 140, easing: cubicOut }}>
     <div
-      class="mb-6 flex items-baseline justify-between border-b border-border/60 pb-3"
+      class="mb-6 flex items-baseline justify-between border-b border-border pb-3"
     >
       <span class="label-eyebrow text-muted-foreground">
         {activeCategory === "all"
           ? "All tools"
           : toolsCategories.find((c) => c.id === activeCategory)?.name}
       </span>
-      <span class="font-mono text-[11px] tabular-nums text-muted-foreground/50">
+      <span class="font-mono text-caption tabular-nums text-muted-foreground">
         {String(filteredTools.length).padStart(2, "0")} / {String(
           toolList.length
         ).padStart(2, "0")}
@@ -157,9 +157,9 @@
 
     {#if filteredTools.length === 0}
       <div
-        class="flex flex-col items-center gap-3 rounded-lg border border-border/60 bg-muted/20 px-6 py-16 text-center"
+        class="flex flex-col items-center gap-3 rounded-lg border border-border bg-muted/20 px-6 py-16 text-center"
       >
-        <Search class="size-5 text-muted-foreground/50" />
+        <Search class="size-5 text-muted-foreground" />
         <p class="label-eyebrow text-muted-foreground">No matches</p>
         <p class="max-w-xs text-sm text-muted-foreground">
           Nothing found for

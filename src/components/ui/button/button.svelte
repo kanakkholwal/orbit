@@ -7,11 +7,11 @@
   import { tv, type VariantProps } from "tailwind-variants";
 
   export const buttonVariants = tv({
-    base: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all duration-200 ease-snappy active:brightness-90 active:duration-100 outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    base: "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium outline-none transition-[background-color,border-color,color,box-shadow,transform] duration-[160ms] ease-snappy active:scale-[0.98] active:duration-100 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background aria-invalid:border-destructive aria-invalid:ring-destructive disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 motion-reduce:active:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary-active",
         default_soft:
           "bg-primary/10 text-primary hover:bg-primary/20 dark:bg-primary/10 dark:text-primary hover:dark:bg-primary/5 hover:dark:text-primary",
         brand:
@@ -21,13 +21,16 @@
         destructive_soft:
           "bg-destructive/10 text-destructive hover:bg-destructive/20",
         outline:
-          "bg-input/30 hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 border shadow-xs",
+          "border border-border bg-card text-foreground shadow-xs hover:border-border-strong hover:bg-accent",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-xs",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
-        dark: "bg-dark text-dark-foreground hover:bg-dark/80 shadow-xs",
+        dark: "bg-dark text-dark-foreground shadow-xs hover:opacity-90",
+        // The primary action on .band-dark. Fixed values: the band does not
+        // flip the theme, so bg-dark there would render near-black on near-black.
+        light: "bg-fixed-light text-fixed-dark shadow-xs hover:opacity-90",
         raw: "",
       },
       size: {

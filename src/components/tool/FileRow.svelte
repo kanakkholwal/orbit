@@ -27,7 +27,7 @@
 
 <div
   class={cn(
-    "group flex items-center gap-3 rounded-sm border border-border/60 bg-card px-3 py-2.5 transition-colors hover:bg-muted/40",
+    "group flex items-center gap-3 rounded-sm border border-border bg-card px-3 py-2.5 transition-colors hover:bg-muted/40",
     className
   )}
 >

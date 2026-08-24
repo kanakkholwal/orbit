@@ -101,7 +101,7 @@
     <aside class="md:w-56 md:shrink-0">
       <div class="sticky top-32 flex flex-col gap-6">
         <div
-          class="flex items-baseline justify-between border-b border-border/60 pb-3"
+          class="flex items-baseline justify-between border-b border-border pb-3"
         >
           <span
             class="label-eyebrow text-muted-foreground"
@@ -114,7 +114,7 @@
             <a
               href={`#${s.id}`}
               class={cn(
-                "group flex items-baseline justify-between border-b border-border/40 py-2.5 text-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
+                "group flex items-baseline justify-between border-b border-border py-2.5 text-body-sm text-muted-foreground transition-colors duration-300 hover:text-foreground"
               )}
             >
               <span class="relative">
@@ -125,7 +125,7 @@
                 ></span>
               </span>
               <span
-                class="font-mono text-[10px] tabular-nums text-muted-foreground/50"
+                class="font-mono text-caption tabular-nums text-muted-foreground"
               >
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -137,7 +137,7 @@
 
     <main class="flex-1">
       <header
-        class="flex flex-col gap-5 border-b border-border/60 pb-12"
+        class="flex flex-col gap-5 border-b border-border pb-12"
         in:fly={{ y: 12, duration: 500, easing: cubicOut }}
       >
         <span
@@ -146,12 +146,12 @@
           Documentation
         </span>
         <h1
-          class="text-display-md text-foreground sm:text-display-lg"
+          class="text-heading text-foreground sm:text-heading-lg"
         >
           Build with confidence,
           <span class="text-primary">work in private.</span>
         </h1>
-        <p class="max-w-2xl text-base leading-relaxed text-muted-foreground">
+        <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
           Everything you need to install, integrate, and trust {config.appName}
           — written for engineers, designed for everyone.
         </p>
@@ -162,7 +162,7 @@
         class="mt-20 scroll-mt-32"
       >
         <div
-          class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
+          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
         >
           <h2
             class="label-eyebrow text-muted-foreground"
@@ -170,19 +170,19 @@
             Getting started
           </h2>
           <span
-            class="font-mono text-[11px] tabular-nums text-muted-foreground/50"
+            class="font-mono text-caption tabular-nums text-muted-foreground"
           >
             01
           </span>
         </div>
 
-        <p class="max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
+        <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
           {config.appName} is a privacy-first PDF toolkit. There is nothing to sign
           up for and nothing to install for the web tools — open a tool, drop a
           file, get a result.
         </p>
 
-        <ul class="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border/60 bg-border/60 sm:grid-cols-2">
+        <ul class="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border/60 sm:grid-cols-2">
           {#each guarantees as g, i}
             <li
               class="flex flex-col gap-2 bg-card p-6"
@@ -196,8 +196,8 @@
               <span class="inline-flex size-7 items-center justify-center rounded-sm bg-primary/10 text-primary">
                 <g.icon class="size-3.5" />
               </span>
-              <h3 class="text-base font-medium text-foreground">{g.title}</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground">
+              <h3 class="text-body font-medium text-foreground">{g.title}</h3>
+              <p class="text-body-sm leading-relaxed text-muted-foreground">
                 {g.body}
               </p>
             </li>
@@ -207,7 +207,7 @@
 
       <section id="installation" class="mt-24 scroll-mt-32">
         <div
-          class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
+          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
         >
           <h2
             class="label-eyebrow text-muted-foreground"
@@ -215,7 +215,7 @@
             Installation
           </h2>
           <span
-            class="font-mono text-[11px] tabular-nums text-muted-foreground/50"
+            class="font-mono text-caption tabular-nums text-muted-foreground"
           >
             02
           </span>
@@ -224,7 +224,7 @@
         <ol class="flex flex-col gap-8">
           {#each installSteps as step, i (step.label)}
             <li
-              class="flex flex-col gap-2 border-l border-border/60 pl-6"
+              class="flex flex-col gap-2 border-l border-border pl-6"
               in:fly={{
                 y: 12,
                 duration: 480,
@@ -240,7 +240,7 @@
               <h3 class="text-xl font-medium tracking-tight text-foreground">
                 {step.title}
               </h3>
-              <p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              <p class="max-w-2xl text-body-sm leading-relaxed text-muted-foreground">
                 {step.body}
               </p>
             </li>
@@ -248,13 +248,13 @@
         </ol>
 
         <div
-          class="mt-8 rounded-md border border-warning/30 bg-warning/5 p-5 text-sm leading-relaxed text-warning-foreground"
+          class="mt-8 rounded-md border border-warning/30 bg-warning/5 p-5 text-body-sm leading-relaxed text-warning-foreground"
           in:fly={{ y: 8, duration: 420, delay: 320, easing: cubicOut }}
         >
           <p class="label-eyebrow text-warning">
             Note
           </p>
-          <p class="mt-2 text-foreground/90">
+          <p class="mt-2 text-foreground">
             Desktop installers are signed with self-issued certificates. SmartScreen
             and Gatekeeper warnings on first launch are expected for independent
             open-source projects — the source is fully auditable.
@@ -264,7 +264,7 @@
 
       <section id="tools" class="mt-24 scroll-mt-32">
         <div
-          class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
+          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
         >
           <h2
             class="label-eyebrow text-muted-foreground"
@@ -272,7 +272,7 @@
             Tools
           </h2>
           <span
-            class="font-mono text-[11px] tabular-nums text-muted-foreground/50"
+            class="font-mono text-caption tabular-nums text-muted-foreground"
           >
             03
           </span>
@@ -290,23 +290,23 @@
             >
               <a
                 href={`/tools/${tool.slug}`}
-                class="group flex items-start justify-between gap-6 border-b border-border/50 py-5 transition-colors duration-300 hover:bg-muted/30"
+                class="group flex items-start justify-between gap-6 border-b border-border py-5 transition-colors duration-300 hover:bg-muted/30"
               >
                 <div class="flex items-start gap-4">
                   <tool.icon
                     class="mt-0.5 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
                   />
                   <div class="flex flex-col gap-1">
-                    <span class="text-base font-medium text-foreground">
+                    <span class="text-body font-medium text-foreground">
                       {tool.title}
                     </span>
-                    <span class="text-sm text-muted-foreground">
+                    <span class="text-body-sm text-muted-foreground">
                       {tool.description.split(". ")[0]}
                     </span>
                   </div>
                 </div>
                 <ArrowUpRight
-                  class="size-4 shrink-0 text-muted-foreground/50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+                  class="size-4 shrink-0 text-muted-foreground transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
                 />
               </a>
             </li>
@@ -316,7 +316,7 @@
 
       <section id="privacy" class="mt-24 scroll-mt-32">
         <div
-          class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
+          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
         >
           <h2
             class="label-eyebrow text-muted-foreground"
@@ -324,13 +324,13 @@
             Privacy
           </h2>
           <span
-            class="font-mono text-[11px] tabular-nums text-muted-foreground/50"
+            class="font-mono text-caption tabular-nums text-muted-foreground"
           >
             04
           </span>
         </div>
 
-        <p class="max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
+        <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
           The privacy model is structural, not promised. The architecture
           itself prevents the kinds of data flows that make uploads risky.
         </p>
@@ -338,7 +338,7 @@
         <ul class="mt-10 flex flex-col gap-6">
           {#each privacyPoints as p, i}
             <li
-              class="grid grid-cols-1 gap-2 border-b border-border/40 pb-6 sm:grid-cols-4"
+              class="grid grid-cols-1 gap-2 border-b border-border pb-6 sm:grid-cols-4"
               in:fly={{
                 y: 10,
                 duration: 460,
@@ -347,12 +347,12 @@
               }}
             >
               <h3
-                class="col-span-1 text-base font-medium tracking-tight text-foreground"
+                class="col-span-1 text-body font-medium tracking-tight text-foreground"
               >
                 {p.title}
               </h3>
               <p
-                class="col-span-1 max-w-xl text-sm leading-relaxed text-muted-foreground sm:col-span-3"
+                class="col-span-1 max-w-xl text-body-sm leading-relaxed text-muted-foreground sm:col-span-3"
               >
                 {p.body}
               </p>
@@ -363,7 +363,7 @@
 
       <section id="faq" class="mt-24 scroll-mt-32">
         <div
-          class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4"
+          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
         >
           <h2
             class="label-eyebrow text-muted-foreground"
@@ -371,7 +371,7 @@
             FAQ
           </h2>
           <span
-            class="font-mono text-[11px] tabular-nums text-muted-foreground/50"
+            class="font-mono text-caption tabular-nums text-muted-foreground"
           >
             05
           </span>
@@ -380,7 +380,7 @@
         <ul class="flex flex-col">
           {#each faqs as faq, i (faq.question)}
             <li
-              class="flex flex-col gap-2 border-b border-border/50 py-6"
+              class="flex flex-col gap-2 border-b border-border py-6"
               in:fly={{
                 y: 8,
                 duration: 420,
@@ -388,10 +388,10 @@
                 easing: cubicOut,
               }}
             >
-              <h3 class="text-base font-medium text-foreground">
+              <h3 class="text-body font-medium text-foreground">
                 {faq.question}
               </h3>
-              <p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              <p class="max-w-2xl text-body-sm leading-relaxed text-muted-foreground">
                 {faq.answer}
               </p>
             </li>
@@ -399,7 +399,7 @@
         </ul>
 
         <div
-          class="mt-12 flex flex-col gap-3 rounded-md border border-border/60 bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between"
+          class="mt-12 flex flex-col gap-3 rounded-md border border-border bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between"
           in:fly={{ y: 12, duration: 500, delay: 280, easing: cubicOut }}
         >
           <div>
@@ -408,7 +408,7 @@
             >
               Still stuck?
             </p>
-            <p class="mt-1 text-sm text-foreground/90">
+            <p class="mt-1 text-body-sm text-foreground">
               Open an issue or peek at how it's built.
             </p>
           </div>

@@ -1,8 +1,7 @@
 @import "tailwindcss";
 @import 'tw-animate-css';
 
-/* Orbit design tokens — Apple-style: SF/system sans, neutral system-gray
-   surfaces, soft continuous-corner radii, teal as the single accent. */
+
 
 @custom-variant dark (&:where(.dark, [data-theme="dark"], .dark *, [data-theme="dark"] *));
 
@@ -10,46 +9,54 @@
 [data-theme="light"] {
   --brand-hue: 178; /* teal brand */
 
-  /* Surfaces — Apple system light (cool neutral gray → white cards) */
-  --background-inset: #ececef;    /* sidebar / window well */
-  --background: #f5f5f7;          /* canvas: Apple system gray */
-  --background-muted: #ececef;    /* muted band */
-  --card: #ffffff;                /* surface-card: pure white */
-  --popover: #ffffff;
-  --muted: #ececef;
-  --secondary: #e3e3e8;           /* secondary pills / badges */
-  --accent: #ececef;              /* neutral hover wash */
+  /* Surfaces */
+  --background: #f5f5f7;             
+  --card: oklch(100% 0 0);          
+  --paper: oklch(94% 0 0);           
+  --background-muted: var(--paper);
+  --background-inset: var(--paper);
+  --popover: oklch(100% 0 0);
+  --muted: var(--paper);
+  --secondary: oklch(94% 0 0);
+  --accent: var(--paper);
 
-  /* Ink — Apple label greys */
-  --foreground: #1d1d1f;          /* label */
-  --foreground-muted: #6e6e73;    /* secondary label */
-  --card-foreground: #1d1d1f;
-  --popover-foreground: #1d1d1f;
-  --muted-foreground: #6e6e73;
-  --secondary-foreground: #1d1d1f;
-  --accent-foreground: #1d1d1f;
+  /* Ink */
+  --foreground: oklch(20.5% 0 0);
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+  --secondary-foreground: var(--foreground);
+  --accent-foreground: var(--foreground);
 
-  /* Brand — TEAL (kept). Used scarcely, per spec. */
-  --primary: oklch(0.565 0.105 var(--brand-hue));
-  --primary-foreground: #ffffff;
-  --primary-active: oklch(0.50 0.10 var(--brand-hue)); /* press state */
+  --muted-foreground: oklch(54% 0 0);
+  --foreground-muted: var(--muted-foreground);
 
-  /* Hairlines & focus */
-  --border: #e3e3e8;              /* Apple separator hairline */
-  --input: #c7c7cc;               /* control outline */
-  --ring: oklch(0.565 0.105 var(--brand-hue) / 0.55);
+   --primary: oklch(0.52 0.105 var(--brand-hue));
+  --primary-foreground: oklch(100% 0 0);
+  --primary-active: oklch(0.46 0.105 var(--brand-hue));
 
-  /* Semantic — Apple system colours (tuned to read as text and as fills) */
-  --destructive: #e5484d;
-  --destructive-foreground: #ffffff;
-  --success: #1a9e5a;
-  --success-foreground: #ffffff;
-  --warning: #c88a00;
-  --warning-foreground: #ffffff;
-  --info: #0a84ff;
-  --info-foreground: #ffffff;
+  /* Hairlines & focus — full strength, always. Never diluted with an opacity. */
+  --border: oklch(89.5% 0 0);          
+  --border-emphasis: oklch(84.5% 0 0); 
+  --border-strong: var(--border-emphasis);
+  --input: var(--border-emphasis);
+  --ring: var(--primary);              /* a focus ring needs 3:1; no alpha */
 
-  /* AI-timeline pastels (signature; reserved for product timeline UI) */
+  /* Semantic — each value doubles as ink on a neutral surface and as a fill
+     under white text, so both jobs clear 4.5:1 from one token. */
+  --destructive: #c0242a;
+  --destructive-foreground: oklch(100% 0 0);
+  --success: #0a7d47;
+  --success-foreground: oklch(100% 0 0);
+  --warning: #8a5c00;
+  --warning-foreground: oklch(100% 0 0);
+  --info: #0060c9;
+  --info-foreground: oklch(100% 0 0);
+
+  /* Feature-tag hues. One per tag, never two on one component, always duotone. */
+  --tag-tangerine: oklch(64.6% 0.1943 41.1);
+  --tag-lavender: oklch(54.1% 0.2466 293);
+  --tag-green: oklch(62.7% 0.1699 149.2);
+
   --timeline-thinking: #dfa88f;
   --timeline-grep: #9fc9a2;
   --timeline-read: #9fbbe0;
@@ -57,15 +64,15 @@
   --timeline-done: #c08532;
 
   /* Inverse surface (button variant="dark") */
-  --dark: #1d1d1f;
-  --dark-foreground: #f5f5f7;
+  --dark: oklch(20.5% 0 0);
+  --dark-foreground: oklch(98% 0 0);
 
   /* Fixed (don't invert with theme) */
-  --fixed-light: #ffffff;
-  --fixed-dark: #1d1d1f;
+  --fixed-light: oklch(100% 0 0);
+  --fixed-dark: oklch(20.5% 0 0);
 
-  /* Sidebar (maps onto the inset gray) */
-  --sidebar: #ececef;
+  /* Sidebar */
+  --sidebar: var(--paper);
   --sidebar-background: var(--sidebar);
   --sidebar-foreground: var(--foreground);
   --sidebar-primary: var(--primary);
@@ -75,81 +82,92 @@
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
 
-  /* Layout & texture (flat — hairline depth only) */
-  --radius: 0.625rem;             /* 10px = CTA/input md */
+  --radius: 0.75rem;
   --max-app-width: clamp(1280px, 80vw, 1920px);
-  --noise-bg: linear-gradient(#f5f5f7, #f5f5f7);
 
-  /* Elevation — soft, neutral, Apple ambient. Cards rely on hairlines; deeper
-     shadow is reserved for floating overlays (menus, sheets, dialogs). */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  /* Elevation. Borders define containers; these are the three allowed lifts. */
+  --shadow-craft-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-craft-floating: 0 0 0 4px oklch(20.5% 0 0 / 0.06);
+  --shadow-xs: var(--shadow-craft-sm);
+  --shadow-sm: var(--shadow-craft-sm);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10);
   --shadow-xl: 0 20px 48px rgba(0, 0, 0, 0.12);
   --shadow-2xl: 0 32px 64px rgba(0, 0, 0, 0.16);
+
+  --grid-line: oklch(20.5% 0 0 / 0.035);
 }
 
 .dark,
 [data-theme="dark"] {
-  /* Apple system dark: layered near-blacks (base → elevated card). */
-  --background-inset: #000000;
   --background: #1c1c1e;
-  --background-muted: #2c2c2e;
-  --card: #2c2c2e;
-  --popover: #2c2c2e;
-  --muted: #2c2c2e;
-  --secondary: #3a3a3c;
-  --accent: #2c2c2e;
+  --card: #1c1c1e;                 
+  --paper: oklch(26% 0 0);
+  --background-muted: var(--paper);
+  --background-inset: oklch(18% 0 0);
+  --popover: oklch(26% 0 0);
+  --muted: var(--paper);
+  --secondary: oklch(30% 0 0);
+  --accent: var(--paper);
 
-  --foreground: #f5f5f7;
-  --foreground-muted: #98989d;
-  --card-foreground: #f5f5f7;
-  --popover-foreground: #f5f5f7;
-  --muted-foreground: #98989d;
-  --secondary-foreground: #f5f5f7;
-  --accent-foreground: #f5f5f7;
+  --foreground: oklch(96% 0 0);
+  --card-foreground: var(--foreground);
+  --popover-foreground: var(--foreground);
+  --secondary-foreground: var(--foreground);
+  --accent-foreground: var(--foreground);
+  --muted-foreground: oklch(68% 0 0);
+  --foreground-muted: var(--muted-foreground);
 
   --primary: oklch(0.72 0.1 var(--brand-hue));
-  --primary-foreground: #0f1615;
+  --primary-foreground: oklch(18% 0.02 var(--brand-hue));
   --primary-active: oklch(0.64 0.095 var(--brand-hue));
 
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.12);
-  --ring: oklch(0.68 0.12 var(--brand-hue) / 0.55);
+  --border: oklch(37.5% 0 0);
+  --border-emphasis: oklch(49.5% 0 0);
+  --border-strong: var(--border-emphasis);
+  --input: var(--border-emphasis);
+  --ring: var(--primary);
 
-  --destructive: #ff453a;
-  --destructive-foreground: #ffffff;
+  /* Fills carry near-black ink in dark; the same value reads as text at 5:1+. */
+  --destructive: #ff6b61;
+  --destructive-foreground: #1a0706;
   --success: #30d158;
   --success-foreground: #07120d;
   --warning: #ff9f0a;
   --warning-foreground: #1a1407;
-  --info: #0a84ff;
-  --info-foreground: #ffffff;
+  --info: #409cff;
+  --info-foreground: #04203f;
 
-  --dark: #f5f5f7;
+  /* Lifted: the light-mode tag values sit at 54-64% L and go to mud on a dark canvas. */
+  --tag-tangerine: oklch(75% 0.145 41.1);
+  --tag-lavender: oklch(74% 0.145 293);
+  --tag-green: oklch(74% 0.135 149.2);
+
+  --dark: oklch(96% 0 0);
   --dark-foreground: #1c1c1e;
 
-  --sidebar: #000000;
+  --sidebar: oklch(18% 0 0);
 
-  --noise-bg: linear-gradient(#1c1c1e, #1c1c1e);
-
-  --shadow-xs: 0 1px 1px rgba(0, 0, 0, 0.22);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.28);
+  --shadow-craft-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-craft-floating: 0 0 0 4px oklch(100% 0 0 / 0.08);
+  --shadow-xs: var(--shadow-craft-sm);
+  --shadow-sm: var(--shadow-craft-sm);
   --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.32);
   --shadow-lg: 0 8px 22px rgba(0, 0, 0, 0.38);
   --shadow-xl: 0 14px 34px rgba(0, 0, 0, 0.44);
   --shadow-2xl: 0 22px 52px rgba(0, 0, 0, 0.5);
+
+  --grid-line: oklch(100% 0 0 / 0.04);
 }
 
 @theme inline {
-  /* ---- Color utilities ---- */
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  --color-background-inset: var(--background-inset);
   --color-background: var(--background);
+  --color-background-inset: var(--background-inset);
   --color-background-muted: var(--background-muted);
+  --color-paper: var(--paper);
   --color-foreground: var(--foreground);
   --color-foreground-muted: var(--foreground-muted);
 
@@ -177,6 +195,10 @@
   --color-info: var(--info);
   --color-info-foreground: var(--info-foreground);
 
+  --color-tag-tangerine: var(--tag-tangerine);
+  --color-tag-lavender: var(--tag-lavender);
+  --color-tag-green: var(--tag-green);
+
   --color-timeline-thinking: var(--timeline-thinking);
   --color-timeline-grep: var(--timeline-grep);
   --color-timeline-read: var(--timeline-read);
@@ -189,6 +211,8 @@
   --color-fixed-dark: var(--fixed-dark);
 
   --color-border: var(--border);
+  --color-border-low: var(--border);
+  --color-border-strong: var(--border-emphasis);
   --color-input: var(--input);
   --color-ring: var(--ring);
 
@@ -201,79 +225,109 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* ---- Radius scale (DESIGN.md: 4 / 6 / 8 / 12 / 16 px) ---- */
-  --radius-xs: 0.375rem;  /* 6px  inline tags */
-  --radius-sm: 0.5rem;    /* 8px  compact rows */
-  --radius-md: 0.625rem;  /* 10px CTA, inputs */
-  --radius-lg: 0.875rem;  /* 14px cards, panes */
-  --radius-xl: 1.125rem;  /* 18px larger cards */
-  --radius-2xl: 1.375rem; /* 22px */
-  --radius-3xl: 1.75rem;  /* 28px */
+  /* ---- Shape: five radii, nothing else ---- */
+  --radius-xs: 0.375rem;   /* 6px  inputs */
+  --radius-sm: 0.375rem;   /* 6px  inputs */
+  --radius-md: 0.75rem;    /* 12px buttons, cards */
+  --radius-lg: 0.75rem;    /* 12px buttons, cards */
+  --radius-xl: 1rem;       /* 16px feature surfaces, mockups */
+  --radius-2xl: 1rem;
+  --radius-3xl: 1rem;
   --radius-full: 9999px;
 
   /* ---- Layout / spacing ---- */
   --spacing-app: var(--max-app-width);
-  --spacing-app-content: min(1600px, 96vw); /* the one in-shell content column */
-  --spacing-section: 5rem; /* 80px section rhythm */
+  --spacing-app-content: min(1600px, 96vw);
+  --spacing-section: 5rem;
 
   /* ---- Typography ---- */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Google Sans Variable', system-ui, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-mono: 'SF Mono', 'Source Code Pro Variable', ui-monospace, 'JetBrains Mono', 'Menlo', monospace;
+  /* One face. Google Sans carries display and body; hierarchy comes from
+     weight, size and tracking rather than from a second family. */
+  --font-sans: 'Google Sans Variable', 'Google Sans', system-ui, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --font-heading: var(--font-sans);
+  --font-mono: 'Source Code Pro Variable', ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
 
-  /* Display ramp — Apple large-title voice: semibold with negative tracking */
-  --text-display-mega: 4.5rem;
-  --text-display-mega--line-height: 1.1;
-  --text-display-mega--letter-spacing: -0.03em;
-  --text-display-mega--font-weight: 600;
+  /* Ten steps. Line height rides along, so no call site needs a leading- utility. */
+  --text-caption: 0.6875rem;   /* 11px */
+  --text-caption--line-height: 1.5;
 
-  --text-display-lg: 2.25rem;
-  --text-display-lg--line-height: 1.2;
-  --text-display-lg--letter-spacing: -0.02em;
-  --text-display-lg--font-weight: 600;
+  --text-body-sm: 0.875rem;    /* 14px */
+  --text-body-sm--line-height: 1.43;
 
-  --text-display-md: 1.625rem;
-  --text-display-md--line-height: 1.25;
-  --text-display-md--letter-spacing: -0.0125em;
-  --text-display-md--font-weight: 600;
+  --text-body: 1rem;           /* 16px — the canonical body size */
+  --text-body--line-height: 1.5;
 
-  --text-display-sm: 1.375rem;
-  --text-display-sm--line-height: 1.3;
-  --text-display-sm--letter-spacing: -0.006em;
-  --text-display-sm--font-weight: 600;
+  --text-body-lg: 1.125rem;    /* 18px */
+  --text-body-lg--line-height: 1.56;
 
-  --text-title-md: 1.125rem;
+  --text-subheading: 1.25rem;  /* 20px */
+  --text-subheading--line-height: 1.4;
+
+  --text-heading-sm: 1.5rem;   /* 24px */
+  --text-heading-sm--line-height: 1.33;
+
+  --text-heading: 1.875rem;    /* 30px */
+  --text-heading--line-height: 1.25;
+
+  --text-heading-lg: 2.25rem;  /* 36px — section h2 */
+  --text-heading-lg--line-height: 1.11;
+
+  --text-display: 3rem;        /* 48px — hero h1 only */
+  --text-display--line-height: 1.04;
+
+  --text-display-lg: 3.75rem;  /* 60px */
+  --text-display-lg--line-height: 1.02;
+
+  /* Legacy Orbit names, mapped onto the ten steps so no call site is off-scale. */
+  --text-micro: var(--text-caption);
+  --text-micro--line-height: 1.5;
+  --text-title-sm: var(--text-body);
+  --text-title-sm--line-height: 1.5;
+  --text-title-sm--font-weight: 600;
+  --text-title-md: var(--text-subheading);
   --text-title-md--line-height: 1.4;
   --text-title-md--font-weight: 600;
+  --text-display-sm: var(--text-heading-sm);
+  --text-display-sm--line-height: 1.33;
+  --text-display-md: var(--text-heading);
+  --text-display-md--line-height: 1.25;
+  --text-display-xl: var(--text-display);
+  --text-display-xl--line-height: 1.04;
+  --text-display-mega: var(--text-display);
+  --text-display-mega--line-height: 1.04;
 
-  --text-title-sm: 1rem;
-  --text-title-sm--line-height: 1.4;
-  --text-title-sm--font-weight: 600;
+  /* ---- Motion: one ease ---- */
+  --ease-craft: cubic-bezier(0.625, 0.05, 0, 1);
+  --ease-snappy: var(--ease-craft);
+  --ease-emphasized: var(--ease-craft);
+  --ease-out-quart: var(--ease-craft);
+  --ease-gentle: var(--ease-craft);
 
-  --text-caption: 0.8125rem;
-  --text-caption--line-height: 1.4;
-
-  /* ---- Motion easings ---- */
-  --ease-snappy: cubic-bezier(0.32, 0.72, 0, 1);
-  --ease-emphasized: cubic-bezier(0.625, 0.05, 0, 1);
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-gentle: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-hover: 200ms;      /* hover / state colour change */
+  --duration-crossfade: 360ms;  /* skin swaps, clip changes */
+  --duration-overlay-in: 200ms;
+  --duration-overlay-out: 150ms;
+  --duration-sheet: 300ms;
 
   /* ---- Elevation ---- */
+  --shadow-craft-sm: var(--shadow-craft-sm);
+  --shadow-craft-floating: var(--shadow-craft-floating);
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
-  --shadow-button: 0 1px 1px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --shadow-button: var(--shadow-craft-sm);
 
   /* ---- Keyframe animations ---- */
-  --animate-accordion-down: accordion-down 0.2s var(--ease-gentle);
-  --animate-accordion-up: accordion-up 0.2s var(--ease-gentle);
-  --animate-accordion-fade-in: accordion-fade-in 0.2s var(--ease-gentle);
-  --animate-accordion-fade-out: accordion-fade-out 0.2s var(--ease-gentle);
-  --animate-collapsible-down: collapsible-down 0.2s var(--ease-gentle);
-  --animate-collapsible-up: collapsible-up 0.2s var(--ease-gentle);
+  --animate-accordion-down: accordion-down 0.2s var(--ease-craft);
+  --animate-accordion-up: accordion-up 0.2s var(--ease-craft);
+  --animate-accordion-fade-in: accordion-fade-in 0.2s var(--ease-craft);
+  --animate-accordion-fade-out: accordion-fade-out 0.2s var(--ease-craft);
+  --animate-collapsible-down: collapsible-down 0.2s var(--ease-craft);
+  --animate-collapsible-up: collapsible-up 0.2s var(--ease-craft);
 
   @keyframes accordion-down {
     0% { height: 0; }
@@ -318,10 +372,23 @@
     @apply border-border outline-ring/50;
   }
 
-  /* Apple large-title voice: headings semibold with tight negative tracking. */
-  h1, h2, h3 {
+  /* Tailwind's preflight resets headings to font-weight: inherit, so a display
+     heading with no weight class would render at body weight. */
+  h1, h2 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.008em;
+  }
+
+  h4, h5, h6 {
     font-weight: 600;
-    letter-spacing: -0.021em;
+    letter-spacing: -0.011em;
   }
 
   html {
@@ -383,41 +450,130 @@
 
 /* ---- Utilities ---- */
 
+@utility font-display {
+  font-family: var(--font-display);
+}
+
 @utility bg-brand {
   background: linear-gradient(var(--primary), var(--primary-active));
 }
 
 @utility shadow-brand {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 8px 24px -8px oklch(0.565 0.105 var(--brand-hue) / 0.30);
+  box-shadow: var(--shadow-craft-sm);
 }
 
-/* The one small label. Quiet SF caption — no monospace, no all-caps. Colour is
-   set by the caller (text-muted-foreground / text-primary). */
+/* The one small label. Sentence case, never uppercase, never letter-spaced. */
 @utility label-eyebrow {
-  font-size: 0.75rem; /* 12px caption */
-  line-height: 1.35;
+  font-size: var(--text-caption);
+  line-height: 1.5;
   font-weight: 600;
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
 }
+
+/* Duotone glyph: full-strength stroke over a translucent fill of the same hue.
+   No tinted tile behind the icon. */
+@utility glyph-duotone {
+  & path { fill: currentColor; fill-opacity: 0.2; }
+}
+
+/* ---- Surfaces ---- */
+
+@utility surface {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+@utility surface-lg {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+}
+
+/* Nested tonal panel. Paper, no border — a border inside a border is two edges. */
+@utility surface-alt {
+  background-color: var(--paper);
+  border-radius: var(--radius-xl);
+}
+
+@utility surface-raised {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-craft-sm);
+}
+
+@utility mockup-frame {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-craft-floating);
+}
+
+@utility pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  padding: 0.25rem 0.625rem;
+}
+
+/* Press feedback for anything pressable that isn't a Button. 2%, never smaller. */
+@utility pressable {
+  transition: transform var(--duration-hover) var(--ease-craft);
+  &:active {
+    transform: scale(0.98);
+    transition-duration: 100ms;
+  }
+}
+
+/* ---- The always-dark band ----
+   A surface that flips colour mid-page must carry literal values: an @theme
+   alias resolves against :root, so a token overridden on a nested element can
+   never reach an aliased utility. */
+.band-dark {
+  --band-ink: oklch(96% 0 0);
+  --band-muted: oklch(68% 0 0);
+  --band-line: oklch(37.5% 0 0);
+  background-color: #1c1c1e;
+  color: var(--band-ink);
+}
+
+.band-muted { color: var(--band-muted); }
+.band-rule { border-color: var(--band-line); }   /* hairline as a border */
+.band-gap { background-color: var(--band-line); } /* hairline as a gap-px background */
+.band-surface { background-color: #1c1c1e; }
 
 body {
+  font-family: var(--font-sans);
   font-weight: 400;
-  font-size: 16px;
+  font-size: var(--text-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   position: relative;
-  font-family: var(--font-sans, system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif);
-  @apply bg-(image:--noise-bg) text-foreground selection:bg-primary/75 selection:text-fixed-light antialiased transition-colors duration-300;
+  @apply bg-background text-foreground selection:bg-primary/75 selection:text-fixed-light antialiased;
 }
 
-/* Hairline grid background utility (editorial, very subtle) */
-.bg-grid-pattern {
-  background-size: 40px 40px;
+/* The blueprint signature: one faint 56px line grid, radially faded, applied
+   once. Not a gradient wash, not an aurora, not a photo. */
+.bg-blueprint {
   background-image:
-    linear-gradient(to right, color-mix(in oklch, var(--foreground) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklch, var(--foreground) 4%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);
+}
+
+.bg-grid-pattern {
+  background-size: 56px 56px;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
 }
 
@@ -447,4 +603,35 @@ body {
 
 li:has([class]) {
   list-style: none;
+}
+
+/* ---- Accessibility guards ----
+   Svelte `transition:` directives run on WAAPI and bypass this block; gate
+   those in JS with prefersReducedMotion() from $lib/motion. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .surface-chrome {
+    background-color: var(--card);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root,
+  [data-theme="light"] { --border: oklch(60% 0 0); --border-emphasis: oklch(45% 0 0); }
+  .dark,
+  [data-theme="dark"] { --border: oklch(60% 0 0); --border-emphasis: oklch(72% 0 0); }
 }

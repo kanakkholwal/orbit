@@ -85,7 +85,7 @@
 
   <main class="mx-auto w-full max-w-3xl px-5 pb-24 pt-32 md:px-8 md:pt-40">
     <header
-      class="flex flex-col gap-4 border-b border-border/60 pb-10"
+      class="flex flex-col gap-4 border-b border-border pb-10"
       in:fly={{ y: 12, duration: 500, easing: cubicOut }}
     >
       <span
@@ -94,12 +94,12 @@
         Changelog
       </span>
       <h1
-        class="text-display-md text-foreground sm:text-display-lg"
+        class="text-heading text-foreground sm:text-heading-lg"
       >
         What's new in
         <span class="text-primary">Orbit</span>
       </h1>
-      <p class="max-w-xl text-base leading-relaxed text-muted-foreground">
+      <p class="max-w-xl text-body leading-relaxed text-muted-foreground">
         A running log of meaningful changes — new tools, performance work, and
         fixes — written by the people who shipped them.
       </p>
@@ -108,7 +108,7 @@
     <ol class="mt-12 flex flex-col gap-14">
       {#each entries as entry, i (entry.version)}
         <li
-          class="relative flex flex-col gap-5 border-l border-border/60 pl-6 sm:pl-8"
+          class="relative flex flex-col gap-5 border-l border-border pl-6 sm:pl-8"
           in:fly={{
             y: 16,
             duration: 520,
@@ -123,14 +123,14 @@
 
           <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span
-              class="font-mono text-xs font-medium tracking-wider text-primary"
+              class="font-mono text-caption font-medium tracking-wider text-primary"
             >
               v{entry.version}
             </span>
-            <span class="text-xs text-muted-foreground/70">·</span>
+            <span class="text-caption text-muted-foreground">·</span>
             <time
               datetime={entry.date}
-              class="font-mono text-xs text-muted-foreground/70"
+              class="font-mono text-caption text-muted-foreground"
             >
               {new Date(entry.date).toLocaleDateString(undefined, {
                 year: "numeric",
@@ -146,13 +146,13 @@
             {entry.title}
           </h2>
 
-          <p class="text-[15px] leading-relaxed text-muted-foreground">
+          <p class="text-body leading-relaxed text-muted-foreground">
             {entry.summary}
           </p>
 
           <ul class="mt-1 flex flex-col gap-2.5">
             {#each entry.items as item}
-              <li class="flex items-start gap-3 text-sm">
+              <li class="flex items-start gap-3 text-body-sm">
                 <span
                   class={cn(
                     "mt-0.5 inline-flex shrink-0 items-center rounded-sm px-2 py-0.5 label-eyebrow",
@@ -161,7 +161,7 @@
                 >
                   {item.tag}
                 </span>
-                <span class="text-foreground/90">{item.text}</span>
+                <span class="text-foreground">{item.text}</span>
               </li>
             {/each}
           </ul>
@@ -170,13 +170,13 @@
     </ol>
 
     <div
-      class="mt-20 rounded-md border border-border/60 bg-muted/40 p-6"
+      class="mt-20 rounded-md border border-border bg-muted/40 p-6"
       in:fade={{ duration: 400, delay: 360 }}
     >
       <p class="label-eyebrow text-muted-foreground">
         Subscribe
       </p>
-      <p class="mt-2 text-sm text-foreground/90">
+      <p class="mt-2 text-body-sm text-foreground">
         Follow development on
         <a
           href="https://github.com/kanakkholwal/orbit/releases"

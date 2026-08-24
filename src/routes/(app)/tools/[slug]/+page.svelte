@@ -94,7 +94,7 @@
   {#if isPdfViewer}
     <div class="flex h-full min-h-0 w-full flex-col bg-background" in:fade={{ duration: 180 }}>
       <nav
-        class="flex items-center justify-between gap-3 border-b border-border/60 px-4 py-3 md:px-5"
+        class="flex items-center justify-between gap-3 border-b border-border px-4 py-3 md:px-5"
         aria-label="PDF viewer toolbar"
       >
         <a
@@ -112,8 +112,8 @@
             <span class="label-eyebrow text-muted-foreground">
               Dedicated viewer
             </span>
-            <span class="text-muted-foreground/40">·</span>
-            <span class="text-sm text-muted-foreground">
+            <span class="text-muted-foreground">·</span>
+            <span class="text-body-sm text-muted-foreground">
               Open PDFs directly from Orbit or your OS
             </span>
           </div>
@@ -152,7 +152,7 @@
             <p class="label-eyebrow text-destructive">
               Failed to load
             </p>
-            <p class="max-w-sm text-sm text-muted-foreground">
+            <p class="max-w-sm text-body-sm text-muted-foreground">
               Something went wrong while loading
               <span class="font-medium text-foreground">{tool.title}</span>.
             </p>
@@ -186,7 +186,7 @@
     <div class="min-h-screen w-full relative" in:fade={{ duration: 220 }}>
     <div class="flex flex-col gap-12 px-3 pb-[max(env(safe-area-inset-bottom),2rem)] pt-2 sm:px-5 sm:pt-4">
       <nav
-        class="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-5"
+        class="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-5"
         aria-label="Tool toolbar"
         in:fly={{ y: 8, duration: 380, easing: cubicOut }}
       >
@@ -247,11 +247,11 @@
           <span class="label-eyebrow text-primary">
             Tool
           </span>
-          <span class="text-muted-foreground/40">·</span>
+          <span class="text-muted-foreground">·</span>
           <span class="label-eyebrow text-muted-foreground">
             {categoryName}
           </span>
-          <span class="text-muted-foreground/40">·</span>
+          <span class="text-muted-foreground">·</span>
           <span class="inline-flex items-center gap-1.5 label-eyebrow text-muted-foreground">
             <ShieldCheck class="size-3 text-primary" />
             Client-side
@@ -269,10 +269,10 @@
           </div>
 
           <div class="flex flex-col gap-3">
-            <h1 class="text-display-md text-foreground sm:text-display-lg">
+            <h1 class="text-heading text-foreground sm:text-heading-lg">
               {tool.title}
             </h1>
-            <p class="max-w-2xl text-base leading-relaxed text-muted-foreground">
+            <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
               {tool.description}
             </p>
           </div>
@@ -292,7 +292,7 @@
           <div
             in:fade={{ duration: 200 }}
             out:fade={{ duration: 200 }}
-            class="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-md border border-dashed border-border/60 bg-muted/20"
+            class="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-md border border-dashed border-border bg-muted/20"
           >
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
               <LoaderCircle class="size-4 animate-spin" />
@@ -300,7 +300,7 @@
             <p class="label-eyebrow text-muted-foreground">
               Loading tool
             </p>
-            <p class="text-sm text-muted-foreground">
+            <p class="text-body-sm text-muted-foreground">
               Spinning up the {tool.title.toLowerCase()} workspace…
             </p>
           </div>
@@ -315,7 +315,7 @@
             <p class="label-eyebrow text-destructive">
               Failed to load
             </p>
-            <p class="max-w-sm text-sm text-muted-foreground">
+            <p class="max-w-sm text-body-sm text-muted-foreground">
               Something went wrong while loading
               <span class="font-medium text-foreground">{tool.title}</span>.
               Refresh or pick another tool.
@@ -350,16 +350,16 @@
         <!-- Intro -->
         <section class="flex flex-col gap-4">
           <span class="label-eyebrow text-primary">About {tool.title}</span>
-          <p class="max-w-3xl text-lg leading-relaxed text-foreground/90">
+          <p class="max-w-3xl text-body-lg leading-relaxed text-foreground">
             {toolContent.intro}
           </p>
         </section>
 
         <!-- How it works -->
         <section class="flex flex-col gap-6">
-          <header class="flex flex-col gap-2 border-b border-border/60 pb-4">
+          <header class="flex flex-col gap-2 border-b border-border pb-4">
             <span class="label-eyebrow text-muted-foreground">How it works</span>
-            <h2 class="text-display-md text-foreground">
+            <h2 class="text-heading text-foreground">
               {tool.title} in a few steps
             </h2>
           </header>
@@ -367,11 +367,11 @@
             {#each toolContent.howItWorks as step, i (i)}
               <li class="flex gap-4">
                 <span
-                  class="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 font-mono text-[12px] tabular-nums text-primary"
+                  class="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/10 font-mono text-caption tabular-nums text-primary"
                 >
                   {i + 1}
                 </span>
-                <p class="max-w-2xl text-base leading-relaxed text-muted-foreground">
+                <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
                   {step}
                 </p>
               </li>
@@ -381,9 +381,9 @@
 
         <!-- Use cases -->
         <section class="flex flex-col gap-6">
-          <header class="flex flex-col gap-2 border-b border-border/60 pb-4">
+          <header class="flex flex-col gap-2 border-b border-border pb-4">
             <span class="label-eyebrow text-muted-foreground">Use cases</span>
-            <h2 class="text-display-md text-foreground">
+            <h2 class="text-heading text-foreground">
               What {tool.title} is good for
             </h2>
           </header>
@@ -392,8 +392,8 @@
               <li
                 class="flex flex-col gap-2 rounded-lg border border-border bg-card p-5"
               >
-                <h3 class="text-title-sm text-foreground">{uc.title}</h3>
-                <p class="text-sm leading-relaxed text-muted-foreground">
+                <h3 class="text-body font-semibold text-foreground">{uc.title}</h3>
+                <p class="text-body-sm leading-relaxed text-muted-foreground">
                   {uc.body}
                 </p>
               </li>
@@ -403,17 +403,17 @@
 
         <!-- FAQ -->
         <section class="flex flex-col gap-6">
-          <header class="flex flex-col gap-2 border-b border-border/60 pb-4">
+          <header class="flex flex-col gap-2 border-b border-border pb-4">
             <span class="label-eyebrow text-muted-foreground">FAQ</span>
-            <h2 class="text-display-md text-foreground">
+            <h2 class="text-heading text-foreground">
               Frequently asked questions
             </h2>
           </header>
-          <dl class="flex flex-col divide-y divide-border/60">
+          <dl class="flex flex-col divide-y divide-border">
             {#each toolContent.faqs as faq (faq.q)}
               <div class="flex flex-col gap-2 py-5 first:pt-0">
-                <dt class="text-title-sm text-foreground">{faq.q}</dt>
-                <dd class="max-w-3xl text-base leading-relaxed text-muted-foreground">
+                <dt class="text-body font-semibold text-foreground">{faq.q}</dt>
+                <dd class="max-w-3xl text-body leading-relaxed text-muted-foreground">
                   {faq.a}
                 </dd>
               </div>
@@ -423,11 +423,11 @@
       </article>
 
       <section class="flex flex-col gap-6">
-        <div class="flex items-baseline justify-between gap-3 border-b border-border/60 pb-3">
+        <div class="flex items-baseline justify-between gap-3 border-b border-border pb-3">
           <span class="label-eyebrow text-muted-foreground">
             Recommended
           </span>
-          <span class="font-mono text-[11px] tabular-nums text-muted-foreground/50">
+          <span class="font-mono text-caption tabular-nums text-muted-foreground">
             {String(data.recommended.length).padStart(2, "0")}
           </span>
         </div>
@@ -448,12 +448,12 @@
       </section>
 
       <div
-        class="mt-2 flex flex-col items-center gap-2 border-t border-border/60 pt-8 text-center"
+        class="mt-2 flex flex-col items-center gap-2 border-t border-border pt-8 text-center"
       >
         <p class="label-eyebrow text-muted-foreground">
           Privacy by architecture
         </p>
-        <p class="text-xs text-muted-foreground">
+        <p class="text-caption text-muted-foreground">
           This tool runs entirely in your {appState.isTauri ? 'device' : 'browser'}. Nothing is sent to a server.
         </p>
       </div>

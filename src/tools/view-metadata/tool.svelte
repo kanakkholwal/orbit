@@ -40,7 +40,7 @@
 
     {#if store.isProcessing}
       <div
-        class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border/60 bg-muted/20 px-6 py-16"
+        class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border bg-muted/20 px-6 py-16"
       >
         <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
           <LoaderCircle class="size-4 animate-spin" />
@@ -74,10 +74,10 @@
         <div class="flex flex-col gap-5">
           {#if store.infoDictionary}
             <section
-              class="overflow-hidden rounded-sm border border-border/60 bg-card"
+              class="overflow-hidden rounded-sm border border-border bg-card"
             >
               <header
-                class="flex items-center gap-2 border-b border-border/60 bg-muted/20 px-4 py-2.5"
+                class="flex items-center gap-2 border-b border-border bg-muted/20 px-4 py-2.5"
               >
                 <FileSearch class="size-3.5 text-primary" />
                 <h3
@@ -86,7 +86,7 @@
                   {store.infoDictionary.title}
                 </h3>
               </header>
-              <ul class="divide-y divide-border/60 text-sm">
+              <ul class="divide-y divide-border text-sm">
                 {#if store.infoDictionary.items.length === 0}
                   <li class="px-4 py-3 text-center text-xs italic text-muted-foreground">
                     No info dictionary data found.
@@ -113,10 +113,10 @@
 
           {#if store.xmpMetadata}
             <section
-              class="overflow-hidden rounded-sm border border-border/60 bg-card"
+              class="overflow-hidden rounded-sm border border-border bg-card"
             >
               <header
-                class="flex items-center gap-2 border-b border-border/60 bg-muted/20 px-4 py-2.5"
+                class="flex items-center gap-2 border-b border-border bg-muted/20 px-4 py-2.5"
               >
                 <FileSearch class="size-3.5 text-primary" />
                 <h3
@@ -125,7 +125,7 @@
                   {store.xmpMetadata.title}
                 </h3>
               </header>
-              <ul class="divide-y divide-border/60 text-sm">
+              <ul class="divide-y divide-border text-sm">
                 {#if store.xmpMetadata.items.length === 0}
                   {#if store.xmpMetadata.rawString}
                     <li class="p-4">
@@ -133,7 +133,7 @@
                         Could not parse XML — raw XMP
                       </p>
                       <pre
-                        class="break-all whitespace-pre-wrap rounded-sm bg-muted/40 p-3 font-mono text-[10px] text-muted-foreground">{store.xmpMetadata.rawString}</pre>
+                        class="break-all whitespace-pre-wrap rounded-sm bg-muted/40 p-3 font-mono text-caption text-muted-foreground">{store.xmpMetadata.rawString}</pre>
                     </li>
                   {:else}
                     <li class="px-4 py-3 text-center text-xs italic text-muted-foreground">
@@ -169,10 +169,10 @@
 
           {#if store.formFields && store.formFields.items.length > 0}
             <section
-              class="overflow-hidden rounded-sm border border-border/60 bg-card"
+              class="overflow-hidden rounded-sm border border-border bg-card"
             >
               <header
-                class="flex items-center gap-2 border-b border-border/60 bg-muted/20 px-4 py-2.5"
+                class="flex items-center gap-2 border-b border-border bg-muted/20 px-4 py-2.5"
               >
                 <FileSearch class="size-3.5 text-primary" />
                 <h3
@@ -181,7 +181,7 @@
                   {store.formFields.title}
                 </h3>
               </header>
-              <ul class="divide-y divide-border/60 text-sm">
+              <ul class="divide-y divide-border text-sm">
                 {#each store.formFields.items as item}
                   <li
                     class="grid grid-cols-1 gap-1 px-4 py-3 transition-colors hover:bg-muted/20 sm:grid-cols-3"

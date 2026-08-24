@@ -87,7 +87,7 @@
             class="flex items-center gap-2 label-eyebrow text-muted-foreground"
           >
             Owner password
-            <span class="font-mono text-[9px] tracking-[0.16em] text-muted-foreground/60">
+            <span class="label-eyebrow text-muted-foreground">
               · Optional
             </span>
           </Label>
@@ -121,7 +121,7 @@
 
     <ToolPanel title="Notes">
       <ul
-        class="flex flex-col divide-y divide-border/60 overflow-hidden rounded-sm border border-border/60 bg-muted/20"
+        class="flex flex-col divide-y divide-border overflow-hidden rounded-sm border border-border bg-muted/20"
       >
         {#each [
           ["Algorithm", "256-bit AES (highest security)"],

@@ -101,7 +101,7 @@
         ? localStore.files.length
         : localStore.allPages.length}
     >
-      <div class="rounded-md border border-border/60 bg-muted/10 p-3 sm:p-4">
+      <div class="rounded-md border border-border bg-muted/10 p-3 sm:p-4">
         {#if localStore.mode === "file"}
           <div class="flex flex-col gap-2" use:sortableList={fileListSort}>
             {#each localStore.files as file (file.id)}
@@ -113,7 +113,7 @@
           </div>
 
           <div
-            class="mt-6 flex items-start gap-3 rounded-sm border border-border/60 bg-card px-4 py-3"
+            class="mt-6 flex items-start gap-3 rounded-sm border border-border bg-card px-4 py-3"
           >
             <span
               class="inline-flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary"
@@ -128,7 +128,7 @@
                 <li>Drag the handle on the left to reorder files.</li>
                 <li>
                   Type ranges like
-                  <code class="rounded-xs bg-muted/60 px-1 font-mono text-[10px] text-foreground">1-3, 5</code>
+                  <code class="rounded-xs bg-muted/60 px-1 font-mono text-caption text-foreground">1-3, 5</code>
                   to merge specific pages only.
                 </li>
                 <li>Leave the range blank to include the entire file.</li>

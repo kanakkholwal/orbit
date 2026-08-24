@@ -31,7 +31,7 @@
       resetLabel="Clear"
     >
       {#snippet actions()}
-        <div class="flex items-center gap-1 rounded-sm border border-border/60 bg-card px-1 py-0.5">
+        <div class="flex items-center gap-1 rounded-sm border border-border bg-card px-1 py-0.5">
           <button
             type="button"
             disabled={store.state.currentPage <= 1}
@@ -42,7 +42,7 @@
             <ChevronLeft class="size-3.5" />
           </button>
           <span
-            class="w-16 text-center font-mono text-[11px] tabular-nums text-foreground"
+            class="w-16 text-center font-mono text-caption tabular-nums text-foreground"
           >
             {String(store.state.currentPage).padStart(2, "0")} / {String(store.state.pageCount).padStart(2, "0")}
           </span>
@@ -83,7 +83,7 @@
     </ToolPanel>
 
     <ToolPanel title="Canvas">
-      <div class="rounded-sm border border-border/60 bg-muted/20 p-3 sm:p-4">
+      <div class="rounded-sm border border-border bg-muted/20 p-3 sm:p-4">
         <CropperCanvas {store} />
       </div>
     </ToolPanel>

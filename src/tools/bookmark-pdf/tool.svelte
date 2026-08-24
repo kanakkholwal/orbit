@@ -81,9 +81,9 @@
     class="flex h-full flex-col gap-3 overflow-hidden lg:flex-row"
   >
     <aside
-      class="flex w-full flex-col overflow-hidden rounded-md border border-border/60 bg-card lg:w-96"
+      class="flex w-full flex-col overflow-hidden rounded-md border border-border bg-card lg:w-96"
     >
-      <header class="flex items-center justify-between gap-2 border-b border-border/60 px-3 py-2.5">
+      <header class="flex items-center justify-between gap-2 border-b border-border px-3 py-2.5">
         <div class="flex items-center gap-2">
           <span
             class="inline-flex size-7 items-center justify-center rounded-sm bg-primary/10 text-primary"
@@ -120,7 +120,7 @@
         </div>
       </header>
 
-      <div class="flex items-center gap-2 border-b border-border/60 bg-muted/10 px-3 py-2.5">
+      <div class="flex items-center gap-2 border-b border-border bg-muted/10 px-3 py-2.5">
         <Input
           bind:value={modalTitle}
           placeholder="New bookmark…"
@@ -162,7 +162,7 @@
         {/if}
       </div>
 
-      <footer class="border-t border-border/60 p-3">
+      <footer class="border-t border-border p-3">
         <Button
           class="w-full rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
           onclick={() => store.save()}
@@ -173,7 +173,7 @@
       </footer>
     </aside>
 
-    <div class="relative min-w-0 flex-1 overflow-hidden rounded-md border border-border/60 bg-card">
+    <div class="relative min-w-0 flex-1 overflow-hidden rounded-md border border-border bg-card">
       <Viewer {store} />
     </div>
   </div>

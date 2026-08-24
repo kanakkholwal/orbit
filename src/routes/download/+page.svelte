@@ -160,7 +160,7 @@
           >
             Download
           </span>
-          <span class="text-muted-foreground/40">·</span>
+          <span class="text-muted-foreground">·</span>
           <span
             class="label-eyebrow text-muted-foreground"
           >
@@ -169,7 +169,7 @@
         </div>
 
         <h1
-          class="text-balance text-display-lg text-foreground md:text-display-mega"
+          class="text-balance text-heading-lg text-foreground md:text-display"
           in:fly={{ y: 16, duration: 600, delay: 120, easing: cubicOut }}
         >
           Get {config.appName}
@@ -179,7 +179,7 @@
         </h1>
 
         <p
-          class="max-w-xl text-lg leading-relaxed text-muted-foreground"
+          class="max-w-xl text-body-lg leading-relaxed text-muted-foreground"
           in:fly={{ y: 12, duration: 520, delay: 220, easing: cubicOut }}
         >
           {#if isMobile}
@@ -192,7 +192,7 @@
         </p>
 
         <div
-          class="flex w-full flex-col items-center gap-5 border-t border-border/60 pt-10"
+          class="flex w-full flex-col items-center gap-5 border-t border-border pt-10"
           in:fly={{ y: 12, duration: 520, delay: 320, easing: cubicOut }}
         >
           <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
@@ -201,7 +201,7 @@
             >
               {#if isMobile}We detected{:else if detectedOS !== "Unknown"}We detected{:else}Auto-detect{/if}
             </span>
-            <span class="font-mono text-sm tabular-nums text-foreground">
+            <span class="font-mono text-body-sm tabular-nums text-foreground">
               {#if isMobile}{pwa.platform === "ios" ? "iOS" : "Android"}{:else if detectedOS !== "Unknown"}{detectedOS}{:else}Unavailable{/if}
             </span>
             <span class="label-eyebrow text-muted-foreground">
@@ -263,7 +263,7 @@
     <section id="all-platforms" class="scroll-mt-32 px-5 py-24 md:px-8">
       <div class="mx-auto w-full max-w-5xl">
         <div
-          class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4"
+          class="mb-10 flex items-baseline justify-between border-b border-border pb-4"
         >
           <div class="flex flex-col gap-2">
             <span
@@ -272,7 +272,7 @@
               {isMobile ? "Web app" : "Platforms"}
             </span>
             <h2
-              class="text-display-md text-foreground sm:text-display-lg"
+              class="text-heading text-foreground sm:text-heading-lg"
             >
               {isMobile ? "Install on this device." : "Pick the right build for your machine."}
             </h2>
@@ -286,10 +286,10 @@
               <Smartphone class="size-4" />
             </span>
             <div class="flex flex-col gap-1">
-              <h3 class="text-base font-medium tracking-tight text-foreground">
+              <h3 class="text-body font-medium tracking-tight text-foreground">
                 Orbit PDF Web App
               </h3>
-              <p class="text-sm text-muted-foreground">
+              <p class="text-body-sm text-muted-foreground">
                 Install in any modern browser. Offline-first, works on mobile, tablet, and desktop.
               </p>
             </div>
@@ -344,7 +344,7 @@
                 <h3 class="text-xl font-medium tracking-tight text-foreground">
                   {platform.name}
                 </h3>
-                <p class="text-xs text-muted-foreground">
+                <p class="text-caption text-muted-foreground">
                   {platform.requirement}
                 </p>
               </div>
@@ -354,7 +354,7 @@
                   href={platform.primary.url ?? undefined}
                   aria-disabled={!platform.primary.url}
                   class={cn(
-                    "group flex items-center justify-between rounded-sm border border-border/60 bg-background px-4 py-3 text-sm font-medium text-foreground transition-colors",
+                    "group flex items-center justify-between rounded-sm border border-border bg-background px-4 py-3 text-body-sm font-medium text-foreground transition-colors",
                     platform.primary.url
                       ? "hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
                       : "pointer-events-none opacity-50"
@@ -371,7 +371,7 @@
                     {/if}
                   </span>
                   <ArrowDownToLine
-                    class="size-4 shrink-0 text-muted-foreground/60 transition-all duration-300 group-hover:translate-y-0.5 group-hover:text-primary"
+                    class="size-4 shrink-0 text-muted-foreground transition-all duration-300 group-hover:translate-y-0.5 group-hover:text-primary"
                   />
                 </a>
 
@@ -380,7 +380,7 @@
                     href={opt.url ?? undefined}
                     aria-disabled={!opt.url}
                     class={cn(
-                      "group flex items-center justify-between rounded-sm px-4 py-2.5 text-sm text-muted-foreground transition-colors",
+                      "group flex items-center justify-between rounded-sm px-4 py-2.5 text-body-sm text-muted-foreground transition-colors",
                       opt.url
                         ? "hover:bg-muted/60 hover:text-foreground"
                         : "pointer-events-none opacity-50"
@@ -414,7 +414,7 @@
     <section class="px-5 pb-32 md:px-8">
       <div class="mx-auto w-full max-w-5xl">
         <div
-          class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4"
+          class="mb-10 flex items-baseline justify-between border-b border-border pb-4"
         >
           <div class="flex flex-col gap-2">
             <span
@@ -423,14 +423,14 @@
               Notes
             </span>
             <h2
-              class="text-display-md text-foreground sm:text-display-lg"
+              class="text-heading text-foreground sm:text-heading-lg"
             >
               About these builds.
             </h2>
           </div>
         </div>
 
-        <dl class="divide-y divide-border/60 rounded-md border border-border/60 bg-muted/20">
+        <dl class="divide-y divide-border rounded-md border border-border bg-muted/20">
           {#each [
             ["Version", data.version],
             ["License", "GPL-3.0-only · open source"],
@@ -453,7 +453,7 @@
               >
                 {label}
               </dt>
-              <dd class="col-span-2 text-sm text-foreground sm:col-span-3">
+              <dd class="col-span-2 text-body-sm text-foreground sm:col-span-3">
                 {value}
               </dd>
             </div>
@@ -461,9 +461,9 @@
         </dl>
 
         <div
-          class="mt-10 flex flex-col gap-3 border-t border-border/60 pt-8 sm:flex-row sm:items-center sm:justify-between"
+          class="mt-10 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between"
         >
-          <p class="text-sm text-muted-foreground">
+          <p class="text-body-sm text-muted-foreground">
             Prefer the web app? Every tool runs in the browser too.
           </p>
           <div class="flex flex-wrap gap-2">

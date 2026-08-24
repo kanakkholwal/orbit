@@ -52,7 +52,7 @@
 
   <main class="mx-auto w-full max-w-4xl px-5 pb-24 pt-32 md:px-8 md:pt-40">
     <header
-      class="flex flex-col gap-5 border-b border-border/60 pb-12"
+      class="flex flex-col gap-5 border-b border-border pb-12"
       in:fly={{ y: 12, duration: 500, easing: cubicOut }}
     >
       <span
@@ -61,12 +61,12 @@
         About
       </span>
       <h1
-        class="max-w-2xl text-display-md text-foreground sm:text-display-lg"
+        class="max-w-2xl text-heading text-foreground sm:text-heading-lg"
       >
         A PDF toolkit that respects your
         <span class="text-primary">files and your time.</span>
       </h1>
-      <p class="max-w-2xl text-base leading-relaxed text-muted-foreground">
+      <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
         {config.appName} started as a small frustration with the state of PDF tools
         on the web — slow, ad-laden, and quick to ask for an upload. We rebuilt the
         category from first principles around three commitments: keep work local,
@@ -75,13 +75,13 @@
     </header>
 
     <section class="mt-16">
-      <div class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4">
+      <div class="mb-8 flex items-baseline justify-between border-b border-border pb-4">
         <h2
           class="label-eyebrow text-muted-foreground"
         >
           Principles
         </h2>
-        <span class="font-mono text-[11px] tabular-nums text-muted-foreground/50">
+        <span class="font-mono text-caption tabular-nums text-muted-foreground">
           01
         </span>
       </div>
@@ -100,7 +100,7 @@
             <h3 class="text-xl font-medium tracking-tight text-foreground">
               {p.title}
             </h3>
-            <p class="text-sm leading-relaxed text-muted-foreground">
+            <p class="text-body-sm leading-relaxed text-muted-foreground">
               {p.body}
             </p>
           </li>
@@ -109,19 +109,19 @@
     </section>
 
     <section class="mt-20">
-      <div class="mb-8 flex items-baseline justify-between border-b border-border/60 pb-4">
+      <div class="mb-8 flex items-baseline justify-between border-b border-border pb-4">
         <h2
           class="label-eyebrow text-muted-foreground"
         >
           Stack
         </h2>
-        <span class="font-mono text-[11px] tabular-nums text-muted-foreground/50">
+        <span class="font-mono text-caption tabular-nums text-muted-foreground">
           02
         </span>
       </div>
 
       <dl
-        class="rounded-md border border-border/60 bg-muted/30 divide-y divide-border/60"
+        class="rounded-md border border-border bg-muted/30 divide-y divide-border"
       >
         {#each stack as row, i (row.label)}
           <div
@@ -138,7 +138,7 @@
             >
               {row.label}
             </dt>
-            <dd class="col-span-2 text-sm text-foreground sm:col-span-3">
+            <dd class="col-span-2 text-body-sm text-foreground sm:col-span-3">
               {row.value}
             </dd>
           </div>
@@ -147,7 +147,7 @@
     </section>
 
     <section
-      class="mt-20 flex flex-col gap-5 border-t border-border/60 pt-10 sm:flex-row sm:items-end sm:justify-between"
+      class="mt-20 flex flex-col gap-5 border-t border-border pt-10 sm:flex-row sm:items-end sm:justify-between"
       in:fly={{ y: 12, duration: 500, delay: 200, easing: cubicOut }}
     >
       <div class="max-w-md">
@@ -156,7 +156,7 @@
         >
           Get involved
         </h2>
-        <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+        <p class="mt-2 text-body-sm leading-relaxed text-muted-foreground">
           File issues, suggest tools, or open a pull request. The codebase is
           documented and the maintainers read every thread.
         </p>

@@ -8,7 +8,7 @@
 
 {#if state.hasFiles}
   <div
-    class="h-[calc(100dvh-220px)] min-h-125 w-full overflow-hidden rounded-md border border-border/60 bg-card"
+    class="h-[calc(100dvh-220px)] min-h-125 w-full overflow-hidden rounded-md border border-border bg-card"
   >
     <Editor initialDocuments={state.initialDocuments} />
   </div>

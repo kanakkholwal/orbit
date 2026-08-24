@@ -89,7 +89,7 @@
           bind:value={store.textContent}
           dir={store.textDirection}
           rows="12"
-          class="w-full resize-y rounded-sm border border-border/60 bg-card p-3 font-mono text-sm shadow-xs placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+          class="w-full resize-y rounded-sm border border-border bg-card p-3 font-mono text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
           placeholder="Start typing or paste text…"
         ></textarea>
         <p

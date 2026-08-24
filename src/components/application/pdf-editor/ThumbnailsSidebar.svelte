@@ -54,7 +54,7 @@
                 </div>
                 <span
                     style:height="{meta.labelHeight}px"
-                    class="mt-1 text-[10px] tabular-nums text-muted-foreground"
+                    class="mt-1 text-caption tabular-nums text-muted-foreground"
                 >
                     {meta.pageIndex + 1}
                 </span>

@@ -73,7 +73,7 @@
           {#if store.targetSize === "Custom"}
             <div
               transition:slide={{ duration: 220 }}
-              class="mt-2 grid grid-cols-3 gap-2 rounded-sm border border-border/60 bg-muted/20 p-2.5"
+              class="mt-2 grid grid-cols-3 gap-2 rounded-sm border border-border bg-muted/20 p-2.5"
             >
               <div class="flex flex-col gap-1.5">
                 <Label
@@ -171,7 +171,7 @@
               },
             ] as opt}
               <label
-                class="group flex flex-1 cursor-pointer items-start gap-3 rounded-sm border border-border/60 bg-card px-4 py-3 transition-colors hover:bg-muted/30 has-checked:border-primary/40 has-checked:bg-primary/5"
+                class="group flex flex-1 cursor-pointer items-start gap-3 rounded-sm border border-border bg-card px-4 py-3 transition-colors hover:bg-muted/30 has-checked:border-primary/40 has-checked:bg-primary/5"
               >
                 <input
                   type="radio"

@@ -66,7 +66,7 @@
       secondaryButton:
         "rounded-full text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
       primaryButton:
-        "hidden sm:flex rounded-sm bg-primary/5 text-primary hover:bg-primary/10 shadow-sm",
+        "rounded-sm bg-primary/5 text-primary hover:bg-primary/10 shadow-sm px-3 sm:px-4",
       menuWrapper: "border-border/50",
       grid: "p-3 md:p-4",
       group: "rounded-xl",

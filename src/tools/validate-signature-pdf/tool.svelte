@@ -104,11 +104,11 @@
           {#each store.results as result}
             {@const t = tone(result)}
             <article
-              class="overflow-hidden rounded-sm border border-border/60 bg-card"
+              class="overflow-hidden rounded-sm border border-border bg-card"
             >
               <header
                 class={cn(
-                  "flex items-center gap-3 border-b border-border/60 px-4 py-3",
+                  "flex items-center gap-3 border-b border-border px-4 py-3",
                   t === "ok" && "bg-success/5",
                   t === "warn" && "bg-warning/5",
                   t === "bad" && "bg-destructive/5"
@@ -217,7 +217,7 @@
                 </div>
 
                 <dl
-                  class="flex flex-col divide-y divide-border/60 overflow-hidden rounded-sm border border-border/60 bg-muted/20"
+                  class="flex flex-col divide-y divide-border overflow-hidden rounded-sm border border-border bg-muted/20"
                 >
                   <div class="flex items-center justify-between px-3 py-2">
                     <dt

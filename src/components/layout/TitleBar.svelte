@@ -46,7 +46,7 @@
 {#if appState.isTauri}
   <header
     data-tauri-drag-region
-    class="flex h-8 shrink-0 select-none items-center justify-between border-b border-border/60 bg-background-inset/80 pl-3 backdrop-blur-xl"
+    class="flex h-8 shrink-0 select-none items-center justify-between border-b border-border bg-background-inset/80 pl-3 backdrop-blur-xl"
   >
     <!-- <div data-tauri-drag-region class="flex items-center gap-2">
       <Logo size="sm" />
@@ -54,7 +54,7 @@
 
     <span
       data-tauri-drag-region
-      class="pointer-events-none absolute left-1/2 -translate-x-1/2 font-mono text-[11px] tracking-[0.16em] text-muted-foreground/70"
+      class="pointer-events-none absolute left-1/2 -translate-x-1/2 label-eyebrow text-muted-foreground"
     >
       {config.appName}
     </span>

@@ -39,7 +39,7 @@
   class="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
 >
     <div
-      class="overflow-hidden relative w-full max-w-lg  rounded-3xl border border-border/60 bg-card/40 p-3 py-6 mb-5 backdrop-blur-x"
+      class="overflow-hidden relative w-full max-w-lg  rounded-3xl border border-border bg-card/40 p-3 py-6 mb-5 backdrop-blur-x"
     >
       <div class="flex flex-col items-center px-8 py-12 text-center sm:px-12">
         <div
@@ -55,7 +55,7 @@
         </div>
 
         <p
-          class="mb-2 text-sm font-bold uppercase tracking-wider text-muted-foreground"
+          class="label-eyebrow mb-2 text-muted-foreground"
         >
           Error {status}
         </p>
@@ -66,10 +66,10 @@
           {errorTitle}
         </h1>
 
-        <p class="mb-8 text-base leading-relaxed text-muted-foreground">
+        <p class="mb-8 text-body leading-relaxed text-muted-foreground">
           {errorDesc}
           <span
-            class="block mt-2 text-xs opacity-70 font-mono bg-muted/50 py-1 px-2 rounded"
+            class="block mt-2 text-caption opacity-70 font-mono bg-muted/50 py-1 px-2 rounded"
           >
             details: {message}
           </span>
@@ -78,7 +78,7 @@
         <div class="flex w-full flex-col gap-3 sm:flex-row">
           <button
             on:click={goBack}
-            class="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-border/60 bg-card/50 px-4 py-3 text-sm font-semibold text-card-foreground shadow-sm transition-all hover:bg-card hover:text-foreground hover:shadow-md active:brightness-95"
+            class="group flex flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-card/50 px-4 py-3 text-body-sm font-semibold text-card-foreground shadow-sm transition-all hover:bg-card hover:text-foreground hover:shadow-md active:brightness-95"
           >
             <ArrowLeft
               size={16}
@@ -89,7 +89,7 @@
 
           <a
             href="/"
-            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-card shadow-lg shadow-foreground/20 transition-all hover:bg-foreground hover:shadow-xl active:brightness-95"
+            class="flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-body-sm font-semibold text-card shadow-lg shadow-foreground/20 transition-all hover:bg-foreground hover:shadow-xl active:brightness-95"
           >
             <Home size={16} />
             Home
@@ -99,14 +99,14 @@
         {#if !isNotFound}
           <button
             on:click={() => location.reload()}
-            class="mt-6 flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            class="mt-6 flex items-center gap-1.5 text-caption font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             <RefreshCcw size={12} />
             Try reloading the page
           </button>
         {/if}
 
-        <div class="mt-8 text-center text-xs text-muted-foreground">
+        <div class="mt-8 text-center text-caption text-muted-foreground">
           Need help? <a
             href="mailto:support@nexonauts.com"
             class="font-medium text-foreground hover:underline"

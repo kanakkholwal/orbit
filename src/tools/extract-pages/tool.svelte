@@ -31,7 +31,7 @@
         <span class="font-mono tabular-nums">
           {formatBytes(store.state.file.size)}
         </span>
-        <span class="text-muted-foreground/40">·</span>
+        <span class="text-muted-foreground">·</span>
         <span class="font-mono tabular-nums">
           {store.state.pageCount} pages
         </span>
@@ -61,7 +61,7 @@
       </div>
 
       <ul
-        class="mt-4 flex flex-col divide-y divide-border/60 overflow-hidden rounded-sm border border-border/60 bg-muted/20 text-xs"
+        class="mt-4 flex flex-col divide-y divide-border overflow-hidden rounded-sm border border-border bg-muted/20 text-xs"
       >
         {#each [
           ["1, 2, 3", "Specific single pages"],
@@ -70,7 +70,7 @@
         ] as [example, body]}
           <li class="flex items-center gap-3 px-4 py-2.5">
             <code
-              class="rounded-xs bg-card px-1.5 py-0.5 font-mono text-[10px] text-foreground"
+              class="rounded-xs bg-card px-1.5 py-0.5 font-mono text-caption text-foreground"
             >
               {example}
             </code>

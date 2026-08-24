@@ -26,7 +26,7 @@
 <section class={cn("flex flex-col gap-4", className)}>
   {#if title || counter || actions}
     <div
-      class="flex items-baseline justify-between gap-3 border-b border-border/60 pb-3"
+      class="flex items-baseline justify-between gap-3 border-b border-border pb-3"
     >
       <div class="flex flex-col gap-1">
         {#if title}
@@ -35,14 +35,14 @@
           </span>
         {/if}
         {#if description}
-          <p class="text-xs text-muted-foreground/80">{description}</p>
+          <p class="text-xs text-muted-foreground">{description}</p>
         {/if}
       </div>
       <div class="flex items-center gap-3">
         {@render actions?.()}
         {#if counter !== undefined}
           <span
-            class="font-mono text-[11px] tabular-nums text-muted-foreground/50"
+            class="font-mono text-caption tabular-nums text-muted-foreground"
           >
             {typeof counter === "number"
               ? String(counter).padStart(2, "0")

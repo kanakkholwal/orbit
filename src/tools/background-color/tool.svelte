@@ -30,7 +30,7 @@
         <span class="font-mono tabular-nums">
           {formatBytes(store.state.originalSize)}
         </span>
-        <span class="text-muted-foreground/40">·</span>
+        <span class="text-muted-foreground">·</span>
         <span class="font-mono tabular-nums">
           {store.state.pageCount} pages
         </span>
@@ -86,7 +86,7 @@
 
     <ToolPanel title="How it works">
       <div
-        class="flex items-start gap-3 rounded-sm border border-border/60 bg-muted/20 px-4 py-3"
+        class="flex items-start gap-3 rounded-sm border border-border bg-muted/20 px-4 py-3"
       >
         <span
           class="inline-flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary"

@@ -294,7 +294,7 @@
                 <CheckIcon class="size-3.5 text-primary" />
             {/if}
             {#if command.current?.shortcuts && command.current.shortcuts.length > 0 && !isMobile}
-                <kbd class="text-[10px] tracking-wide text-muted-foreground">
+                <kbd class="text-caption tracking-wide text-muted-foreground">
                     {command.current.shortcuts[0]}
                 </kbd>
             {/if}
@@ -355,7 +355,7 @@
     <div {...getUIItemProps(item)} class="py-1">
         {#if item.labelKey || item.label}
             <div
-                class="px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
+                class="label-eyebrow px-2 py-1 text-muted-foreground"
             >
                 {translations.translate(item.labelKey || item.id, {
                     fallback: item.label || item.id,

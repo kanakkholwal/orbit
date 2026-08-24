@@ -35,7 +35,7 @@
         <span class="font-mono tabular-nums">
           {formatBytes(store.state.originalSize)}
         </span>
-        <span class="text-muted-foreground/40">·</span>
+        <span class="text-muted-foreground">·</span>
         <span class="font-mono tabular-nums">
           {store.state.pageCount} pages
         </span>
@@ -93,7 +93,7 @@
       >
         {#if store.state.detectedPages.length === 0}
           <div
-            class="flex flex-col items-center gap-3 rounded-sm border border-dashed border-border/60 bg-muted/20 px-6 py-12 text-center"
+            class="flex flex-col items-center gap-3 rounded-sm border border-dashed border-border bg-muted/20 px-6 py-12 text-center"
           >
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-muted/60 text-muted-foreground">
               <FileQuestion class="size-4" />
@@ -116,7 +116,7 @@
           </div>
 
           <div
-            class="mt-4 grid max-h-112 grid-cols-2 gap-3 overflow-y-auto rounded-sm border border-border/60 bg-muted/20 p-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+            class="mt-4 grid max-h-112 grid-cols-2 gap-3 overflow-y-auto rounded-sm border border-border bg-muted/20 p-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
           >
             {#each store.state.detectedPages as pageInfo (pageInfo.index)}
               <PageThumbnail {store} {pageInfo} />

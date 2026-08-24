@@ -150,7 +150,7 @@
     "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60",
     dragActive
       ? "border-primary/60 bg-primary/5"
-      : "border-border/70 bg-muted/20 hover:border-primary/40 hover:bg-muted/30",
+      : "border-border bg-muted/20 hover:border-primary/40 hover:bg-muted/30",
     disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
     className
   )}
@@ -168,7 +168,7 @@
           "inline-flex size-12 items-center justify-center rounded-sm transition-colors",
           dragActive
             ? "bg-primary/15 text-primary"
-            : "bg-muted/60 text-foreground/80 group-hover:bg-primary/10 group-hover:text-primary"
+            : "bg-muted/60 text-foreground group-hover:bg-primary/10 group-hover:text-primary"
         )}
       >
         {#if icon}

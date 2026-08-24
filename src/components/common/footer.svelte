@@ -1,5 +1,6 @@
 <script lang="ts">
   import Logo from "$components/Logo.svelte";
+  import { Container } from "$components/site";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
   import { IconBrandGithub as Github } from "@tabler/icons-svelte";
@@ -11,9 +12,9 @@
       title: "Product",
       links: [
         { label: "All tools", href: "/explore" },
-        { label: "Explore", href: "/explore" },
         { label: "Download", href: "/download" },
         { label: "Changelog", href: "/changelog" },
+        { label: "Install PWA", href: "/install-pwa" },
       ],
     },
     {
@@ -29,7 +30,11 @@
         { label: "About", href: "/about" },
         { label: "Documentation", href: "/docs" },
         { label: "GitHub", href: config.github, external: true },
-        { label: "Support", href: `mailto:${config.supportEmail}`, external: true },
+        {
+          label: "Support",
+          href: `mailto:${config.supportEmail}`,
+          external: true,
+        },
       ],
     },
     {
@@ -42,101 +47,61 @@
   ];
 </script>
 
-<footer class="w-full border-t border-border/60">
-  <div class="mx-auto w-full max-w-6xl px-5 py-16 md:px-8 md:py-20">
+<footer class="w-full border-t border-border">
+  <Container width="wide" class="py-16 md:py-20">
     <div class="grid gap-12 md:grid-cols-[1.4fr_2fr]">
-      <div class="flex flex-col gap-6">
+      <div class="flex flex-col items-start gap-6">
         <a
           href="/"
-          class="flex w-fit items-center transition-opacity hover:opacity-90"
+          class="flex w-fit items-center rounded-md transition-opacity duration-200 hover:opacity-80"
           aria-label={`${config.appName} home`}
         >
           <Logo />
         </a>
-        <p class="max-w-sm text-sm leading-relaxed text-muted-foreground">
+        <p class="max-w-sm text-pretty text-caption leading-relaxed text-muted-foreground">
           {config.appDescription}
         </p>
-        <div class="mt-2 flex items-center gap-3">
-          <a
-            href={config.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex size-9 items-center justify-center rounded-sm border border-border/60 text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
-            aria-label="GitHub"
-          >
-            <Github size={16} />
-          </a>
-        </div>
+        <a
+          href={config.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="pressable inline-flex size-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors duration-200 hover:border-border-strong hover:text-foreground"
+          aria-label="GitHub"
+        >
+          <Github size={16} />
+        </a>
       </div>
 
       <div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
-        {#each columns as col, i (col.title)}
-          <div class="flex flex-col gap-5">
-            <div
-              class="flex items-baseline justify-between border-b border-border/60 pb-3"
-            >
-              <span
-                class="label-eyebrow text-muted-foreground"
-              >
-                {col.title}
-              </span>
-              <span
-                class="font-mono text-[10px] tabular-nums text-muted-foreground/40"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-            </div>
-
-            <ul class="flex flex-col gap-3">
+        {#each columns as col (col.title)}
+          <nav class="flex flex-col gap-4" aria-label={col.title}>
+            <span class="label-eyebrow border-b border-border pb-3 text-muted-foreground">
+              {col.title}
+            </span>
+            <ul class="flex flex-col gap-2.5">
               {#each col.links as link (link.href + link.label)}
                 <li>
                   <a
                     href={link.href}
                     target={link.external ? "_blank" : undefined}
                     rel={link.external ? "noopener noreferrer" : undefined}
-                    class="group inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    class="text-caption text-muted-foreground transition-colors duration-200 hover:text-foreground"
                   >
-                    <span class="relative">
-                      {link.label}
-                      <span
-                        aria-hidden="true"
-                        class="absolute -bottom-0.5 left-0 h-px w-0 bg-foreground transition-[width] duration-300 ease-out group-hover:w-full"
-                      ></span>
-                    </span>
+                    {link.label}
                   </a>
                 </li>
               {/each}
             </ul>
-          </div>
+          </nav>
         {/each}
       </div>
     </div>
 
     <div
-      class="mt-16 flex flex-col items-start justify-between gap-4 border-t border-border/60 pt-6 sm:flex-row sm:items-center"
+      class="mt-16 flex flex-col items-start justify-between gap-3 border-t border-border pt-6 text-caption text-muted-foreground sm:flex-row sm:items-center"
     >
-      <p
-        class="label-eyebrow text-muted-foreground"
-      >
-        © {currentYear} · {config.appName} · v{config.appVersion}
-      </p>
-      <div class="flex items-center gap-4">
-        <a
-          href="/privacy"
-          class="font-mono text-[11px] text-muted-foreground/70 transition-colors hover:text-foreground"
-        >
-          Privacy
-        </a>
-        <a
-          href="/terms"
-          class="font-mono text-[11px] text-muted-foreground/70 transition-colors hover:text-foreground"
-        >
-          Terms
-        </a>
-        <span class="font-mono text-[11px] text-muted-foreground/70">
-          GPL-3.0
-        </span>
-      </div>
+      <p>© {currentYear} · {config.appName} · v{config.appVersion}</p>
+      <p>GPL-3.0 · Runs entirely on your device</p>
     </div>
-  </div>
+  </Container>
 </footer>

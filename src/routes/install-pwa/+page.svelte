@@ -174,14 +174,14 @@
           <span class="label-eyebrow text-primary">
             Install · PWA
           </span>
-          <span class="text-muted-foreground/40">·</span>
+          <span class="text-muted-foreground">·</span>
           <span class="label-eyebrow text-muted-foreground">
             {statusLabel}
           </span>
         </div>
 
         <h1
-          class="max-w-3xl text-display-lg text-foreground sm:text-[3.25rem] sm:leading-[1.05] sm:tracking-[-0.025em] md:text-display-mega"
+          class="max-w-3xl text-balance text-heading-lg text-foreground md:text-display"
           in:fly={{ y: 16, duration: 600, delay: 120, easing: cubicOut }}
         >
           Install {config.appName}
@@ -189,7 +189,7 @@
         </h1>
 
         <p
-          class="max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+          class="max-w-2xl text-body-lg leading-relaxed text-muted-foreground sm:text-xl"
           in:fly={{ y: 12, duration: 520, delay: 220, easing: cubicOut }}
         >
           Phones, tablets, laptops — Orbit PDF runs as a Progressive Web App with full offline support.
@@ -197,14 +197,14 @@
         </p>
 
         <div
-          class="flex flex-col gap-5 border-t border-border/60 pt-10"
+          class="flex flex-col gap-5 border-t border-border pt-10"
           in:fly={{ y: 12, duration: 520, delay: 320, easing: cubicOut }}
         >
           <div class="flex flex-wrap items-baseline gap-x-6 gap-y-2">
             <span class="label-eyebrow text-muted-foreground">
               Detected
             </span>
-            <span class="font-mono text-sm tabular-nums text-foreground">
+            <span class="font-mono text-body-sm tabular-nums text-foreground">
               {pwa.platform === "unknown" ? "—" : pwa.platform} · {pwa.browserKind}
             </span>
           </div>
@@ -236,31 +236,31 @@
 
     <section id="how-to-install" class="scroll-mt-32 px-5 py-16 md:px-8">
       <div class="mx-auto w-full max-w-5xl">
-        <div class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4">
+        <div class="mb-10 flex items-baseline justify-between border-b border-border pb-4">
           <div class="flex flex-col gap-2">
             <span class="label-eyebrow text-primary">
               How to install
             </span>
-            <h2 class="text-display-md text-foreground sm:text-display-lg">
+            <h2 class="text-heading text-foreground sm:text-heading-lg">
               {activeGuide.title}
             </h2>
           </div>
-          <span class="hidden font-mono text-[11px] tabular-nums text-muted-foreground/50 sm:inline">
+          <span class="hidden font-mono text-caption tabular-nums text-muted-foreground sm:inline">
             01
           </span>
         </div>
 
-        <ol class="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border/60 bg-border/60 md:grid-cols-3">
+        <ol class="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border/60 md:grid-cols-3">
           {#each activeGuide.steps as step, i (step.title)}
             <li
               class="flex flex-col gap-3 bg-card p-6"
               in:fly={{ y: 12, duration: 480, delay: 100 + i * 80, easing: cubicOut }}
             >
-              <span class="font-mono text-[11px] tabular-nums text-muted-foreground/50">
+              <span class="font-mono text-caption tabular-nums text-muted-foreground">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <h3 class="text-base font-medium tracking-tight text-foreground">{step.title}</h3>
-              <p class="text-sm leading-relaxed text-muted-foreground">{step.body}</p>
+              <h3 class="text-body font-medium tracking-tight text-foreground">{step.title}</h3>
+              <p class="text-body-sm leading-relaxed text-muted-foreground">{step.body}</p>
               {#if i === 0 && activeGuide.id === "ios-safari"}
                 <span class="mt-1 inline-flex items-center gap-1.5 label-eyebrow text-primary">
                   <Share class="size-3" />
@@ -271,14 +271,14 @@
           {/each}
         </ol>
 
-        <div class="mt-6 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+        <div class="mt-6 flex flex-wrap items-center gap-3 text-caption text-muted-foreground">
           <span class="label-eyebrow text-muted-foreground">Other platforms</span>
           {#each guides as g (g.id)}
             {#if g.id !== activeGuide.id}
               <button
                 type="button"
                 class={cn(
-                  "inline-flex items-center gap-1.5 rounded-sm border border-border/60 px-2.5 py-1 label-eyebrow text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
+                  "inline-flex items-center gap-1.5 rounded-sm border border-border px-2.5 py-1 label-eyebrow text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
                 )}
                 onclick={() => (activeGuide = g)}
               >
@@ -293,21 +293,21 @@
 
     <section class="px-5 py-16 md:px-8">
       <div class="mx-auto w-full max-w-5xl">
-        <div class="mb-10 flex items-baseline justify-between border-b border-border/60 pb-4">
+        <div class="mb-10 flex items-baseline justify-between border-b border-border pb-4">
           <div class="flex flex-col gap-2">
             <span class="label-eyebrow text-primary">
               Why install
             </span>
-            <h2 class="text-display-md text-foreground sm:text-display-lg">
+            <h2 class="text-heading text-foreground sm:text-heading-lg">
               What you get.
             </h2>
           </div>
-          <span class="hidden font-mono text-[11px] tabular-nums text-muted-foreground/50 sm:inline">
+          <span class="hidden font-mono text-caption tabular-nums text-muted-foreground sm:inline">
             02
           </span>
         </div>
 
-        <ul class="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border/60 bg-border/60 sm:grid-cols-2 lg:grid-cols-4">
+        <ul class="grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border/60 sm:grid-cols-2 lg:grid-cols-4">
           {#each features as f, i (f.label)}
             {@const Icon = f.icon}
             <li
@@ -318,16 +318,16 @@
                 <Icon class="size-4" />
               </span>
               <div class="flex flex-col gap-1">
-                <h3 class="text-base font-medium tracking-tight text-foreground">{f.label}</h3>
-                <p class="text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                <h3 class="text-body font-medium tracking-tight text-foreground">{f.label}</h3>
+                <p class="text-body-sm leading-relaxed text-muted-foreground">{f.body}</p>
               </div>
               <Check class="mt-auto size-4 text-primary/70" />
             </li>
           {/each}
         </ul>
 
-        <div class="mt-10 flex flex-col gap-3 border-t border-border/60 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p class="text-sm text-muted-foreground">
+        <div class="mt-10 flex flex-col gap-3 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-body-sm text-muted-foreground">
             Need a real desktop app instead? Tauri-built installers are signed and sit alongside this PWA.
           </p>
           <div class="flex flex-wrap gap-2">

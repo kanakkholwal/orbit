@@ -91,7 +91,7 @@
           >
             <social.icon class="size-5" />
           </span>
-          <span class="truncate text-[11px] text-muted-foreground transition-colors group-hover:text-foreground">
+          <span class="truncate text-caption text-muted-foreground transition-colors group-hover:text-foreground">
             {social.name}
           </span>
           <span class="sr-only">Share on {social.name}</span>
@@ -110,7 +110,7 @@
           >
             <Share2 class="size-5" />
           </span>
-          <span class="text-[11px] text-muted-foreground transition-colors group-hover:text-foreground">
+          <span class="text-caption text-muted-foreground transition-colors group-hover:text-foreground">
             More
           </span>
           <span class="sr-only">Native share</span>

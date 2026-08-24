@@ -13,7 +13,7 @@
 
 <div
   class={cn(
-    "sticky bottom-0 z-10 -mx-1 flex flex-col items-stretch gap-3 border-t border-border/60 bg-card/70 px-3 py-3 backdrop-blur-lg backdrop-saturate-150 supports-backdrop-filter:bg-card/55 sm:-mx-2 sm:flex-row sm:items-center sm:justify-between",
+    "sticky bottom-0 z-10 -mx-1 flex flex-col items-stretch gap-3 border-t border-border bg-card/70 px-3 py-3 backdrop-blur-lg backdrop-saturate-150 supports-backdrop-filter:bg-card/55 sm:-mx-2 sm:flex-row sm:items-center sm:justify-between",
     "pb-[max(env(safe-area-inset-bottom),0.75rem)]",
     className
   )}

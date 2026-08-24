@@ -81,7 +81,7 @@
             class="h-10 rounded-sm font-mono text-sm"
           />
           <div
-            class="grid max-h-48 grid-cols-1 gap-1 overflow-y-auto rounded-sm border border-border/60 bg-muted/20 p-2 sm:grid-cols-2 md:grid-cols-3"
+            class="grid max-h-48 grid-cols-1 gap-1 overflow-y-auto rounded-sm border border-border bg-muted/20 p-2 sm:grid-cols-2 md:grid-cols-3"
           >
             {#each filteredLangs as [code, name]}
               <label
@@ -125,7 +125,7 @@
             >
               Tuning options
             </span>
-            <span class="hidden font-mono text-[10px] tracking-[0.14em] text-muted-foreground/60 sm:inline">
+            <span class="label-eyebrow hidden text-muted-foreground sm:inline">
               · Recommended
             </span>
           </span>
@@ -139,7 +139,7 @@
         {#if showAdvanced}
           <div
             transition:slide={{ duration: 220 }}
-            class="mt-5 flex flex-col gap-5 border-t border-border/60 pt-5"
+            class="mt-5 flex flex-col gap-5 border-t border-border pt-5"
           >
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div class="flex flex-col gap-2">
@@ -171,7 +171,7 @@
               </div>
 
               <label
-                class="mt-auto flex cursor-pointer items-start gap-3 rounded-sm border border-border/60 bg-muted/20 px-4 py-3 text-sm transition-colors hover:bg-muted/30"
+                class="mt-auto flex cursor-pointer items-start gap-3 rounded-sm border border-border bg-muted/20 px-4 py-3 text-sm transition-colors hover:bg-muted/30"
               >
                 <input
                   type="checkbox"
@@ -278,7 +278,7 @@
           </div>
 
           <div
-            class="h-32 w-full max-w-md overflow-y-auto rounded-sm border border-border/60 bg-foreground/95 p-3 text-left font-mono text-[10px] text-success"
+            class="h-32 w-full max-w-md overflow-y-auto rounded-sm border border-border bg-foreground/95 p-3 text-left font-mono text-caption text-success"
           >
             {#each store.progressLog as log}
               <div>{log}</div>
@@ -334,7 +334,7 @@
           </div>
           <textarea
             readonly
-            class="h-48 w-full resize-y rounded-sm border border-border/60 bg-muted/20 p-3 font-mono text-xs focus:outline-none"
+            class="h-48 w-full resize-y rounded-sm border border-border bg-muted/20 p-3 font-mono text-xs focus:outline-none"
             value={store.extractedText}
           ></textarea>
         </div>

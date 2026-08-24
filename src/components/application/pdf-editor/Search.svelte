@@ -186,7 +186,7 @@
         {:else}
             {#each Object.entries(grouped) as [page, hits]}
                 <div class="mb-3">
-                    <div class="mb-1.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                    <div class="label-eyebrow mb-1.5 text-muted-foreground">
                         Page {Number(page) + 1}
                     </div>
                     <div class="space-y-1">

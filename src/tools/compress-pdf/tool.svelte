@@ -58,12 +58,12 @@
                 {formatBytes(file.originalSize)}
               </span>
               {#if file.status === "done" && file.compressedSize}
-                <ArrowRight class="size-3 text-muted-foreground/60" />
+                <ArrowRight class="size-3 text-muted-foreground" />
                 <span class="font-mono tabular-nums text-success">
                   {formatBytes(file.compressedSize)}
                 </span>
                 <span
-                  class="rounded-xs bg-success/10 px-1.5 py-0.5 font-mono text-[10px] tabular-nums text-success"
+                  class="rounded-xs bg-success/10 px-1.5 py-0.5 font-mono text-caption tabular-nums text-success"
                 >
                   -{Math.round(
                     (1 - file.compressedSize / file.originalSize) * 100
@@ -152,7 +152,7 @@
         {#if showAdvanced}
           <ul
             transition:slide={{ duration: 220 }}
-            class="mt-4 flex flex-col divide-y divide-border/60 overflow-hidden rounded-sm border border-border/60 bg-muted/20"
+            class="mt-4 flex flex-col divide-y divide-border overflow-hidden rounded-sm border border-border bg-muted/20"
           >
             {#each [
               { key: "convertToGrayscale" as const, label: "Convert to grayscale", body: "Drops color channels for smaller output." },

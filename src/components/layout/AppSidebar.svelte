@@ -131,7 +131,7 @@
               <item.icon
                 class={cn(
                   "size-4 shrink-0",
-                  active ? "text-primary" : "text-muted-foreground/70"
+                  active ? "text-primary" : "text-muted-foreground"
                 )}
               />
               <span class="flex-1 group-data-[state=collapsed]:hidden">
@@ -150,7 +150,7 @@
         <span class="label-eyebrow text-muted-foreground">
           Categories
         </span>
-        <span class="font-mono text-[10px] text-muted-foreground/45">
+        <span class="font-mono text-caption text-muted-foreground">
           {String(toolsCategories.length).padStart(2, "0")}
         </span>
       </div>
@@ -170,7 +170,7 @@
                 {cat.name}
               </span>
               <span
-                class="font-mono text-[10px] tabular-nums text-muted-foreground/45"
+                class="font-mono text-caption tabular-nums text-muted-foreground"
               >
                 {String(cat.tools?.length ?? 0).padStart(2, "0")}
               </span>
@@ -206,7 +206,7 @@
                         <Icon
                           class={cn(
                             "size-4 shrink-0",
-                            active ? "text-primary" : "text-muted-foreground/70"
+                            active ? "text-primary" : "text-muted-foreground"
                           )}
                         />
                       {/if}
@@ -241,7 +241,7 @@
           <span class="text-sm text-foreground">Star on GitHub</span>
         </span>
         <Star
-          class="size-4 text-muted-foreground/60 transition-colors group-hover:text-primary"
+          class="size-4 text-muted-foreground transition-colors group-hover:text-primary"
         />
       </a>
       <div class="flex items-center justify-between gap-2">

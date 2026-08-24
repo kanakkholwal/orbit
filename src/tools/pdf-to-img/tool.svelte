@@ -33,7 +33,7 @@
         <span class="font-mono tabular-nums">
           {formatBytes(store.state.file.size)}
         </span>
-        <span class="text-muted-foreground/40">·</span>
+        <span class="text-muted-foreground">·</span>
         <span class="font-mono tabular-nums">
           {store.state.pageCount} pages
         </span>
@@ -91,7 +91,7 @@
     </ToolPanel>
 
     <ToolPanel title="Summary">
-      <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border/60 bg-border/60 sm:grid-cols-3">
+      <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border/60 sm:grid-cols-3">
         <div class="flex flex-col gap-1 bg-card px-4 py-3">
           <dt class="label-eyebrow text-muted-foreground">
             Format

@@ -39,14 +39,14 @@
 {#if pdfState.pages.length > 0}
   <div class="flex flex-col gap-4 pb-32">
     <div
-      class="sticky top-0 z-20 flex items-baseline justify-between gap-3 border-b border-border/60 bg-card/70 py-2 backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55"
+      class="sticky top-0 z-20 flex items-baseline justify-between gap-3 border-b border-border bg-card/70 py-2 backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55"
     >
       <span
         class="label-eyebrow text-primary"
       >
         Pages
       </span>
-      <span class="font-mono text-[11px] tabular-nums text-muted-foreground/60">
+      <span class="font-mono text-caption tabular-nums text-muted-foreground">
         {String(pdfState.selectedIds.size).padStart(2, "0")} / {String(pdfState.pages.length).padStart(2, "0")}
       </span>
     </div>
@@ -75,9 +75,9 @@
   style="padding-bottom: max(env(safe-area-inset-bottom), 0px);"
 >
   <div
-    class="flex w-full flex-wrap items-center justify-between gap-1.5 rounded-md border border-border/60 bg-card/70 px-2 py-1.5 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.18)] backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55 lg:flex-nowrap"
+    class="flex w-full flex-wrap items-center justify-between gap-1.5 rounded-md border border-border bg-card/70 px-2 py-1.5 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.18)] backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55 lg:flex-nowrap"
   >
-    <div class="flex items-center gap-1 lg:border-r lg:border-border/60 lg:pr-1.5">
+    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
       <button
         type="button"
         class={toolbarBtn}
@@ -98,7 +98,7 @@
       </button>
     </div>
 
-    <div class="flex items-center gap-1 lg:border-r lg:border-border/60 lg:pr-1.5">
+    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
       <button
         type="button"
         class={toolbarBtn}
@@ -119,7 +119,7 @@
       </button>
     </div>
 
-    <div class="flex items-center gap-1 lg:border-r lg:border-border/60 lg:pr-1.5">
+    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
       <button
         type="button"
         class={toolbarBtn}
@@ -140,7 +140,7 @@
       </button>
     </div>
 
-    <div class="flex items-center gap-1 lg:border-r lg:border-border/60 lg:pr-1.5">
+    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
       <button
         type="button"
         class={cn(
@@ -196,7 +196,7 @@
     transition:fade={{ duration: 160 }}
   >
     <div
-      class="flex w-full max-w-sm flex-col items-center gap-4 rounded-md border border-border/60 bg-card p-6 shadow-2xl"
+      class="flex w-full max-w-sm flex-col items-center gap-4 rounded-md border border-border bg-card p-6 shadow-2xl"
     >
       <span
         class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary"

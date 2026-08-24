@@ -41,7 +41,7 @@
         <span class="font-mono tabular-nums">
           {formatBytes(store.state.file.size)}
         </span>
-        <span class="text-muted-foreground/40">·</span>
+        <span class="text-muted-foreground">·</span>
         <span class="font-mono tabular-nums">
           {store.state.pageCount} pages
         </span>
@@ -51,10 +51,10 @@
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
       <ToolPanel title="Position">
         <div
-          class="relative aspect-3/4 max-h-72 w-full rounded-sm border border-dashed border-border/60 bg-muted/20 p-3"
+          class="relative aspect-3/4 max-h-72 w-full rounded-sm border border-dashed border-border bg-muted/20 p-3"
         >
           <div
-            class="absolute inset-3 flex flex-col justify-between rounded-sm border border-border/60 bg-card p-3"
+            class="absolute inset-3 flex flex-col justify-between rounded-sm border border-border bg-card p-3"
           >
             <div class="flex justify-between">
               {#each ["top-left", "top-center", "top-right"] as p}

@@ -80,7 +80,7 @@
     </div>
 
     <div
-      class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-background/90 backdrop-blur-sm shadow-sm border border-border"
+      class="absolute top-2 left-2 px-2 py-0.5 rounded text-caption font-bold bg-background/90 backdrop-blur-sm shadow-sm border border-border"
     >
       {index + 1}
       <span class="text-muted-foreground font-normal ml-1"

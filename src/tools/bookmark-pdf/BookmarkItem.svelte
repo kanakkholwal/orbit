@@ -59,7 +59,7 @@
       : ''}"
     style="padding-left: {depth * 1.5 + 0.5}rem"
   >
-    <div class="cursor-move text-muted-foreground/50 hover:text-foreground">
+    <div class="cursor-move text-muted-foreground hover:text-foreground">
       <GripVertical size={14} />
     </div>
 
@@ -100,7 +100,7 @@
           <Crosshair size={10} class="text-blue-500" />
         {/if}
       </div>
-      <span class="text-[10px] text-muted-foreground">Page {node.page}</span>
+      <span class="text-caption text-muted-foreground">Page {node.page}</span>
     </div>
 
     <div

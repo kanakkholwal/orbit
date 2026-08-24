@@ -408,7 +408,7 @@
 					<h3
 						data-slot="group-title"
 						class={cn(
-							"mono text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
+							"label-eyebrow text-muted-foreground",
 							classes?.groupTitle,
 						)}
 					>

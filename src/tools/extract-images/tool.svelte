@@ -76,7 +76,7 @@
       <ToolPanel title="Images" counter={store.extractedImages.length}>
         {#if store.extractedImages.length === 0}
           <div
-            class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border/60 bg-muted/20 px-6 py-12 text-center"
+            class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border bg-muted/20 px-6 py-12 text-center"
           >
             <span class="inline-flex size-10 items-center justify-center rounded-sm bg-muted/60 text-muted-foreground">
               <FileQuestion class="size-4" />
@@ -90,7 +90,7 @@
           </div>
         {:else}
           <ul
-            class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border/60 bg-border/60 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+            class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border bg-border/60 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
           >
             {#each store.extractedImages as image (image.id)}
               <li
@@ -104,10 +104,10 @@
                   />
                 </div>
                 <div
-                  class="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-between gap-2 border-t border-border/60 bg-card/95 px-2.5 py-2 backdrop-blur-md transition-transform group-hover:translate-y-0"
+                  class="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-between gap-2 border-t border-border bg-card/95 px-2.5 py-2 backdrop-blur-md transition-transform group-hover:translate-y-0"
                 >
                   <span
-                    class="truncate font-mono text-[10px] tabular-nums text-muted-foreground"
+                    class="truncate font-mono text-caption tabular-nums text-muted-foreground"
                     title={image.name}
                   >
                     {image.name}

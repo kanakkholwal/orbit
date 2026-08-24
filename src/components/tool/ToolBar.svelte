@@ -25,7 +25,7 @@
 
 <div
   class={cn(
-    "sticky top-0 z-20 -mx-1 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 bg-card/70 px-3 py-2 backdrop-blur-lg backdrop-saturate-150 supports-backdrop-filter:bg-card/55 sm:-mx-2",
+    "sticky top-0 z-20 -mx-1 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-card/70 px-3 py-2 backdrop-blur-lg backdrop-saturate-150 supports-backdrop-filter:bg-card/55 sm:-mx-2",
     className
   )}
 >
@@ -34,7 +34,7 @@
       {label}
     </span>
     {#if count !== undefined}
-      <span class="font-mono text-[11px] tabular-nums text-muted-foreground/60">
+      <span class="font-mono text-caption tabular-nums text-muted-foreground">
         {String(count).padStart(2, "0")}
       </span>
     {/if}

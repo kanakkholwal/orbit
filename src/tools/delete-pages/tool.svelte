@@ -47,16 +47,16 @@
       </div>
       <p class="mt-2 text-xs leading-relaxed text-muted-foreground">
         Use commas for separate pages
-        <code class="rounded-xs bg-muted/60 px-1 font-mono text-[10px] text-foreground">1, 3, 5</code>
+        <code class="rounded-xs bg-muted/60 px-1 font-mono text-caption text-foreground">1, 3, 5</code>
         and hyphens for ranges
-        <code class="rounded-xs bg-muted/60 px-1 font-mono text-[10px] text-foreground">1-5</code>.
+        <code class="rounded-xs bg-muted/60 px-1 font-mono text-caption text-foreground">1-5</code>.
       </p>
     </ToolPanel>
 
     <ToolPanel title="Pages" counter={store.state.pageCount}>
       {#if store.state.pagesToDelete.size === 0}
         <div
-          class="mb-4 flex items-center justify-center gap-2 rounded-sm border border-border/60 bg-muted/30 px-4 py-2.5"
+          class="mb-4 flex items-center justify-center gap-2 rounded-sm border border-border bg-muted/30 px-4 py-2.5"
         >
           <Info class="size-3.5 text-primary" />
           <p

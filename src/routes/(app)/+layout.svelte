@@ -25,7 +25,7 @@
   <main
     class={cn(
       "relative flex-1 overflow-y-auto overflow-x-hidden bg-background pt-0",
-      !isPdfViewerRoute && "md:border-l md:border-border/60",
+      !isPdfViewerRoute && "md:border-l md:border-border",
     )}
   >
     {#if !isPdfViewerRoute}

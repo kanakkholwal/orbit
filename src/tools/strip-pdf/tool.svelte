@@ -80,12 +80,12 @@
                 {formatBytes(file.size)}
               </span>
               {#if file.status === "done" && file.keptPages != null}
-                <ArrowRight class="size-3 text-muted-foreground/60" />
+                <ArrowRight class="size-3 text-muted-foreground" />
                 <span class="font-mono tabular-nums text-success">
                   {file.keptPages} of {file.originalPages} pages
                 </span>
               {:else if file.note}
-                <span class="text-muted-foreground/70">· {file.note}</span>
+                <span class="text-muted-foreground">· {file.note}</span>
               {/if}
 
               {#snippet trailing()}

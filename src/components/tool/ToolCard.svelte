@@ -1,8 +1,8 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
+  import { rise } from "$lib/motion";
   import type { ToolConfig } from "$tools/list";
   import { IconArrowUpRight as ArrowUpRight } from "@tabler/icons-svelte";
-  import { cubicOut } from "svelte/easing";
   import { fly } from "svelte/transition";
 
   type Props = {
@@ -11,10 +11,12 @@
     index?: number;
     /** Per-item enter-animation delay in ms. Set to null to disable. */
     delay?: number | null;
+    /** "cell" drops the border and radius for use inside a gap-px hairline grid. */
+    framing?: "card" | "cell";
     class?: string;
   };
 
-  let { tool, delay = 0, class: className }: Props = $props();
+  let { tool, delay = 0, framing = "card", class: className }: Props = $props();
 
   const Icon = $derived(tool.icon);
 </script>
@@ -22,41 +24,33 @@
 <a
   href={`/tools/${tool.slug}`}
   class={cn(
-    "group flex h-full flex-col gap-4 rounded-xl border border-border bg-card p-5 shadow-sm transition-[transform,box-shadow] duration-300 ease-snappy hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:shadow-sm",
+    "group flex h-full flex-col gap-4 bg-card p-5 transition-[border-color,background-color,transform] duration-200 ease-craft active:scale-[0.99] motion-reduce:active:scale-100",
+    framing === "card"
+      ? "rounded-lg border border-border hover:border-border-strong"
+      : "hover:bg-paper",
     className
   )}
-  in:fly={delay === null
-    ? undefined
-    : { y: 8, duration: 340, delay, easing: cubicOut }}
+  in:fly={delay === null ? undefined : rise(8, delay)}
 >
-  <div class="flex items-start gap-3">
-    <span
-      class={cn(
-        "inline-flex size-8 items-center justify-center rounded-md bg-current/10 transition-transform duration-300 group-hover:scale-105",
-        tool.color || "text-primary"
-      )}
-    >
-      {#if Icon}<Icon size={16} />{/if}
-    </span>
-  </div>
+  <span class={cn("glyph-duotone shrink-0", tool.color || "text-primary")}>
+    {#if Icon}<Icon size={20} />{/if}
+  </span>
 
   <div class="flex flex-1 flex-col gap-1.5">
-    <h3 class="text-base font-medium tracking-tight text-foreground">
-      {tool.title}
-    </h3>
-    <p class="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+    <h3 class="text-body font-semibold text-foreground">{tool.title}</h3>
+    <p class="line-clamp-2 text-pretty text-body-sm leading-relaxed text-muted-foreground">
       {tool.description}
     </p>
   </div>
 
-  <div class="flex items-center justify-between border-t border-border/40 pt-3">
+  <div class="flex items-center justify-between border-t border-border pt-3">
     <span
-      class="label-eyebrow text-muted-foreground transition-colors group-hover:text-primary"
+      class="label-eyebrow text-muted-foreground transition-colors duration-200 group-hover:text-foreground"
     >
       Open
     </span>
     <ArrowUpRight
-      class="size-3.5 text-muted-foreground/50 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-primary"
+      class="size-3.5 text-muted-foreground transition-transform duration-200 ease-craft group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
     />
   </div>
 </a>

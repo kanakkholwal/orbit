@@ -54,7 +54,7 @@
 
     {#if store.isProcessing}
       <div
-        class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border/60 bg-muted/20 px-6 py-16"
+        class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border bg-muted/20 px-6 py-16"
       >
         <span class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary">
           <LoaderCircle class="size-4 animate-spin" />
@@ -68,7 +68,7 @@
     {:else if store.analyzedPagesData.length > 0}
       <ToolPanel title="Summary">
         <dl
-          class="grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-border/60 bg-border/60 sm:grid-cols-3"
+          class="grid grid-cols-1 gap-px overflow-hidden rounded-sm border border-border bg-border/60 sm:grid-cols-3"
         >
           <div class="flex flex-col gap-1 bg-card px-4 py-3">
             <dt class="label-eyebrow text-muted-foreground">
@@ -129,7 +129,7 @@
                   {#each store.summaryStats.uniqueSizes as size}
                     <li class="flex items-center gap-2">
                       <span
-                        class="font-mono text-[10px] tabular-nums text-muted-foreground/70"
+                        class="font-mono text-caption tabular-nums text-muted-foreground"
                       >
                         {String(size.count).padStart(2, "0")}
                       </span>
@@ -156,7 +156,7 @@
             <Select type="single" bind:value={store.selectedUnit}>
               <SelectTrigger
                 id="units-select"
-                class="h-8 w-32 rounded-sm font-mono text-[11px]"
+                class="h-8 w-32 rounded-sm font-mono text-caption"
               >
                 {unitLabel[store.selectedUnit] || "Inches · in"}
               </SelectTrigger>
@@ -180,11 +180,11 @@
         {/snippet}
 
         <div
-          class="overflow-x-auto rounded-sm border border-border/60 bg-card"
+          class="overflow-x-auto rounded-sm border border-border bg-card"
         >
           <table class="w-full text-left text-sm">
             <thead
-              class="border-b border-border/60 bg-muted/30 label-eyebrow text-muted-foreground"
+              class="border-b border-border bg-muted/30 label-eyebrow text-muted-foreground"
             >
               <tr>
                 <th class="px-4 py-2.5 font-medium">Page</th>
@@ -196,7 +196,7 @@
                 <th class="px-4 py-2.5 font-medium">Rotation</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-border/60">
+            <tbody class="divide-y divide-border">
               {#each store.analyzedPagesData as page}
                 <tr class="transition-colors hover:bg-muted/30">
                   <td class="px-4 py-2.5 font-mono tabular-nums text-foreground">
@@ -205,7 +205,7 @@
                   <td class="px-4 py-2.5 font-mono text-xs tabular-nums">
                     {store.convertPoints(page.width, store.selectedUnit)} ×
                     {store.convertPoints(page.height, store.selectedUnit)}
-                    <span class="text-muted-foreground/60">{store.selectedUnit}</span>
+                    <span class="text-muted-foreground">{store.selectedUnit}</span>
                   </td>
                   <td class="px-4 py-2.5">
                     <span

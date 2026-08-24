@@ -238,14 +238,14 @@
     onclick={open}
     aria-label="Open command menu"
     title="Open command menu (⌘K)"
-    class="group flex h-9 w-full items-center gap-2 rounded-sm border border-border/60 bg-background/40 px-3 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+    class="group flex h-9 w-full items-center gap-2 rounded-sm border border-border bg-background/40 px-3 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
   >
     <Search class="size-3.5 shrink-0 opacity-70 transition-opacity group-hover:opacity-100" />
     <span class="flex-1 truncate label-eyebrow text-muted-foreground">
       Search…
     </span>
     <kbd
-      class="hidden items-center gap-0.5 rounded-xs border border-border/60 bg-muted/50 px-1.5 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70 sm:inline-flex"
+      class="hidden items-center gap-0.5 rounded-xs border border-border bg-muted/50 px-1.5 py-0.5 font-mono text-caption font-medium uppercase tracking-wider text-muted-foreground sm:inline-flex"
     >
       ⌘K
     </kbd>
@@ -271,7 +271,7 @@
     onkeydown={(e) => e.key === "Escape" && close()}
   >
     <div
-      class="relative z-50 w-full max-w-xl transform-gpu overflow-hidden rounded-md border border-border/60 bg-card shadow-2xl"
+      class="relative z-50 w-full max-w-xl transform-gpu overflow-hidden rounded-md border border-border bg-card shadow-2xl"
       transition:scale={{ duration: 220, start: 0.96, easing: cubicOut }}
       onoutroend={() => {
         query = "";
@@ -279,18 +279,18 @@
         selectedIndex = 0;
       }}
     >
-      <div class="flex items-center gap-2 border-b border-border/60 px-3">
-        <Search class="size-4 shrink-0 text-muted-foreground/70" />
+      <div class="flex items-center gap-2 border-b border-border px-3">
+        <Search class="size-4 shrink-0 text-muted-foreground" />
         <input
           bind:this={inputRef}
           bind:value={query}
           type="search"
           placeholder={`Search ${toolList.length} tools, pages, and actions…`}
           aria-label="Search"
-          class="h-12 w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
+          class="h-12 w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
         />
         <kbd
-          class="pointer-events-none hidden h-5 select-none items-center rounded-xs border border-border/60 bg-muted/60 px-1.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70 sm:inline-flex"
+          class="pointer-events-none hidden h-5 select-none items-center rounded-xs border border-border bg-muted/60 px-1.5 font-mono text-caption font-medium uppercase tracking-wider text-muted-foreground sm:inline-flex"
         >
           ESC
         </kbd>
@@ -391,12 +391,12 @@
       </div>
 
       <div
-        class="flex w-full items-center justify-between gap-2 border-t border-border/60 bg-muted/30 px-3 py-2"
+        class="flex w-full items-center justify-between gap-2 border-t border-border bg-muted/30 px-3 py-2"
       >
-        <div class="flex items-center gap-3 text-[11px] text-muted-foreground/70">
+        <div class="flex items-center gap-3 text-caption text-muted-foreground">
           <span class="inline-flex items-center gap-1.5">
             <kbd
-              class="inline-flex h-4 select-none items-center rounded-xs border border-border/60 bg-background px-1 font-mono text-[10px]"
+              class="inline-flex h-4 select-none items-center rounded-xs border border-border bg-background px-1 font-mono text-caption"
             >
               <CornerDownLeft class="size-2.5" />
             </kbd>
@@ -404,12 +404,12 @@
           </span>
           <span class="inline-flex items-center gap-1.5">
             <kbd
-              class="inline-flex h-4 select-none items-center rounded-xs border border-border/60 bg-background px-1 font-mono text-[10px]"
+              class="inline-flex h-4 select-none items-center rounded-xs border border-border bg-background px-1 font-mono text-caption"
             >
               ↑
             </kbd>
             <kbd
-              class="inline-flex h-4 select-none items-center rounded-xs border border-border/60 bg-background px-1 font-mono text-[10px]"
+              class="inline-flex h-4 select-none items-center rounded-xs border border-border bg-background px-1 font-mono text-caption"
             >
               ↓
             </kbd>

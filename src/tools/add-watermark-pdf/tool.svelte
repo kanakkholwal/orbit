@@ -164,7 +164,7 @@
         </div>
       {/if}
 
-      <div class="mt-6 flex flex-col gap-5 border-t border-border/60 pt-5">
+      <div class="mt-6 flex flex-col gap-5 border-t border-border pt-5">
         <div class="flex flex-col gap-2">
           <div class="flex items-center justify-between">
             <Label
