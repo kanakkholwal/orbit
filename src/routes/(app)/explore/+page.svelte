@@ -86,9 +86,7 @@
   keywords={exploreKeywords}
 />
 
-<main
-  class="relative z-5 mx-auto flex w-full max-w-app-content flex-col gap-10 pb-[max(env(safe-area-inset-bottom),1.5rem)] pt-4 sm:pt-8"
->
+<div class="relative mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 pb-10 pt-6 md:px-8 md:pt-8">
   <!-- Interior hero: left-aligned, one lede, then a rule carrying the facts. -->
   <header class="flex flex-col gap-6" in:fly={rise(10)}>
     <div class="flex flex-col gap-3">
@@ -234,4 +232,4 @@
       {/each}
     </div>
   {/if}
-</main>
+</div>
