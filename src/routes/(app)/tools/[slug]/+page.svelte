@@ -74,7 +74,7 @@
 {/snippet}
 
 {#if layout === "immersive"}
-  <div class="h-full min-h-0">
+  <div class="h-full min-h-0 overflow-clip">
     {@render toolBody()}
   </div>
 {:else}

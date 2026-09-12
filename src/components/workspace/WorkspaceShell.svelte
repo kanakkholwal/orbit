@@ -21,18 +21,21 @@
   const wideQuery = new MediaQuery("min-width: 1280px");
   const wide = $derived(wideQuery.current);
   const immersive = $derived(tool?.layout === "immersive");
+  const inlinePanel = $derived(wide && !immersive);
   const panelOpen = $derived(workspace.panelPinned && !immersive);
 
-  onNavigate(() => workspace.closeDrawers());
+  onNavigate(() => {
+    workspace.closeDrawers();
+  });
 
   $effect(() => {
-    if (wide) workspace.closeDrawers();
+    if (inlinePanel) workspace.closeDrawers();
   });
 </script>
 
 <Tooltip.Provider delayDuration={400}>
-  <div class={cn("flex w-full overflow-hidden bg-canvas", appState.isTauri ? "h-full" : "h-dvh")}>
-    <ShellRail {wide} class="hidden md:flex" />
+  <div class={cn("flex w-full overflow-clip bg-canvas", appState.isTauri ? "h-full" : "h-dvh")}>
+    <ShellRail wide={inlinePanel} class="hidden md:flex" />
 
     {#if wide}
       <aside
@@ -47,7 +50,7 @@
       </aside>
     {/if}
 
-    {#if wide && !immersive}
+    {#if inlinePanel}
       <button
         type="button"
         onclick={() => workspace.togglePanel(true)}
@@ -67,7 +70,7 @@
     {/if}
 
     <div
-      class="workspace-surface flex min-w-0 flex-1 flex-col overflow-hidden md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
+      class="workspace-surface flex min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
     >
       <ContextBar {tool} {wide} />
 
@@ -103,7 +106,7 @@
   </div>
 </Tooltip.Provider>
 
-{#if !wide}
+{#if !inlinePanel}
   <Drawer.Root
     bind:open={workspace.panelDrawerOpen}
     direction={isMobile.current ? "bottom" : "left"}
@@ -115,6 +118,9 @@
     </Drawer.Content>
   </Drawer.Root>
 
+{/if}
+
+{#if !wide}
   {#if workspace.inspector}
     <Drawer.Root
       bind:open={workspace.inspectorDrawerOpen}

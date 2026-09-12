@@ -1,53 +1,31 @@
 <script lang="ts">
-    import { Button } from "$components/ui/button";
-    import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/svelte";
-    import { IconFileText as FileTextIcon, IconPlus as PlusIcon } from "@tabler/icons-svelte";
+  import UploadArea from "$components/ui/UploadArea.svelte";
+  import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/svelte";
 
-    const documentManagerCapability = useDocumentManagerCapability();
+  const documentManager = useDocumentManagerCapability();
 
-    let fileInput: HTMLInputElement;
-
-    const handleOpenFile = () => {
-        fileInput?.click();
-    };
-
-    const handleFileChange = async (e: Event) => {
-        const target = e.target as HTMLInputElement;
-        const file = target.files?.[0];
-        if (!file || !documentManagerCapability.provides) return;
-
-        const buffer = await file.arrayBuffer();
-        documentManagerCapability.provides.openDocumentBuffer({
-            buffer,
-            name: file.name,
-            autoActivate: true,
-        });
-        target.value = "";
-    };
+  async function openFiles(files: File[]) {
+    for (const [i, file] of files.entries()) {
+      documentManager.provides?.openDocumentBuffer({
+        buffer: await file.arrayBuffer(),
+        name: file.name,
+        autoActivate: i === files.length - 1,
+      });
+    }
+  }
 </script>
 
-<input
-    bind:this={fileInput}
-    type="file"
-    accept="application/pdf"
-    class="hidden"
-    onchange={handleFileChange}
-/>
-
-<div class="flex flex-1 items-center justify-center bg-muted/20">
-    <div class="max-w-xs text-center">
-        <div class="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-muted">
-            <FileTextIcon class="size-7 text-muted-foreground" />
-        </div>
-        <h2 class="mb-1.5 text-base font-semibold text-foreground">
-            No Documents Open
-        </h2>
-        <p class="mb-6 text-sm text-muted-foreground">
-            Open a PDF to get started. You can view multiple documents using tabs.
+<div class="flex min-h-0 flex-1 items-center justify-center overflow-y-auto bg-canvas p-6 md:p-10">
+  <div class="w-full max-w-3xl">
+    <UploadArea accept=".pdf,application/pdf" onFilesSelected={openFiles}>
+      {#snippet title()}
+        <h3 class="text-heading-sm font-medium text-foreground">All documents closed</h3>
+      {/snippet}
+      {#snippet description()}
+        <p class="max-w-sm text-pretty text-body text-muted-foreground">
+          Drop a PDF to open it again. Each file opens in its own tab.
         </p>
-        <Button onclick={handleOpenFile} size="sm">
-            <PlusIcon class="size-4" />
-            Open PDF
-        </Button>
-    </div>
+      {/snippet}
+    </UploadArea>
+  </div>
 </div>

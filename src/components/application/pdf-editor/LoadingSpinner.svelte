@@ -1,28 +1,16 @@
 <script lang="ts">
-    import { IconLoader2 as LoaderCircleIcon } from "@tabler/icons-svelte";
+  import { cn } from "$lib/utils";
+  import { IconLoader2 as Loader } from "@tabler/icons-svelte";
 
-    interface LoadingSpinnerProps {
-        size?: "sm" | "md" | "lg";
-        message?: string;
-        class?: string;
-    }
+  interface LoadingSpinnerProps {
+    message?: string;
+    class?: string;
+  }
 
-    let {
-        size = "md",
-        message,
-        class: className = "",
-    }: LoadingSpinnerProps = $props();
-
-    const sizeMap = {
-        sm: "size-3.5",
-        md: "size-4",
-        lg: "size-6",
-    };
+  let { message, class: className }: LoadingSpinnerProps = $props();
 </script>
 
-<div class="flex items-center gap-2 text-muted-foreground {className}">
-    <LoaderCircleIcon class="{sizeMap[size]} animate-spin" />
-    {#if message}
-        <span class="text-sm">{message}</span>
-    {/if}
+<div role="status" class={cn("flex flex-col items-center gap-3 text-body text-muted-foreground", className)}>
+  <Loader class="size-5 animate-spin text-primary" />
+  <span class={message ? undefined : "sr-only"}>{message ?? "Loading"}</span>
 </div>

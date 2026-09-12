@@ -1,81 +1,61 @@
 <script lang="ts">
-    import Icons from "$components/Icons.svelte";
-    import { cn } from "$lib/utils";
-    import { useCommand } from "@embedpdf/plugin-commands/svelte";
-    import { useRegisterAnchor } from "@embedpdf/plugin-ui/svelte";
+  import Icons from "$components/Icons.svelte";
+  import { cn } from "$lib/utils";
+  import { useCommand } from "@embedpdf/plugin-commands/svelte";
+  import { useRegisterAnchor } from "@embedpdf/plugin-ui/svelte";
+  import { chromeButton } from "./chrome";
 
-    interface Props {
-        commandId: string;
-        documentId: string;
-        variant?: "icon" | "text" | "icon-text";
-        itemId?: string;
-    }
+  interface Props {
+    commandId: string;
+    documentId: string;
+    variant?: "icon" | "text" | "icon-text";
+    itemId?: string;
+    class?: string;
+  }
 
-    let { commandId, documentId, variant = "icon", itemId }: Props = $props();
+  let { commandId, documentId, variant = "icon", itemId, class: className }: Props = $props();
 
-    const command = useCommand(
-        () => commandId,
-        () => documentId,
-    );
+  const command = useCommand(
+    () => commandId,
+    () => documentId
+  );
 
-    const finalItemId = $derived(itemId || commandId);
-    const registerAnchor = useRegisterAnchor(
-        () => documentId,
-        () => finalItemId,
-    );
+  const finalItemId = $derived(itemId || commandId);
+  const registerAnchor = useRegisterAnchor(
+    () => documentId,
+    () => finalItemId
+  );
 
-    function handleClick() {
-        if (command && !command.current?.disabled) {
-            command.current?.execute();
-        }
-    }
-
-    const baseClasses = $derived.by(() => {
-        switch (variant) {
-            case "text":
-                return "px-2.5 py-1 text-xs font-medium";
-            case "icon-text":
-                return "flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium";
-            default:
-                return "p-1.5";
-        }
-    });
-
-    const stateClasses = $derived.by(() => {
-        const cmd = command?.current;
-        if (!cmd || cmd.disabled) return "opacity-40 cursor-not-allowed";
-        if (cmd.active)
-            return "bg-primary/10 text-primary hover:bg-primary/15";
-        return "text-muted-foreground hover:text-foreground hover:bg-accent";
-    });
-
-    const cmdIconProps = $derived(command?.current?.iconProps || {});
+  const cmd = $derived(command?.current);
+  const state = $derived(!cmd || cmd.disabled ? "disabled" : cmd.active ? "active" : "idle");
+  const iconProps = $derived(cmd?.iconProps || {});
+  const shortcut = $derived(cmd?.shortcuts?.[0]);
 </script>
 
-{#if command?.current?.visible}
-    <button
-        use:registerAnchor
-        type="button"
-        class={cn(
-            "inline-flex items-center justify-center rounded-md transition-colors",
-            baseClasses,
-            stateClasses,
-        )}
-        onclick={handleClick}
-        disabled={command.current?.disabled}
-        data-item-id={itemId}
-        title={command.current?.label}
-    >
-        {#if command.current?.icon && (variant === "icon" || variant === "icon-text")}
-            <Icons
-                name={command.current.icon}
-                class="size-4"
-                primaryColor={cmdIconProps.primaryColor}
-                secondaryColor={cmdIconProps.secondaryColor}
-            />
-        {/if}
-        {#if variant === "text" || variant === "icon-text"}
-            <span>{command.current?.label}</span>
-        {/if}
-    </button>
+{#if cmd?.visible}
+  <button
+    use:registerAnchor
+    type="button"
+    class={cn(chromeButton({ shape: variant, state }), className)}
+    onclick={() => {
+      if (!cmd.disabled) cmd.execute();
+    }}
+    disabled={cmd.disabled}
+    aria-label={variant === "icon" ? cmd.label : undefined}
+    aria-pressed={cmd.active ? true : undefined}
+    data-item-id={itemId}
+    title={shortcut ? `${cmd.label} (${shortcut})` : cmd.label}
+  >
+    {#if cmd.icon && variant !== "text"}
+      <Icons
+        name={cmd.icon}
+        class="size-4.5 shrink-0"
+        primaryColor={iconProps.primaryColor}
+        secondaryColor={iconProps.secondaryColor}
+      />
+    {/if}
+    {#if variant !== "icon"}
+      <span class="truncate">{cmd.label}</span>
+    {/if}
+  </button>
 {/if}

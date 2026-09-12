@@ -97,6 +97,8 @@
     ZoomMode,
     ZoomPluginPackage,
   } from "@embedpdf/plugin-zoom/svelte";
+  import { Button } from "$components/ui/button";
+  import { IconAlertCircle as CircleAlert } from "@tabler/icons-svelte";
   import LoadingSpinner from "./LoadingSpinner.svelte";
   import SchemaMenu from "./SchemaMenu.svelte";
   import SchemaModal from "./SchemaModal.svelte";
@@ -138,7 +140,7 @@
     createPluginRegistration(DocumentManagerPluginPackage, {
       initialDocuments,
     }),
-    createPluginRegistration(ViewportPluginPackage, { viewportGap: 10 }),
+    createPluginRegistration(ViewportPluginPackage, { viewportGap: 16 }),
     createPluginRegistration(ScrollPluginPackage, {
       defaultStrategy: ScrollStrategy.Vertical,
     }),
@@ -210,21 +212,20 @@
 </script>
 
 {#if pdfEngine.error}
-  <div class="flex h-full items-center justify-center bg-muted/30">
-    <div
-      class="max-w-sm rounded-xl border border-destructive/20 bg-destructive/5 px-6 py-5"
-    >
-      <p class="text-sm font-medium text-destructive">
-        {pdfEngine.error.message}
-      </p>
+  <div class="flex h-full items-center justify-center bg-canvas p-6">
+    <div class="panel-card flex max-w-sm flex-col items-center gap-3 bg-background p-6 text-center" role="alert">
+      <CircleAlert class="size-5 text-destructive" />
+      <p class="text-body font-medium text-foreground">The PDF viewer didn't start</p>
+      <p class="text-body text-muted-foreground">{pdfEngine.error.message}</p>
+      <Button variant="outline" onclick={() => window.location.reload()}>Reload</Button>
     </div>
   </div>
 {:else if pdfEngine.isLoading || !pdfEngine.engine}
-  <div class="flex h-full items-center justify-center">
-    <LoadingSpinner />
+  <div class="flex h-full items-center justify-center bg-canvas">
+    <LoadingSpinner message="Starting the viewer" />
   </div>
 {:else}
-  <div class="flex h-full flex-1 flex-col overflow-hidden">
+  <div class="flex h-full flex-1 flex-col overflow-clip">
     <EmbedPDF
       engine={pdfEngine.engine}
       {logger}
@@ -251,8 +252,8 @@
             {/if}
           </div>
         {:else}
-          <div class="flex h-full items-center justify-center">
-            <LoadingSpinner message="Initializing..." />
+          <div class="flex h-full items-center justify-center bg-canvas">
+            <LoadingSpinner message="Starting the viewer" />
           </div>
         {/if}
       {/snippet}
@@ -298,7 +299,7 @@
     />
   {/if}
 
-  <div class="flex flex-1 overflow-hidden">
+  <div class="flex min-h-0 flex-1 overflow-clip">
     {#if leftMainSidebar}
       {@const SidebarRenderer = leftMainSidebar.renderer}
       <SidebarRenderer
@@ -309,12 +310,12 @@
       />
     {/if}
 
-    <div class="flex-1 overflow-hidden">
+    <div class="min-w-0 flex-1 overflow-clip bg-canvas">
       <DocumentContent {documentId}>
         {#snippet children({ documentState, isLoading, isError, isLoaded })}
           {#if isLoading}
             <div class="flex h-full items-center justify-center">
-              <LoadingSpinner message="Loading document..." />
+              <LoadingSpinner message={`Opening ${documentState?.name ?? "document"}`} />
             </div>
           {/if}
           {#if isError}
@@ -323,14 +324,14 @@
           {#if isLoaded}
             <div class="relative h-full w-full">
               <GlobalPointerProvider {documentId}>
-                <Viewport class="bg-muted/40" {documentId}>
+                <Viewport class="scrollbar-subtle bg-canvas" {documentId}>
                   <ZoomGestureWrapper {documentId}>
                     <Scroller {documentId}>
                       {#snippet renderPage(page)}
                         <Rotate
                           {documentId}
                           pageIndex={page.pageIndex}
-                          style="background-color: #fff"
+                          style="background-color: #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 3px rgb(0 0 0 / 0.08)"
                         >
                           <PagePointerProvider
                             {documentId}

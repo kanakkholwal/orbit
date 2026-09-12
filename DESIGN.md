@@ -249,7 +249,7 @@ tools panel, context bar, workspace, inspector, action bar.
 | Region | Size | Behaviour |
 | --- | --- | --- |
 | Rail | 56px, `bg-canvas` | Logo mark, Home, Explore, Search, panel toggle, up to 5 recent tools, Docs, desktop app (web), theme. 40px targets, tooltips on the right. Hidden below `md`. |
-| Tools panel | 256px, `bg-canvas` | Filterable tool list by category, no visible scrollbar. Inline from 1280px; opens and closes with a 300ms width + fade (`ease-craft`), remembered in `localStorage`. An 8px edge strip between panel and card toggles it (hover shows a line, `w-resize`/`e-resize` cursor). Below 1280px a left drawer; on mobile a bottom drawer. Hidden for immersive tools. |
+| Tools panel | 256px, `bg-canvas` | Filterable tool list by category, no visible scrollbar. Inline from 1280px; opens and closes with a 300ms width + fade (`ease-craft`), remembered in `localStorage`. An 8px edge strip between panel and card toggles it (hover shows a line, `w-resize`/`e-resize` cursor). Below 1280px, and on immersive tools, a left drawer; on mobile a bottom drawer. |
 | Workspace card | fills the rest | `workspace-surface`: `--workspace` (`#ffffff` light, `#111111` dark) and re-points `--background` for everything inside, so the card lifts off the `#0a0a0a` canvas in dark as it does in light. 14px radius, hairline, `shadow-xs`, 8px inset from `md`. Full-bleed on mobile. |
 | Context bar | 56px min | Tool icon + `h1` title + category, or the page name. Centred search trigger (`md`+), Settings button when an inspector exists below 1280px, Share. |
 | Workspace (`main#workspace`) | flex-1 | The only scroll container. Tool sticky bars stick to it. |
@@ -357,6 +357,30 @@ twice. Files meant for one page are discarded if the user lands anywhere else.
 Tauri drops go to the earliest registered `UploadArea` on the page (the primary intake), not the
 last one mounted.
 
+### PDF editor chrome (View PDF, Edit PDF)
+
+The embedpdf renderers in [pdf-editor](src/components/application/pdf-editor) build every control
+from `chromeButton` in `chrome.ts`, so the chrome follows the 36px row of the height table.
+
+| Part | Spec |
+| --- | --- |
+| Document tabs | 48px row, `border-b`. 176px tabs, 36px tall, `rounded-lg`: active `bg-muted`, medium weight, emerald PDF icon. 28px close button (on hover or active with a fine pointer, always visible on touch). Arrow keys move between tabs. 36px "Open another PDF". |
+| Toolbars | 48px min, `bg-background`, `border-b`, 8px side padding. Secondary toolbars look the same (no tint). 20px dividers. |
+| Command buttons | 36px, `rounded-lg`, 18px icon. Idle muted, hover `bg-muted/60`; active (pressed) `bg-muted` + emerald; disabled `text-placeholder`, no opacity. `aria-label` + shortcut in the title. |
+| Mode tabs | `SegmentedControl size="sm"` look: 36px `bg-muted` track, white active thumb with `shadow-sm`. |
+| Zoom | 36px bordered field (percentage + menu chevron), then zoom out/in buttons. |
+| Canvas | `bg-canvas`, 16px page gap, white pages with a hairline and soft shadow. |
+| Page controls | Floating `chromeFloating` pill at the bottom: prev, 36px page field, "of N", next. Shows on scroll, hides after 2.5s unless hovered or focused. |
+| Sidebars | Left pages panel 256px (Thumbnails / Outline segmented header), right search and comments 320px, each with a 48px header and close button. Bottom drawer on mobile. |
+| Menus | `chromeFloating`, 224px min, 36px rows (44px in the mobile bottom drawer), muted icons, emerald check for the active item, caption section labels. Arrow keys, Home/End, Esc, and flips above the anchor near the bottom edge. |
+| Selection menu | `chromeFloating` toolbar of 36px buttons, 6px from the selection. |
+| Link | Right drawer (bottom on mobile): `SegmentedControl` URL/Page, 40px field, ghost Cancel + primary Insert link. |
+| States | Loading: emerald spinner + `text-body` message. Locked PDF: card with lock tile, password field, wrong-password error. Unreadable PDF and engine failure: card with the reason. All tabs closed: `UploadArea`. |
+
+Immersive tools keep the canvas width stable: the rail's panel toggle opens the tools panel as a
+left drawer instead of pushing the editor. Shell containers use `overflow-clip`, so focus or
+`scrollIntoView` inside the editor can never shift the shell sideways.
+
 ---
 
 ## Components
@@ -403,6 +427,25 @@ pillar to the output pillar on a 7s loop; the cloud is crossed out. Height is ca
 Transparent cards, `rounded-2xl md:rounded-3xl`, `hover:shadow-lg`. Visuals are white inset cards
 over the canvas. Every card states a user benefit in plain language (privacy, offline, signing,
 tool range, no account). No stack names, protocols or runtimes on marketing pages.
+
+### Boot splash
+
+Inline in [app.html](src/app.html), so it paints before any CSS or font loads: `--canvas` ground,
+the 44px logo mark in `--foreground` drawing in (1.1s), a 96px × 2px track with an emerald segment
+sliding across. Content fades in after 150ms, so fast loads show only the canvas. A head script
+applies the stored mode-watcher theme before first paint. The root layout sets `data-done` on
+mount (200ms fade), then removes it.
+
+### Error pages
+
+`ErrorState` ([common/ErrorState.svelte](src/components/common/ErrorState.svelte)) drives both
+error pages: tilted "Error 404" chip, `text-display` headline ("This tool doesn't exist"), one-line
+lede, primary + outline actions, collapsible error details for non-404s, four popular tools as 36px
+icon rows on a 404, and a support link.
+
+- `src/routes/+error.svelte`: inside `RailFrame` (navbar, footer, rails), hero spacing.
+- `src/routes/(app)/+error.svelte`: inside the workspace shell. On a 404 the primary action opens
+  the tool search.
 
 ### Tilted chips
 

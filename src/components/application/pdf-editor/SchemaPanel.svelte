@@ -1,297 +1,142 @@
 <script lang="ts">
-    import { useTranslations } from "@embedpdf/plugin-i18n/svelte";
-    import {
-        type SidebarRendererProps,
-        useItemRenderer,
-        useUICapability,
-        useUIState,
-    } from "@embedpdf/plugin-ui/svelte";
-    import { IconX as XIcon } from "@tabler/icons-svelte";
-    import { onMount } from "svelte";
+  import * as Drawer from "$components/ui/drawer";
+  import { IsMobile } from "$lib/hooks/is-mobile.svelte";
+  import { cn } from "$lib/utils";
+  import { useTranslations } from "@embedpdf/plugin-i18n/svelte";
+  import {
+    type SidebarRendererProps,
+    useItemRenderer,
+    useUICapability,
+    useUIState,
+  } from "@embedpdf/plugin-ui/svelte";
+  import { IconX as X } from "@tabler/icons-svelte";
+  import { chromeButton } from "./chrome";
 
-    type BottomSheetHeight = "half" | "full";
+  let { schema, documentId, isOpen, onClose }: SidebarRendererProps = $props();
 
-    interface Props extends SidebarRendererProps {}
+  const PANEL_TITLES: Record<string, string> = {
+    "search-panel": "Search",
+    "comment-panel": "Comments",
+  };
 
-    let { schema, documentId, isOpen, onClose }: Props = $props();
+  const isMobile = new IsMobile();
+  const { provides } = useUICapability();
+  const uiState = useUIState(() => documentId);
+  const { translate } = useTranslations(() => documentId);
+  const { getCustomComponent } = useItemRenderer();
 
-    const { provides } = useUICapability();
-    const uiState = useUIState(() => documentId);
-    const { translate } = useTranslations(() => documentId);
-    const { getCustomComponent: renderCustomComponent } = useItemRenderer();
+  const scope = $derived(provides ? provides.forDocument(documentId) : null);
+  const tabs = $derived(schema.content.type === "tabs" ? (schema.content.tabs ?? []) : []);
+  const placement = $derived(schema.position?.placement ?? "left");
 
-    const scope = $derived(provides ? provides.forDocument(documentId) : null);
+  let localTabId = $state<string | null>(null);
 
-    let isMobile = $state(
-        typeof window !== "undefined" && window.innerWidth < 768,
+  const resolvedTabId = $derived.by(() => {
+    if (schema.content.type !== "tabs") return null;
+    return (
+      uiState?.state?.sidebarTabs?.[schema.id] ??
+      scope?.getSidebarTab?.(schema.id) ??
+      schema.content.defaultTab ??
+      tabs[0]?.id ??
+      null
     );
+  });
 
-    let sheetHeight = $state<BottomSheetHeight>("half");
-    let isDragging = $state(false);
-    let startY = $state(0);
-    let currentY = $state(0);
+  const activeTab = $derived(
+    tabs.find((t) => t.id === (localTabId ?? resolvedTabId)) ?? tabs.find((t) => t.id === resolvedTabId) ?? tabs[0]
+  );
 
-    let localActiveTabId = $state<string | null>(null);
+  $effect(() => {
+    if (localTabId !== null && resolvedTabId === localTabId) localTabId = null;
+  });
 
-    const resolvedActiveTabId = $derived.by(() => {
-        if (schema.content.type !== "tabs") return null;
-        const availableTabs = schema.content.tabs ?? [];
-        const stateActive = uiState?.state?.sidebarTabs?.[schema.id];
-        if (stateActive) return stateActive;
-        const scopeActive = scope?.getSidebarTab?.(schema.id);
-        if (scopeActive) return scopeActive;
-        return (
-            stateActive ??
-            schema.content.defaultTab ??
-            availableTabs[0]?.id ??
-            null
-        );
-    });
+  function selectTab(tabId: string) {
+    if (tabId === activeTab?.id) return;
+    localTabId = tabId;
+    scope?.setSidebarTab(schema.id, tabId);
+  }
 
-    const activeTabId = $derived(localActiveTabId ?? resolvedActiveTabId);
-
-    const activeTab = $derived.by(() => {
-        if (schema.content.type !== "tabs") return null;
-        const availableTabs = schema.content.tabs ?? [];
-        return (
-            availableTabs.find((tab) => tab.id === activeTabId) ??
-            availableTabs.find((tab) => tab.id === resolvedActiveTabId) ??
-            availableTabs[0]
-        );
-    });
-
-    $effect(() => {
-        if (
-            localActiveTabId !== null &&
-            resolvedActiveTabId === localActiveTabId
-        ) {
-            localActiveTabId = null;
-        }
-    });
-
-    function handleTabSelect(tabId: string) {
-        if (tabId === activeTabId) return;
-        localActiveTabId = tabId;
-        if (scope) scope.setSidebarTab(schema.id, tabId);
-    }
-
-    function handleTouchStart(e: TouchEvent) {
-        if (!e.touches[0]) return;
-        isDragging = true;
-        startY = e.touches[0].clientY;
-        currentY = e.touches[0].clientY;
-    }
-
-    function handleTouchMove(e: TouchEvent) {
-        if (!isDragging || !e.touches[0]) return;
-        currentY = e.touches[0].clientY;
-    }
-
-    function handleTouchEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        const deltaY = currentY - startY;
-        const threshold = 100;
-
-        if (deltaY > threshold) {
-            if (sheetHeight === "full") sheetHeight = "half";
-            else onClose?.();
-        } else if (deltaY < -threshold) {
-            if (sheetHeight === "half") sheetHeight = "full";
-        }
-        startY = 0;
-        currentY = 0;
-    }
-
-    function handleMouseDown(e: MouseEvent) {
-        isDragging = true;
-        startY = e.clientY;
-        currentY = e.clientY;
-    }
-
-    function handleMouseMove(e: MouseEvent) {
-        if (!isDragging) return;
-        currentY = e.clientY;
-    }
-
-    function handleMouseUp() {
-        if (!isDragging) return;
-        isDragging = false;
-        const deltaY = currentY - startY;
-        const threshold = 100;
-
-        if (deltaY > threshold) {
-            if (sheetHeight === "full") sheetHeight = "half";
-            else onClose?.();
-        } else if (deltaY < -threshold) {
-            if (sheetHeight === "half") sheetHeight = "full";
-        }
-        startY = 0;
-        currentY = 0;
-    }
-
-    onMount(() => {
-        const checkMobile = () => {
-            isMobile = window.innerWidth < 768;
-        };
-        window.addEventListener("resize", checkMobile);
-        return () => window.removeEventListener("resize", checkMobile);
-    });
-
-    $effect(() => {
-        if (isDragging) {
-            const handleMove = (e: MouseEvent) => handleMouseMove(e);
-            const handleUp = () => handleMouseUp();
-            document.addEventListener("mousemove", handleMove);
-            document.addEventListener("mouseup", handleUp);
-            return () => {
-                document.removeEventListener("mousemove", handleMove);
-                document.removeEventListener("mouseup", handleUp);
-            };
-        }
-    });
-
-    function getPositionClasses(
-        placement: "left" | "right" | "top" | "bottom",
-    ): string {
-        switch (placement) {
-            case "left":
-                return "h-full border-r border-border bg-background";
-            case "right":
-                return "h-full border-l border-border bg-background";
-            case "top":
-                return "w-full border-b border-border bg-background";
-            case "bottom":
-                return "w-full border-t border-border bg-background";
-            default:
-                return "h-full bg-background";
-        }
-    }
-
-    const positionClasses = $derived(
-        getPositionClasses(schema.position?.placement ?? "left"),
-    );
-    const widthStyle = $derived(
-        schema.width ? `width: ${schema.width}` : undefined,
-    );
+  const componentId = $derived(
+    schema.content.type === "tabs"
+      ? activeTab?.componentId
+      : schema.content.type === "component"
+        ? schema.content.componentId
+        : undefined
+  );
+  const Body = $derived(componentId ? getCustomComponent(componentId) : undefined);
+  const title = $derived(PANEL_TITLES[schema.id] ?? "Panel");
 </script>
 
-{#snippet TabsHeader(availableTabs: any[])}
-    <div class="flex border-b border-border">
-        {#each availableTabs as tab (tab.id)}
-            {@const isActive = tab.id === (activeTab?.id ?? activeTabId)}
-            <button
-                type="button"
-                class="relative flex-1 px-3 py-2 text-xs font-medium transition-colors {isActive
-                    ? 'text-foreground'
-                    : 'text-muted-foreground hover:text-foreground'}"
-                onclick={() => handleTabSelect(tab.id)}
-                role="tab"
-                aria-selected={isActive}
-            >
-                {translate(tab.labelKey || tab.id, {
-                    fallback: tab.label || tab.id,
-                })}
-                {#if isActive}
-                    <span class="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-primary"></span>
-                {/if}
-            </button>
+{#snippet header()}
+  <div class="flex h-12 shrink-0 items-center gap-2 border-b border-border px-2">
+    {#if tabs.length > 0}
+      <div
+        role="tablist"
+        aria-label="Sidebar view"
+        class="grid h-9 min-w-0 flex-1 gap-0.5 rounded-lg bg-muted p-0.5"
+        style:grid-template-columns={`repeat(${tabs.length}, minmax(0, 1fr))`}
+      >
+        {#each tabs as tab (tab.id)}
+          {@const active = tab.id === activeTab?.id}
+          <button
+            type="button"
+            role="tab"
+            aria-selected={active}
+            onclick={() => selectTab(tab.id)}
+            class={cn(
+              "truncate rounded-md px-2 text-body outline-none transition-[background-color,color,box-shadow] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+              active ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {translate(tab.labelKey || tab.id, { fallback: tab.label || tab.id })}
+          </button>
         {/each}
-    </div>
-{/snippet}
-
-{#snippet TabContent()}
-    {#if activeTab?.componentId}
-        {@const Component = renderCustomComponent(activeTab.componentId)}
-        <div class="flex-1 overflow-auto">
-            {#if Component}
-                <Component
-                    {documentId}
-                    tabId={activeTab.id}
-                    {onClose}
-                />
-            {/if}
-        </div>
-    {/if}
-{/snippet}
-
-{#if isOpen}
-    {#if isMobile}
-        {@const heightClass = sheetHeight === "full" ? "h-[100vh]" : "h-[50vh]"}
-        {@const dragOffset = isDragging ? Math.max(0, currentY - startY) : 0}
-
-        <button
-            class="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm"
-            onclick={onClose}
-            tabindex="-1"
-            title="Close"
-        ></button>
-
-        <div
-            class="fixed bottom-0 left-0 right-0 z-50 {heightClass} flex flex-col rounded-t-2xl bg-background shadow-2xl transition-all duration-300"
-            style:transform="translateY({dragOffset}px)"
-            data-panel-id={schema.id}
-        >
-            <div
-                class="flex cursor-grab items-center justify-between px-4 py-3 active:cursor-grabbing"
-                ontouchstart={handleTouchStart}
-                ontouchmove={handleTouchMove}
-                ontouchend={handleTouchEnd}
-                onmousedown={handleMouseDown}
-                role="button"
-                tabindex="-1"
-            >
-                <div class="flex flex-1 justify-center">
-                    <div class="h-1 w-8 rounded-full bg-muted-foreground/25"></div>
-                </div>
-                <button
-                    onclick={onClose}
-                    class="ml-2 rounded-md p-1 transition-colors hover:bg-accent"
-                    aria-label="Close panel"
-                >
-                    <XIcon class="size-4 text-muted-foreground" />
-                </button>
-            </div>
-
-            {#if schema.content.type === "tabs"}
-                {@const availableTabs = schema.content.tabs ?? []}
-                {@render TabsHeader(availableTabs)}
-                {@render TabContent()}
-            {:else if schema.content.type === "component"}
-                {#if schema.content.componentId}
-                    {@const Component = renderCustomComponent(schema.content.componentId)}
-                    <div class="flex-1 overflow-auto">
-                        {#if Component}
-                            <Component {documentId} {onClose} />
-                        {/if}
-                    </div>
-                {/if}
-            {/if}
-        </div>
+      </div>
     {:else}
-        {#if schema.content.type === "tabs"}
-            {@const availableTabs = schema.content.tabs ?? []}
-            <div
-                class="{positionClasses} flex h-full flex-col"
-                style={widthStyle}
-                data-panel-id={schema.id}
-            >
-                {@render TabsHeader(availableTabs)}
-                {@render TabContent()}
-            </div>
-        {:else if schema.content.type === "component"}
-            {#if schema.content.componentId}
-                {@const Component = renderCustomComponent(schema.content.componentId)}
-                <div
-                    class="{positionClasses} h-full"
-                    style={widthStyle}
-                    data-panel-id={schema.id}
-                >
-                    {#if Component}
-                        <Component {documentId} {onClose} />
-                    {/if}
-                </div>
-            {/if}
-        {/if}
+      <h2 class="min-w-0 flex-1 truncate px-2 text-body font-medium text-foreground">{title}</h2>
     {/if}
+    <button type="button" onclick={() => onClose?.()} aria-label="Close panel" class={chromeButton({ shape: "icon" })}>
+      <X class="size-4" />
+    </button>
+  </div>
+{/snippet}
+
+{#snippet body()}
+  <div class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto overscroll-contain">
+    {#if Body}
+      <Body {documentId} tabId={activeTab?.id} {onClose} />
+    {/if}
+  </div>
+{/snippet}
+
+{#if isMobile.current}
+  <Drawer.Root
+    open={isOpen}
+    onOpenChange={(open) => {
+      if (!open) onClose?.();
+    }}
+    direction="bottom"
+    shouldScaleBackground={false}
+  >
+    <Drawer.Content class="h-[70dvh] max-h-[85dvh] rounded-t-3xl" data-panel-id={schema.id}>
+      <Drawer.Title class="sr-only">{tabs.length > 0 ? (activeTab?.label ?? title) : title}</Drawer.Title>
+      <div class="mt-2 flex min-h-0 flex-1 flex-col">
+        {@render header()}
+        {@render body()}
+      </div>
+    </Drawer.Content>
+  </Drawer.Root>
+{:else if isOpen}
+  <aside
+    data-panel-id={schema.id}
+    aria-label={tabs.length > 0 ? "Pages" : title}
+    class={cn(
+      "flex h-full w-64 shrink-0 flex-col border-border bg-background",
+      placement === "right" ? "border-l" : "border-r"
+    )}
+    style:width={schema.width}
+  >
+    {@render header()}
+    {@render body()}
+  </aside>
 {/if}

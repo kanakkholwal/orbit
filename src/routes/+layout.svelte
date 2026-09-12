@@ -30,10 +30,13 @@
   // so we don't miss the event when the browser fires it early.
   setupPwa();
 
-  // Remove the boot splash screen after the app is mounted
   onMount(async () => {
     await tick();
-    document.getElementById("boot")?.remove();
+    const boot = document.getElementById("boot");
+    if (boot) {
+      boot.dataset.done = "";
+      setTimeout(() => boot.remove(), 220);
+    }
 
     // Initialize global app state
     await appState.init();

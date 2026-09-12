@@ -1,13 +1,13 @@
 <script lang="ts">
-    import Search from "./Search.svelte";
+  import Search from "./Search.svelte";
 
-    interface SearchSidebarProps {
-        documentId: string;
-    }
+  interface SearchSidebarProps {
+    documentId: string;
+  }
 
-    let { documentId }: SearchSidebarProps = $props();
+  let { documentId }: SearchSidebarProps = $props();
 </script>
 
-<div class="flex h-full w-72 flex-col bg-background">
-    <Search {documentId} />
+<div class="flex h-full w-full flex-col bg-background">
+  <Search {documentId} />
 </div>

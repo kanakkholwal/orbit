@@ -1,15 +1,10 @@
 <script lang="ts">
+    import SegmentedControl from "$components/tool/SegmentedControl.svelte";
     import { Button } from "$components/ui/button";
+    import * as Drawer from "$components/ui/drawer";
     import { Input } from "$components/ui/input";
     import { Label } from "$components/ui/label";
-    import {
-        Dialog,
-        DialogContent,
-        DialogDescription,
-        DialogFooter,
-        DialogHeader,
-        DialogTitle,
-    } from "$components/ui/dialog";
+    import { IsMobile } from "$lib/hooks/is-mobile.svelte";
     import {
         ignore,
         PdfActionType,
@@ -49,6 +44,8 @@
     const annotationCapability = useAnnotationCapability();
     const selectionCapability = useSelectionCapability();
     const { translate } = useTranslations(() => documentId);
+    const isMobile = new IsMobile();
+    const uid = $props.id();
 
     let activeTab = $state<LinkTab>("url");
     let url = $state("");
@@ -181,116 +178,93 @@
             createLinkOnAnnotation();
         } else if (source === "selection") {
             createLinkFromSelection();
-        } else {
-            if (!createLinkOnAnnotation()) {
-                createLinkFromSelection();
-            }
+        } else if (!createLinkOnAnnotation()) {
+            createLinkFromSelection();
         }
 
         onClose?.();
     }
 
     function handlePageInput(e: Event) {
-        const val = parseInt((e.target as HTMLInputElement).value, 10);
-        if (!isNaN(val)) {
+        const val = Number.parseInt((e.target as HTMLInputElement).value, 10);
+        if (!Number.isNaN(val)) {
             pageNumber = Math.max(1, Math.min(totalPages, val));
         }
     }
 </script>
 
-<Dialog open={isOpen} onOpenChange={onClose}>
-    <DialogHeader>
-        <DialogTitle>
-            {translate("link.title") || "Insert Link"}
-        </DialogTitle>
-        <DialogDescription>
-            {translate("link.description") || "Add a link destination"}
-        </DialogDescription>
-    </DialogHeader>
-    <DialogContent>
-        {#snippet children()}
-            <form
-                onsubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit();
-                }}
-                class="space-y-4"
-            >
-                <div class="flex gap-0 border-b border-border">
-                    <button
-                        type="button"
-                        class="relative px-3 py-2 text-sm font-medium transition-colors {activeTab ===
-                        'url'
-                            ? 'text-foreground'
-                            : 'text-muted-foreground hover:text-foreground'}"
-                        onclick={() => (activeTab = "url")}
-                    >
-                        {translate("link.url") || "URL"}
-                        {#if activeTab === "url"}
-                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-primary"></span>
-                        {/if}
-                    </button>
-                    <button
-                        type="button"
-                        class="relative px-3 py-2 text-sm font-medium transition-colors {activeTab ===
-                        'page'
-                            ? 'text-foreground'
-                            : 'text-muted-foreground hover:text-foreground'}"
-                        onclick={() => (activeTab = "page")}
-                    >
-                        {translate("link.page") || "Page"}
-                        {#if activeTab === "page"}
-                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-primary"></span>
-                        {/if}
-                    </button>
-                </div>
+<Drawer.Root
+    open={isOpen}
+    onOpenChange={(open) => {
+        if (!open) onClose?.();
+    }}
+    onAnimationEnd={(open) => {
+        if (!open) onExited?.();
+    }}
+    direction={isMobile.current ? "bottom" : "right"}
+    shouldScaleBackground={false}
+>
+    <Drawer.Content class={isMobile.current ? "max-h-[85dvh] rounded-t-3xl" : "w-96 max-w-96"}>
+        <form
+            onsubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+            }}
+            class="flex min-h-0 flex-1 flex-col"
+        >
+            <div class="flex flex-col gap-1 px-5 pb-4 pt-5">
+                <Drawer.Title class="text-subheading font-medium text-foreground">
+                    {translate("link.title") || "Insert link"}
+                </Drawer.Title>
+                <Drawer.Description class="text-body text-muted-foreground">
+                    {translate("link.description") || "Send readers to a website or another page."}
+                </Drawer.Description>
+            </div>
+
+            <div class="flex flex-col gap-6 overflow-y-auto px-5 pb-5">
+                <SegmentedControl
+                    name={`${uid}-target`}
+                    bind:value={activeTab}
+                    options={[
+                        { value: "url", label: translate("link.url") || "URL" },
+                        { value: "page", label: translate("link.page") || "Page" },
+                    ]}
+                />
 
                 {#if activeTab === "url"}
-                    <div class="space-y-1.5">
-                        <Label for="link-url-input" class="text-xs">
-                            {translate("link.enterUrl") || "Enter URL"}
-                        </Label>
-                        <Input
-                            id="link-url-input"
-                            type="url"
-                            bind:value={url}
-                            placeholder="https://example.com"
-                            class="h-9"
-                        />
+                    <div class="flex flex-col gap-1.5">
+                        <Label for={`${uid}-url`}>{translate("link.enterUrl") || "Enter URL"}</Label>
+                        <Input id={`${uid}-url`} type="url" bind:value={url} placeholder="https://example.com" />
                     </div>
                 {:else}
-                    <div class="space-y-1.5">
-                        <Label for="link-page-input" class="text-xs">
-                            {translate("link.enterPage") || "Page Number"}
-                        </Label>
+                    <div class="flex flex-col gap-1.5">
+                        <Label for={`${uid}-page`}>{translate("link.enterPage") || "Page number"}</Label>
                         <Input
-                            id="link-page-input"
+                            id={`${uid}-page`}
                             type="number"
                             min={1}
                             max={totalPages}
                             value={pageNumber}
                             oninput={handlePageInput}
-                            class="h-9"
                         />
-                        <p class="text-xs text-muted-foreground">
-                            {translate("link.pageRange", {
-                                params: { totalPages },
-                            }) || `1 to ${totalPages}`}
+                        <p class="text-body text-muted-foreground">
+                            {translate("link.pageRange", { params: { totalPages } }) || `1 to ${totalPages}`}
                         </p>
                     </div>
                 {/if}
-            </form>
-        {/snippet}
-    </DialogContent>
+            </div>
 
-    <DialogFooter>
-        {#snippet children()}
-            <Button variant="ghost" size="sm" onclick={onClose}>
-                {translate("common.cancel") || "Cancel"}
-            </Button>
-            <Button size="sm" disabled={!canSubmit} onclick={handleSubmit}>
-                {translate("link.link") || "Insert Link"}
-            </Button>
-        {/snippet}
-    </DialogFooter>
-</Dialog>
+            <div
+                class="mt-auto flex justify-end gap-2 border-t border-border px-5 pt-3"
+                style="padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);"
+            >
+                <Button type="button" variant="ghost" onclick={() => onClose?.()}>
+                    {translate("common.cancel") || "Cancel"}
+                </Button>
+                <Button type="submit" variant="primary" disabled={!canSubmit}>
+                    {translate("link.link") || "Insert link"}
+                </Button>
+            </div>
+        </form>
+    </Drawer.Content>
+</Drawer.Root>

@@ -17,7 +17,7 @@
 </script>
 
 {#if state.hasDocuments || state.viewerMounted}
-  <div class="h-full min-h-0 w-full overflow-hidden bg-card">
+  <div class="h-full min-h-0 w-full overflow-clip bg-background">
     <Editor
       initialDocuments={state.initialDocuments}
       bind:incomingDocuments={state.incomingDocuments}

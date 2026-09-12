@@ -1,122 +1,118 @@
 <script lang="ts">
-    import { Button } from "$components/ui/button";
-    import { Input } from "$components/ui/input";
-    import { useViewportCapability } from "@embedpdf/plugin-viewport/svelte";
-    import { useScroll } from "@embedpdf/plugin-scroll/svelte";
-    import { IconChevronLeft as ChevronLeftIcon, IconChevronRight as ChevronRightIcon } from "@tabler/icons-svelte";
+  import { cn } from "$lib/utils";
+  import { useScroll } from "@embedpdf/plugin-scroll/svelte";
+  import { useViewportCapability } from "@embedpdf/plugin-viewport/svelte";
+  import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-svelte";
+  import { chromeButton, chromeFloating } from "./chrome";
 
-    interface PageControlsProps {
-        documentId: string;
-    }
+  interface PageControlsProps {
+    documentId: string;
+  }
 
-    let { documentId }: PageControlsProps = $props();
+  let { documentId }: PageControlsProps = $props();
 
-    const viewport = useViewportCapability();
-    const scroll = useScroll(() => documentId);
+  const viewport = useViewportCapability();
+  const scroll = useScroll(() => documentId);
 
-    let isVisible = $state(false);
-    let isHovering = $state(false);
-    let hideTimeoutId: ReturnType<typeof setTimeout> | null = null;
-    let inputValue = $state("1");
+  let isVisible = $state(false);
+  let isHovering = $state(false);
+  let hasFocus = $state(false);
+  let hideTimer: ReturnType<typeof setTimeout> | null = null;
+  let inputValue = $state("1");
 
-    $effect(() => {
-        inputValue = scroll.state.currentPage.toString();
+  const currentPage = $derived(scroll.state.currentPage);
+  const totalPages = $derived(scroll.state.totalPages);
+
+  $effect(() => {
+    inputValue = currentPage.toString();
+  });
+
+  function scheduleHide() {
+    if (hideTimer) clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      if (!isHovering && !hasFocus) isVisible = false;
+    }, 2500);
+  }
+
+  $effect(() => {
+    if (!viewport.provides) return;
+    const unsubscribe = viewport.provides.onScrollActivity((activity) => {
+      if (activity.documentId !== documentId) return;
+      isVisible = true;
+      scheduleHide();
     });
-
-    const startHideTimer = () => {
-        if (hideTimeoutId) clearTimeout(hideTimeoutId);
-        hideTimeoutId = setTimeout(() => {
-            if (!isHovering) isVisible = false;
-        }, 3000);
+    return () => {
+      if (hideTimer) clearTimeout(hideTimer);
+      unsubscribe?.();
     };
+  });
 
-    $effect(() => {
-        if (!viewport.provides) return;
-
-        const unsubscribe = viewport.provides.onScrollActivity((activity) => {
-            if (activity.documentId === documentId) {
-                isVisible = true;
-                startHideTimer();
-            }
-        });
-
-        return () => {
-            if (hideTimeoutId) clearTimeout(hideTimeoutId);
-            unsubscribe?.();
-        };
-    });
-
-    const handlePageSubmit = (e: Event) => {
-        e.preventDefault();
-        const page = parseInt(inputValue);
-        if (!isNaN(page) && page >= 1 && page <= scroll.state.totalPages) {
-            scroll.provides?.scrollToPage?.({ pageNumber: page });
-        }
-    };
-
-    const handleInputChange = (e: Event) => {
-        const target = e.target as HTMLInputElement;
-        inputValue = target.value.replace(/[^0-9]/g, "");
-    };
+  const goTo = (pageNumber: number) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) scroll.provides?.scrollToPage?.({ pageNumber });
+  };
 </script>
 
 <div
-    role="toolbar"
-    aria-label="Page navigation"
-    tabindex="-1"
-    class="pointer-events-auto absolute bottom-4 left-1/2 z-50 -translate-x-1/2 transition-all duration-200"
-    style="opacity: {isVisible ? 1 : 0}; transform: translateX(-50%) translateY({isVisible ? '0' : '4px'})"
-    onmouseenter={() => {
-        isHovering = true;
-        isVisible = true;
-    }}
-    onmouseleave={() => {
-        isHovering = false;
-        startHideTimer();
-    }}
+  role="toolbar"
+  aria-label="Page navigation"
+  tabindex="-1"
+  class={cn(
+    "pointer-events-auto absolute bottom-4 left-1/2 z-40 -translate-x-1/2 transition-[opacity,translate] duration-200 ease-craft motion-reduce:transition-none",
+    isVisible || hasFocus ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0"
+  )}
+  onpointerenter={() => {
+    isHovering = true;
+    isVisible = true;
+  }}
+  onpointerleave={() => {
+    isHovering = false;
+    scheduleHide();
+  }}
+  onfocusin={() => (hasFocus = true)}
+  onfocusout={() => {
+    hasFocus = false;
+    scheduleHide();
+  }}
 >
-    <div
-        class="flex items-center gap-0.5 rounded-lg border border-border bg-background/95 p-0.5 shadow-lg backdrop-blur-sm"
+  <div class="{chromeFloating} flex items-center gap-1 p-1">
+    <button
+      type="button"
+      aria-label="Previous page"
+      class={chromeButton({ state: currentPage <= 1 ? "disabled" : "idle" })}
+      disabled={currentPage <= 1}
+      onclick={() => goTo(currentPage - 1)}
     >
-        <Button
-            variant="ghost"
-            size="icon-sm"
-            onclick={() => {
-                if (scroll.state.currentPage > 1)
-                    scroll.provides?.scrollToPage?.({
-                        pageNumber: scroll.state.currentPage - 1,
-                    });
-            }}
-            disabled={scroll.state.currentPage === 1}
-        >
-            <ChevronLeftIcon class="size-4" />
-        </Button>
+      <ChevronLeft class="size-4" />
+    </button>
 
-        <form onsubmit={handlePageSubmit} class="flex items-center gap-1">
-            <Input
-                type="text"
-                name="page"
-                value={inputValue}
-                oninput={handleInputChange}
-                class="h-7 w-9 px-0 text-center text-xs tabular-nums"
-            />
-            <span class="pr-1 text-xs text-muted-foreground">
-                / {scroll.state.totalPages}
-            </span>
-        </form>
+    <form
+      class="flex items-center gap-1.5 px-0.5"
+      onsubmit={(e) => {
+        e.preventDefault();
+        goTo(Number.parseInt(inputValue, 10));
+      }}
+    >
+      <input
+        type="text"
+        name="page"
+        inputmode="numeric"
+        aria-label={`Page number, 1 to ${totalPages}`}
+        value={inputValue}
+        oninput={(e) => (inputValue = e.currentTarget.value.replace(/[^0-9]/g, ""))}
+        onblur={() => (inputValue = currentPage.toString())}
+        class="h-9 w-11 rounded-lg border border-border bg-background text-center text-body tabular-nums text-foreground outline-none transition-colors duration-150 focus:border-ring"
+      />
+      <span class="whitespace-nowrap pr-1 text-body tabular-nums text-muted-foreground">of {totalPages}</span>
+    </form>
 
-        <Button
-            variant="ghost"
-            size="icon-sm"
-            onclick={() => {
-                if (scroll.state.currentPage < scroll.state.totalPages)
-                    scroll.provides?.scrollToPage?.({
-                        pageNumber: scroll.state.currentPage + 1,
-                    });
-            }}
-            disabled={scroll.state.currentPage === scroll.state.totalPages}
-        >
-            <ChevronRightIcon class="size-4" />
-        </Button>
-    </div>
+    <button
+      type="button"
+      aria-label="Next page"
+      class={chromeButton({ state: currentPage >= totalPages ? "disabled" : "idle" })}
+      disabled={currentPage >= totalPages}
+      onclick={() => goTo(currentPage + 1)}
+    >
+      <ChevronRight class="size-4" />
+    </button>
+  </div>
 </div>
