@@ -28,6 +28,16 @@ export class EditMetadataState extends PdfEngine {
 
   private pdfDoc: PDFDocument | null = null;
 
+  result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+  get resultFiles(): File[] {
+    return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+  }
+
+  downloadResult() {
+    if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+  }
+
   //  Actions 
 
   async loadFile(files: File[]) {
@@ -68,6 +78,7 @@ export class EditMetadataState extends PdfEngine {
     this.pdfDoc = null;
     this.pageCount = 0;
     this.isProcessing = false;
+    this.result = null;
 
     this.title = '';
     this.author = '';
@@ -202,7 +213,9 @@ export class EditMetadataState extends PdfEngine {
       const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
 
       const originalName = this.file?.file.name.replace(/\.pdf$/i, '');
-      this.downloadBlob(blob, `${originalName}_metadata-edited.pdf`);
+      const name = `${originalName}_metadata-edited.pdf`;
+      this.downloadBlob(blob, name);
+      this.result = { blob, name };
 
     },{
       loading: "Saving metadata...",

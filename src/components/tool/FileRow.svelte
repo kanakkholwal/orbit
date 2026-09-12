@@ -43,9 +43,9 @@
     {#if onRemove}
       <Button
         variant="ghost"
-        size="icon"
+        size="icon-sm"
         onclick={onRemove}
-        class="size-9 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+        class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
         aria-label={`Remove ${name}`}
       >
         <X class="size-4" />

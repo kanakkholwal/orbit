@@ -1,91 +1,60 @@
 <script lang="ts">
-  import { Button } from "$components/ui/button";
+  import { cn } from "$lib/utils";
+  import { IconLoader2 as Loader } from "@tabler/icons-svelte";
+  import { untrack } from "svelte";
   import type { BookmarkPdfState } from "./helper.svelte";
 
-  let { store } = $props<{ store: BookmarkPdfState }>();
-  let canvasEl: HTMLCanvasElement;
-  let wrapperEl: HTMLDivElement;
+  let { store, class: className }: { store: BookmarkPdfState; class?: string } = $props();
+
+  let canvasEl = $state<HTMLCanvasElement | null>(null);
+  let boxWidth = $state(0);
+  let boxHeight = $state(0);
+  let pageAspect = $state(1 / 1.414);
+  let rendering = $state(true);
+  let renderToken = 0;
+
+  const page = $derived(store.state.currentPage);
+  const stageWidth = $derived(Math.max(160, Math.min(boxWidth - 32, (boxHeight - 32) * pageAspect)));
 
   $effect(() => {
-    // Re-render when page changes
-    if (canvasEl && store.state.file) {
-      store.renderCurrentPage(canvasEl);
-    }
+    const target = canvasEl;
+    const current = page;
+    if (!target || !store.state.file) return;
+    untrack(() => render(target, current));
   });
 
-  function handleCanvasClick(e: MouseEvent) {
-    if (!store.state.isPicking) return;
-
-    const rect = canvasEl.getBoundingClientRect();
-    // Calculate Normalized PDF Coordinates (0-1 range usually safer, but using PDF points approx)
-    // PDF origin is bottom-left, Canvas is top-left.
-    // Basic implementation: pass raw pixel % for relative positioning or handle in helper logic
-
-    // Let's assume helper handles coordinate translation if needed.
-    // For now, passing Canvas visual coordinates for UI feedback.
-
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    // Dispatch event back to tool to fill modal
-    const event = new CustomEvent("destination-picked", {
-      detail: {
-        page: store.state.currentPage,
-        // Convert to PDF coordinate system approximation (72 DPI vs Display DPI)
-        // Simplified: just passing relative % might be better for responsive logic
-        x: x,
-        y: rect.height - y, // Invert Y
-      },
-    });
-    document.dispatchEvent(event);
-
-    store.state.isPicking = false; // Turn off picking mode
+  async function render(target: HTMLCanvasElement, current: number) {
+    const token = ++renderToken;
+    rendering = true;
+    const offscreen = document.createElement("canvas");
+    try {
+      await store.renderCurrentPage(offscreen, 1000);
+      if (token !== renderToken || current !== store.state.currentPage) return;
+      target.width = offscreen.width;
+      target.height = offscreen.height;
+      target.getContext("2d")?.drawImage(offscreen, 0, 0);
+      if (offscreen.height > 0) pageAspect = offscreen.width / offscreen.height;
+    } finally {
+      if (token === renderToken) rendering = false;
+    }
   }
 </script>
 
-<div class="flex flex-col h-full">
-  <div class="flex items-center justify-between p-2 border-b bg-muted/20">
-    <div class="flex items-center gap-2">
-      <Button
-        size="sm"
-        variant="outline"
-        disabled={store.state.currentPage <= 1}
-        onclick={() => store.state.currentPage--}
-      >
-        Prev
-      </Button>
-      <span class="text-sm font-mono"
-        >{store.state.currentPage} / {store.state.pageCount}</span
-      >
-      <Button
-        size="sm"
-        variant="outline"
-        disabled={store.state.currentPage >= store.state.pageCount}
-        onclick={() => store.state.currentPage++}
-      >
-        Next</Button
-      >
+<div
+  bind:clientWidth={boxWidth}
+  bind:clientHeight={boxHeight}
+  class={cn("relative flex w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-muted p-4", className)}
+>
+  {#if rendering}
+    <div class="absolute inset-0 z-10 flex items-center justify-center gap-2 bg-muted" aria-live="polite">
+      <Loader class="size-4 animate-spin text-primary" />
+      <span class="text-body text-muted-foreground">Loading page {page}</span>
     </div>
-    {#if store.state.isPicking}
-      <div
-        class="bg-blue-100 text-blue-700 px-3 py-1 rounded text-xs font-bold animate-pulse"
-      >
-        Click on page to set destination
-      </div>
-    {/if}
-  </div>
-
-  <div
-    bind:this={wrapperEl}
-    class="flex-1 overflow-auto bg-muted p-4 flex justify-center relative {store
-      .state.isPicking
-      ? 'cursor-crosshair'
-      : ''}"
-  >
-    <canvas
-      bind:this={canvasEl}
-      onclick={handleCanvasClick}
-      class="shadow-lg max-w-full"
-    ></canvas>
-  </div>
+  {/if}
+  <canvas
+    bind:this={canvasEl}
+    class="block h-auto bg-fixed-light shadow-sm"
+    style:width={`${stageWidth}px`}
+    aria-label={`Page ${page} of ${store.state.file?.name ?? "the PDF"}`}
+  ></canvas>
 </div>

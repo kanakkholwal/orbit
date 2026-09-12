@@ -1,220 +1,221 @@
 <script lang="ts">
-  import { FileRow, ToolBar, ToolFooter, ToolPanel } from "$components/tool";
-  import { Button } from "$components/ui/button";
-  import { Label } from "$components/ui/label";
   import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-  } from "$components/ui/select";
+    ChoiceList,
+    FileRow,
+    OptionGroup,
+    ProgressLine,
+    ResultCard,
+    SegmentedControl,
+    StatusPill,
+    ToolBar,
+    ToolFooter,
+  } from "$components/tool";
+  import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { cn } from "$lib/utils";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
   import {
-    IconAlignLeft as AlignLeft,
-    IconCircleCheck as CheckCircle2,
-    IconLoader2 as LoaderCircle,
-    IconCircleMinus as MinusCircle,
+    IconCircleCheck as CircleCheck,
+    IconDownload as Download,
+    IconListDetails as ListDetails,
     IconPlus as Plus,
+    IconRefresh as Refresh,
   } from "@tabler/icons-svelte";
   import { DeskewPdfState } from "./helper.svelte";
 
   const store = new DeskewPdfState();
-  let uploadArea: ReturnType<typeof UploadArea>;
+  let addInput = $state<HTMLInputElement | null>(null);
+  let detailId = $state<string | null>(null);
 
-  const thresholdLabel: Record<string, string> = {
-    "0.1": "0.1° · very sensitive",
-    "0.5": "0.5° · default",
-    "1.0": "1.0° · normal",
-    "2.0": "2.0° · less sensitive",
-  };
-  const dpiLabel: Record<string, string> = {
-    "100": "100 DPI · fast",
-    "150": "150 DPI · default",
-    "200": "200 DPI · better",
-    "300": "300 DPI · best",
-  };
+  const sensitivities = [
+    { value: "0.1", label: "Very high", hint: "Fixes even the slightest tilt, from 0.1°" },
+    { value: "0.5", label: "High", hint: "Fixes tilt of 0.5° or more. Best for most scans" },
+    { value: "1.0", label: "Normal", hint: "Fixes tilt of 1° or more" },
+    { value: "2.0", label: "Low", hint: "Only fixes clearly crooked pages, 2° or more" },
+  ];
+
+  const details = [
+    { value: "100", label: "Fast" },
+    { value: "150", label: "Standard" },
+    { value: "200", label: "Fine" },
+    { value: "300", label: "Finest" },
+  ];
+
+  const pendingCount = $derived(store.files.filter((f) => f.status === "pending").length);
+  const doneCount = $derived(store.doneFiles.length);
+  const showResult = $derived(!store.isProcessing && doneCount > 0);
+  const straightened = $derived(store.doneFiles.reduce((sum, f) => sum + (f.result?.correctedPages ?? 0), 0));
+  const detail = $derived(store.doneFiles.find((f) => f.id === detailId) ?? store.doneFiles.at(-1));
+  const plural = (n: number, word = "file") => `${n} ${word}${n === 1 ? "" : "s"}`;
 </script>
 
-<UploadArea
-  bind:this={uploadArea}
-  accept=".pdf"
-  multiple={true}
-  onFilesSelected={(files) => store.addFiles(files)}
-  class={store.files.length > 0 ? "hidden" : ""}
-/>
+{#if store.files.length === 0}
+  <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">Drop scanned PDFs to straighten</h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Find pages that were scanned at a slant and turn them back so the lines run straight.
+      </p>
+    {/snippet}
+  </UploadArea>
+{:else}
+  <div class="flex flex-col gap-4">
+    {#if showResult}
+      <ResultCard
+        title={straightened > 0 ? `Straightened ${plural(straightened, "page")}` : "Every page was already straight"}
+        description={doneCount === 1
+          ? "The file is downloaded."
+          : `${doneCount} files are downloaded as one ZIP.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResults()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={() => store.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="deskew-pdf" />
+      </ResultCard>
+    {/if}
 
-{#if store.files.length > 0}
-  <div class="flex flex-col gap-8">
     <ToolBar
-      label="Documents"
+      label="Files"
       count={store.files.length}
-      onReset={() => store.reset()}
+      meta={formatBytes(store.totalSize)}
+      onReset={store.isProcessing ? undefined : () => store.reset()}
       resetLabel="Clear all"
     >
       {#snippet actions()}
-        <Button
-          variant="outline"
-          size="sm"
-          onclick={() => uploadArea.click()}
-          disabled={store.isProcessing}
-          class="rounded-sm"
-        >
-          <Plus class="size-3.5" />
-          <span class="hidden sm:inline">Add</span>
+        <Button variant="outline" size="sm" disabled={store.isProcessing} onclick={() => addInput?.click()}>
+          <Plus />
+          Add files
         </Button>
       {/snippet}
     </ToolBar>
 
-    <ToolPanel title="Files" counter={store.files.length}>
-      <ul class="flex flex-col gap-2">
-        {#each store.files as file (file.id)}
-          <li>
-            <FileRow
-              name={file.file.name}
-              onRemove={!store.isProcessing
-                ? () => store.removeFile(file.id)
-                : undefined}
-            >
-              <span class="font-mono tabular-nums">
-                {formatBytes(file.originalSize)}
-              </span>
-            </FileRow>
-          </li>
-        {/each}
-      </ul>
-    </ToolPanel>
-
-    <ToolPanel title="Settings">
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div class="flex flex-col gap-2">
-          <Label
-            for="deskew-threshold"
-            class="label-eyebrow text-muted-foreground"
+    <ul class="flex flex-col gap-2">
+      {#each store.files as file (file.id)}
+        <li>
+          <FileRow
+            name={file.file.name}
+            onRemove={file.status === "pending" && !store.isProcessing ? () => store.removeFile(file.id) : undefined}
           >
-            Threshold · degrees
-          </Label>
-          <Select type="single" bind:value={store.threshold}>
-            <SelectTrigger id="deskew-threshold" class="h-10 rounded-sm">
-              {thresholdLabel[store.threshold] || "0.5° · default"}
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="0.1">0.1° · very sensitive</SelectItem>
-              <SelectItem value="0.5">0.5° · default</SelectItem>
-              <SelectItem value="1.0">1.0° · normal</SelectItem>
-              <SelectItem value="2.0">2.0° · less sensitive</SelectItem>
-            </SelectContent>
-          </Select>
-          <p class="text-xs leading-relaxed text-muted-foreground">
-            Pages with skew below this angle are left untouched.
-          </p>
-        </div>
+            <span>{formatBytes(file.originalSize)}</span>
+            {#if file.status === "done" && file.result}
+              <span>· {file.result.correctedPages} of {plural(file.result.totalPages, "page")} straightened</span>
+            {/if}
 
-        <div class="flex flex-col gap-2">
-          <Label
-            for="deskew-dpi"
-            class="label-eyebrow text-muted-foreground"
-          >
-            Quality · DPI
-          </Label>
-          <Select type="single" bind:value={store.dpi}>
-            <SelectTrigger id="deskew-dpi" class="h-10 rounded-sm">
-              {dpiLabel[store.dpi] || "150 DPI · default"}
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="100">100 DPI · fast</SelectItem>
-              <SelectItem value="150">150 DPI · default</SelectItem>
-              <SelectItem value="200">200 DPI · better</SelectItem>
-              <SelectItem value="300">300 DPI · best</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </ToolPanel>
-
-    {#if store.lastResult}
-      <ToolPanel
-        title="Last result"
-        description={store.lastProcessedFileName}
-      >
-        <dl
-          class="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border/60"
-        >
-          <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="label-eyebrow text-muted-foreground">
-              Total pages
-            </dt>
-            <dd class="font-mono text-2xl tabular-nums text-foreground">
-              {String(store.lastResult.totalPages).padStart(2, "0")}
-            </dd>
-          </div>
-          <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="label-eyebrow text-muted-foreground">
-              Corrected
-            </dt>
-            <dd class="font-mono text-2xl tabular-nums text-success">
-              {String(store.lastResult.correctedPages).padStart(2, "0")}
-            </dd>
-          </div>
-        </dl>
-
-        <ul
-          class="mt-4 max-h-56 overflow-y-auto rounded-sm border border-border bg-muted/20 divide-y divide-border"
-        >
-          {#each store.lastResult.angles as angle, idx}
-            <li class="flex items-center justify-between px-4 py-2">
-              <span
-                class="label-eyebrow text-muted-foreground"
-              >
-                Page {String(idx + 1).padStart(2, "0")}
-              </span>
-              <div class="flex items-center gap-2">
-                <span
-                  class={cn(
-                    "font-mono text-sm tabular-nums",
-                    store.lastResult.corrected[idx]
-                      ? "font-semibold text-success"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {angle > 0 ? "+" : ""}{angle.toFixed(2)}°
-                </span>
-                {#if store.lastResult.corrected[idx]}
-                  <span
-                    class="rounded-xs bg-success/15 px-1.5 py-0.5 label-eyebrow text-success"
+            {#snippet trailing()}
+              {#if file.status === "processing"}
+                <StatusPill status="processing" label="Straightening" />
+              {:else if file.status === "done"}
+                <StatusPill status="done" />
+                {#if doneCount > 1}
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    class="text-muted-foreground hover:text-foreground"
+                    aria-label={`Show page details for ${file.file.name}`}
+                    aria-pressed={detail?.id === file.id}
+                    onclick={() => (detailId = file.id)}
                   >
-                    Fixed
+                    <ListDetails class="size-4" />
+                  </Button>
+                {/if}
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  class="text-muted-foreground hover:text-foreground"
+                  aria-label={`Download straightened ${file.file.name}`}
+                  onclick={() => store.downloadOne(file.id)}
+                >
+                  <Download class="size-4" />
+                </Button>
+              {:else if file.status === "error"}
+                <StatusPill status="error" label={file.error || "Failed"} />
+              {/if}
+            {/snippet}
+          </FileRow>
+        </li>
+      {/each}
+    </ul>
+
+    {#if detail?.result}
+      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4" aria-label="Page details">
+        <div class="flex min-w-0 flex-col gap-0.5">
+          <h2 class="text-body font-medium text-foreground">Page by page</h2>
+          <p class="truncate text-caption text-muted-foreground" title={detail.file.name}>{detail.file.name}</p>
+        </div>
+        <ul class="scrollbar-subtle flex max-h-72 flex-col divide-y divide-border overflow-y-auto rounded-xl border border-border">
+          {#each detail.result.angles as angle, idx (idx)}
+            <li class="flex items-center justify-between gap-3 px-3 py-2 text-body">
+              <span class="text-foreground">Page {idx + 1}</span>
+              <span class="flex items-center gap-3">
+                <span class="text-caption tabular-nums text-muted-foreground">
+                  Tilted {angle > 0 ? "+" : ""}{angle.toFixed(2)}°
+                </span>
+                {#if detail.result.corrected[idx]}
+                  <span class="inline-flex items-center gap-1 text-caption font-medium text-success">
+                    <CircleCheck class="size-3.5" />
+                    Straightened
                   </span>
                 {:else}
-                  <MinusCircle class="size-3 text-muted-foreground" />
+                  <span class="text-caption text-muted-foreground">Left as is</span>
                 {/if}
-              </div>
+              </span>
             </li>
           {/each}
         </ul>
-      </ToolPanel>
+      </section>
     {/if}
 
-    <ToolFooter
-      hint={store.isProcessing
-        ? store.progress.text || "Processing"
-        : "Straighten skew"}
-    >
-      <Button
-        size="lg"
-        class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
-        onclick={() => store.process()}
-        disabled={store.isProcessing}
-      >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progress.text || "Processing"}
-        {:else}
-          <AlignLeft class="size-4" />
-          Straighten PDF
-        {/if}
-      </Button>
-    </ToolFooter>
+    <input
+      bind:this={addInput}
+      type="file"
+      accept=".pdf,application/pdf"
+      multiple
+      class="hidden"
+      onchange={(e) => {
+        const picked = Array.from(e.currentTarget.files ?? []);
+        if (picked.length > 0) store.addFiles(picked);
+        e.currentTarget.value = "";
+      }}
+    />
   </div>
+
+  <WorkspaceInspector title="Straightening">
+    <div class="flex flex-col gap-6">
+      <OptionGroup label="Sensitivity" description="Pages tilted less than this are left as they are.">
+        <ChoiceList name="deskew-threshold" choices={sensitivities} bind:value={store.threshold} />
+      </OptionGroup>
+
+      <OptionGroup label="Scan detail" description="Finer detail measures the tilt more precisely but takes longer.">
+        <SegmentedControl name="deskew-dpi" options={details} bind:value={store.dpi} />
+      </OptionGroup>
+    </div>
+  </WorkspaceInspector>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.isProcessing}
+        <ProgressLine label={store.progress.text} current={store.progress.current} total={store.progress.total} class="max-w-md" />
+      {:else if pendingCount > 0}
+        <span class="block truncate">
+          {plural(pendingCount)} ready · {sensitivities.find((s) => s.value === store.threshold)?.label} sensitivity
+        </span>
+      {:else}
+        <span class="block truncate">All files straightened</span>
+      {/if}
+    {/snippet}
+
+    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+      {store.isProcessing ? "Straightening…" : pendingCount > 0 ? `Straighten ${plural(pendingCount)}` : "Straighten"}
+    </Button>
+  </ToolFooter>
 {/if}

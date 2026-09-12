@@ -5,6 +5,7 @@ import { toast } from 'svelte-sonner';
 export interface RemoveAnnotationsStateData {
     file: File | null;
     pageCount: number;
+    annotationCount: number;
     originalSize: number;
     isProcessing: boolean;
 }
@@ -13,9 +14,20 @@ export class RemoveAnnotationsState extends PdfEngine {
     state = $state<RemoveAnnotationsStateData>({
         file: null,
         pageCount: 0,
+        annotationCount: 0,
         originalSize: 0,
         isProcessing: false
     });
+
+    result = $state.raw<{ blob: Blob; name: string; removed: number } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
 
     private pdfLibDoc: PDFDocument | null = null;
 
@@ -33,6 +45,10 @@ export class RemoveAnnotationsState extends PdfEngine {
             this.state.file = file;
             this.state.originalSize = file.size;
             this.state.pageCount = this.pdfLibDoc.getPageCount();
+            this.state.annotationCount = this.pdfLibDoc
+                .getPages()
+                .reduce((sum, page) => sum + (page.node.Annots()?.size() ?? 0), 0);
+            this.result = null;
         } catch (e) {
             console.error("Error loading PDF", e);
             toast.error("Failed to load the PDF file.");
@@ -45,7 +61,9 @@ export class RemoveAnnotationsState extends PdfEngine {
         this.state.file = null;
         this.pdfLibDoc = null;
         this.state.pageCount = 0;
+        this.state.annotationCount = 0;
         this.state.originalSize = 0;
+        this.result = null;
     }
 
     // Processing
@@ -53,6 +71,7 @@ export class RemoveAnnotationsState extends PdfEngine {
     async process() {
         if (!this.pdfLibDoc || !this.state.file) return;
         this.state.isProcessing = true;
+        this.isProcessing = true;
 
         try {
             const pages = this.pdfLibDoc.getPages();
@@ -72,13 +91,17 @@ export class RemoveAnnotationsState extends PdfEngine {
             const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
 
             const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_no_annotations.pdf`);
+            const name = `${originalName}_no_annotations.pdf`;
+            this.downloadBlob(blob, name);
+            this.result = { blob, name, removed: this.state.annotationCount };
+            this.state.annotationCount = 0;
 
         } catch (e: any) {
             console.error(e);
             toast.error(e.message || "Could not remove annotations.");
         } finally {
             this.state.isProcessing = false;
+            this.isProcessing = false;
         }
     }
 

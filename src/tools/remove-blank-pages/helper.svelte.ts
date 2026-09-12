@@ -3,16 +3,21 @@ import { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { toast } from 'svelte-sonner';
 
+export type BlankStrictness = 'strict' | 'balanced' | 'loose';
+
+// A page counts as blank when its average brightness (0-255) is above this.
+const BRIGHTNESS_THRESHOLD: Record<BlankStrictness, number> = {
+    strict: 254,
+    balanced: 252,
+    loose: 248
+};
+
 export interface BlankPageStateData {
     file: File | null;
     pageCount: number;
     originalSize: number;
-    
-    sensitivity: number; // 0 to 100
+    strictness: BlankStrictness;
     isDetecting: boolean;
-
-    // Array of objects representing pages detected as blank
-    // isSelected indicates if the user wants to proceed with deleting it
     detectedPages: { index: number; isSelected: boolean }[];
     hasPerformedDetection: boolean;
 }
@@ -22,43 +27,49 @@ export class RemoveBlankPagesState extends PdfEngine {
         file: null,
         pageCount: 0,
         originalSize: 0,
-        sensitivity: 80,
+        strictness: 'balanced',
         isDetecting: false,
         detectedPages: [],
         hasPerformedDetection: false
     });
 
+    result = $state.raw<{ blob: Blob; name: string; removed: number; remaining: number } | null>(null);
+
     private pdfLibDoc: PDFDocument | null = null;
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
-// Actions
+    get selectedCount() {
+        return this.state.detectedPages.filter(p => p.isSelected).length;
+    }
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
 
     async loadFile(files: File[]) {
         if (!files || files.length === 0) return;
         const file = files[0];
-        
+
         this.isProcessing = true;
-        this.progress = { text: 'Loading PDF...', current: 0, total: 0 };
+        this.result = null;
+        this.progress = { text: 'Opening PDF…', current: 0, total: 0 };
         try {
             const arrayBuffer = await file.arrayBuffer();
-            
-            // Load for rendering/analysis
+
             const pdfjs = await this.getPdfJs();
             const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer.slice(0)));
             this.pdfJsDoc = await loadingTask.promise;
-            
-            // Load for manipulation
+
             this.pdfLibDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-            
+
             this.state.file = file;
             this.state.originalSize = file.size;
             this.state.pageCount = this.pdfJsDoc.numPages;
             this.state.detectedPages = [];
             this.state.hasPerformedDetection = false;
-
         } catch (e) {
-            console.error("Error loading PDF", e);
-            toast.error("Failed to load the PDF file.");
+            console.error('Error loading PDF', e);
+            toast.error('This PDF could not be opened.');
         } finally {
             this.isProcessing = false;
         }
@@ -72,60 +83,60 @@ export class RemoveBlankPagesState extends PdfEngine {
         this.state.originalSize = 0;
         this.state.detectedPages = [];
         this.state.hasPerformedDetection = false;
+        this.result = null;
     }
 
     togglePageSelection(index: number) {
         const page = this.state.detectedPages.find(p => p.index === index);
-        if (page) {
-            page.isSelected = !page.isSelected;
-        }
+        if (page) page.isSelected = !page.isSelected;
+        this.result = null;
     }
 
-// Detection
+    selectAll() {
+        for (const p of this.state.detectedPages) p.isSelected = true;
+        this.result = null;
+    }
+
+    clearSelection() {
+        for (const p of this.state.detectedPages) p.isSelected = false;
+        this.result = null;
+    }
 
     async detectBlankPages() {
         if (!this.pdfJsDoc) return;
-        
+
         this.state.isDetecting = true;
-        this.progress = { text: 'Analyzing pages...', current: 0, total: this.pdfJsDoc.numPages };
+        this.result = null;
+        this.progress = { text: 'Checking pages', current: 0, total: this.pdfJsDoc.numPages };
         this.state.detectedPages = [];
-        
-        // Convert sensitivity (0-100) to a brightness threshold (0-255).
-        // Higher sensitivity = lower threshold (more strict, detects fewer things as "content", so more pages are "blank")
-        // Note: 255 is pure white. If sensitivity is 100, threshold is ~0. If 0, threshold is 255.
-        // The original logic: threshold = Math.round(255 - (sensitivityPercent * 2.55))
-        const threshold = Math.round(255 - (this.state.sensitivity * 2.55));
+
+        const threshold = BRIGHTNESS_THRESHOLD[this.state.strictness];
 
         try {
             const totalPages = this.pdfJsDoc.numPages;
             const detected = [];
 
             for (let i = 1; i <= totalPages; i++) {
-                this.progress = { text: `Analyzing page ${i} of ${totalPages}...`, current: i, total: totalPages };
+                this.progress = { text: 'Checking pages', current: i, total: totalPages };
                 const page = await this.pdfJsDoc.getPage(i);
-                const isBlank = await this.isPageBlank(page, threshold);
-                
-                if (isBlank) {
-                    detected.push({ index: i - 1, isSelected: true }); // 0-based index
+                if (await this.isPageBlank(page, threshold)) {
+                    detected.push({ index: i - 1, isSelected: true });
                 }
             }
 
             this.state.detectedPages = detected;
             this.state.hasPerformedDetection = true;
-
         } catch (e) {
             console.error(e);
-            toast.error("Error during blank page detection.");
+            toast.error('Something went wrong while checking the pages.');
         } finally {
             this.state.isDetecting = false;
         }
     }
 
     private async isPageBlank(page: any, threshold: number): Promise<boolean> {
-        // Render at a low scale for fast pixel analysis
         const viewport = page.getViewport({ scale: 0.5 });
-        
-        // We need an offscreen canvas for pixel reading
+
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         if (!ctx) return false;
@@ -135,48 +146,35 @@ export class RemoveBlankPagesState extends PdfEngine {
 
         await page.render({ canvasContext: ctx, viewport }).promise;
 
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
+        const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
 
         let totalBrightness = 0;
-        // Check every 4th byte (R, G, B, A)
         for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            // Simple average brightness calculation
-            totalBrightness += (r + g + b) / 3;
+            totalBrightness += (data[i] + data[i + 1] + data[i + 2]) / 3;
         }
 
-        const avgBrightness = totalBrightness / (data.length / 4);
-        
-        // If average brightness is higher than the threshold, it is considered blank (white)
-        return avgBrightness > threshold;
+        return totalBrightness / (data.length / 4) > threshold;
     }
 
-// Rendering for UI Thumbnails
     async renderThumbnail(canvas: HTMLCanvasElement, pageIndex: number) {
         if (!this.pdfJsDoc) return;
-        await this.renderPageToCanvas(canvas, this.pdfJsDoc, pageIndex, 0.3); // Low scale for thumbnail
+        await this.renderPageToCanvas(canvas, this.pdfJsDoc, pageIndex);
     }
-
-
-// Processing
 
     async process() {
         if (!this.pdfLibDoc || !this.state.file) return;
-        
+
         const pagesToRemove = new Set(
             this.state.detectedPages.filter(p => p.isSelected).map(p => p.index)
         );
 
         if (pagesToRemove.size === 0) {
-            toast.error("No pages selected for removal.");
+            toast.error('Select at least one page to remove.');
             return;
         }
 
         this.isProcessing = true;
-        this.progress = { text: 'Removing pages...', current: 0, total: pagesToRemove.size };
+        this.progress = { text: 'Removing pages', current: 0, total: 0 };
 
         try {
             const newPdfDoc = await PDFDocument.create();
@@ -191,18 +189,19 @@ export class RemoveBlankPagesState extends PdfEngine {
 
             const newPdfBytes = await newPdfDoc.save();
             const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
-            
-            const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_no_blank.pdf`);
 
+            const name = `${this.state.file.name.replace(/\.pdf$/i, '')}_no_blank.pdf`;
+            this.result = { blob, name, removed: pagesToRemove.size, remaining: newPdfDoc.getPageCount() };
+            this.downloadBlob(blob, name);
         } catch (e: any) {
             console.error(e);
-            toast.error(e.message || "Could not remove pages.");
+            toast.error(e.message || 'Could not remove pages.');
         } finally {
             this.isProcessing = false;
-            // Optionally reset detection state after successful removal
-            // this.state.hasPerformedDetection = false;
         }
     }
 
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
 }

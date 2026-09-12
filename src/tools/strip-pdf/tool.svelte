@@ -1,151 +1,144 @@
 <script lang="ts">
-  import { FileRow, StatusPill, ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { FileRow, ProgressLine, ResultCard, StatusPill, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import { formatBytes } from "$utils/helper";
   import {
     IconArrowRight as ArrowRight,
-    IconDownload as DownloadIcon,
-    IconFileZip as FileArchive,
-    IconLoader2 as LoaderCircle,
-    IconScissors as Scissors,
+    IconDownload as Download,
+    IconPlus as Plus,
+    IconRefresh as Refresh,
   } from "@tabler/icons-svelte";
-  import type { StripStatus } from "./helper.svelte";
   import { StripPdfState } from "./helper.svelte";
 
   const store = new StripPdfState();
+  let addInput = $state<HTMLInputElement | null>(null);
 
-  const pill: Record<StripStatus, "idle" | "processing" | "done" | "error"> = {
-    idle: "idle",
-    processing: "processing",
-    done: "done",
-    error: "error",
-  };
+  const pendingCount = $derived(store.pendingFiles.length);
+  const doneCount = $derived(store.strippedCount);
+  const showResult = $derived(!store.isProcessing && doneCount > 0);
+  const keptPages = $derived(store.doneFiles.reduce((sum, f) => sum + (f.keptPages ?? 0), 0));
+  const originalPages = $derived(store.doneFiles.reduce((sum, f) => sum + (f.originalPages ?? 0), 0));
+  const plural = (n: number, word = "file") => `${n} ${word}${n === 1 ? "" : "s"}`;
 </script>
 
 {#if store.files.length === 0}
-  <UploadArea
-    accept="application/pdf"
-    multiple
-    onFilesSelected={(f) => store.addFiles(f)}
-  >
+  <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-xl font-medium tracking-tight text-foreground sm:text-2xl">
-        Strip PDF page labels
-      </h3>
+      <h3 class="text-heading-sm font-medium text-foreground">Drop slide PDFs to remove duplicate pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-md text-sm leading-relaxed text-muted-foreground">
-        Keep only the last page of each page-label range — plus the final page.
-        Files with no page labels are left untouched. Everything stays on this
-        device.
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Presentations exported with animations repeat each slide once per step. Keep only the last, complete page of every slide.
       </p>
     {/snippet}
   </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
+  <div class="flex flex-col gap-4">
+    {#if showResult}
+      <ResultCard
+        title={`Kept ${plural(keptPages, "page")} of ${originalPages}`}
+        description={`${plural(doneCount)} stripped and ready to download.${store.skippedCount > 0 ? ` ${plural(store.skippedCount)} had nothing to remove.` : ""}`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResults()}>
+            <Download />
+            {doneCount === 1 ? "Download" : "Download all as ZIP"}
+          </Button>
+          <Button variant="ghost" onclick={() => store.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="strip-pdf" />
+      </ResultCard>
+    {/if}
+
     <ToolBar
-      label="Strip PDF"
+      label="Files"
       count={store.files.length}
-      onReset={() => store.reset()}
+      meta={formatBytes(store.totalSize)}
+      onReset={store.isProcessing ? undefined : () => store.reset()}
       resetLabel="Clear all"
     >
       {#snippet actions()}
-        {#if store.strippedCount > 1}
-          <Button
-            variant="outline"
-            size="sm"
-            onclick={() => store.downloadZip()}
-            disabled={store.isProcessing}
-            class="rounded-sm"
-          >
-            <FileArchive class="size-3.5" />
-            <span class="hidden sm:inline">Download all (ZIP)</span>
-          </Button>
-        {/if}
+        <Button variant="outline" size="sm" disabled={store.isProcessing} onclick={() => addInput?.click()}>
+          <Plus />
+          Add files
+        </Button>
       {/snippet}
     </ToolBar>
 
-    <ToolPanel title="Files" counter={store.files.length}>
-      <ul class="flex flex-col gap-2">
-        {#each store.files as file (file.id)}
-          <li>
-            <FileRow
-              name={file.name}
-              onRemove={file.status === "idle" && !store.isProcessing
-                ? () => store.removeFile(file.id)
-                : undefined}
-            >
-              <span class="font-mono tabular-nums">
-                {formatBytes(file.size)}
-              </span>
-              {#if file.status === "done" && file.keptPages != null}
-                <ArrowRight class="size-3 text-muted-foreground" />
-                <span class="font-mono tabular-nums text-success">
-                  {file.keptPages} of {file.originalPages} pages
-                </span>
+    <ul class="flex flex-col gap-2">
+      {#each store.files as file (file.id)}
+        <li>
+          <FileRow
+            name={file.file.name}
+            onRemove={file.status === "idle" && !store.isProcessing ? () => store.removeFile(file.id) : undefined}
+          >
+            <span>{formatBytes(file.size)}</span>
+            {#if file.status === "done" && file.keptPages != null}
+              <ArrowRight class="size-3" aria-label="stripped to" />
+              <span class="font-medium text-foreground">{file.keptPages} of {plural(file.originalPages ?? 0, "page")}</span>
+            {:else if file.note}
+              <span>· {file.note}</span>
+            {/if}
+
+            {#snippet trailing()}
+              {#if file.status === "processing"}
+                <StatusPill status="processing" label="Stripping" />
+              {:else if file.status === "done"}
+                <StatusPill status="done" />
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  class="text-muted-foreground hover:text-foreground"
+                  aria-label={`Download stripped ${file.file.name}`}
+                  onclick={() => store.downloadOne(file.id)}
+                >
+                  <Download class="size-4" />
+                </Button>
+              {:else if file.status === "error"}
+                <StatusPill status="error" label="Failed" />
               {:else if file.note}
-                <span class="text-muted-foreground">· {file.note}</span>
+                <StatusPill status="idle" label="Skipped" />
               {/if}
+            {/snippet}
+          </FileRow>
+        </li>
+      {/each}
+    </ul>
 
-              {#snippet trailing()}
-                <StatusPill
-                  status={pill[file.status]}
-                  label={file.status === "idle" && file.note
-                    ? "Skipped"
-                    : undefined}
-                />
-                {#if file.status === "done"}
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onclick={() => store.downloadOne(file.id)}
-                    class="rounded-sm text-muted-foreground hover:text-primary"
-                    aria-label="Download stripped PDF"
-                  >
-                    <DownloadIcon class="size-3.5" />
-                  </Button>
-                {/if}
-              {/snippet}
-            </FileRow>
-          </li>
-        {/each}
-      </ul>
-    </ToolPanel>
-
-    <ToolFooter
-      hint={store.isProcessing
-        ? store.progressLabel
-        : store.hasResults
-          ? "Download each file, or grab them all as a ZIP"
-          : "Strip every file down to its labeled pages"}
-    >
-      {#if store.strippedCount > 1}
-        <Button
-          variant="outline"
-          size="lg"
-          onclick={() => store.downloadZip()}
-          disabled={store.isProcessing}
-          class="rounded-sm"
-        >
-          <FileArchive class="size-4" />
-          Download ZIP
-        </Button>
-      {/if}
-      <Button
-        size="lg"
-        class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
-        onclick={() => store.process()}
-        disabled={store.isProcessing}
-      >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progressLabel}
-        {:else}
-          <Scissors class="size-4" />
-          Strip pages
-        {/if}
-      </Button>
-    </ToolFooter>
+    <input
+      bind:this={addInput}
+      type="file"
+      accept=".pdf,application/pdf"
+      multiple
+      class="hidden"
+      onchange={(e) => {
+        const picked = Array.from(e.currentTarget.files ?? []);
+        if (picked.length > 0) store.addFiles(picked);
+        e.currentTarget.value = "";
+      }}
+    />
   </div>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.isProcessing}
+        <ProgressLine label={store.progress.text} current={store.progress.current} total={store.progress.total} class="max-w-md" />
+      {:else if pendingCount > 0}
+        <span class="block truncate">{plural(pendingCount)} ready</span>
+      {:else if doneCount > 0}
+        <span class="block truncate">All files checked</span>
+      {:else}
+        <span class="block truncate">None of these files have page labels to strip</span>
+      {/if}
+    {/snippet}
+
+    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+      {store.isProcessing ? "Stripping…" : pendingCount > 0 ? `Strip ${plural(pendingCount)}` : "Strip"}
+    </Button>
+  </ToolFooter>
 {/if}

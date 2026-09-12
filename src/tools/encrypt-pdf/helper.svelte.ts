@@ -23,6 +23,16 @@ export class EncryptPdfState extends PdfEngine {
         progress: ''
     });
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
 // Actions
 
     setFile(file: File) {
@@ -33,6 +43,7 @@ export class EncryptPdfState extends PdfEngine {
         this.state.file = null;
         this.state.userPassword = '';
         this.state.ownerPassword = '';
+        this.result = null;
     }
 
 // Processing Logic
@@ -45,14 +56,16 @@ export class EncryptPdfState extends PdfEngine {
         }
 
         this.state.isProcessing = true;
-        this.state.progress = 'Initializing...';
+        this.isProcessing = true;
+        this.result = null;
+        this.state.progress = 'Getting ready…';
 
         try {
             // 1. Load QPDF
             const qpdf = await initializeQpdf();
             
             // 2. Prepare Files
-            this.state.progress = 'Reading PDF...';
+            this.state.progress = 'Reading your PDF…';
             const arrayBuffer = await this.state.file.arrayBuffer();
             const inputPath = '/input.pdf';
             const outputPath = '/output.pdf';
@@ -61,7 +74,7 @@ export class EncryptPdfState extends PdfEngine {
             qpdf.FS.writeFile(inputPath, new Uint8Array(arrayBuffer));
 
             // 3. Construct Command
-            this.state.progress = 'Encrypting...';
+            this.state.progress = 'Adding the password…';
             const userPwd = this.state.userPassword;
             const ownerPwd = this.state.ownerPassword || userPwd; // Fallback to user pwd if owner not set
             
@@ -92,11 +105,13 @@ export class EncryptPdfState extends PdfEngine {
             }
 
             // 5. Read Output & Download
-            this.state.progress = 'Finalizing...';
+            this.state.progress = 'Saving…';
             const outputFile = qpdf.FS.readFile(outputPath);
             
             const blob = new Blob([outputFile], { type: 'application/pdf' });
-            this.downloadBlob(blob, `encrypted_${this.state.file.name}`);
+            const name = `encrypted_${this.state.file.name}`;
+            this.downloadBlob(blob, name);
+            this.result = { blob, name };
 
             // Cleanup MEMFS
             try {
@@ -109,6 +124,7 @@ export class EncryptPdfState extends PdfEngine {
             toast.error(`Encryption failed: ${e.message}`);
         } finally {
             this.state.isProcessing = false;
+            this.isProcessing = false;
         }
     }
 

@@ -17,13 +17,13 @@ export interface StripFile {
 }
 
 /**
- * "Strip PDF" — keeps only the LAST page of each PDF page-label range (plus the
+ * "Strip PDF": keeps only the LAST page of each PDF page-label range (plus the
  * document's final page) and removes everything else.
  *
  * Page labels live in the catalog's /PageLabels number tree (a /Nums array of
  * [startIndex, labelDict, startIndex, labelDict, …]). Each startIndex marks the
  * first page of a label range, so `startIndex - 1` is the last page of the
- * previous range — those are the pages we keep. Ported from the original Vue
+ * previous range: those are the pages we keep. Ported from the original Vue
  * "PDF Stripper". Reference: PDF spec §8.3.1 (Page Labels).
  */
 async function stripPdf(
@@ -66,15 +66,33 @@ async function stripPdf(
     return { doc: pdf, kept: pdf.getPageCount(), original };
 }
 
+const isSkipped = (f: StripFile) => f.status === 'idle' && !!f.note;
+
 export class StripPdfState extends PdfEngine {
     files = $state<StripFile[]>([]);
 
-    get hasResults(): boolean {
-        return this.files.some((f) => f.status === 'done' && f.result);
+    get doneFiles(): StripFile[] {
+        return this.files.filter((f) => f.status === 'done' && f.result);
     }
 
     get strippedCount(): number {
-        return this.files.filter((f) => f.status === 'done' && f.result).length;
+        return this.doneFiles.length;
+    }
+
+    get skippedCount(): number {
+        return this.files.filter(isSkipped).length;
+    }
+
+    get pendingFiles(): StripFile[] {
+        return this.files.filter((f) => (f.status === 'idle' && !f.note) || f.status === 'error');
+    }
+
+    get totalSize(): number {
+        return this.files.reduce((sum, f) => sum + f.size, 0);
+    }
+
+    get resultFiles(): File[] {
+        return this.doneFiles.map((f) => new File([f.result as BlobPart], f.name, { type: 'application/pdf' }));
     }
 
     addFiles(incoming: File[]) {
@@ -95,48 +113,36 @@ export class StripPdfState extends PdfEngine {
     }
 
     async process() {
-        const queue = this.files.filter((f) => f.status === 'idle' || f.status === 'error');
+        const queue = this.pendingFiles;
         if (!queue.length) return;
 
-        await this.handleProcess(
-            async () => {
-                let index = 0;
-                for (const entry of this.files) {
-                    if (entry.status === 'done') continue;
-                    index++;
-                    this.progress = {
-                        current: index,
-                        total: queue.length,
-                        text: `Stripping ${entry.file.name}`
-                    };
-                    entry.status = 'processing';
-                    entry.note = undefined;
-                    try {
-                        const bytes = await entry.file.arrayBuffer();
-                        const stripped = await stripPdf(bytes);
-                        if (stripped) {
-                            entry.result = await stripped.doc.save();
-                            entry.originalPages = stripped.original;
-                            entry.keptPages = stripped.kept;
-                            entry.status = 'done';
-                        } else {
-                            entry.status = 'idle';
-                            entry.note = 'No page labels — nothing to strip';
-                        }
-                    } catch (e) {
-                        console.error('strip-pdf:', e);
-                        entry.status = 'error';
-                        entry.note = 'Could not process this file';
+        this.isProcessing = true;
+        try {
+            for (let i = 0; i < queue.length; i++) {
+                const entry = queue[i];
+                this.progress = { current: i + 1, total: queue.length, text: `Stripping ${entry.file.name}` };
+                entry.status = 'processing';
+                entry.note = undefined;
+                try {
+                    const stripped = await stripPdf(await entry.file.arrayBuffer());
+                    if (stripped) {
+                        entry.result = await stripped.doc.save();
+                        entry.originalPages = stripped.original;
+                        entry.keptPages = stripped.kept;
+                        entry.status = 'done';
+                    } else {
+                        entry.status = 'idle';
+                        entry.note = 'No page labels, so nothing to remove';
                     }
+                } catch (e) {
+                    console.error('strip-pdf:', e);
+                    entry.status = 'error';
+                    entry.note = 'Could not process this file';
                 }
-                this.progress = { current: queue.length, total: queue.length, text: 'Done' };
-            },
-            {
-                loading: 'Stripping pages…',
-                success: 'Finished stripping.',
-                error: 'Something went wrong while stripping.'
             }
-        );
+        } finally {
+            this.isProcessing = false;
+        }
     }
 
     downloadOne(id: string) {
@@ -146,24 +152,24 @@ export class StripPdfState extends PdfEngine {
         this.downloadBlob(blob, entry.name);
     }
 
-    async downloadZip() {
-        const done = this.files.filter((f) => f.status === 'done' && f.result);
+    async downloadResults() {
+        const done = this.doneFiles;
         if (done.length === 0) return;
+        if (done.length === 1) {
+            this.downloadOne(done[0].id);
+            return;
+        }
 
-        await this.handleProcess(
-            async () => {
-                const JSZip = (await import('jszip')).default;
-                const zip = new JSZip();
-                for (const f of done) zip.file(f.name, f.result as Uint8Array);
-                const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
-                this.downloadBlob(blob, `stripped_${new Date().getTime()}.zip`);
-            },
-            { loading: 'Building ZIP…', success: 'ZIP ready.', error: 'Failed to build ZIP.' }
-        );
+        const JSZip = (await import('jszip')).default;
+        const zip = new JSZip();
+        for (const f of done) zip.file(f.name, f.result as Uint8Array);
+        const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+        this.downloadBlob(blob, `stripped_${new Date().getTime()}.zip`);
     }
 
     reset() {
         this.files = [];
+        this.isProcessing = false;
         this.progress = { current: 0, total: 0, text: '' };
     }
 }

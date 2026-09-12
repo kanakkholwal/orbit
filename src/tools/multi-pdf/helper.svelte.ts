@@ -43,6 +43,15 @@ export class PdfEditorState extends PdfEngine {
 
   private undoStack: Snapshot[] = [];
   private redoStack: Snapshot[] = [];
+  canUndo = $state(false);
+  canRedo = $state(false);
+  result = $state.raw<{ blob: Blob; name: string; documents: number } | null>(null);
+
+  private syncHistory() {
+    this.canUndo = this.undoStack.length > 0;
+    this.canRedo = this.redoStack.length > 0;
+    this.result = null;
+  }
 
 
 
@@ -55,6 +64,7 @@ export class PdfEditorState extends PdfEngine {
     };
     this.undoStack.push(snap);
     this.redoStack = [];
+    this.syncHistory();
   }
 
   restore(snap: Snapshot) {
@@ -73,6 +83,7 @@ export class PdfEditorState extends PdfEngine {
       });
       this.restore(last);
     }
+    this.syncHistory();
   }
 
   redo() {
@@ -85,6 +96,7 @@ export class PdfEditorState extends PdfEngine {
       });
       this.restore(next);
     }
+    this.syncHistory();
   }
 
   async loadPdfs(files: File[]) {
@@ -156,7 +168,7 @@ export class PdfEditorState extends PdfEngine {
   }
 
   selectAll() {
-    this.pages.forEach(p => this.selectedIds.add(p.id));
+    for (const p of this.pages) this.selectedIds.add(p.id);
     this.selectedIds = new Set(this.selectedIds);
   }
 
@@ -216,6 +228,7 @@ export class PdfEditorState extends PdfEngine {
   }
 
   toggleSplit(id: string) {
+    this.snapshot();
     if (this.splitMarkers.has(id)) {
       this.splitMarkers.delete(id);
     } else {
@@ -237,8 +250,31 @@ export class PdfEditorState extends PdfEngine {
     });
   }
 
-  reorderPages(newIndices: number[]) {
-    // Stub for safety, logic moved to SortableJS inline
+  get documentCount() {
+    if (this.pages.length === 0) return 0;
+    const lastId = this.pages[this.pages.length - 1].id;
+    return 1 + this.pages.filter(p => this.splitMarkers.has(p.id) && p.id !== lastId).length;
+  }
+
+  get resultFiles(): File[] {
+    return this.result && this.result.documents === 1
+      ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })]
+      : [];
+  }
+
+  downloadResult() {
+    if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+  }
+
+  reset() {
+    this.pages = [];
+    this.selectedIds = new Set();
+    this.splitMarkers = new Set();
+    this.pdfLibDocs = [];
+    this.pdfJsDocs = [];
+    this.undoStack = [];
+    this.redoStack = [];
+    this.syncHistory();
   }
   async renderThumbnail(
     canvas: HTMLCanvasElement,
@@ -246,7 +282,7 @@ export class PdfEditorState extends PdfEngine {
     pageIndex: number,
     _rotation: number = 0
   ) {
-    // 1. Resolve the PDF Object from the index
+    if (pdfIndex === -1) return;
     const pdfDoc = this.pdfJsDocs[pdfIndex];
 
     if (!pdfDoc) {
@@ -254,7 +290,6 @@ export class PdfEditorState extends PdfEngine {
       return;
     }
 
-    // 2. Call the base Engine method with the correct signature
     await super.renderPageToCanvas(canvas, pdfDoc, pageIndex);
   }
 
@@ -268,7 +303,7 @@ export class PdfEditorState extends PdfEngine {
       if (this.splitMarkers.size > 0) {
         await this.downloadSplitPdfs();
       } else {
-        await this.downloadSinglePdf(this.pages, 'merged-document.pdf');
+        await this.downloadSinglePdf(this.pages, 'orbit-document.pdf');
       }
     } catch (e) {
       console.error(e);
@@ -297,6 +332,7 @@ export class PdfEditorState extends PdfEngine {
     }
     const pdfBytes = await newPdf.save();
     const pdfBlob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
+    this.result = { blob: pdfBlob, name: filename, documents: 1 };
     this.downloadBlob(pdfBlob, filename);
   }
 
@@ -319,6 +355,7 @@ export class PdfEditorState extends PdfEngine {
       zip.file(`document-${segmentCount}.pdf`, pdfBytes);
     }
     const zipBlob = await zip.generateAsync({ type: 'blob' });
+    this.result = { blob: zipBlob, name: 'split-documents.zip', documents: segmentCount - (currentSegment.length > 0 ? 0 : 1) };
     this.downloadBlob(zipBlob, 'split-documents.zip');
   }
 

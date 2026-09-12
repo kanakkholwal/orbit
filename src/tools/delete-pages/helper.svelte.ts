@@ -3,13 +3,13 @@ import { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { toast } from 'svelte-sonner';
 
+const RANGE_SYNTAX = /^\s*\d+\s*(-\s*\d+\s*)?(,\s*\d+\s*(-\s*\d+\s*)?)*,?\s*$/;
+
 export interface DeleteStateData {
     file: File | null;
     pageCount: number;
     pagesToDelete: Set<number>; // 0-based indices
     inputText: string;
-    isProcessing: boolean;
-    progress: string;
 }
 
 export class DeletePagesState extends PdfEngine {
@@ -17,42 +17,65 @@ export class DeletePagesState extends PdfEngine {
         file: null,
         pageCount: 0,
         pagesToDelete: new Set(),
-        inputText: '',
-        isProcessing: false,
-        progress: ''
+        inputText: ''
     });
+
+    result = $state.raw<{ blob: Blob; name: string; deleted: number; remaining: number } | null>(null);
 
     private pdfLibDoc: PDFDocument | null = null;
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
-// Actions
+    get selectedCount() {
+        return this.state.pagesToDelete.size;
+    }
+
+    /** Explains why the typed page numbers can't be used, or returns null when they're fine. */
+    get inputIssue(): string | null {
+        const text = this.state.inputText.trim();
+        if (!text) return null;
+        if (!RANGE_SYNTAX.test(text)) return 'Use page numbers and ranges, like 1, 3-5, 8';
+        const max = this.state.pageCount;
+        const outOfRange = text.match(/\d+/g)?.some(n => Number(n) < 1 || Number(n) > max);
+        if (outOfRange) return `This file has ${max} ${max === 1 ? 'page' : 'pages'}`;
+        return null;
+    }
+
+    get canDelete() {
+        return (
+            !this.isProcessing &&
+            !this.inputIssue &&
+            this.selectedCount > 0 &&
+            this.selectedCount < this.state.pageCount
+        );
+    }
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
 
     async loadFile(file: File) {
         if (!file) return;
-        this.state.isProcessing = true;
-        this.state.progress = 'Loading PDF...';
+        this.isProcessing = true;
+        this.result = null;
 
         try {
             const arrayBuffer = await file.arrayBuffer();
-            
-            // For thumbnails
+
             const pdfjs = await this.getPdfJs();
             const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer.slice(0)));
             this.pdfJsDoc = await loadingTask.promise;
-            
-            // For saving
+
             this.pdfLibDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-            
+
             this.state.file = file;
             this.state.pageCount = this.pdfJsDoc.numPages;
             this.state.pagesToDelete = new Set();
             this.state.inputText = '';
-
         } catch (e) {
             console.error(e);
-            toast.error("Failed to load PDF.");
+            toast.error('This PDF could not be opened.');
         } finally {
-            this.state.isProcessing = false;
+            this.isProcessing = false;
         }
     }
 
@@ -63,111 +86,122 @@ export class DeletePagesState extends PdfEngine {
         this.state.inputText = '';
         this.pdfLibDoc = null;
         this.pdfJsDoc = null;
+        this.result = null;
     }
 
-    // Toggle a specific page (called from visual grid)
-    togglePage(index: number) { // 0-based
-        if (this.state.pagesToDelete.has(index)) {
-            this.state.pagesToDelete.delete(index);
-        } else {
-            this.state.pagesToDelete.add(index);
-        }
-        // Force Svelte reactivity on the Set
-        this.state.pagesToDelete = new Set(this.state.pagesToDelete);
+    togglePage(index: number) {
+        const next = new Set(this.state.pagesToDelete);
+        if (next.has(index)) next.delete(index);
+        else next.add(index);
+        this.state.pagesToDelete = next;
         this.updateInputFromSet();
     }
 
-    // Called when the user types in the text input
+    selectAll() {
+        this.state.pagesToDelete = new Set(Array.from({ length: this.state.pageCount }, (_, i) => i));
+        this.updateInputFromSet();
+    }
+
+    clearSelection() {
+        this.state.pagesToDelete = new Set();
+        this.updateInputFromSet();
+    }
+
     handleInputUpdate(text: string) {
         this.state.inputText = text;
-        const parsed = this.parsePageRanges(text, this.state.pageCount);
-        this.state.pagesToDelete = new Set(parsed);
+        this.state.pagesToDelete = new Set(this.parsePageRanges(text, this.state.pageCount));
+        this.result = null;
     }
 
     private updateInputFromSet() {
-        const sorted = Array.from(this.state.pagesToDelete)
-            .map(i => i + 1) // Convert to 1-based for UI
-            .sort((a, b) => a - b);
-        this.state.inputText = sorted.join(', ');
+        const sorted = Array.from(this.state.pagesToDelete).sort((a, b) => a - b);
+        const parts: string[] = [];
+        for (let i = 0; i < sorted.length; i++) {
+            const start = sorted[i];
+            while (sorted[i + 1] === sorted[i] + 1) i++;
+            parts.push(start === sorted[i] ? `${start + 1}` : `${start + 1}-${sorted[i] + 1}`);
+        }
+        this.state.inputText = parts.join(', ');
+        this.result = null;
     }
 
-// Rendering
     async renderThumbnail(canvas: HTMLCanvasElement, pageIndex: number) {
         if (!this.pdfJsDoc) return;
         await this.renderPageToCanvas(canvas, this.pdfJsDoc, pageIndex);
     }
 
-// Processing
     async process() {
         if (!this.state.file || !this.pdfLibDoc) return;
-        
+
         if (this.state.pagesToDelete.size === 0) {
-            toast.error("Please select at least one page to delete.");
-            return;
-        }
-        
-        if (this.state.pagesToDelete.size >= this.state.pageCount) {
-            toast.error("You cannot delete all pages in the document.");
+            toast.error('Select at least one page to delete.');
             return;
         }
 
-        this.state.isProcessing = true;
-        this.state.progress = 'Deleting Pages...';
+        if (this.state.pagesToDelete.size >= this.state.pageCount) {
+            toast.error('Keep at least one page in the PDF.');
+            return;
+        }
+
+        this.isProcessing = true;
+        this.progress = { text: 'Deleting pages…', current: 0, total: 0 };
 
         try {
             const newPdf = await PDFDocument.create();
             const indicesToKeep = [];
-            
+
             for (let i = 0; i < this.state.pageCount; i++) {
-                if (!this.state.pagesToDelete.has(i)) {
-                    indicesToKeep.push(i);
-                }
+                if (!this.state.pagesToDelete.has(i)) indicesToKeep.push(i);
             }
-            
+
             const copiedPages = await newPdf.copyPages(this.pdfLibDoc, indicesToKeep);
-            copiedPages.forEach(page => newPdf.addPage(page));
+            for (const page of copiedPages) newPdf.addPage(page);
 
             const pdfBytes = await newPdf.save();
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
-            
-            const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_deleted.pdf`);
 
+            const name = `${this.state.file.name.replace(/\.pdf$/i, '')}_deleted.pdf`;
+            this.result = {
+                blob,
+                name,
+                deleted: this.state.pagesToDelete.size,
+                remaining: indicesToKeep.length
+            };
+            this.downloadBlob(blob, name);
         } catch (e: any) {
             console.error(e);
-            toast.error(`Process failed: ${e.message}`);
+            toast.error(`Could not delete pages: ${e.message}`);
         } finally {
-            this.state.isProcessing = false;
+            this.isProcessing = false;
         }
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
     }
 
     private parsePageRanges(input: string, maxPages: number): number[] {
         const pages = new Set<number>();
-        const parts = input.split(',');
 
-        for (const part of parts) {
+        for (const part of input.split(',')) {
             const trimmed = part.trim();
             if (!trimmed) continue;
-            
+
             if (trimmed.includes('-')) {
                 const [startStr, endStr] = trimmed.split('-');
                 const start = parseInt(startStr);
                 const end = parseInt(endStr);
-                
+
                 if (!isNaN(start) && !isNaN(end)) {
                     for (let i = start; i <= end; i++) {
-                        if (i >= 1 && i <= maxPages) pages.add(i - 1); 
+                        if (i >= 1 && i <= maxPages) pages.add(i - 1);
                     }
                 }
             } else {
                 const num = parseInt(trimmed);
-                if (!isNaN(num) && num >= 1 && num <= maxPages) {
-                    pages.add(num - 1); 
-                }
+                if (!isNaN(num) && num >= 1 && num <= maxPages) pages.add(num - 1);
             }
         }
         return Array.from(pages);
     }
-
-
 }

@@ -21,6 +21,16 @@ export class TableOfContentsState extends PdfEngine {
 
     private worker: Worker | null = null;
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
     loadFile(file: File) {
         if (!file) return;
         this.state.file = file;
@@ -28,6 +38,7 @@ export class TableOfContentsState extends PdfEngine {
 
     reset() {
         this.state.file = null;
+        this.result = null;
         this.isProcessing = false;
         if (this.worker) {
             this.worker.terminate();
@@ -39,13 +50,14 @@ export class TableOfContentsState extends PdfEngine {
         if (!this.state.file) return;
         
         this.isProcessing = true;
-        this.progress = { current: 0, total: 0, text: 'Initializing...' };
+        this.result = null;
+        this.progress = { current: 0, total: 0, text: 'Getting ready…' };
 
         try {
             if (!this.worker) {
                 // 1. Fetch the library code in the Main Thread
                 // This bypasses Worker restrictions and CORS issues often encountered inside workers
-                this.progress = { current: 0, total: 0, text: 'Downloading Library...' };
+                this.progress = { current: 0, total: 0, text: 'Loading the contents builder…' };
                 const libUrl = await this.fetchLibraryUrl();
                 
                 // 2. Create the worker with the local Blob URL
@@ -56,7 +68,7 @@ export class TableOfContentsState extends PdfEngine {
 
             const arrayBuffer = await this.state.file.arrayBuffer();
 
-            this.progress = { current: 0, total: 0, text: 'Generating Table of Contents...' };
+            this.progress = { current: 0, total: 0, text: 'Building the contents page…' };
             
             const message = {
                 command: 'generate-toc',
@@ -161,13 +173,14 @@ export class TableOfContentsState extends PdfEngine {
 
     private handleWorkerMessage(e: MessageEvent) {
         if (e.data.status === 'success') {
-            this.progress = { current: 0, total: 0, text: 'Downloading...' };
+            this.progress = { current: 0, total: 0, text: 'Saving…' };
             
             const pdfBytes = new Uint8Array(e.data.pdfBytes);
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
             const name = this.state.file?.name.replace('.pdf', '_toc.pdf') || 'document_toc.pdf';
             
             this.downloadBlob(blob, name);
+            this.result = { blob, name };
             this.isProcessing = false;
             
         } else if (e.data.status === 'error') {

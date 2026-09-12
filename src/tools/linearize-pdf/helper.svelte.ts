@@ -2,9 +2,19 @@ import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { initializeQpdf } from '$utils/helper';
 import { toast } from 'svelte-sonner';
 
+export interface LinearizeFile {
+    id: string;
+    file: File;
+    originalSize: number;
+    status: 'pending' | 'processing' | 'done' | 'error';
+    resultBlob?: Blob;
+    error?: string;
+}
+
+const outputName = (file: File) => `${file.name.replace(/\.pdf$/i, '')}_fast_web.pdf`;
+
 export class LinearizePdfState extends PdfEngine {
-    files = $state<{ id: string; file: File; originalSize: number }[]>([]);
-  
+    files = $state<LinearizeFile[]>([]);
 
     addFiles(newFiles: File[]) {
         const validFiles = newFiles.filter(
@@ -16,7 +26,7 @@ export class LinearizePdfState extends PdfEngine {
         }
 
         for (const f of validFiles) {
-            this.files.push({ id: crypto.randomUUID(), file: f, originalSize: f.size });
+            this.files.push({ id: crypto.randomUUID(), file: f, originalSize: f.size, status: 'pending' });
         }
     }
 
@@ -27,75 +37,58 @@ export class LinearizePdfState extends PdfEngine {
     reset() {
         this.files = [];
         this.isProcessing = false;
-        this.progress.text = '';
+        this.progress = { current: 0, total: 0, text: '' };
     }
 
+    get doneFiles() {
+        return this.files.filter(f => f.status === 'done' && f.resultBlob);
+    }
+
+    get totalSize() {
+        return this.files.reduce((sum, f) => sum + f.originalSize, 0);
+    }
+
+    get resultFiles(): File[] {
+        return this.doneFiles.map(f => new File([f.resultBlob!], outputName(f.file), { type: 'application/pdf' }));
+    }
 
     async process() {
-        if (this.files.length === 0) return;
-        
+        const queue = this.files.filter(f => f.status === 'pending');
+        if (queue.length === 0) return;
+
         this.isProcessing = true;
-        this.progress.text = 'Loading optimization engine...';
+        this.progress = { current: 0, total: queue.length, text: 'Getting ready' };
 
         let qpdf: any;
-        let zip: any;
-        let successCount = 0;
-        let errorCount = 0;
 
         try {
             qpdf = await initializeQpdf();
 
-            if (this.files.length > 1) {
-                const JSZip = (await import('jszip')).default;
-                zip = new JSZip();
-            }
-
-            for (let i = 0; i < this.files.length; i++) {
-                const fileObj = this.files[i];
+            for (let i = 0; i < queue.length; i++) {
+                const entry = queue[i];
                 const inputPath = `/input_${i}.pdf`;
                 const outputPath = `/output_${i}.pdf`;
-
-                if (this.files.length > 1) {
-                    this.progress.text = `Optimizing ${fileObj.file.name} (${i + 1}/${this.files.length})...`;
-                } else {
-                    this.progress.text = `Optimizing ${fileObj.file.name}...`;
-                }
+                entry.status = 'processing';
+                this.progress = { current: i + 1, total: queue.length, text: `Optimizing ${entry.file.name}` };
 
                 try {
-                    const arrayBuffer = await fileObj.file.arrayBuffer();
-                    const uint8Array = new Uint8Array(arrayBuffer);
-
-                    // Write to QPDF Virtual File System
+                    const uint8Array = new Uint8Array(await entry.file.arrayBuffer());
                     qpdf.FS.writeFile(inputPath, uint8Array);
-
-                    // Execute QPDF linearization command
                     qpdf.callMain([inputPath, '--linearize', outputPath]);
 
-                    // Read output
                     const outputFile = qpdf.FS.readFile(outputPath, { encoding: 'binary' });
-                    
                     if (!outputFile || outputFile.length === 0) {
                         throw new Error('Linearization resulted in an empty file.');
                     }
 
-                    const originalName = fileObj.file.name.replace(/\.pdf$/i, '');
-                    const newFileName = `${originalName}_fast_web.pdf`;
-
-                    if (this.files.length === 1) {
-                        // Single file -> Download directly
-                        const blob = new Blob([outputFile], { type: 'application/pdf' });
-                        this.downloadBlob(blob, newFileName);
-                    } else {
-                        // Multiple files -> Add to ZIP
-                        zip.file(newFileName, outputFile, { binary: true });
-                    }
-
-                    successCount++;
+                    entry.resultBlob = new Blob([outputFile], { type: 'application/pdf' });
+                    entry.status = 'done';
                 } catch (err) {
-                    console.error(`Failed to linearize ${fileObj.file.name}:`, err);
-                    errorCount++;
+                    console.error(`Failed to linearize ${entry.file.name}:`, err);
+                    entry.status = 'error';
+                    entry.error = 'Could not optimize this file';
                 } finally {
-                    // Clean up virtual file system to prevent memory leaks
+                    // Unlink from the WASM file system so memory is freed between files.
                     try {
                         if (qpdf?.FS) {
                             if (qpdf.FS.analyzePath(inputPath).exists) qpdf.FS.unlink(inputPath);
@@ -107,27 +100,33 @@ export class LinearizePdfState extends PdfEngine {
                 }
             }
 
-            if (successCount === 0) {
-                throw new Error('No PDF files could be linearized.');
-            }
-
-            if (this.files.length > 1) {
-                this.progress.text = 'Generating ZIP archive...';
-                const zipBlob = await zip.generateAsync({ type: 'blob' });
-                this.downloadBlob(zipBlob, 'optimized_pdfs.zip');
-            }
-
-            if (errorCount > 0) {
-                toast.error(`Partial success: ${successCount} optimized, ${errorCount} failed.`);
-            }
-
+            await this.downloadResults(queue.filter(f => f.status === 'done'));
         } catch (e: any) {
             console.error('[Linearize PDF] Error:', e);
             toast.error(`An error occurred during optimization: ${e.message}`);
+            for (const entry of queue) if (entry.status === 'processing') entry.status = 'pending';
         } finally {
             this.isProcessing = false;
         }
     }
 
-  
+    downloadOne(id: string) {
+        const entry = this.doneFiles.find(f => f.id === id);
+        if (entry) this.downloadBlob(entry.resultBlob!, outputName(entry.file));
+    }
+
+    async downloadResults(entries: LinearizeFile[] = this.doneFiles) {
+        const done = entries.filter(f => f.resultBlob);
+        if (done.length === 0) return;
+
+        if (done.length === 1) {
+            this.downloadOne(done[0].id);
+            return;
+        }
+
+        const JSZip = (await import('jszip')).default;
+        const zip = new JSZip();
+        for (const f of done) zip.file(outputName(f.file), await f.resultBlob!.arrayBuffer(), { binary: true });
+        this.downloadBlob(await zip.generateAsync({ type: 'blob' }), 'optimized_pdfs.zip');
+    }
 }

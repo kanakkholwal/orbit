@@ -1,14 +1,13 @@
 <script lang="ts">
+  import { Button } from "$components/ui/button";
+  import { cn } from "$lib/utils";
   import {
-    IconChevronDown as ChevronDown,
     IconChevronRight as ChevronRight,
-    IconCrosshair as Crosshair,
-    IconPencil as Edit2,
-    IconGripVertical as GripVertical,
+    IconLink as Link,
+    IconPencil as Pencil,
     IconPlus as Plus,
-    IconTrash as Trash2,
+    IconTrash as Trash,
   } from "@tabler/icons-svelte";
-  import { slide } from "svelte/transition";
   import BookmarkItem from "./BookmarkItem.svelte";
   import type { BookmarkNode, BookmarkPdfState } from "./helper.svelte";
 
@@ -16,132 +15,150 @@
     node,
     store,
     depth = 0,
-  } = $props<{ node: BookmarkNode; store: BookmarkPdfState; depth?: number }>();
+    selectedId,
+    editingId,
+    onselect,
+    onedit,
+  }: {
+    node: BookmarkNode;
+    store: BookmarkPdfState;
+    depth?: number;
+    selectedId: string | null;
+    editingId: string | null;
+    onselect: (id: string | null) => void;
+    onedit: (id: string | null) => void;
+  } = $props();
 
-  let isSelected = $derived(store.state.selectedIds.has(node.id));
+  const uid = $props.id();
+  const selected = $derived(selectedId === node.id);
+  const editing = $derived(editingId === node.id);
+  const hasChildren = $derived(node.children.length > 0);
+  const onCurrentPage = $derived(node.page === store.state.currentPage);
 
-  function toggleSelect() {
-    if (store.state.selectedIds.has(node.id)) {
-      store.state.selectedIds.delete(node.id);
-    } else {
-      store.state.selectedIds.add(node.id);
-    }
-    // Force reactivity on Set if needed, or rely on Svelte 5 deep reactivity
+  let draft = $state("");
+
+  function startEdit() {
+    draft = node.title;
+    onedit(node.id);
   }
 
-  function toggleExpand() {
-    store.updateBookmark(node.id, { isExpanded: !node.isExpanded });
+  function commit() {
+    if (!editing) return;
+    const title = draft.trim();
+    if (title && title !== node.title) store.updateBookmark(node.id, { title });
+    onedit(null);
   }
 
-  // Styles based on node props
-  const styleClass = $derived(
-    [
-      node.style?.includes("bold") ? "font-bold" : "",
-      node.style?.includes("italic") ? "italic" : "",
-      // Simple color mapping for text
-      node.color === "red"
-        ? "text-red-600"
-        : node.color === "blue"
-          ? "text-blue-600"
-          : node.color === "green"
-            ? "text-green-600"
-            : node.color === "purple"
-              ? "text-purple-600"
-              : "",
-    ].join(" "),
-  );
+  function addInside() {
+    const id = store.addBookmark(node, "New bookmark");
+    onselect(id);
+    onedit(id);
+  }
+
+  function focusOnMount(el: HTMLInputElement) {
+    if (draft === "") draft = node.title;
+    el.focus();
+    el.select();
+  }
 </script>
 
-<div class="flex flex-col select-none">
+<li class="flex flex-col">
   <div
-    class="group flex items-center gap-2 p-2 rounded border border-transparent hover:bg-muted/50 {isSelected
-      ? 'bg-accent ring-1 ring-primary border-primary/20'
-      : ''}"
-    style="padding-left: {depth * 1.5 + 0.5}rem"
+    class={cn("flex items-center gap-0.5 rounded-lg pr-1 transition-colors", selected ? "bg-muted" : "hover:bg-muted/60")}
+    style:padding-left={`${depth * 0.75}rem`}
   >
-    <div class="cursor-move text-muted-foreground hover:text-foreground">
-      <GripVertical size={14} />
-    </div>
-
-    {#if store.state.selectedIds.size > 0 || isSelected}
-      <input
-        type="checkbox"
-        checked={isSelected}
-        onclick={toggleSelect}
-        class="h-4 w-4 rounded border-gray-300"
-      />
+    {#if hasChildren}
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        class="text-muted-foreground hover:bg-transparent hover:text-foreground"
+        aria-expanded={node.isExpanded ?? false}
+        aria-label={`${node.isExpanded ? "Hide" : "Show"} bookmarks inside ${node.title}`}
+        onclick={() => store.toggleExpanded(node.id)}
+      >
+        <ChevronRight class={cn("transition-transform", node.isExpanded && "rotate-90")} />
+      </Button>
+    {:else}
+      <span class="size-9 shrink-0" aria-hidden="true"></span>
     {/if}
 
-    <button
-      onclick={toggleExpand}
-      class="p-0.5 rounded hover:bg-black/5 text-muted-foreground w-5 h-5 flex items-center justify-center"
-      style="visibility: {node.children.length ? 'visible' : 'hidden'}"
-    >
-      {#if node.isExpanded}
-        <ChevronDown size={14} />
-      {:else}
-        <ChevronRight size={14} />
-      {/if}
-    </button>
-
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div
-      tabindex="-1"
-      role="button"
-      class="flex-1 min-w-0 cursor-pointer"
-      onclick={() => {
-        store.state.currentPage = node.page;
-        // Trigger view update in parent via state
-      }}
-    >
-      <div class="flex items-center gap-2">
-        <span class="text-sm {styleClass} truncate">{node.title}</span>
-        {#if node.destX !== null}
-          <Crosshair size={10} class="text-blue-500" />
-        {/if}
-      </div>
-      <span class="text-caption text-muted-foreground">Page {node.page}</span>
-    </div>
-
-    <div
-      class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity"
-    >
-      <button
-        class="p-1.5 hover:bg-background rounded shadow-sm border border-transparent hover:border-border"
-        title="Add Child"
-        onclick={() => {
-          /* Open Modal for Child */ document.dispatchEvent(
-            new CustomEvent("edit-bookmark", { detail: { parentId: node.id } }),
-          );
+    {#if editing}
+      <label for={`${uid}-title`} class="sr-only">Bookmark name</label>
+      <input
+        id={`${uid}-title`}
+        type="text"
+        bind:value={draft}
+        {@attach focusOnMount}
+        onblur={commit}
+        onkeydown={(e) => {
+          if (e.key === "Enter") commit();
+          if (e.key === "Escape") onedit(null);
         }}
-      >
-        <Plus size={12} />
-      </button>
+        class="my-0.5 h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-2.5 text-body text-foreground outline-none transition-colors focus:border-ring"
+      />
+    {:else}
       <button
-        class="p-1.5 hover:bg-background rounded shadow-sm border border-transparent hover:border-border"
-        title="Edit"
+        type="button"
         onclick={() => {
-          /* Open Modal for Edit */ document.dispatchEvent(
-            new CustomEvent("edit-bookmark", { detail: { nodeId: node.id } }),
-          );
+          onselect(selected ? null : node.id);
+          store.setPage(node.page);
         }}
+        ondblclick={startEdit}
+        aria-pressed={selected}
+        class="flex min-h-9 min-w-0 flex-1 flex-col justify-center rounded-md px-1.5 py-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
       >
-        <Edit2 size={12} />
+        <span
+          class={cn(
+            "truncate text-body text-foreground",
+            node.style?.includes("bold") && "font-medium",
+            node.style?.includes("italic") && "italic"
+          )}
+        >
+          {node.title}
+        </span>
+        <span class={cn("text-caption tabular-nums", onCurrentPage ? "text-primary" : "text-muted-foreground")}>
+          Page {node.page}
+        </span>
       </button>
-      <button
-        class="p-1.5 hover:bg-background rounded shadow-sm border border-transparent hover:border-border text-red-500"
-        title="Delete"
-        onclick={() => store.deleteBookmark(node.id)}
-      >
-        <Trash2 size={12} />
-      </button>
-    </div>
+    {/if}
   </div>
-  {#if node.isExpanded && node.children.length > 0}
-    <div class="flex flex-col" transition:slide={{ duration: 200 }}>
-      {#each node.children as child (child.id)}
-        <BookmarkItem node={child} {store} depth={depth + 1} />
-      {/each}
+
+  {#if selected && !editing}
+    <div class="flex flex-wrap gap-1 pb-1.5 pt-0.5" style:padding-left={`${depth * 0.75 + 2.25}rem`}>
+      <Button variant="ghost" size="sm" onclick={startEdit}>
+        <Pencil />
+        Rename
+      </Button>
+      <Button variant="ghost" size="sm" onclick={addInside}>
+        <Plus />
+        Add inside
+      </Button>
+      {#if !onCurrentPage}
+        <Button variant="ghost" size="sm" onclick={() => store.updateBookmark(node.id, { page: store.state.currentPage })}>
+          <Link />
+          Use page {store.state.currentPage}
+        </Button>
+      {/if}
+      <Button
+        variant="ghost"
+        size="sm"
+        class="text-destructive hover:bg-destructive/10"
+        onclick={() => {
+          store.deleteBookmark(node.id);
+          onselect(null);
+        }}
+      >
+        <Trash />
+        Remove
+      </Button>
     </div>
   {/if}
-</div>
+
+  {#if node.isExpanded && hasChildren}
+    <ul class="flex flex-col">
+      {#each node.children as child (child.id)}
+        <BookmarkItem node={child} {store} depth={depth + 1} {selectedId} {editingId} {onselect} {onedit} />
+      {/each}
+    </ul>
+  {/if}
+</li>
