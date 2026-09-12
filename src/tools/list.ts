@@ -52,6 +52,8 @@ export interface ToolConfig {
     category: string;
     keywords?: string[]; // Optional array of keywords for SEO and search functionality
     layout?: ToolLayout;
+    /** Search-engine title when the tool name alone doesn't describe the problem it solves. */
+    seoTitle?: string;
 }
 /*
 * Centralized configuration for all tools in the application.
@@ -446,12 +448,29 @@ const tools: Record<string, ToolConfig> = {
     'strip-pdf': {
         slug: 'strip-pdf',
         title: 'Strip PDF',
-        description: 'Strip a PDF down to the last page of each page-label range, keeping the final page. Ideal for collapsing labeled sections, like batched scans or multi-page records, to one representative page each. Runs entirely in your browser.',
+        description: 'Remove duplicate and half-empty slide pages from presentations saved as PDF. When a PowerPoint or lecture deck is exported with its animation steps, every step becomes its own page; Strip PDF keeps only the last, complete page of each slide. Free, private and runs entirely in your browser.',
+        seoTitle: 'Remove Duplicate Slides from PowerPoint PDFs',
         category: 'pdf-management',
         icon: Scissors,
         component: () => import('./strip-pdf/tool.svelte'),
         color: 'text-pink-500',
-        keywords: ['strip pdf', 'pdf page labels', 'keep last page of pdf', 'collapse pdf sections', 'pdf stripper', 'reduce pdf pages by label', 'remove pages by page label']
+        keywords: [
+            'remove duplicate slides from pdf',
+            'remove animation slides from pdf',
+            'powerpoint pdf duplicate pages',
+            'pptx to pdf duplicate slides',
+            'remove build steps from slides pdf',
+            'one page per slide pdf',
+            'lecture slides pdf remove duplicates',
+            'remove incomplete slides pdf',
+            'beamer overlays remove pdf',
+            'flatten animated presentation pdf',
+            'slide handout pdf',
+            'strip pdf',
+            'pdf stripper',
+            'pdf page labels',
+            'keep last page of each slide'
+        ]
     },
     'md-to-pdf': {
         slug: 'md-to-pdf',

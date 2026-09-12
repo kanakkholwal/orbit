@@ -26,11 +26,11 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to keep one page per section</h3>
+      <h3 class="text-heading-sm font-medium text-foreground">Drop slide PDFs to remove duplicate pages</h3>
     {/snippet}
     {#snippet description()}
       <p class="max-w-sm text-pretty text-body text-muted-foreground">
-        Keep the last page of each labelled section, plus the final page. Files without page labels stay as they are.
+        Presentations exported with animations repeat each slide once per step. Keep only the last, complete page of every slide.
       </p>
     {/snippet}
   </UploadArea>

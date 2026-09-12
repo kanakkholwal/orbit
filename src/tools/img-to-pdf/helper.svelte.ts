@@ -1,4 +1,5 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
+import type { PDFDocument, PDFImage } from 'pdf-lib';
 import { toast } from 'svelte-sonner';
 
 export interface ImageFile {
@@ -19,12 +20,13 @@ const PAGE_POINTS: Record<Exclude<PageSize, 'fit'>, [number, number]> = {
 
 const MARGIN_POINTS: Record<MarginSize, number> = { none: 0, small: 18, large: 36 };
 
-// Match original supported list
+// Images are measured at 96 pixels per inch; a PDF point is 1/72 inch.
+const PX_TO_PT = 72 / 96;
+
 export const ACCEPTED_FORMATS = [
-    'image/jpeg', 'image/jpg', 'image/png', 'image/bmp', 'image/gif',
-    'image/tiff', 'image/webp', 'image/heic', 'image/heif',
-    'image/x-icon', 'image/vnd.adobe.photoshop', // PSD
-    '.jp2', '.jpx', '.jxr', '.tif', '.tiff', '.psd'
+    'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/avif',
+    'image/x-icon', 'image/heic', 'image/heif',
+    '.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.avif', '.ico', '.heic', '.heif'
 ];
 
 export class JpgToPdfState extends PdfEngine {
@@ -89,91 +91,102 @@ export class JpgToPdfState extends PdfEngine {
         this.isProcessing = false;
     }
 
-    // Processing 
-
     async convert() {
         if (this.files.length === 0) return;
         this.isProcessing = true;
-        this.progress = { current: 0, total: this.files.length, text: 'Initializing Engine...' };
+        this.result = null;
+        this.progress = { current: 0, total: this.files.length, text: 'Preparing images' };
 
         try {
-            let pymupdf: any = null;
+            const { PDFDocument } = await import('pdf-lib');
+            const pdf = await PDFDocument.create();
+            const skipped: string[] = [];
 
-            const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
-            pymupdf = await loadPyMuPDF();
-
-            const processedFiles: File[] = [];
-
-            // 2. Pre-process Loop
             for (let i = 0; i < this.files.length; i++) {
-                const imgEntry = this.files[i];
-                this.progress = {
-                    current: i + 1,
-                    total: this.files.length,
-                    text: `Processing ${imgEntry.file.name}...`
-                };
-
-                // Convert HEIC if necessary
-                let readyFile = await this.handleHeic(imgEntry.file);
-
-                // Note: If you want to resize/compress JPGs before PDF creation 
-                // (like 'compressImageFile' in your legacy code), add that logic here.
-
-                processedFiles.push(readyFile);
+                const { file } = this.files[i];
+                this.progress = { current: i + 1, total: this.files.length, text: `Adding ${file.name}` };
+                try {
+                    const image = await this.embedImage(pdf, file);
+                    this.addImagePage(pdf, image);
+                } catch (e) {
+                    console.error('Image could not be added', file.name, e);
+                    skipped.push(file.name);
+                }
             }
 
-            // 3. Convert using built-in PyMuPDF helper
-            this.progress.text = 'Generating PDF...';
+            if (pdf.getPageCount() === 0) {
+                throw new Error('None of the images could be read. Try JPG or PNG files.');
+            }
 
-            // FIX: Use the method from your legacy code directly
-            // This avoids the "mupdf.Document is not a constructor" error
-            const rawBlob = await pymupdf.imagesToPdf(processedFiles);
-            const { blob: pdfBlob, pages } = await this.layoutPages(rawBlob);
-
+            const bytes = await pdf.save();
+            const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
             const name = 'converted_images.pdf';
-            this.result = { blob: pdfBlob, name, pages };
-            this.downloadBlob(pdfBlob, name);
+            this.result = { blob, name, pages: pdf.getPageCount() };
+            this.downloadBlob(blob, name);
 
-        } catch (e: any) {
+            if (skipped.length > 0) {
+                toast.warning(`Skipped ${skipped.length} ${skipped.length === 1 ? 'image' : 'images'} that couldn't be read: ${skipped.join(', ')}`);
+            }
+        } catch (e) {
             console.error(e);
-            toast.error(`Conversion failed: ${e.message}`);
+            toast.error(e instanceof Error ? e.message : "The PDF couldn't be created.");
         } finally {
             this.isProcessing = false;
         }
     }
 
-// Helpers
+    private async embedImage(pdf: PDFDocument, original: File): Promise<PDFImage> {
+        const file = await this.handleHeic(original);
+        const name = file.name.toLowerCase();
+        const type = file.type.toLowerCase();
 
-    private async layoutPages(blob: Blob): Promise<{ blob: Blob; pages: number }> {
-        const { PDFDocument } = await import('pdf-lib');
-        const src = await PDFDocument.load(await blob.arrayBuffer());
+        if (type === 'image/jpeg' || type === 'image/jpg' || /\.jpe?g$/.test(name)) {
+            return pdf.embedJpg(new Uint8Array(await file.arrayBuffer()));
+        }
+        if (type === 'image/png' || name.endsWith('.png')) {
+            return pdf.embedPng(new Uint8Array(await file.arrayBuffer()));
+        }
+
+        const bitmap = await createImageBitmap(file);
+        try {
+            const canvas = document.createElement('canvas');
+            canvas.width = bitmap.width;
+            canvas.height = bitmap.height;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) throw new Error('Canvas is not available');
+            ctx.drawImage(bitmap, 0, 0);
+            const png = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+            if (!png) throw new Error('Image could not be encoded');
+            return pdf.embedPng(new Uint8Array(await png.arrayBuffer()));
+        } finally {
+            bitmap.close();
+        }
+    }
+
+    private addImagePage(pdf: PDFDocument, image: PDFImage) {
         const { pageSize, orientation, margin } = this.settings;
         const m = MARGIN_POINTS[margin];
-        if (pageSize === 'fit' && m === 0) return { blob, pages: src.getPageCount() };
+        const iw = image.width * PX_TO_PT;
+        const ih = image.height * PX_TO_PT;
 
-        const out = await PDFDocument.create();
-        const embedded = await out.embedPages(src.getPages());
-        for (const page of embedded) {
-            let w: number;
-            let h: number;
-            if (pageSize === 'fit') {
-                [w, h] = [page.width + m * 2, page.height + m * 2];
-            } else {
-                [w, h] = PAGE_POINTS[pageSize];
-                const landscape = orientation === 'landscape' || (orientation === 'auto' && page.width > page.height);
-                if (landscape) [w, h] = [h, w];
-            }
-            const scale = pageSize === 'fit' ? 1 : Math.min((w - m * 2) / page.width, (h - m * 2) / page.height);
-            const dw = page.width * scale;
-            const dh = page.height * scale;
-            out.addPage([w, h]).drawPage(page, { x: (w - dw) / 2, y: (h - dh) / 2, width: dw, height: dh });
+        let w: number;
+        let h: number;
+        if (pageSize === 'fit') {
+            [w, h] = [iw + m * 2, ih + m * 2];
+        } else {
+            [w, h] = PAGE_POINTS[pageSize];
+            const landscape = orientation === 'landscape' || (orientation === 'auto' && iw > ih);
+            if (landscape) [w, h] = [h, w];
         }
-        const bytes = await out.save();
-        return { blob: new Blob([bytes as BlobPart], { type: 'application/pdf' }), pages: out.getPageCount() };
+
+        const scale = pageSize === 'fit' ? 1 : Math.min((w - m * 2) / iw, (h - m * 2) / ih);
+        const dw = iw * scale;
+        const dh = ih * scale;
+        pdf.addPage([w, h]).drawImage(image, { x: (w - dw) / 2, y: (h - dh) / 2, width: dw, height: dh });
     }
 
     private async handleHeic(file: File): Promise<File> {
-        if (file.name.match(/\.(heic|heif)$/i) || file.type === 'image/heic') {
+        if (/\.(heic|heif)$/i.test(file.name) || file.type === 'image/heic' || file.type === 'image/heif') {
             try {
                 // Dynamic import to avoid SSR window error
                 const heic2any = (await import('heic2any')).default;
@@ -181,7 +194,7 @@ export class JpgToPdfState extends PdfEngine {
                 const result = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.9 });
                 const blob = Array.isArray(result) ? result[0] : result;
 
-                return new File([blob], file.name.replace(/\.heic$/i, '.jpg'), { type: 'image/jpeg' });
+                return new File([blob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), { type: 'image/jpeg' });
             } catch (e) {
                 console.error("HEIC conversion failed", e);
             }

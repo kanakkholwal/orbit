@@ -48,7 +48,7 @@
   {/if}
 </svelte:head>
 
-<Seo title={`${tool.title} - Free Online PDF Tool`} description={tool.description} keywords={tool?.keywords} />
+<Seo title={tool.seoTitle ?? `${tool.title} - Free Online PDF Tool`} description={tool.description} keywords={tool?.keywords} />
 
 {#snippet toolBody()}
   {#key tool.slug}
