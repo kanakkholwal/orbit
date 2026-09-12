@@ -152,25 +152,51 @@ const bespoke: Record<string, Partial<ToolContent>> = {
     },
     'strip-pdf': {
         intro:
-            'Some PDFs use page labels to mark sections — for example batched scans or multi-page records where each entry spans several pages. This tool strips the document down to the last page of each labeled range (plus the final page), which is often the page that actually matters. Files without page labels are left untouched.',
+            'When a PowerPoint or lecture presentation is saved as a PDF with its animations, every click becomes a separate page. A slide that builds up in five steps turns into five nearly identical pages, and the early ones look half empty. Strip PDF removes those in-between pages and keeps only the last, complete version of each slide, so a 120-page export becomes the 30 slides you actually want to read, print or share. It works with any PDF that marks pages with page labels, and everything happens in your browser.',
+        howItWorks: [
+            'Drop one or more presentation PDFs into Strip PDF.',
+            'Orbit reads the page numbers the export gave each slide and finds pages that are just earlier steps of the same slide.',
+            'It keeps the final, complete page of every slide and removes the duplicates in between.',
+            'Download the shorter PDF. Your original file stays untouched, and nothing is uploaded.'
+        ],
         useCases: [
             {
-                title: 'Batched scans',
-                body: 'Reduce a large scanned batch to the final page of each labeled section in one pass.'
+                title: 'Lecture slides for studying',
+                body: 'Course slides exported with animations can be several times longer than the deck itself. Strip them to one page per slide before reading, highlighting or printing.'
             },
             {
-                title: 'Summary pages',
-                body: 'When the meaningful content sits on the last page of each range, strip away the rest to get a compact summary document.'
+                title: 'Printing handouts',
+                body: 'Stop printing five copies of the same slide. Keep only the finished slides and save paper and ink.'
+            },
+            {
+                title: 'Sharing a deck by email',
+                body: 'Send the complete slides without the build-up steps, so the file is smaller and easier to flip through.'
+            },
+            {
+                title: 'LaTeX Beamer overlays',
+                body: 'Beamer presentations with overlays produce one page per step. Strip PDF collapses each frame to its final state.'
             }
         ],
         faqs: [
             {
-                q: 'What are PDF page labels?',
-                a: 'Page labels are metadata that name ranges of pages (for example "i, ii, iii" then "1, 2, 3"). This tool reads that structure to decide which pages to keep.'
+                q: 'Why does my PowerPoint PDF have duplicate pages?',
+                a: 'When a presentation is exported with its animations, each animation step is saved as its own page. The slide appears several times, each copy showing a little more. Strip PDF keeps only the last, complete copy of each slide.'
+            },
+            {
+                q: 'Will it remove pages that are completely blank?',
+                a: 'It removes half-empty pages that are earlier steps of a slide. Pages that are simply blank, like a blank separator slide, are not steps of another slide, so they stay. Use Remove Blank Pages for those.'
             },
             {
                 q: 'Why did my file come back unchanged?',
-                a: 'Most PDFs do not contain page labels. If a file has none, there is nothing to strip, so it is marked as skipped and left exactly as it was.'
+                a: 'Strip PDF relies on the page labels a presentation export adds to group the steps of each slide. Some exporters do not add them. When a file has none, it is marked as skipped and left exactly as it was.'
+            },
+            {
+                q: 'Does it change the content of my slides?',
+                a: 'No. It only removes whole pages. The pages it keeps are copied as they are, with the same text, images and links.'
+            },
+            {
+                q: 'What are PDF page labels?',
+                a: 'Page labels are the page names a PDF shows in the viewer, such as "i, ii, iii" or a slide number. Presentation exports use them to mark which pages belong to the same slide.'
             }
         ]
     },

@@ -5,6 +5,8 @@ import type * as PDFJS from 'pdfjs-dist';
 
 export const MERGE_STATE_KEY = Symbol('MERGE_STATE');
 
+const RANGE_SYNTAX = /^\s*\d+\s*(-\s*\d+\s*)?(,\s*\d+\s*(-\s*\d+\s*)?)*,?\s*$/;
+
 export interface UploadedFile {
     id: string;
     file: File;
@@ -26,19 +28,17 @@ export interface PageItem {
 }
 
 export class MergeState extends PdfEngine {
-    // State
     files = $state<UploadedFile[]>([]);
-    allPages = $state<PageItem[]>([]); // Flattened list for Page Mode
+    allPages = $state<PageItem[]>([]);
     mode = $state<'file' | 'page'>('file');
+    outputName = $state('merged.pdf');
+    result = $state.raw<{ blob: Blob; pages: number; name: string } | null>(null);
 
-    // Internal
     private pdfJsDocs: Map<string, PDFJS.PDFDocumentProxy> = new Map();
-
-
-    // Actions
 
     async addFiles(newFiles: File[]) {
         if (!newFiles.length) return;
+        this.result = null;
 
         await this.handleProcess(async () => {
             const pdfjs = await this.getPdfJs();
@@ -47,30 +47,24 @@ export class MergeState extends PdfEngine {
                 const file = newFiles[i];
                 const arrayBuffer = await file.arrayBuffer();
 
-                // 1. Load for Rendering (PDF.js)
                 const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer.slice(0)));
                 const docProxy = await loadingTask.promise;
 
                 const fileId = nanoid();
                 this.pdfJsDocs.set(fileId, docProxy);
 
-                // 2. Load for Merging (pdf-lib)
                 const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
-                // 3. Create File Entry
-                const newFile: UploadedFile = {
+                this.files.push({
                     id: fileId,
                     file,
                     name: file.name,
                     size: file.size,
                     pageCount: docProxy.numPages,
-                    pageRange: '', // Empty = all
+                    pageRange: '',
                     pdfDoc
-                };
+                });
 
-                this.files.push(newFile);
-
-                // 4. Generate Page Items (for Page Mode)
                 for (let p = 0; p < docProxy.numPages; p++) {
                     this.allPages.push({
                         id: nanoid(),
@@ -82,64 +76,103 @@ export class MergeState extends PdfEngine {
                 }
             }
         }, {
-            loading: 'Analyzing PDFs...',
-            success: 'Files loaded successfully!',
-            error: 'Failed to load one or more PDF files.'
+            loading: 'Reading PDFs…',
+            success: newFiles.length === 1 ? 'File added' : `${newFiles.length} files added`,
+            error: 'One or more files could not be opened.'
         });
     }
 
     removeFile(fileId: string) {
         this.files = this.files.filter(f => f.id !== fileId);
-        // Also remove associated pages
         this.allPages = this.allPages.filter(p => p.fileId !== fileId);
         this.pdfJsDocs.delete(fileId);
+        this.result = null;
+    }
+
+    removePage(pageId: string) {
+        this.allPages = this.allPages.filter(p => p.id !== pageId);
+        this.result = null;
+    }
+
+    moveFile(index: number, offset: -1 | 1) {
+        const target = index + offset;
+        if (target < 0 || target >= this.files.length) return;
+        const next = [...this.files];
+        [next[index], next[target]] = [next[target], next[index]];
+        this.files = next;
+        this.result = null;
     }
 
     updateFileOrder(newIndices: number[]) {
-        const reordered = newIndices.map(i => this.files[i]);
-        this.files = reordered;
+        this.files = newIndices.map(i => this.files[i]);
     }
 
-    // Rendering for Thumbnails
+    /** Explains why a file's page range can't be used, or returns null when it's fine. */
+    rangeIssue(file: UploadedFile): string | null {
+        const range = file.pageRange.trim();
+        if (!range) return null;
+        if (!RANGE_SYNTAX.test(range)) return 'Use numbers and ranges, like 1-3, 5';
+        const tooHigh = range.match(/\d+/g)?.some(n => Number(n) > file.pageCount || Number(n) < 1);
+        if (tooHigh) return `This file has ${file.pageCount} ${file.pageCount === 1 ? 'page' : 'pages'}`;
+        return null;
+    }
+
+    pagesFor(file: UploadedFile): number {
+        if (!file.pageRange.trim()) return file.pageCount;
+        if (this.rangeIssue(file)) return 0;
+        return this.parsePageRange(file.pageRange, file.pageCount).length;
+    }
+
+    get hasRangeIssues() {
+        return this.mode === 'file' && this.files.some(f => this.rangeIssue(f) !== null);
+    }
+
+    get resultPageCount() {
+        return this.mode === 'file'
+            ? this.files.reduce((sum, f) => sum + this.pagesFor(f), 0)
+            : this.allPages.length;
+    }
+
+    get totalSize() {
+        return this.files.reduce((sum, f) => sum + f.size, 0);
+    }
+
+    get canMerge() {
+        return !this.isProcessing && this.files.length > 0 && !this.hasRangeIssues && this.resultPageCount > 0;
+    }
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
     async renderThumbnail(canvas: HTMLCanvasElement, fileId: string, pageIndex: number) {
         const doc = this.pdfJsDocs.get(fileId);
         if (!doc) return;
-
         await this.renderPageToCanvas(canvas, doc, pageIndex);
     }
 
-    // Merge Logic
+    private get fileName() {
+        const base = this.outputName.trim().replace(/\.pdf$/i, '') || 'merged';
+        return `${base}.pdf`;
+    }
 
     async mergeAndDownload() {
-        if (this.files.length === 0) return;
+        if (!this.canMerge) return;
 
         await this.handleProcess(async () => {
             const mergedPdf = await PDFDocument.create();
 
             if (this.mode === 'file') {
-                // FILE MODE MERGE
                 for (const file of this.files) {
                     if (!file.pdfDoc) continue;
-
-                    let pageIndices: number[] = [];
-
-                    // Parse Range (e.g. "1-3, 5")
-                    if (!file.pageRange.trim()) {
-                        // All pages
-                        pageIndices = file.pdfDoc.getPageIndices();
-                    } else {
-                        pageIndices = this.parsePageRange(file.pageRange, file.pageCount);
-                    }
-
+                    const pageIndices = file.pageRange.trim()
+                        ? this.parsePageRange(file.pageRange, file.pageCount)
+                        : file.pdfDoc.getPageIndices();
                     const copiedPages = await mergedPdf.copyPages(file.pdfDoc, pageIndices);
-                    copiedPages.forEach(page => mergedPdf.addPage(page));
+                    for (const page of copiedPages) mergedPdf.addPage(page);
                 }
-
             } else {
-
-                // We iterate the `allPages` array which reflects the user's custom sort order
                 const fileCache = new Map<string, PDFDocument>();
-                // Pre-fill cache
                 this.files.forEach(f => { if (f.pdfDoc) fileCache.set(f.id, f.pdfDoc); });
 
                 for (const pageItem of this.allPages) {
@@ -151,23 +184,27 @@ export class MergeState extends PdfEngine {
                 }
             }
 
-            // Save and Download
             const pdfBytes = await mergedPdf.save();
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
-            this.downloadBlob(blob, `merged_${new Date().getTime()}.pdf`);
+            const name = this.fileName;
+            this.result = { blob, pages: mergedPdf.getPageCount(), name };
+            this.downloadBlob(blob, name);
         }, {
-            loading: 'Merging PDFs...',
-            success: 'PDFs merged successfully!',
-            error: 'Error merging PDFs. Please check console.'
+            loading: 'Merging…',
+            success: 'Merged PDF saved',
+            error: 'The files could not be merged.'
         });
     }
 
-
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
 
     reset() {
         this.files = [];
         this.allPages = [];
         this.pdfJsDocs.clear();
         this.mode = 'file';
+        this.result = null;
     }
 }

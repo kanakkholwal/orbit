@@ -1,165 +1,141 @@
 <script lang="ts">
+  import { cn } from "$lib/utils";
   import {
-    IconSquareCheck as CheckSquare,
+    IconCheck as Check,
     IconCopy as Copy,
-    IconLoader2 as Loader2,
-    IconRotate2 as RotateCcw,
-    IconRotateClockwise as RotateCw,
+    IconLoader2 as Loader,
+    IconRotate2 as RotateLeft,
+    IconRotateClockwise as RotateRight,
     IconScissors as Scissors,
-    IconSquare as Square,
-    IconTrash as Trash2,
+    IconTrash as Trash,
   } from "@tabler/icons-svelte";
   import { getContext } from "svelte";
-  import {
-    PDF_STATE_KEY,
-    type PageData,
-    type PdfEditorState,
-  } from "./helper.svelte";
+  import { PDF_STATE_KEY, type PageData, type PdfEditorState } from "./helper.svelte";
 
   const pdfState = getContext<PdfEditorState>(PDF_STATE_KEY);
 
-  // Props
-  let { page, index } = $props<{ page: PageData; index: number }>();
+  let { page, index, isLast }: { page: PageData; index: number; isLast: boolean } = $props();
 
-  // State
   let canvasEl: HTMLCanvasElement;
   let isRendered = $state(false);
+  const isBlank = $derived(page.pdfIndex === -1);
+  const isSelected = $derived(pdfState.selectedIds.has(page.id));
+  const splitsHere = $derived(pdfState.splitMarkers.has(page.id) && !isLast);
+  const label = $derived(`Page ${index + 1}`);
 
-  // Lazy Load Action (Exact match to your working component logic)
   function lazyLoad(node: HTMLElement) {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          // Crucial: canvasEl is guaranteed to exist now because we removed the {#if} block
-          if (!isRendered && canvasEl) {
-            pdfState
-              .renderThumbnail(
-                canvasEl,
-                page.pdfIndex,
-                page.pageIndex,
-                page.rotation,
-              )
-              .then(() => {
-                isRendered = true;
-              })
-              .catch((err) => console.error("Render failed:", err));
-          }
-          observer.disconnect();
+        if (!entries[0].isIntersecting) return;
+        if (!isRendered && canvasEl && page.pdfIndex !== -1) {
+          pdfState
+            .renderThumbnail(canvasEl, page.pdfIndex, page.pageIndex, page.rotation)
+            .then(() => (isRendered = true))
+            .catch((err) => console.error("Render failed:", err));
         }
+        observer.disconnect();
       },
-      { rootMargin: "200px" },
+      { rootMargin: "200px" }
     );
-
     observer.observe(node);
     return { destroy: () => observer.disconnect() };
   }
 
-  // Reactive Helpers
-  const isSelected = $derived(pdfState.selectedIds.has(page.id));
-  const hasSplit = $derived(pdfState.splitMarkers.has(page.id));
+  const actionClass =
+    "grid size-9 place-items-center rounded-lg text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
 </script>
 
-<div
-  class="group relative flex flex-col overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-md"
-  class:ring-2={isSelected}
-  class:ring-primary={isSelected}
-  class:border-primary={isSelected}
-  class:border-border={!isSelected}
-  data-id={page.id}
-  use:lazyLoad
->
+<div class="group relative" data-id={page.id} use:lazyLoad>
   <div
-    class="relative flex aspect-3/4 w-full items-center justify-center overflow-hidden bg-muted/30 p-4"
+    class={cn(
+      "flex flex-col overflow-hidden rounded-xl border bg-card transition-[border-color,box-shadow] duration-150",
+      isSelected ? "border-primary ring-1 ring-primary" : "border-border hover:border-border-strong hover:shadow-sm"
+    )}
   >
-    {#if !isRendered}
-      <div class="absolute inset-0 flex items-center justify-center">
-        <Loader2 class="h-6 w-6 animate-spin text-muted-foreground" />
-      </div>
-    {/if}
-
-    <canvas
-      bind:this={canvasEl}
-      class="h-full w-full object-contain transition-opacity duration-300 ease-in-out shadow-sm"
-      class:opacity-0={!isRendered}
-      class:opacity-100={isRendered}
-      style="transform: rotate({page.visualRotation}deg);"
-    ></canvas>
-
     <button
-      class="absolute right-2 top-2 z-10 rounded-full bg-background/80 p-1.5 shadow-sm backdrop-blur-md transition-all hover:bg-background group-hover:opacity-100 {isSelected
-        ? 'opacity-100 text-primary'
-        : 'opacity-0 text-muted-foreground'}"
-      onclick={(e) => {
-        e.stopPropagation();
-        pdfState.toggleSelection(page.id);
-      }}
+      type="button"
+      onclick={() => pdfState.toggleSelection(page.id)}
+      aria-pressed={isSelected}
+      aria-label={`${label}${isSelected ? ", selected" : ""}`}
+      class="relative m-1.5 grid aspect-3/4 cursor-grab place-items-center overflow-hidden rounded-lg bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
     >
-      {#if isSelected}
-        <CheckSquare class="h-5 w-5 fill-primary/10" />
-      {:else}
-        <Square class="h-5 w-5" />
+      {#if isBlank}
+        <span class="absolute inset-3 rounded-sm bg-fixed-light shadow-xs"></span>
+      {:else if !isRendered}
+        <Loader class="absolute size-5 animate-spin text-muted-foreground" />
       {/if}
+      <canvas
+        bind:this={canvasEl}
+        class={cn(
+          "h-full w-full object-contain transition-[opacity,transform] duration-300 ease-craft",
+          isRendered ? "opacity-100" : "opacity-0",
+          isBlank && "hidden"
+        )}
+        style:transform={`rotate(${page.visualRotation}deg)`}
+      ></canvas>
+
+      <span
+        aria-hidden="true"
+        class={cn(
+          "absolute left-2 top-2 grid size-6 place-items-center rounded-md border transition-[opacity,background-color]",
+          isSelected
+            ? "border-primary bg-primary text-primary-foreground"
+            : "border-border bg-background/95 text-transparent pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100"
+        )}
+      >
+        <Check class="size-4" />
+      </span>
     </button>
-  </div>
 
-  <div
-    class="flex items-center justify-between border-t bg-card px-3 py-2 text-xs text-muted-foreground"
-  >
-    <span class="font-medium">Page {index + 1}</span>
-  </div>
+    <div class="flex items-center justify-between gap-1 px-2 pb-1.5">
+      <span class="min-w-0 truncate text-caption tabular-nums text-muted-foreground">
+        <span class="font-medium text-foreground">{index + 1}</span>
+        · {isBlank ? "Blank page" : page.fileName}
+      </span>
+    </div>
 
-  <div
-    class="absolute bottom-10 left-0 right-0 z-20 flex justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100 sm:opacity-0"
-  >
     <div
-      class="flex items-center gap-1 rounded-lg bg-popover/95 px-1.5 py-1 shadow-xl ring-1 ring-border backdrop-blur-sm"
+      class="flex items-center justify-between border-t border-border px-1 py-0.5 pointer-fine:opacity-0 pointer-fine:transition-opacity pointer-fine:group-focus-within:opacity-100 pointer-fine:group-hover:opacity-100"
     >
-      <button
-        class="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
-        onclick={() => pdfState.rotatePage(page.id, -90)}
-        title="Rotate Left"
-      >
-        <RotateCcw class="h-4 w-4" />
+      <button type="button" class={actionClass} onclick={() => pdfState.rotatePage(page.id, -90)} aria-label={`Rotate ${label} left`} title="Rotate left">
+        <RotateLeft class="size-4" />
       </button>
-      <button
-        class="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
-        onclick={() => pdfState.rotatePage(page.id, 90)}
-        title="Rotate Right"
-      >
-        <RotateCw class="h-4 w-4" />
+      <button type="button" class={actionClass} onclick={() => pdfState.rotatePage(page.id, 90)} aria-label={`Rotate ${label} right`} title="Rotate right">
+        <RotateRight class="size-4" />
       </button>
-      <div class="h-4 w-[1px] bg-border mx-0.5"></div>
-      <button
-        class="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
-        onclick={() => pdfState.duplicatePage(page.id)}
-        title="Duplicate"
-      >
-        <Copy class="h-4 w-4" />
+      <button type="button" class={actionClass} onclick={() => pdfState.duplicatePage(page.id)} aria-label={`Duplicate ${label}`} title="Duplicate">
+        <Copy class="size-4" />
       </button>
+      {#if !isLast}
+        <button
+          type="button"
+          class={cn(actionClass, splitsHere && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary")}
+          onclick={() => pdfState.toggleSplit(page.id)}
+          aria-pressed={splitsHere}
+          aria-label={`Start a new document after ${label}`}
+          title="Split after this page"
+        >
+          <Scissors class="size-4" />
+        </button>
+      {/if}
       <button
-        class="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted rounded transition-colors"
-        onclick={() => pdfState.toggleSplit(page.id)}
-        title="Split After"
-      >
-        <Scissors class="h-4 w-4" />
-      </button>
-      <div class="h-4 w-[1px] bg-border mx-0.5"></div>
-      <button
-        class="p-1.5 text-destructive hover:bg-destructive/10 rounded transition-colors"
+        type="button"
+        class={cn(actionClass, "hover:bg-destructive/10 hover:text-destructive")}
         onclick={() => pdfState.deletePage(page.id)}
+        aria-label={`Delete ${label}`}
         title="Delete"
       >
-        <Trash2 class="h-4 w-4" />
+        <Trash class="size-4" />
       </button>
     </div>
   </div>
 
-  {#if hasSplit}
-    <div
-      class="absolute right-0 top-1/2 z-20 -mr-3 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-blue-500 shadow-lg ring-4 ring-background"
-      title="Document will split here"
+  {#if splitsHere}
+    <span
+      class="absolute -right-2 top-1/3 z-10 flex -translate-y-1/2 items-center gap-1 rounded-full bg-primary px-2 py-1 text-caption font-medium text-primary-foreground shadow-md"
     >
-      <Scissors class="h-4 w-4 text-white" />
-    </div>
+      <Scissors class="size-3.5" />
+      <span class="sr-only">New document starts after {label}</span>
+    </span>
   {/if}
 </div>

@@ -1,181 +1,195 @@
 <script lang="ts">
-  import { ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { OptionGroup, ResultCard, SegmentedControl, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { arrayMove, sortableList } from "$lib/actions/sortable-list";
-  import { cn } from "$lib/utils";
+  import { formatBytes } from "$utils/helper";
   import {
-    IconArrowRight as ArrowRight,
-    IconFileStack as FileStack,
-    IconLayoutGrid as Grid,
-    IconLoader2 as LoaderCircle,
+    IconDownload as Download,
+    IconLoader2 as Loader,
     IconPlus as Plus,
+    IconRefresh as Refresh,
   } from "@tabler/icons-svelte";
   import { setContext } from "svelte";
   import FileModeItem from "./FileModeItem.svelte";
   import { MERGE_STATE_KEY, MergeState } from "./helper.svelte";
   import PageModeThumbnail from "./PageModeThumbnail.svelte";
 
-  const localStore = new MergeState();
-  setContext(MERGE_STATE_KEY, localStore);
+  const store = new MergeState();
+  setContext(MERGE_STATE_KEY, store);
 
-  let uploadArea: ReturnType<typeof UploadArea>;
+  let addInput = $state<HTMLInputElement | null>(null);
+
+  const modes = [
+    { value: "file" as const, label: "Files" },
+    { value: "page" as const, label: "Pages" },
+  ];
 
   const fileListSort = {
-    onReorder: (o: number, n: number) =>
-      (localStore.files = arrayMove(localStore.files, o, n)),
-    options: {
-      handle: ".drag-handle",
-      animation: 200,
-      ghostClass: "opacity-40",
-      dragClass: "cursor-grabbing",
+    onReorder: (o: number, n: number) => {
+      store.files = arrayMove(store.files, o, n);
+      store.result = null;
     },
+    options: { handle: ".drag-handle", animation: 200, ghostClass: "opacity-40", dragClass: "cursor-grabbing" },
   };
 
   const pageGridSort = {
-    onReorder: (o: number, n: number) =>
-      (localStore.allPages = arrayMove(localStore.allPages, o, n)),
-    options: {
-      animation: 200,
-      ghostClass: "opacity-40",
-      dragClass: "cursor-grabbing",
-      delay: 100,
-      delayOnTouchOnly: true,
+    onReorder: (o: number, n: number) => {
+      store.allPages = arrayMove(store.allPages, o, n);
+      store.result = null;
     },
+    options: { animation: 200, ghostClass: "opacity-40", dragClass: "cursor-grabbing", delay: 150, delayOnTouchOnly: true },
   };
+
+  const fileNumber = $derived(new Map(store.files.map((f, i) => [f.id, i + 1])));
+  const pageLabel = (n: number) => `${n} ${n === 1 ? "page" : "pages"}`;
 </script>
 
-<UploadArea
-  bind:this={uploadArea}
-  onFilesSelected={(files) => localStore.addFiles(files)}
-  class={localStore.files.length > 0 ? "hidden" : ""}
-/>
+{#if store.files.length === 0}
+  <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to merge</h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Add two or more files, put them in order, then save them as one PDF.
+      </p>
+    {/snippet}
+  </UploadArea>
+{:else}
+  <div class="mx-auto flex w-full flex-col gap-4 {store.mode === 'file' ? 'max-w-4xl' : ''}">
+    {#if store.result && !store.isProcessing}
+      <ResultCard
+        title={`Merged into ${pageLabel(store.result.pages)}`}
+        description={`${store.result.name} is downloaded.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={() => store.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="merge-pdf" />
+      </ResultCard>
+    {/if}
 
-{#if localStore.files.length > 0}
-  <div class="flex flex-col gap-8">
     <ToolBar
-      label={localStore.mode === "file" ? "File mode" : "Page mode"}
-      count={localStore.mode === "file"
-        ? localStore.files.length
-        : localStore.allPages.length}
-      onReset={() => localStore.reset()}
+      label={store.mode === "file" ? "Files" : "Pages"}
+      count={store.mode === "file" ? store.files.length : store.allPages.length}
+      meta={store.mode === "file" ? formatBytes(store.totalSize) : `from ${store.files.length} files`}
+      onReset={store.isProcessing ? undefined : () => store.reset()}
       resetLabel="Clear all"
     >
       {#snippet actions()}
-        <div class="flex rounded-sm bg-muted/40 p-1">
-          {#each [
-            { id: "file", label: "Files", icon: FileStack },
-            { id: "page", label: "Pages", icon: Grid },
-          ] as opt}
-            <button
-              type="button"
-              onclick={() => (localStore.mode = opt.id as any)}
-              class={cn(
-                "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1 label-eyebrow transition-colors",
-                localStore.mode === opt.id
-                  ? "bg-card text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <opt.icon class="size-3" />
-              {opt.label}
-            </button>
-          {/each}
-        </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onclick={() => uploadArea.click()}
-          class="rounded-sm"
-        >
-          <Plus class="size-3.5" />
-          <span class="hidden sm:inline">Add</span>
+        <SegmentedControl name="merge-mode" options={modes} bind:value={store.mode} size="sm" class="w-40" />
+        <Button variant="outline" size="sm" disabled={store.isProcessing} onclick={() => addInput?.click()}>
+          <Plus />
+          <span class="hidden sm:inline">Add files</span>
+          <span class="sr-only sm:hidden">Add files</span>
         </Button>
       {/snippet}
     </ToolBar>
 
-    <ToolPanel
-      title={localStore.mode === "file" ? "Files" : "Pages"}
-      counter={localStore.mode === "file"
-        ? localStore.files.length
-        : localStore.allPages.length}
-    >
-      <div class="rounded-md border border-border bg-muted/10 p-3 sm:p-4">
-        {#if localStore.mode === "file"}
-          <div class="flex flex-col gap-2" use:sortableList={fileListSort}>
-            {#each localStore.files as file (file.id)}
-              <FileModeItem
-                {file}
-                onRemove={() => localStore.removeFile(file.id)}
-              />
-            {/each}
-          </div>
-
-          <div
-            class="mt-6 flex items-start gap-3 rounded-sm border border-border bg-card px-4 py-3"
-          >
-            <span
-              class="inline-flex size-7 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary"
-            >
-              <FileStack class="size-3.5" />
-            </span>
-            <div class="flex flex-col gap-1.5 text-xs leading-relaxed text-muted-foreground">
-              <span class="label-eyebrow text-muted-foreground">
-                Quick tips
-              </span>
-              <ul class="ml-4 list-disc space-y-1">
-                <li>Drag the handle on the left to reorder files.</li>
-                <li>
-                  Type ranges like
-                  <code class="rounded-xs bg-muted/60 px-1 font-mono text-caption text-foreground">1-3, 5</code>
-                  to merge specific pages only.
-                </li>
-                <li>Leave the range blank to include the entire file.</li>
-              </ul>
-            </div>
-          </div>
-        {:else}
-          <div
-            class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
-            use:sortableList={pageGridSort}
-          >
-            {#each localStore.allPages as item (item.id)}
-              <PageModeThumbnail {item} store={localStore} />
-            {/each}
-          </div>
-
-          {#if localStore.allPages.length === 0}
-            <div class="flex flex-col items-center gap-2 py-16 text-muted-foreground">
-              <LoaderCircle class="size-4 animate-spin text-primary" />
-              <p class="label-eyebrow text-muted-foreground">
-                Loading pages
-              </p>
-            </div>
-          {/if}
-        {/if}
+    {#if store.mode === "file"}
+      <p class="text-body text-muted-foreground">
+        Files are joined top to bottom. Drag a row or use the arrows to reorder.
+      </p>
+      <div class="flex flex-col gap-2" use:sortableList={fileListSort}>
+        {#each store.files as file, i (file.id)}
+          <FileModeItem {file} index={i} total={store.files.length} {store} />
+        {/each}
       </div>
-    </ToolPanel>
-
-    <ToolFooter
-      hint={localStore.isProcessing
-        ? localStore.progress.text || "Processing"
-        : "Ready to merge"}
-    >
-      <Button
-        size="lg"
-        class="rounded-sm px-6"
-        onclick={() => localStore.mergeAndDownload()}
-        disabled={localStore.isProcessing}
+    {:else if store.allPages.length === 0}
+      <div class="flex flex-col items-center gap-2 py-16 text-muted-foreground">
+        <Loader class="size-5 animate-spin text-primary" />
+        <p class="text-body">Loading pages</p>
+      </div>
+    {:else}
+      <p class="text-body text-muted-foreground">
+        Drag pages into the order you want. Removed pages are left out of the merged file.
+      </p>
+      <div
+        class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+        use:sortableList={pageGridSort}
       >
-        {#if localStore.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {localStore.progress.text || "Processing"}
-        {:else}
-          Merge PDF
-          <ArrowRight class="size-4" />
-        {/if}
-      </Button>
-    </ToolFooter>
+        {#each store.allPages as item, i (item.id)}
+          <PageModeThumbnail {item} {store} position={i + 1} fileNumber={fileNumber.get(item.fileId) ?? 0} />
+        {/each}
+      </div>
+    {/if}
+
+    <input
+      bind:this={addInput}
+      type="file"
+      accept=".pdf,application/pdf"
+      multiple
+      class="hidden"
+      onchange={(e) => {
+        const picked = Array.from(e.currentTarget.files ?? []);
+        if (picked.length > 0) store.addFiles(picked);
+        e.currentTarget.value = "";
+      }}
+    />
   </div>
+
+  <WorkspaceInspector title="Output">
+    <div class="flex flex-col gap-6">
+      <OptionGroup label="File name" description="Saved to your downloads as a PDF.">
+        <label for="merge-output-name" class="sr-only">File name</label>
+        <input
+          id="merge-output-name"
+          type="text"
+          bind:value={store.outputName}
+          placeholder="merged.pdf"
+          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+        />
+      </OptionGroup>
+
+      <OptionGroup label="Result">
+        <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
+          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <dt class="text-muted-foreground">Files</dt>
+            <dd class="font-medium tabular-nums text-foreground">{store.files.length}</dd>
+          </div>
+          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <dt class="text-muted-foreground">Pages</dt>
+            <dd class="font-medium tabular-nums text-foreground">{store.resultPageCount}</dd>
+          </div>
+          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <dt class="text-muted-foreground">Order</dt>
+            <dd class="font-medium text-foreground">{store.mode === "file" ? "By file" : "Custom pages"}</dd>
+          </div>
+        </dl>
+      </OptionGroup>
+    </div>
+  </WorkspaceInspector>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.isProcessing}
+        <span class="flex items-center gap-2 text-foreground">
+          <Loader class="size-4 animate-spin text-primary" />
+          Merging {pageLabel(store.resultPageCount)}…
+        </span>
+      {:else if store.hasRangeIssues}
+        <span class="block truncate text-destructive">Fix the highlighted page ranges to continue.</span>
+      {:else if store.files.length === 1 && store.mode === "file"}
+        <span class="block truncate">Add another file to merge.</span>
+      {:else}
+        <span class="block truncate tabular-nums">
+          {store.files.length} files · {pageLabel(store.resultPageCount)} in the result
+        </span>
+      {/if}
+    {/snippet}
+
+    <Button variant="primary" onclick={() => store.mergeAndDownload()} disabled={!store.canMerge}>
+      {store.isProcessing ? "Merging…" : `Merge ${store.files.length} ${store.files.length === 1 ? "file" : "files"}`}
+    </Button>
+  </ToolFooter>
 {/if}

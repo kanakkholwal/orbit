@@ -9,6 +9,13 @@ export interface ExtractedImage {
     url: string; // Object URL for preview
 }
 
+function imageMime(ext: string) {
+    const e = ext.toLowerCase();
+    if (e === 'jpg' || e === 'jpeg') return 'image/jpeg';
+    if (e === 'tif') return 'image/tiff';
+    return `image/${e}`;
+}
+
 export class ExtractImagesState extends PdfEngine {
     files = $state<{ id: string; file: File; originalSize: number }[]>([]);
     extractedImages = $state<ExtractedImage[]>([]);
@@ -41,7 +48,7 @@ export class ExtractImagesState extends PdfEngine {
     }
 
     private cleanupUrls() {
-        this.extractedImages.forEach(img => URL.revokeObjectURL(img.url));
+        for (const img of this.extractedImages) URL.revokeObjectURL(img.url);
     }
 
     //  Processing 
@@ -61,8 +68,8 @@ export class ExtractImagesState extends PdfEngine {
             pymupdf = await loadPyMuPDF();
             let imgCounter = 0;
 
-            for (const fileObj of this.files) {
-                this.progress.text = `Extracting images from ${fileObj.file.name}...`;
+            for (const [fileIdx, fileObj] of this.files.entries()) {
+                this.progress = { current: fileIdx + 1, total: this.files.length, text: `Searching ${fileObj.file.name}` };
 
                 const doc = await pymupdf.open(fileObj.file);
                 const pageCount = doc.pageCount;
@@ -134,6 +141,10 @@ export class ExtractImagesState extends PdfEngine {
         } finally {
             this.isProcessing = false;
         }
+    }
+
+    get resultFiles(): File[] {
+        return this.extractedImages.map(img => new File([img.data as BlobPart], img.name, { type: imageMime(img.ext) }));
     }
 
     downloadSingle(id: string) {

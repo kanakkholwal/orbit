@@ -52,6 +52,8 @@ export class BookmarkPdfState extends PdfEngine {
         historyIndex: -1
     });
 
+    result = $state.raw<{ blob: Blob; name: string; count: number } | null>(null);
+
     pdfLibDoc: PDFDocument | null = null;
     pdfJsDoc: PDFDocumentProxy | null = null;
 
@@ -63,6 +65,7 @@ export class BookmarkPdfState extends PdfEngine {
         }
         this.state.history.push(JSON.stringify(this.state.bookmarks));
         this.state.historyIndex++;
+        this.result = null;
     }
 
     undo() {
@@ -113,16 +116,44 @@ export class BookmarkPdfState extends PdfEngine {
         }
     }
 
+    reset() {
+        this.state.file = null;
+        this.state.pageCount = 0;
+        this.state.currentPage = 1;
+        this.state.bookmarks = [];
+        this.state.history = [];
+        this.state.historyIndex = -1;
+        this.result = null;
+        this.pdfJsDoc = null;
+        this.pdfLibDoc = null;
+    }
+
+    get totalCount(): number {
+        const count = (nodes: BookmarkNode[]): number => nodes.reduce((sum, n) => sum + 1 + count(n.children), 0);
+        return count(this.state.bookmarks);
+    }
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
+    setPage(page: number) {
+        this.state.currentPage = Math.max(1, Math.min(page, this.state.pageCount));
+    }
+
 // Rendering
-    async renderCurrentPage(canvas: HTMLCanvasElement) {
+    async renderCurrentPage(canvas: HTMLCanvasElement, targetWidth = 200) {
         if (!this.pdfJsDoc) return;
-        // Use base engine
-        await this.renderPageToCanvas(canvas, this.pdfJsDoc, this.state.currentPage - 1); // 0-based
+        await this.renderPageToCanvas(canvas, this.pdfJsDoc, this.state.currentPage - 1, targetWidth);
     }
 
 // Bookmark Operations
     
-    addBookmark(parent: BookmarkNode | null, title: string) {
+    addBookmark(parent: BookmarkNode | null, title: string): string {
         const newNode: BookmarkNode = {
             id: crypto.randomUUID(),
             title,
@@ -143,6 +174,21 @@ export class BookmarkPdfState extends PdfEngine {
             this.state.bookmarks.push(newNode);
         }
         this.snapshot();
+        return newNode.id;
+    }
+
+    toggleExpanded(id: string) {
+        const walk = (nodes: BookmarkNode[]): boolean => {
+            for (const n of nodes) {
+                if (n.id === id) {
+                    n.isExpanded = !n.isExpanded;
+                    return true;
+                }
+                if (walk(n.children)) return true;
+            }
+            return false;
+        };
+        walk(this.state.bookmarks);
     }
 
     updateBookmark(id: string, updates: Partial<BookmarkNode>) {
@@ -178,7 +224,7 @@ export class BookmarkPdfState extends PdfEngine {
         if(!this.pdfJsDoc) return;
         const outline = await this.pdfJsDoc.getOutline();
         if(!outline) {
-            toast.error("No bookmarks found in this PDF.");
+            toast.error("This PDF has no bookmarks to import.");
             return;
         }
 
@@ -219,7 +265,7 @@ export class BookmarkPdfState extends PdfEngine {
             newTree.push(await processItem(item));
         }
         
-        if(confirm(`Found ${newTree.length} root bookmarks. Replace current?`)) {
+        if(this.state.bookmarks.length === 0 || confirm(`Replace your bookmarks with the ${newTree.length} found in this PDF?`)) {
             this.state.bookmarks = newTree;
             this.snapshot();
         }
@@ -309,14 +355,13 @@ export class BookmarkPdfState extends PdfEngine {
             const pdfBytes = await this.pdfLibDoc.save();
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
             
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = this.state.file.name.replace('.pdf', '_bookmarked.pdf');
-            a.click();
+            const name = this.state.file.name.replace(/\.pdf$/i, '') + '_bookmarked.pdf';
+            this.result = { blob, name, count: this.totalCount };
+            this.downloadBlob(blob, name);
 
         } catch(e) {
             console.error(e);
-            toast.error("Error saving PDF.");
+            toast.error("Couldn't save the PDF.");
         } finally {
             this.state.isProcessing = false;
         }

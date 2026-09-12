@@ -7,6 +7,7 @@ export class TxtToPdfState extends PdfEngine {
   mode = $state<'upload' | 'text'>('upload');
   files = $state<{ id: string; file: File; originalSize: number }[]>([]);
   textContent = $state('');
+  result = $state.raw<{ blob: Blob; name: string; mode: 'upload' | 'text'; source: string } | null>(null);
 
   settings = $state({
     fontFamily: 'helv',
@@ -21,14 +22,26 @@ export class TxtToPdfState extends PdfEngine {
 
 // Actions
 
-  addFiles(newFiles: File[]) {
+  private validTextFiles(newFiles: File[]) {
     const validFiles = newFiles.filter(
       f => f.name.toLowerCase().endsWith('.txt') || f.type === 'text/plain'
     );
-
     if (validFiles.length < newFiles.length) {
       toast.error('Some files were skipped. Only text (.txt) files are allowed.');
     }
+    return validFiles;
+  }
+
+  async openInEditor(newFiles: File[]) {
+    const validFiles = this.validTextFiles(newFiles);
+    if (validFiles.length === 0) return;
+    const texts = await Promise.all(validFiles.map(f => f.text()));
+    this.textContent = texts.join('\n\n');
+  }
+
+  addFiles(newFiles: File[]) {
+    const validFiles = this.validTextFiles(newFiles);
+    if (validFiles.length > 0) this.result = null;
 
     for (const f of validFiles) {
       this.files.push({ id: crypto.randomUUID(), file: f, originalSize: f.size });
@@ -36,10 +49,20 @@ export class TxtToPdfState extends PdfEngine {
   }
 
   removeFile(id: string) {
+    this.result = null;
     this.files = this.files.filter(f => f.id !== id);
   }
 
+  get resultFiles(): File[] {
+    return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+  }
+
+  downloadResult() {
+    if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+  }
+
   reset() {
+    this.result = null;
     this.files = [];
     this.textContent = '';
     this.isProcessing = false;
@@ -57,8 +80,10 @@ export class TxtToPdfState extends PdfEngine {
       return;
     }
 
+    const mode = this.mode;
+    const source = this.textContent;
     this.progress.text = 'Loading engine...';
-    this.handleProcess(async () => {
+    await this.handleProcess(async () => {
       let pymupdf: any = null;
 
       const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
@@ -86,12 +111,13 @@ export class TxtToPdfState extends PdfEngine {
         margins: 72,
       });
 
+      this.result = { blob: pdfBlob, name: 'text_to_pdf.pdf', mode, source };
       this.downloadBlob(pdfBlob, 'text_to_pdf.pdf');
     }, {
       loading: 'Converting text to PDF...',
       success: 'PDF created successfully!',
       error: (e) => `Failed to convert text to PDF. ${e.message || ''}`
-    })
+    }).catch(() => {});
 
   }
 

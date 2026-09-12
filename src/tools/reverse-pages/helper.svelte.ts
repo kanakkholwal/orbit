@@ -2,10 +2,20 @@ import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument } from 'pdf-lib';
 import { toast } from 'svelte-sonner';
 
+export interface ReverseFile {
+  id: string;
+  file: File;
+  originalSize: number;
+  status: 'pending' | 'processing' | 'done' | 'error';
+  pages?: number;
+  resultBlob?: Blob;
+  error?: string;
+}
+
+const outputName = (file: File) => `${file.name.replace(/\.pdf$/i, '')}_reversed.pdf`;
+
 export class ReversePagesState extends PdfEngine {
-  files = $state<{ id: string; file: File; originalSize: number }[]>([]);
-
-
+  files = $state<ReverseFile[]>([]);
 
   addFiles(newFiles: File[]) {
     const validFiles = newFiles.filter(
@@ -17,7 +27,7 @@ export class ReversePagesState extends PdfEngine {
     }
 
     for (const f of validFiles) {
-      this.files.push({ id: crypto.randomUUID(), file: f, originalSize: f.size });
+      this.files.push({ id: crypto.randomUUID(), file: f, originalSize: f.size, status: 'pending' });
     }
   }
 
@@ -28,78 +38,81 @@ export class ReversePagesState extends PdfEngine {
   reset() {
     this.files = [];
     this.isProcessing = false;
-    this.progress.text = '';
+    this.progress = { current: 0, total: 0, text: '' };
   }
 
-  //  Processing 
+  get doneFiles() {
+    return this.files.filter(f => f.status === 'done' && f.resultBlob);
+  }
+
+  get totalSize() {
+    return this.files.reduce((sum, f) => sum + f.originalSize, 0);
+  }
+
+  get resultFiles(): File[] {
+    return this.doneFiles.map(f => new File([f.resultBlob!], outputName(f.file), { type: 'application/pdf' }));
+  }
 
   async process() {
-    if (this.files.length === 0) return;
+    const queue = this.files.filter(f => f.status === 'pending');
+    if (queue.length === 0) return;
 
     this.isProcessing = true;
-    this.progress.text = 'Reversing page order...';
 
-    this.handleProcess(async () => {
-      let zip: any;
-      if (this.files.length > 1) {
-        // Lazy load JSZip only if multiple files are selected
-        const JSZip = (await import('jszip')).default;
-        zip = new JSZip();
-      }
+    try {
+      for (let i = 0; i < queue.length; i++) {
+        const entry = queue[i];
+        entry.status = 'processing';
+        this.progress = { current: i + 1, total: queue.length, text: `Reversing ${entry.file.name}` };
 
-      for (let j = 0; j < this.files.length; j++) {
-        const fileObj = this.files[j];
-        if (this.files.length > 1) {
-          this.progress.text = `Processing ${fileObj.file.name} (${j + 1}/${this.files.length})...`;
-        } else {
-          this.progress.text = `Processing ${fileObj.file.name}...`;
-        }
+        try {
+          const pdfDoc = await PDFDocument.load(await entry.file.arrayBuffer(), {
+            ignoreEncryption: true,
+            throwOnInvalidObject: false
+          });
+          const newPdf = await PDFDocument.create();
+          const pageCount = pdfDoc.getPageCount();
+          const reversedIndices = Array.from({ length: pageCount }, (_, i) => pageCount - 1 - i);
 
-        const arrayBuffer = await fileObj.file.arrayBuffer();
+          const copiedPages = await newPdf.copyPages(pdfDoc, reversedIndices);
+          for (const page of copiedPages) newPdf.addPage(page);
 
-        // Load original PDF
-        const pdfDoc = await PDFDocument.load(arrayBuffer, {
-          ignoreEncryption: true,
-          throwOnInvalidObject: false
-        });
-
-        // Create a new blank PDF
-        const newPdf = await PDFDocument.create();
-
-        // Generate reversed indices array: e.g. [2, 1, 0]
-        const pageCount = pdfDoc.getPageCount();
-        const reversedIndices = Array.from({ length: pageCount }, (_, i) => pageCount - 1 - i);
-
-        // Copy and add pages in the reversed order
-        const copiedPages = await newPdf.copyPages(pdfDoc, reversedIndices);
-        copiedPages.forEach(page => newPdf.addPage(page));
-
-        const newPdfBytes = await newPdf.save();
-        const originalName = fileObj.file.name.replace(/\.pdf$/i, '');
-        const fileName = `${originalName}_reversed.pdf`;
-
-        if (this.files.length === 1) {
-          // Single file -> Download immediately
-          const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
-          this.downloadBlob(blob, fileName);
-        } else {
-          // Multiple files -> Add to ZIP
-          zip.file(fileName, newPdfBytes);
+          entry.resultBlob = new Blob([(await newPdf.save()) as BlobPart], { type: 'application/pdf' });
+          entry.pages = pageCount;
+          entry.status = 'done';
+        } catch (e: any) {
+          console.error('[Reverse Pages] Error:', e);
+          entry.status = 'error';
+          entry.error = 'Could not open this file';
         }
       }
 
-      if (this.files.length > 1) {
-        this.progress.text = 'Creating ZIP archive...';
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        this.downloadBlob(zipBlob, 'reversed_pdfs.zip');
-      }
-    }, {
-      loading: 'Reversing pages...',
-      success: 'Pages reversed successfully!',
-      error: (e: any) => `Error reversing pages: ${e.message}`
-    })
-
+      await this.downloadResults(queue.filter(f => f.status === 'done'));
+    } catch (e: any) {
+      console.error('[Reverse Pages] Error:', e);
+      toast.error(`Error reversing pages: ${e.message}`);
+    } finally {
+      this.isProcessing = false;
+    }
   }
 
+  downloadOne(id: string) {
+    const entry = this.doneFiles.find(f => f.id === id);
+    if (entry) this.downloadBlob(entry.resultBlob!, outputName(entry.file));
+  }
 
+  async downloadResults(entries: ReverseFile[] = this.doneFiles) {
+    const done = entries.filter(f => f.resultBlob);
+    if (done.length === 0) return;
+
+    if (done.length === 1) {
+      this.downloadOne(done[0].id);
+      return;
+    }
+
+    const JSZip = (await import('jszip')).default;
+    const zip = new JSZip();
+    for (const f of done) zip.file(outputName(f.file), await f.resultBlob!.arrayBuffer());
+    this.downloadBlob(await zip.generateAsync({ type: 'blob' }), 'reversed_pdfs.zip');
+  }
 }

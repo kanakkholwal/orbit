@@ -24,6 +24,20 @@ export class SignPdfState extends PdfEngine {
     location = $state('');
     contactInfo = $state('');
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
+    get pdfSize(): number {
+        return this.pdfBytes?.length ?? 0;
+    }
+
     get hasPdf(): boolean {
         return this.pdfBytes !== null;
     }
@@ -84,6 +98,7 @@ export class SignPdfState extends PdfEngine {
 
     async sign() {
         if (!this.pdfBytes || !this.p12Bytes) return;
+        this.result = null;
         await this.handleProcess(
             async () => {
                 const signed = await signPdfDigital(this.pdfBytes!, this.p12Bytes!, {
@@ -94,7 +109,9 @@ export class SignPdfState extends PdfEngine {
                     contactInfo: this.contactInfo
                 });
                 const blob = new Blob([signed as BlobPart], { type: 'application/pdf' });
-                this.downloadBlob(blob, `${this.fileName}_signed.pdf`);
+                const name = `${this.fileName}_signed.pdf`;
+                this.downloadBlob(blob, name);
+                this.result = { blob, name };
             },
             {
                 loading: 'Signing…',
@@ -109,6 +126,7 @@ export class SignPdfState extends PdfEngine {
 
     reset() {
         this.pdfBytes = null;
+        this.result = null;
         this.p12Bytes = null;
         this.p12Name = '';
         this.passphrase = '';

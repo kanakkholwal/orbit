@@ -318,6 +318,29 @@ Inspector controls:
   don't apply to the chosen mode, and say why in the group description.
 - `OptionGroup`: label + optional description around any control. Groups sit 24px apart.
 
+Controls that sit next to each other share one height:
+
+| Height | Button | Other controls | Where |
+| --- | --- | --- | --- |
+| 40px | `default`, `icon` | Input, Select, `SegmentedControl` (default) | Inspector, action bar, result cards |
+| 36px | `sm`, `icon-sm` | Row inputs (`h-9`), Select `sm`, `SegmentedControl size="sm"` | `ToolBar` actions, file rows, page cards |
+| 28px | `xs`, `icon-xs` | none | Dense chips only, never as a primary touch target |
+
+Never override a Button's height or size with a class; pick the size that matches its neighbours.
+
+Base form controls (`$components/ui`) share one spec so inner tool forms match the template:
+
+| Control | Spec |
+| --- | --- |
+| Input | 40px, `rounded-lg`, `border-border`, `bg-background`, `text-body`, placeholder `--placeholder`; focus turns the border `--ring`; invalid turns it `--destructive`. 16px text below `md` so iOS doesn't zoom. |
+| Textarea | Same, `rounded-xl`, `py-2.5`, `leading-relaxed`, grows with content. |
+| Select | 40px trigger (36px `sm`), chevron in `text-muted-foreground`, border `--ring` while open; menu `rounded-xl shadow-lg`, 36px items, emerald check on the selected item. |
+| Label | `text-body font-medium text-foreground`. |
+| Checkbox | 16px, `rounded-xs`, `border-placeholder` (3:1 boundary), emerald when checked. |
+
+Tool bodies drop "Quick tips" boxes: guidance is one `text-body text-muted-foreground` line above
+the content it explains, or a placeholder in the field itself.
+
 `ToolFooter` renders into the shell's pinned action bar through `WorkspaceActionBar`, so every tool
 using it gets a pinned primary action without further changes. Tools that auto-download still show
 the `ResultCard` so the outcome and next step are visible.

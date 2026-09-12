@@ -1,172 +1,166 @@
 <script lang="ts">
-  import { FileRow, ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { FileRow, ProgressLine, ResultCard, StatusPill, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import { formatBytes } from "$utils/helper";
   import {
     IconDownload as Download,
-    IconFileUnknown as FileQuestion,
-    IconLoader2 as LoaderCircle,
+    IconPhotoOff as PhotoOff,
     IconPlus as Plus,
-    IconBolt as Zap,
+    IconRefresh as Refresh,
   } from "@tabler/icons-svelte";
   import { ExtractImagesState } from "./helper.svelte";
 
   const store = new ExtractImagesState();
-  let uploadArea: ReturnType<typeof UploadArea>;
+  let addInput = $state<HTMLInputElement | null>(null);
+
+  const done = $derived(store.extractionDone && !store.isProcessing);
+  const imageCount = $derived(store.extractedImages.length);
+  const totalSize = $derived(store.files.reduce((sum, f) => sum + f.originalSize, 0));
+  const resultFiles = $derived(store.extractionDone ? store.resultFiles : []);
+  const imageLabel = (n: number) => `${n} ${n === 1 ? "image" : "images"}`;
+  const fileLabel = (n: number) => `${n} ${n === 1 ? "file" : "files"}`;
 </script>
 
 {#if store.files.length === 0}
-  <UploadArea
-    accept=".pdf"
-    multiple={true}
-    onFilesSelected={(files) => store.addFiles(files)}
-  />
+  <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to pull out their images</h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Save every photo and picture inside your PDFs at its original quality.
+      </p>
+    {/snippet}
+  </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
+  <div class="flex flex-col gap-4">
+    {#if store.extractionDone && imageCount > 0}
+      <ResultCard
+        title={`Found ${imageLabel(imageCount)}`}
+        description={`From ${fileLabel(store.files.length)}. Save them one at a time or all together.`}
+      >
+        {#snippet actions()}
+          <Button variant="ghost" onclick={() => store.reset()} disabled={store.isProcessing}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={resultFiles} heading="Continue with" exclude="extract-images" />
+      </ResultCard>
+    {/if}
+
     <ToolBar
-      label={store.extractionDone ? "Extracted" : "Documents"}
-      count={store.extractionDone
-        ? store.extractedImages.length
-        : store.files.length}
-      onReset={() => store.reset()}
-      resetLabel="Start over"
+      label={store.extractionDone ? "Images" : "Files"}
+      count={store.extractionDone ? imageCount : store.files.length}
+      meta={store.extractionDone ? `from ${fileLabel(store.files.length)}` : formatBytes(totalSize)}
+      onReset={store.isProcessing ? undefined : () => store.reset()}
+      resetLabel="Clear all"
     >
       {#snippet actions()}
-        {#if !store.extractionDone}
-          <Button
-            variant="outline"
-            size="sm"
-            onclick={() => uploadArea.click()}
-            disabled={store.isProcessing}
-            class="rounded-sm"
-          >
-            <Plus class="size-3.5" />
-            <span class="hidden sm:inline">Add</span>
-          </Button>
-        {/if}
+        <Button variant="outline" size="sm" disabled={store.isProcessing} onclick={() => addInput?.click()}>
+          <Plus />
+          <span class="hidden sm:inline">Add files</span>
+          <span class="sr-only sm:hidden">Add files</span>
+        </Button>
       {/snippet}
     </ToolBar>
 
     {#if !store.extractionDone}
-      <ToolPanel title="Files" counter={store.files.length}>
-        <ul class="flex flex-col gap-2">
-          {#each store.files as file (file.id)}
-            <li>
-              <FileRow
-                name={file.file.name}
-                onRemove={() => store.removeFile(file.id)}
-              >
-                <span class="font-mono tabular-nums">
-                  {formatBytes(file.originalSize)}
-                </span>
-              </FileRow>
-            </li>
-          {/each}
-        </ul>
-        <UploadArea
-          bind:this={uploadArea}
-          accept=".pdf"
-          multiple={true}
-          onFilesSelected={(files) => store.addFiles(files)}
-          class="mt-4"
-        />
-      </ToolPanel>
+      <ul class="flex flex-col gap-2">
+        {#each store.files as file (file.id)}
+          <li>
+            <FileRow
+              name={file.file.name}
+              meta={formatBytes(file.originalSize)}
+              onRemove={store.isProcessing ? undefined : () => store.removeFile(file.id)}
+            >
+              {#snippet trailing()}
+                {#if store.isProcessing}
+                  <StatusPill status="processing" label="Searching" />
+                {/if}
+              {/snippet}
+            </FileRow>
+          </li>
+        {/each}
+      </ul>
+    {:else if imageCount === 0}
+      <div class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+        <span class="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
+          <PhotoOff class="size-5" />
+        </span>
+        <h2 class="text-body-lg font-medium text-foreground">No images found</h2>
+        <p class="max-w-sm text-body text-muted-foreground">
+          These files have no pictures saved inside them. Scanned pages count as whole pages, so try PDF to Image instead.
+        </p>
+      </div>
     {:else}
-      <ToolPanel title="Images" counter={store.extractedImages.length}>
-        {#if store.extractedImages.length === 0}
-          <div
-            class="flex flex-col items-center gap-3 rounded-md border border-dashed border-border bg-muted/20 px-6 py-12 text-center"
-          >
-            <span class="inline-flex size-10 items-center justify-center rounded-sm bg-muted/60 text-muted-foreground">
-              <FileQuestion class="size-4" />
-            </span>
-            <p class="label-eyebrow text-muted-foreground">
-              No images found
-            </p>
-            <p class="max-w-sm text-sm text-muted-foreground">
-              These documents do not contain any embedded images.
-            </p>
-          </div>
-        {:else}
-          <ul
-            class="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-border bg-border/60 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
-          >
-            {#each store.extractedImages as image (image.id)}
-              <li
-                class="group relative flex aspect-square flex-col bg-card transition-colors hover:bg-muted/40"
+      <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+        {#each store.extractedImages as image (image.id)}
+          <li class="group flex flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-150 hover:border-border-strong hover:shadow-sm">
+            <div class="relative grid aspect-square place-items-center overflow-hidden rounded-lg bg-muted p-2">
+              <img src={image.url} alt={image.name} loading="lazy" class="max-h-full max-w-full object-contain" />
+              <button
+                type="button"
+                onclick={() => store.downloadSingle(image.id)}
+                aria-label={`Download ${image.name}`}
+                class="absolute right-1.5 top-1.5 grid size-9 place-items-center rounded-lg bg-background/90 text-foreground shadow-xs outline-none transition-opacity hover:text-primary focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-ring pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100"
               >
-                <div class="flex h-full w-full items-center justify-center p-3">
-                  <img
-                    src={image.url}
-                    alt={image.name}
-                    class="max-h-full max-w-full object-contain"
-                  />
-                </div>
-                <div
-                  class="absolute inset-x-0 bottom-0 flex translate-y-full items-center justify-between gap-2 border-t border-border bg-card/95 px-2.5 py-2 backdrop-blur-md transition-transform group-hover:translate-y-0"
-                >
-                  <span
-                    class="truncate font-mono text-caption tabular-nums text-muted-foreground"
-                    title={image.name}
-                  >
-                    {image.name}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    onclick={() => store.downloadSingle(image.id)}
-                    class="rounded-sm text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                    title="Download"
-                  >
-                    <Download class="size-3.5" />
-                  </Button>
-                </div>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </ToolPanel>
+                <Download class="size-4" />
+              </button>
+            </div>
+            <div class="flex items-center justify-between gap-2 px-0.5 text-caption tabular-nums text-muted-foreground">
+              <span class="truncate" title={image.name}>{image.name}</span>
+              <span class="shrink-0">{formatBytes(image.data.byteLength)}</span>
+            </div>
+          </li>
+        {/each}
+      </ul>
     {/if}
 
-    <ToolFooter
-      hint={store.isProcessing
-        ? store.progress.text
-        : store.extractionDone
-          ? `${store.extractedImages.length} image${store.extractedImages.length === 1 ? "" : "s"} ready`
-          : `Scan ${store.files.length} document${store.files.length === 1 ? "" : "s"}`}
-    >
-      {#if !store.extractionDone}
-        <Button
-          size="lg"
-          class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
-          onclick={() => store.extract()}
-          disabled={store.isProcessing || store.files.length === 0}
-        >
-          {#if store.isProcessing}
-            <LoaderCircle class="size-4 animate-spin" />
-            {store.progress.text}
-          {:else}
-            <Zap class="size-4" />
-            Extract images
-          {/if}
-        </Button>
-      {:else if store.extractedImages.length > 0}
-        <Button
-          size="lg"
-          class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
-          onclick={() => store.downloadAll()}
-          disabled={store.isProcessing}
-        >
-          {#if store.isProcessing}
-            <LoaderCircle class="size-4 animate-spin" />
-            {store.progress.text}
-          {:else}
-            <Download class="size-4" />
-            Download all (ZIP)
-          {/if}
-        </Button>
-      {/if}
-    </ToolFooter>
+    <input
+      bind:this={addInput}
+      type="file"
+      accept=".pdf,application/pdf"
+      multiple
+      class="hidden"
+      onchange={(e) => {
+        const picked = Array.from(e.currentTarget.files ?? []);
+        if (picked.length > 0) store.addFiles(picked);
+        e.currentTarget.value = "";
+      }}
+    />
   </div>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.isProcessing && !store.extractionDone}
+        <ProgressLine
+          label={store.progress.text || "Opening files"}
+          current={store.progress.current}
+          total={store.progress.total}
+          class="max-w-md"
+        />
+      {:else if store.isProcessing}
+        <span class="block truncate text-foreground">Packing images into a ZIP…</span>
+      {:else if done}
+        <span class="block truncate">
+          {imageCount > 0 ? `${imageLabel(imageCount)} ready to save` : "Add other files to try again."}
+        </span>
+      {:else}
+        <span class="block truncate">{fileLabel(store.files.length)} ready</span>
+      {/if}
+    {/snippet}
+
+    {#if store.extractionDone}
+      <Button variant="primary" onclick={() => store.downloadAll()} disabled={store.isProcessing || imageCount === 0}>
+        {store.isProcessing ? "Packing…" : "Download all as ZIP"}
+      </Button>
+    {:else}
+      <Button variant="primary" onclick={() => store.extract()} disabled={store.isProcessing}>
+        {store.isProcessing ? "Finding images…" : `Find images in ${fileLabel(store.files.length)}`}
+      </Button>
+    {/if}
+  </ToolFooter>
 {/if}

@@ -24,6 +24,13 @@ export class PdfToJpgState extends PdfEngine {
         progress: ''
     });
 
+    result = $state.raw<{ blob: Blob; name: string; count: number } | null>(null);
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+    step = $state({ current: 0, total: 0 });
+
 // Actions
 
     async loadFile(file: File) {
@@ -39,6 +46,7 @@ export class PdfToJpgState extends PdfEngine {
             const pdf = await loadingTask.promise;
             
             this.state.file = file;
+            this.result = null;
             this.state.pageCount = pdf.numPages;
         } catch (e) {
             console.error(e);
@@ -52,6 +60,7 @@ export class PdfToJpgState extends PdfEngine {
         this.state.file = null;
         this.state.pageCount = 0;
         this.state.isProcessing = false;
+        this.result = null;
     }
 
 // Processing Logic
@@ -59,6 +68,8 @@ export class PdfToJpgState extends PdfEngine {
     async convert() {
         if (!this.state.file) return;
         this.state.isProcessing = true;
+        this.result = null;
+        this.step = { current: 0, total: 0 };
         this.state.progress = 'Initializing...';
 
         try {
@@ -76,6 +87,7 @@ export class PdfToJpgState extends PdfEngine {
 
             for (let i = 1; i <= totalPages; i++) {
                 this.state.progress = `Converting page ${i} of ${totalPages}...`;
+                this.step = { current: i, total: totalPages };
                 
                 const page = await pdf.getPage(i);
                 const viewport = page.getViewport({ scale: 2.0 });
@@ -106,7 +118,9 @@ export class PdfToJpgState extends PdfEngine {
             const zipBlob = await zip.generateAsync({ type: 'blob' });
             
             const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadBlob(zipBlob, `${originalName}_to_${ext}.zip`);
+            const name = `${originalName}_to_${ext}.zip`;
+            this.result = { blob: zipBlob, name, count: totalPages };
+            this.downloadBlob(zipBlob, name);
 
         } catch (e: any) {
             console.error(e);

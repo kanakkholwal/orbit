@@ -22,7 +22,17 @@ export class EsignPdfState extends PdfEngine {
 
     placement = $state<Placement>({ page: 0, x: 0.62, y: 0.82, w: 0.3 });
 
+    result = $state.raw<{ blob: Blob; name: string; page: number } | null>(null);
+
     private pdfJsDoc: PDFDocumentProxy | null = null;
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
 
     get hasPdf(): boolean {
         return this.pdfBytes !== null;
@@ -43,7 +53,7 @@ export class EsignPdfState extends PdfEngine {
                 this.pageCount = this.pdfJsDoc.numPages;
                 this.placement = { ...this.placement, page: 0 };
             },
-            { loading: 'Loading PDF…', success: 'PDF loaded.', error: 'Failed to load PDF.' }
+            { loading: 'Opening PDF…', success: 'PDF ready to sign.', error: "Couldn't open this PDF." }
         );
     }
 
@@ -54,6 +64,7 @@ export class EsignPdfState extends PdfEngine {
 
     setSignature(dataUrl: string) {
         this.signature = dataUrl;
+        this.result = null;
         const img = new Image();
         img.onload = () => {
             if (img.width > 0) this.signatureAspect = img.height / img.width;
@@ -91,7 +102,9 @@ export class EsignPdfState extends PdfEngine {
 
                 const out = await doc.save();
                 const blob = new Blob([out as BlobPart], { type: 'application/pdf' });
-                this.downloadBlob(blob, `${this.fileName}_signed.pdf`);
+                const name = `${this.fileName}_signed.pdf`;
+                this.result = { blob, name, page: this.placement.page + 1 };
+                this.downloadBlob(blob, name);
             },
             {
                 loading: 'Applying signature…',
@@ -106,6 +119,7 @@ export class EsignPdfState extends PdfEngine {
         this.pdfJsDoc = null;
         this.pageCount = 0;
         this.signature = null;
+        this.result = null;
         this.fileName = 'document';
         this.placement = { page: 0, x: 0.62, y: 0.82, w: 0.3 };
     }

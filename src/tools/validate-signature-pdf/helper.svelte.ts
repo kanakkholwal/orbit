@@ -1,6 +1,7 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import type forgeType from 'node-forge';
-import type { pki } from 'node-forge'; 
+import type { pki } from 'node-forge';
+import { toast } from 'svelte-sonner';
 
 export interface ExtractedSignature {
     index: number;
@@ -42,6 +43,9 @@ export class ValidateSignatureState extends PdfEngine {
     certFile = $state<File | null>(null);
     trustedCert = $state<pki.Certificate | undefined>(undefined);
     results = $state<SignatureValidationResult[]>([]);
+    checked = $state(false);
+    failed = $state(false);
+    private runId = 0;
 
     // --- Actions ---
 
@@ -51,12 +55,13 @@ export class ValidateSignatureState extends PdfEngine {
         );
 
         if (!validFile) {
-            alert('Please upload a valid PDF file.');
+            toast.error('Choose a PDF file.');
             return;
         }
 
         this.file = { file: validFile, originalSize: validFile.size };
         this.results = [];
+        this.process();
     }
 
     async loadCertFile(files: File[]) {
@@ -65,23 +70,25 @@ export class ValidateSignatureState extends PdfEngine {
 
         try {
             const text = await validFile.text();
-            
+
             // DYNAMIC IMPORT: Only load node-forge if custom cert is provided
             const forge = (await import('node-forge')).default;
-            
+
             this.trustedCert = forge.pki.certificateFromPem(text);
             this.certFile = validFile;
         } catch (e) {
             console.error(e);
-            alert("Failed to parse certificate. Please ensure it's a valid PEM encoded X.509 certificate (.pem, .crt, .cer).");
+            toast.error("That certificate couldn't be read. Use a .pem, .crt or .cer file.");
             this.certFile = null;
             this.trustedCert = undefined;
         }
+        if (this.file) this.process();
     }
 
     removeCert() {
         this.certFile = null;
         this.trustedCert = undefined;
+        if (this.file) this.process();
     }
 
     reset() {
@@ -89,33 +96,43 @@ export class ValidateSignatureState extends PdfEngine {
         this.certFile = null;
         this.trustedCert = undefined;
         this.results = [];
+        this.checked = false;
+        this.failed = false;
     }
 
     // --- Processing ---
 
     async process() {
         if (!this.file) return;
+        const target = this.file;
+        const run = ++this.runId;
+        this.isProcessing = true;
+        this.checked = false;
+        this.failed = false;
 
-        await this.handleProcess(async () => {
-            const arrayBuffer = await this.file!.file.arrayBuffer();
+        try {
+            const arrayBuffer = await target.file.arrayBuffer();
             const pdfBytes = new Uint8Array(arrayBuffer);
-            
             const signatures = this.extractSignatures(pdfBytes);
-            
-            if (signatures.length === 0) {
-                throw new Error("No digital signatures found in this document.");
+
+            let results: SignatureValidationResult[] = [];
+            if (signatures.length > 0) {
+                // DYNAMIC IMPORT: Load forge once before validating
+                const forge = (await import('node-forge')).default;
+                results = signatures.map(sig => this.validateSignature(forge, sig, pdfBytes, this.trustedCert));
             }
 
-            // DYNAMIC IMPORT: Load forge once before validating
-            const forge = (await import('node-forge')).default;
-
-            this.results = signatures.map(sig => this.validateSignature(forge, sig, pdfBytes, this.trustedCert));
-
-        }, {
-            loading: 'Validating signatures...',
-            success: 'Validation complete!',
-            error: (err) => err.message || 'Failed to validate signatures.'
-        });
+            if (run !== this.runId || this.file !== target) return;
+            this.results = results;
+            this.checked = true;
+        } catch (e) {
+            console.error(e);
+            if (run !== this.runId || this.file !== target) return;
+            this.failed = true;
+            toast.error("We couldn't check this file.");
+        } finally {
+            if (run === this.runId) this.isProcessing = false;
+        }
     }
 
     // --- Cryptographic Core ---
@@ -124,11 +141,10 @@ export class ValidateSignatureState extends PdfEngine {
         const signatures: ExtractedSignature[] = [];
         const pdfString = new TextDecoder('latin1').decode(pdfBytes);
 
-        const sigRegex = /\/Type\s*\/Sig\b/g;
-        let sigMatch;
+        const sigRegex = /\/Type\s*\/Sig\b/g;
         let sigIndex = 0;
 
-        while ((sigMatch = sigRegex.exec(pdfString)) !== null) {
+        for (const sigMatch of pdfString.matchAll(sigRegex)) {
             try {
                 const searchStart = Math.max(0, sigMatch.index - 5000);
                 const searchEnd = Math.min(pdfString.length, sigMatch.index + 10000);

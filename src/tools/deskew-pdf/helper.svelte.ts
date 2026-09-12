@@ -9,18 +9,23 @@ export interface DeskewResult {
     corrected: boolean[];
 }
 
+export interface DeskewFile {
+    id: string;
+    file: File;
+    originalSize: number;
+    status: 'pending' | 'processing' | 'done' | 'error';
+    result?: DeskewResult;
+    resultBlob?: Blob;
+    error?: string;
+}
+
+const outputName = (file: File) => file.name.replace(/\.pdf$/i, '_deskewed.pdf');
+
 export class DeskewPdfState extends PdfEngine {
-    files = $state<{ id: string; file: File; originalSize: number }[]>([]);
-    
-    // Settings
+    files = $state<DeskewFile[]>([]);
+
     threshold = $state('0.5');
     dpi = $state('150');
-
-    // Results state 
-    lastResult = $state<DeskewResult | null>(null);
-    lastProcessedFileName = $state('');
-
-    //  Actions 
 
     addFiles(newFiles: File[]) {
         const validFiles = newFiles.filter(
@@ -32,60 +37,88 @@ export class DeskewPdfState extends PdfEngine {
         }
 
         for (const f of validFiles) {
-            this.files.push({ id: crypto.randomUUID(), file: f, originalSize: f.size });
+            this.files.push({ id: crypto.randomUUID(), file: f, originalSize: f.size, status: 'pending' });
         }
-        
-        // Hide results if we add new files
-        this.lastResult = null;
     }
 
     removeFile(id: string) {
         this.files = this.files.filter(f => f.id !== id);
-        if (this.files.length === 0) {
-            this.lastResult = null;
-        }
     }
 
     reset() {
         this.files = [];
-        this.lastResult = null;
-        this.lastProcessedFileName = '';
+        this.isProcessing = false;
+        this.progress = { current: 0, total: 0, text: '' };
     }
 
-// Processing
+    get doneFiles() {
+        return this.files.filter(f => f.status === 'done' && f.resultBlob);
+    }
+
+    get totalSize() {
+        return this.files.reduce((sum, f) => sum + f.originalSize, 0);
+    }
+
+    get resultFiles(): File[] {
+        return this.doneFiles.map(f => new File([f.resultBlob!], outputName(f.file), { type: 'application/pdf' }));
+    }
 
     async process() {
-        if (this.files.length === 0) return;
+        const queue = this.files.filter(f => f.status === 'pending');
+        if (queue.length === 0) return;
 
-        await this.handleProcess(async () => {
+        this.isProcessing = true;
+        this.progress = { current: 0, total: queue.length, text: 'Getting ready' };
+
+        try {
             const pymupdf = await loadPyMuPDF();
+            const threshold = parseFloat(this.threshold);
+            const dpi = parseInt(this.dpi, 10);
 
-            const thresholdVal = parseFloat(this.threshold);
-            const dpiVal = parseInt(this.dpi, 10);
+            for (let i = 0; i < queue.length; i++) {
+                const entry = queue[i];
+                entry.status = 'processing';
+                this.progress = { current: i + 1, total: queue.length, text: `Straightening ${entry.file.name}` };
 
-            for (let i = 0; i < this.files.length; i++) {
-                const fileObj = this.files[i];
-                
-                this.progress.text = `Deskewing ${fileObj.file.name}...`;
-
-                // Deskew via PyMuPDF extension
-                const { pdf: resultPdf, result } = await (pymupdf as any).deskewPdf(fileObj.file, {
-                    threshold: thresholdVal,
-                    dpi: dpiVal,
-                });
-
-                // Update UI to show results for the *last* processed file
-                // If multiple, it updates rapidly, but usually users deskew 1 at a time.
-                this.lastResult = result;
-                this.lastProcessedFileName = fileObj.file.name;
-
-                const filename = fileObj.file.name.replace(/\.pdf$/i, '_deskewed.pdf');
-                this.downloadBlob(resultPdf, filename);
+                try {
+                    const { pdf, result } = await (pymupdf as any).deskewPdf(entry.file, { threshold, dpi });
+                    entry.resultBlob = pdf;
+                    entry.result = result;
+                    entry.status = 'done';
+                } catch (e: any) {
+                    console.error('[Deskew PDF] Error:', e);
+                    entry.status = 'error';
+                    entry.error = 'Could not straighten this file';
+                }
             }
-        }, {
-            loading: 'Correcting document tilt...',
-            success: `Deskewed ${this.files.length} file(s) successfully!`,
-            error: 'An error occurred during deskewing.'
-        });
+
+            await this.downloadResults(queue.filter(f => f.status === 'done'));
+        } catch (e: any) {
+            console.error('[Deskew PDF] Error:', e);
+            toast.error('An error occurred during deskewing.');
+            for (const entry of queue) if (entry.status === 'processing') entry.status = 'pending';
+        } finally {
+            this.isProcessing = false;
+        }
+    }
+
+    downloadOne(id: string) {
+        const entry = this.doneFiles.find(f => f.id === id);
+        if (entry) this.downloadBlob(entry.resultBlob!, outputName(entry.file));
+    }
+
+    async downloadResults(entries: DeskewFile[] = this.doneFiles) {
+        const done = entries.filter(f => f.resultBlob);
+        if (done.length === 0) return;
+
+        if (done.length === 1) {
+            this.downloadOne(done[0].id);
+            return;
+        }
+
+        const JSZip = (await import('jszip')).default;
+        const zip = new JSZip();
+        for (const f of done) zip.file(outputName(f.file), await f.resultBlob!.arrayBuffer());
+        this.downloadBlob(await zip.generateAsync({ type: 'blob' }), 'deskewed_pdfs.zip');
     }
 }

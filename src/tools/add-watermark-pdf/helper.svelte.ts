@@ -34,15 +34,27 @@ export class AddWatermarkState extends PdfEngine {
         rotation: -45
     });
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
 // Actions
 
     loadFile(file: File) {
         if (!file) return;
         this.state.file = file;
+        this.result = null;
     }
 
     reset() {
         this.state.file = null;
+        this.result = null;
         this.isProcessing = false;
         // Resetting content is optional, user might want to watermark multiple files with same settings
     }
@@ -52,6 +64,7 @@ export class AddWatermarkState extends PdfEngine {
     async process() {
         if (!this.state.file) return;
 
+        this.result = null;
         await this.handleProcess(async () => {
             const arrayBuffer = await this.state.file!.arrayBuffer();
             const pdfDoc = await PDFDocument.load(arrayBuffer);
@@ -127,7 +140,9 @@ export class AddWatermarkState extends PdfEngine {
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
 
             const originalName = this.state.file!.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_watermarked.pdf`);
+            const name = `${originalName}_watermarked.pdf`;
+            this.result = { blob, name };
+            this.downloadBlob(blob, name);
         }, {
             loading: 'Applying watermark...',
             success: 'Watermark applied successfully!',

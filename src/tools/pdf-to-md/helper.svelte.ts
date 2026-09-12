@@ -3,12 +3,27 @@ import { pdfToMarkdown } from '$utils/pdf-to-md';
 import { toast } from 'svelte-sonner';
 
 export class PdfToMdState extends PdfEngine {
+    file = $state.raw<File | null>(null);
     fileName = $state('document');
     markdown = $state('');
     pageCount = $state(0);
+    converted = $state(false);
 
     get hasResult(): boolean {
         return this.markdown.trim().length > 0;
+    }
+
+    selectFile(file: File) {
+        if (!file) return;
+        this.file = file;
+        this.markdown = '';
+        this.pageCount = 0;
+        this.converted = false;
+    }
+
+    async convert() {
+        if (!this.file) return;
+        await this.loadFile(this.file).catch(() => {});
     }
 
     async loadFile(file: File) {
@@ -28,13 +43,14 @@ export class PdfToMdState extends PdfEngine {
                 if (!this.markdown.trim()) {
                     throw new Error('No selectable text found');
                 }
+                this.converted = true;
             },
             {
                 loading: 'Extracting Markdown…',
                 success: 'Markdown ready.',
                 error: (e) =>
                     /no selectable text/i.test(e?.message ?? '')
-                        ? 'No selectable text found — this looks like a scanned PDF. Run OCR first.'
+                        ? 'No selectable text found. This looks like a scanned PDF. Make its text searchable first.'
                         : 'Failed to extract Markdown.'
             }
         );
@@ -57,6 +73,8 @@ export class PdfToMdState extends PdfEngine {
     }
 
     reset() {
+        this.file = null;
+        this.converted = false;
         this.fileName = 'document';
         this.markdown = '';
         this.pageCount = 0;

@@ -20,6 +20,20 @@ export class BackgroundColorState extends PdfEngine {
 
     private pdfLibDoc: PDFDocument | null = null;
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
+    targetPages(range: string): number[] {
+        return this.parsePageRanges(range, this.state.pageCount);
+    }
+
 // Actions
 
     async loadFile(files: File[]) {
@@ -34,6 +48,7 @@ export class BackgroundColorState extends PdfEngine {
             this.state.file = file;
             this.state.originalSize = file.size;
             this.state.pageCount = this.pdfLibDoc.getPageCount();
+            this.result = null;
         },{
             loading: 'Loading PDF...',
             success: 'PDF loaded successfully!',
@@ -48,13 +63,15 @@ export class BackgroundColorState extends PdfEngine {
         this.state.pageCount = 0;
         this.state.originalSize = 0;
         this.state.pageRange = '';
+        this.result = null;
         this.progress = { current: 0, total: 0, text: '' };
     }
 
 // Processing
 
     async process() {
-        this.handleProcess(async () => {
+        this.result = null;
+        await this.handleProcess(async () => {
             if (!this.pdfLibDoc || !this.state.file) return;
              // Parse Hex to RGB
             const hex = this.state.colorHex.replace('#', '');
@@ -99,7 +116,9 @@ export class BackgroundColorState extends PdfEngine {
             const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
 
             const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_bg_changed.pdf`);
+            const name = `${originalName}_bg_changed.pdf`;
+            this.result = { blob, name };
+            this.downloadBlob(blob, name);
         },{
             loading: 'Changing background color...',
             success: 'Background color changed successfully!',

@@ -39,6 +39,7 @@
         bind:value={query}
         type="search"
         placeholder="Filter tools"
+        id="tools-filter"
         class="h-full min-w-0 flex-1 bg-transparent text-body text-foreground placeholder:text-placeholder focus:outline-none"
       />
       {#if query}
