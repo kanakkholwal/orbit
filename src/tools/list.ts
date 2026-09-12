@@ -10,6 +10,7 @@ import {
     IconFile as FileIcon,
     IconFileMinus as FileMinus2,
     IconFileStack as FileStack,
+    IconFilePlus as FilePlus,
     IconFileText as FileText,
     IconGauge as Gauge,
     IconHighlight as Highlighter,
@@ -198,6 +199,18 @@ const tools: Record<string, ToolConfig> = {
         component: () => import('./edit-pdf/tool.svelte'),
         color: 'text-blue-500',
         keywords: ['edit pdf', 'pdf editor', 'edit pdf online', 'add text to pdf', 'pdf annotation', 'modify pdf', 'free pdf editor', 'edit pdf text', 'pdf markup tool']
+    },
+    "create-pdf": {
+        slug: "create-pdf",
+        title: "Create PDF",
+        description: "Design invoices, resumes, reports, letters and certificates on the page, then download a clean PDF. 31 blocks, 16 templates and 10 themes, all on your device.",
+        category: "essentials",
+        layout: "immersive",
+        icon: FilePlus,
+        component: () => import("./create-pdf/tool.svelte"),
+        color: "text-emerald-600",
+        seoTitle: "PDF Maker: Create Invoices, Resumes and Reports as PDF",
+        keywords: ["create pdf", "pdf maker", "pdf creator", "invoice generator", "resume builder pdf", "make a pdf", "pdf designer", "report template pdf", "certificate maker", "free pdf creator", "wysiwyg pdf editor", "quote template", "letter template pdf"]
     },
     "view-pdf": {
         slug: "view-pdf",

@@ -8,6 +8,7 @@
     value = $bindable(),
     name,
     size = "default",
+    onchange,
     class: className,
   }: {
     options: Option[];
@@ -15,6 +16,7 @@
     name: string;
     /** `default` is 40px tall like a default Button; `sm` is 36px like a `sm` Button. */
     size?: "default" | "sm";
+    onchange?: (value: T) => void;
     class?: string;
   } = $props();
 </script>
@@ -31,7 +33,7 @@
         active ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
       )}
     >
-      <input type="radio" {name} value={option.value} bind:group={value} class="sr-only" />
+      <input type="radio" {name} value={option.value} bind:group={value} onchange={() => onchange?.(option.value)} class="sr-only" />
       <span class="truncate">{option.label}</span>
     </label>
   {/each}

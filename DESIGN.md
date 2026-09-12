@@ -377,6 +377,24 @@ from `chromeButton` in `chrome.ts`, so the chrome follows the 36px row of the he
 | Link | Right drawer (bottom on mobile): `SegmentedControl` URL/Page, 40px field, ghost Cancel + primary Insert link. |
 | States | Loading: emerald spinner + `text-body` message. Locked PDF: card with lock tile, password field, wrong-password error. Unreadable PDF and engine failure: card with the reason. All tabs closed: `UploadArea`. |
 
+### Create PDF studio
+
+[create-pdf](src/tools/create-pdf) is an immersive block editor that renders with Forme (Rust to
+WASM, lazy-loaded on first preview or download). The page is paper, not UI: it keeps white and its
+own theme in both app themes.
+
+| Part | Spec |
+| --- | --- |
+| Start screen | Tilted count chip, `text-heading-lg` headline, "Continue editing" draft rows (40px accent tile), template filter chips (36px, active `bg-foreground`), template cards with a live read-only thumbnail of the page. |
+| Toolbar | 48px: back, inline name field, save status caption, undo/redo, Preview (outline sm), Download PDF (primary sm), more menu. |
+| Left panel | 256px from 1280px (drawer below): `SegmentedControl` Blocks / Fields. Block rows are 48px with a 28px icon tile and one-line description. |
+| Canvas | `bg-canvas`, page at true point size scaled to fit (0.4 to 1.3). Hover: 1px emerald outline; selected: 2px `#10b981`. Gutter "+" and drag handle outside the text column (fine pointers only). Fields render as emerald chips until "Show values" is on. |
+| Right panel | 320px from 1024px (drawer below, bottom on mobile): selected block's fields, or Document (theme cards, accent swatches, page, header, footer, watermark). |
+| Mobile | Bottom bar with Add block and Edit block / Document, both drawers. |
+| Preview | Right drawer (bottom on mobile) with the real pages rendered by pdf.js. |
+
+Themes use the built-in PDF fonts (Helvetica, Times, Courier) so output is identical offline.
+
 Immersive tools keep the canvas width stable: the rail's panel toggle opens the tools panel as a
 left drawer instead of pushing the editor. Shell containers use `overflow-clip`, so focus or
 `scrollIntoView` inside the editor can never shift the shell sideways.
