@@ -39,6 +39,9 @@ import type { Component } from 'svelte';
 
 
 
+/** `form` centres a settings-style tool, `canvas` uses the full width, `immersive` takes the whole workspace. */
+export type ToolLayout = 'form' | 'canvas' | 'immersive';
+
 export interface ToolConfig {
     slug: string;
     title: string;
@@ -48,6 +51,7 @@ export interface ToolConfig {
     color: string;
     category: string;
     keywords?: string[]; // Optional array of keywords for SEO and search functionality
+    layout?: ToolLayout;
 }
 /*
 * Centralized configuration for all tools in the application.
@@ -70,6 +74,7 @@ const tools: Record<string, ToolConfig> = {
         title: "PDF Multi-Tool",
         description: "Upload, rearrange, rotate, and export multiple PDF pages with advanced editing capabilities. All-in-one PDF manager for quick page manipulation and batch operations.",
         category: "essentials",
+        layout: 'canvas',
         icon: FileMinus2,
         component: () => import('./multi-pdf/tool.svelte'),
         color: "text-primary",
@@ -100,6 +105,7 @@ const tools: Record<string, ToolConfig> = {
         title: 'Image to PDF',
         description: 'Convert images to PDF instantly. Supports JPG, PNG, BMP, TIFF and more formats. Free online image to PDF converter with batch processing.',
         category: 'conversion',
+        layout: 'canvas',
         icon: ImageIcon,
         component: () => import('./img-to-pdf/tool.svelte'),
         color: 'text-orange-500',
@@ -140,6 +146,7 @@ const tools: Record<string, ToolConfig> = {
         title: 'Rotate PDF',
         description: 'Easily rotate PDF pages to the correct orientation. Supports 90, 180, and 270-degree rotations with batch processing capabilities.',
         category: 'pdf-management',
+        layout: 'canvas',
         icon: RotateCw,
         component: () => import('./rotate-pdf/tool.svelte'),
         color: 'text-purple-500',
@@ -150,6 +157,7 @@ const tools: Record<string, ToolConfig> = {
         title: 'Organize PDF',
         description: 'Easily organize and rearrange PDF pages with drag-and-drop interface. Reorder pages, delete sections, and create custom page arrangements with batch support.',
         category: 'pdf-management',
+        layout: 'canvas',
         icon: MoveIcon,
         component: () => import('./organize-pdf/tool.svelte'),
         color: 'text-purple-500',
@@ -170,6 +178,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Crop PDF",
         description: "Crop PDF pages to remove unwanted areas or adjust layout precisely. Advanced cropping tool with visual preview and batch processing support.",
         category: 'pdf-management',
+        layout: 'canvas',
         icon: CropIcon,
         component: () => import('./crop-pdf/tool.svelte'),
         color: 'text-red-500',
@@ -180,6 +189,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Edit PDF",
         description: "Edit PDF content directly with advanced tools. Add and edit text, insert images, and manage annotations without external software.",
         category: 'pdf-management',
+        layout: 'immersive',
         icon: Edit3Icon,
         component: () => import('./edit-pdf/tool.svelte'),
         color: 'text-blue-500',
@@ -190,6 +200,7 @@ const tools: Record<string, ToolConfig> = {
         title: "View PDF",
         description: "Open PDFs in a dedicated desktop-style viewer with thumbnails, outline, search, zoom controls, spread layouts, and multiple reading modes.",
         category: 'essentials',
+        layout: 'immersive',
         icon: Eye,
         component: () => import('./view-pdf/tool.svelte'),
         color: 'text-sky-500',
@@ -200,6 +211,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Bookmark PDF",
         description: "Add, edit, and manage bookmarks in your PDF for easy navigation. Create interactive table of contents with customizable bookmark hierarchy.",
         category: 'pdf-management',
+        layout: 'canvas',
         icon: FileIcon,
         component: () => import('./bookmark-pdf/tool.svelte'),
         color: 'text-blue-500',
@@ -230,6 +242,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Delete PDF Pages",
         description: "Remove unwanted pages from your PDF quickly and easily with advanced selection options. Permanently delete specific page ranges or individual pages.",
         category: 'pdf-management',
+        layout: 'canvas',
         icon: Text,
         component: () => import('./delete-pages/tool.svelte'),
         color: 'text-pink-500',
@@ -270,6 +283,7 @@ const tools: Record<string, ToolConfig> = {
         title: "Remove Blank Pages",
         description: "Automatically detect and remove blank pages from your PDF with intelligent algorithms. Reduce file size and improve document quality efficiently.",
         category: 'pdf-management',
+        layout: 'canvas',
         icon: BookMinus,
         component: () => import('./remove-blank-pages/tool.svelte'),
         color: 'text-red-500',
@@ -461,6 +475,7 @@ const tools: Record<string, ToolConfig> = {
         title: 'Sign PDF (eSign)',
         description: 'Add your signature to a PDF — draw it, type it, or upload an image — then place it on any page and download. A fast, free electronic signature that works entirely on your device.',
         category: 'security',
+        layout: 'canvas',
         icon: PenLine,
         component: () => import('./esign-pdf/tool.svelte'),
         color: 'text-blue-500',

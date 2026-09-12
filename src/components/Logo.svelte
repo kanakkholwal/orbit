@@ -13,6 +13,8 @@
     isLoader?: boolean;
     pathClassName?: string;
     textClassName?: string;
+    /** Renders the glyph without the wordmark. */
+    markOnly?: boolean;
   }
 
   let {
@@ -23,6 +25,7 @@
     isLoader = false,
     pathClassName = "",
     textClassName = "",
+    markOnly = false,
     ...rest
   }: Props = $props();
 
@@ -37,7 +40,7 @@
 
   // Updated derived width to accommodate the wider 1080px icon
   // 1150 (text start X) + textWidth + 50 (right padding)
-  let totalWidth = $derived(1200 + textWidth);
+  let totalWidth = $derived(markOnly ? 1080 : 1200 + textWidth);
 
   let pathAnimationClass = $derived(
     draw ? (isLoader ? "animate-load-path" : "animate-draw-path") : "",
@@ -86,6 +89,7 @@
       />
     </g>
 
+    {#if !markOnly}
     <text
       bind:this={textRef}
       x="1150"
@@ -98,6 +102,7 @@
     >
       {config.appName.split(" ").at(0)}
     </text>
+    {/if}
   </svg>
 </div>
 

@@ -40,7 +40,7 @@ const tools: ExtToolConfig[] = [
     title: 'PDF Multi-Tool',
     description: 'Upload, rearrange, rotate, and export multiple PDF pages.',
     category: 'essentials',
-    color: 'text-teal-600',
+    color: 'text-emerald-700',
     iconName: 'file-minus-2',
     keywords: ['pdf multi-tool', 'pdf page manager', 'rearrange pdf pages'],
   },

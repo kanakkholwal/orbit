@@ -1,4 +1,10 @@
+export { default as ChoiceList } from "./ChoiceList.svelte";
 export { default as FileRow } from "./FileRow.svelte";
+export { default as OptionGroup } from "./OptionGroup.svelte";
+export { default as OptionToggle } from "./OptionToggle.svelte";
+export { default as ProgressLine } from "./ProgressLine.svelte";
+export { default as ResultCard } from "./ResultCard.svelte";
+export { default as SegmentedControl } from "./SegmentedControl.svelte";
 export { default as StatusPill } from "./StatusPill.svelte";
 export { default as ToolCard } from "./ToolCard.svelte";
 export { default as ToolBar } from "./ToolBar.svelte";

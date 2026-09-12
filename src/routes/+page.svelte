@@ -1,22 +1,14 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
+  import { page } from "$app/state";
   import { appState } from "$stores/app-state.svelte";
+  import DesktopHome from "./Desktop.Home.svelte";
   import WebHome from "./Web.Home.svelte";
 
-  // Split by surface:
-  //  • Web  → marketing landing (this page), which hands off into the app
-  //           shell as soon as a tool is opened (/tools/*, /explore, /home).
-  //  • Desktop (Tauri) → there is no marketing front door; drop straight into
-  //           the in-shell workspace home.
-  let isTauri = $derived(appState.isTauri);
-
-  $effect(() => {
-    if (isTauri) {
-      goto("/home", { replaceState: true });
-    }
-  });
+  const previewDesktop = $derived(page.url.searchParams.get("mode") === "desktop");
 </script>
 
-{#if !isTauri}
+{#if appState.isTauri || previewDesktop}
+  <DesktopHome preview={!appState.isTauri} />
+{:else}
   <WebHome />
 {/if}

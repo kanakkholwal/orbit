@@ -1,13 +1,17 @@
 <script lang="ts">
   import { goto, onNavigate } from "$app/navigation";
+  import * as Drawer from "$components/ui/drawer";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
+  import { IsMobile } from "$lib/hooks/is-mobile.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
+  import { workspace } from "$stores/workspace.svelte";
   import { toolList } from "$tools/list";
   import {
     IconBug as BugIcon,
     IconChevronRight as ChevronRight,
+    IconCompass as Compass,
     IconCornerDownLeft as CornerDownLeft,
     IconFileText as FileText,
     IconBrandGithub as Github,
@@ -28,24 +32,16 @@
     action: () => void;
   };
 
-  let { iconOnly = false } = $props<{ iconOnly?: boolean }>();
-  let isTauri = $derived(appState.isTauri);
+  const isMobile = new IsMobile();
 
-  let isOpen = $state(false);
   let query = $state("");
   let selectedIndex = $state(0);
   let inputRef = $state<HTMLInputElement>();
-  let contentHeight = $state(0);
 
-  function open() {
-    isOpen = true;
-  }
-  function close() {
-    isOpen = false;
-  }
+  const close = () => (workspace.searchOpen = false);
 
   async function openExternal(url: string) {
-    if (isTauri) {
+    if (appState.isTauri) {
       const { openUrl } = await import("@tauri-apps/plugin-opener");
       openUrl(url);
     } else {
@@ -53,15 +49,13 @@
     }
   }
 
-  function categoryName(id: string) {
-    return toolsCategories.find((c) => c.id === id)?.name ?? id;
-  }
+  const categoryName = (id: string) => toolsCategories.find((c) => c.id === id)?.name ?? id;
 
   const commands: Command[] = [
     ...toolList.map((tool) => ({
       id: `tool:${tool.slug}`,
       title: tool.title,
-      description: tool.description.split(". ")[0] + ".",
+      description: `${tool.description.split(". ")[0]}.`,
       category: categoryName(tool.category),
       icon: tool.icon || FileText,
       keywords: [tool.title, ...(tool.keywords || [])],
@@ -70,75 +64,61 @@
     {
       id: "nav:home",
       title: "Home",
-      description: "Back to the start.",
-      category: "Navigation",
+      description: "Your workspace and recent tools.",
+      category: "Go to",
       icon: HomeIcon,
-      keywords: ["home", "main", "start"],
-      action: () => goto("/"),
+      keywords: ["home", "workspace", "start"],
+      action: () => goto("/home"),
     },
     {
       id: "nav:explore",
       title: "Explore tools",
-      description: "Browse the full tool library.",
-      category: "Navigation",
-      icon: Search,
+      description: "Browse every tool by category.",
+      category: "Go to",
+      icon: Compass,
       keywords: ["explore", "browse", "library"],
       action: () => goto("/explore"),
     },
     {
       id: "nav:docs",
       title: "Documentation",
-      description: "Setup, tools, and FAQ.",
-      category: "Navigation",
+      description: "Install, tools and FAQ.",
+      category: "Go to",
       icon: FileText,
       keywords: ["docs", "help", "guide"],
       action: () => goto("/docs"),
     },
     {
-      id: "nav:changelog",
-      title: "Changelog",
-      description: "Recent releases.",
-      category: "Navigation",
-      icon: FileText,
-      keywords: ["changelog", "release", "what's new"],
-      action: () => goto("/changelog"),
-    },
-    {
       id: "ext:github",
       title: "View on GitHub",
-      description: "Open the source repository.",
-      category: "External",
+      description: "Open the source code.",
+      category: "Links",
       icon: Github,
       keywords: ["github", "source", "repository"],
       action: () => openExternal(config.github),
     },
     {
       id: "ext:bug",
-      title: "Report a bug",
+      title: "Report a problem",
       description: "Open an issue on GitHub.",
-      category: "External",
+      category: "Links",
       icon: BugIcon,
       keywords: ["bug", "issue", "report", "feedback"],
       action: () => openExternal(`${config.github}/issues/new`),
     },
   ];
 
-  let normalizedQuery = $derived(query.trim().toLowerCase());
+  const normalizedQuery = $derived(query.trim().toLowerCase());
 
-  let results = $derived(
+  const results = $derived(
     !normalizedQuery
       ? commands
-      : commands.filter((cmd) => {
-          const haystack = [
-            cmd.title,
-            cmd.description ?? "",
-            cmd.id,
-            ...(cmd.keywords ?? []),
-          ]
+      : commands.filter((cmd) =>
+          [cmd.title, cmd.description ?? "", ...(cmd.keywords ?? [])]
             .join(" ")
-            .toLowerCase();
-          return haystack.includes(normalizedQuery);
-        })
+            .toLowerCase()
+            .includes(normalizedQuery)
+        )
   );
 
   $effect(() => {
@@ -146,16 +126,14 @@
     selectedIndex = 0;
   });
 
-  let groupedResults = $derived.by(() => {
-    const groups: { name: string; items: { cmd: Command; index: number }[] }[] = [];
+  const groupedResults = $derived.by(() => {
     const map = new Map<string, { cmd: Command; index: number }[]>();
     results.forEach((cmd, index) => {
       const list = map.get(cmd.category) ?? [];
       list.push({ cmd, index });
       map.set(cmd.category, list);
     });
-    map.forEach((items, name) => groups.push({ name, items }));
-    return groups;
+    return [...map].map(([name, items]) => ({ name, items }));
   });
 
   function selectResult(cmd: Command) {
@@ -166,16 +144,10 @@
   function handleGlobalKeydown(e: KeyboardEvent) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
       e.preventDefault();
-      isOpen ? close() : open();
+      workspace.searchOpen = !workspace.searchOpen;
       return;
     }
-    if (!isOpen) return;
-    if (e.key === "Escape") {
-      e.preventDefault();
-      close();
-      return;
-    }
-    if (results.length === 0) return;
+    if (!workspace.searchOpen || results.length === 0) return;
     if (e.key === "ArrowDown") {
       e.preventDefault();
       selectedIndex = (selectedIndex + 1) % results.length;
@@ -186,19 +158,20 @@
       e.preventDefault();
       const target = results[selectedIndex];
       if (target) selectResult(target);
+    } else if (e.key === "Escape" && !isMobile.current) {
+      e.preventDefault();
+      close();
     }
   }
 
   $effect(() => {
-    if (isOpen && inputRef) {
-      const id = requestAnimationFrame(() => inputRef?.focus());
-      return () => cancelAnimationFrame(id);
+    if (!workspace.searchOpen) {
+      query = "";
+      return;
     }
-  });
-
-  $effect(() => {
-    if (typeof document === "undefined") return;
-    document.body.style.overflow = isOpen ? "hidden" : "";
+    if (isMobile.current || !inputRef) return;
+    const id = requestAnimationFrame(() => inputRef?.focus());
+    return () => cancelAnimationFrame(id);
   });
 
   onMount(() => {
@@ -206,221 +179,138 @@
     return () => window.removeEventListener("keydown", handleGlobalKeydown);
   });
 
-  onNavigate(() => close());
+  onNavigate(() => {
+    close();
+  });
 
   function highlight(text: string, search: string) {
     if (!search.trim()) return [{ text, hit: false }];
     const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regex = new RegExp(`(${escaped})`, "gi");
     return text
-      .split(regex)
+      .split(new RegExp(`(${escaped})`, "gi"))
       .filter(Boolean)
-      .map((part) => ({
-        text: part,
-        hit: part.toLowerCase() === search.toLowerCase(),
-      }));
+      .map((part) => ({ text: part, hit: part.toLowerCase() === search.toLowerCase() }));
   }
 </script>
 
-{#if iconOnly}
-  <button
-    type="button"
-    onclick={open}
-    aria-label="Open command menu"
-    title="Open command menu (⌘K)"
-    class="inline-flex size-9 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-  >
-    <Search class="size-4" />
-  </button>
-{:else}
-  <button
-    type="button"
-    onclick={open}
-    aria-label="Open command menu"
-    title="Open command menu (⌘K)"
-    class="group flex h-9 w-full items-center gap-2 rounded-sm border border-border bg-background/40 px-3 text-left text-xs text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
-  >
-    <Search class="size-3.5 shrink-0 opacity-70 transition-opacity group-hover:opacity-100" />
-    <span class="flex-1 truncate label-eyebrow text-muted-foreground">
-      Search…
-    </span>
-    <kbd
-      class="hidden items-center gap-0.5 rounded-xs border border-border bg-muted/50 px-1.5 py-0.5 font-mono text-caption font-medium uppercase tracking-wider text-muted-foreground sm:inline-flex"
-    >
-      ⌘K
-    </kbd>
-  </button>
-{/if}
+{#snippet searchField(className = "")}
+  <label class={cn("flex items-center gap-2.5 px-4", className)}>
+    <Search class="size-4 shrink-0 text-muted-foreground" />
+    <span class="sr-only">Search</span>
+    <input
+      bind:this={inputRef}
+      bind:value={query}
+      type="search"
+      placeholder={`Search ${toolList.length} tools and pages`}
+      class="h-12 w-full bg-transparent text-body-lg text-foreground placeholder:text-placeholder focus:outline-none"
+    />
+  </label>
+{/snippet}
 
-{#if isOpen}
+{#snippet resultList(className = "")}
+  <div class={cn("overflow-y-auto overscroll-contain p-2", className)}>
+    {#if results.length === 0}
+      <div class="flex flex-col items-center gap-1 px-4 py-10 text-center">
+        <p class="text-body font-medium text-foreground">No matches</p>
+        <p class="text-body text-muted-foreground">Nothing matches “{query}”.</p>
+      </div>
+    {:else}
+      {#each groupedResults as group (group.name)}
+        <div class="flex flex-col pb-1">
+          <div class="px-3 pb-1 pt-2 text-caption font-medium text-muted-foreground">{group.name}</div>
+          <ul class="flex flex-col gap-0.5">
+            {#each group.items as { cmd, index } (cmd.id)}
+              {@const isSelected = index === selectedIndex}
+              <li>
+                <button
+                  type="button"
+                  onclick={() => selectResult(cmd)}
+                  onmouseenter={() => (selectedIndex = index)}
+                  class={cn(
+                    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors duration-150",
+                    isSelected ? "bg-muted" : "hover:bg-muted"
+                  )}
+                >
+                  <span
+                    class={cn(
+                      "grid size-8 shrink-0 place-items-center rounded-lg border border-border bg-background",
+                      isSelected ? "text-primary" : "text-muted-foreground"
+                    )}
+                  >
+                    <cmd.icon class="size-4" />
+                  </span>
+                  <span class="flex min-w-0 flex-1 flex-col">
+                    <span class="truncate text-body font-medium text-foreground">
+                      {#each highlight(cmd.title, query) as part, i (i)}
+                        {#if part.hit}<span class="text-primary">{part.text}</span>{:else}{part.text}{/if}
+                      {/each}
+                    </span>
+                    {#if cmd.description}
+                      <span class="truncate text-caption text-muted-foreground">{cmd.description}</span>
+                    {/if}
+                  </span>
+                  <ChevronRight
+                    class={cn(
+                      "size-4 shrink-0 text-muted-foreground transition-opacity",
+                      isSelected ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                </button>
+              </li>
+            {/each}
+          </ul>
+        </div>
+      {/each}
+    {/if}
+  </div>
+{/snippet}
+
+{#if isMobile.current}
+  <Drawer.Root bind:open={workspace.searchOpen} shouldScaleBackground={false}>
+    <Drawer.Content class="h-[85dvh] max-h-[85dvh] rounded-t-3xl">
+      <Drawer.Title class="sr-only">Search</Drawer.Title>
+      {@render searchField("mx-3 mt-3 rounded-xl border border-border bg-card")}
+      {@render resultList("min-h-0 flex-1 pb-[max(env(safe-area-inset-bottom),0.5rem)]")}
+    </Drawer.Content>
+  </Drawer.Root>
+{:else if workspace.searchOpen}
   <div
-    class="fixed inset-0 z-60 bg-background/70 backdrop-blur-md"
-    transition:fade={{ duration: 160 }}
+    class="fixed inset-0 z-60 bg-background/60 backdrop-blur-sm"
+    transition:fade={{ duration: 150 }}
     onclick={close}
-    onkeydown={(e) => e.key === "Escape" && close()}
     role="presentation"
   ></div>
 
   <div
-    class="isolate fixed inset-0 z-100 flex items-start justify-center px-4 pt-[12vh]"
+    class="fixed inset-0 z-70 flex items-start justify-center px-4 pt-[14vh]"
     role="dialog"
     aria-modal="true"
-    aria-label="Command menu"
+    aria-label="Search"
     tabindex="-1"
     onclick={(e) => e.target === e.currentTarget && close()}
     onkeydown={(e) => e.key === "Escape" && close()}
   >
     <div
-      class="relative z-50 w-full max-w-xl transform-gpu overflow-hidden rounded-md border border-border bg-card shadow-2xl"
-      transition:scale={{ duration: 220, start: 0.96, easing: cubicOut }}
-      onoutroend={() => {
-        query = "";
-        contentHeight = 0;
-        selectedIndex = 0;
-      }}
+      class="flex max-h-[min(34rem,70vh)] w-full max-w-xl flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl"
+      transition:scale={{ duration: 200, start: 0.97, easing: cubicOut }}
     >
-      <div class="flex items-center gap-2 border-b border-border px-3">
-        <Search class="size-4 shrink-0 text-muted-foreground" />
-        <input
-          bind:this={inputRef}
-          bind:value={query}
-          type="search"
-          placeholder={`Search ${toolList.length} tools, pages, and actions…`}
-          aria-label="Search"
-          class="h-12 w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-        />
-        <kbd
-          class="pointer-events-none hidden h-5 select-none items-center rounded-xs border border-border bg-muted/60 px-1.5 font-mono text-caption font-medium uppercase tracking-wider text-muted-foreground sm:inline-flex"
-        >
-          ESC
-        </kbd>
-      </div>
-
-      <div
-        class="overflow-hidden transition-[height] duration-300 ease-out"
-        style="height: {contentHeight}px"
-      >
-        <div bind:clientHeight={contentHeight}>
-          {#if results.length > 0}
-            <div class="max-h-96 overflow-y-auto scrollbar-tranparent p-2">
-              {#each groupedResults as group (group.name)}
-                <div class="flex flex-col">
-                  <div
-                    class="px-3 pb-1.5 pt-2 label-eyebrow text-muted-foreground"
-                  >
-                    {group.name}
-                  </div>
-                  <ul class="flex flex-col gap-0.5">
-                    {#each group.items as { cmd, index } (cmd.id)}
-                      {@const isSelected = index === selectedIndex}
-                      <li>
-                        <button
-                          type="button"
-                          onclick={() => selectResult(cmd)}
-                          onmouseenter={() => (selectedIndex = index)}
-                          class={cn(
-                            "group flex w-full items-center gap-3 rounded-sm px-3 py-2 text-left text-sm transition-colors",
-                            isSelected
-                              ? "bg-primary/10 text-foreground"
-                              : "text-foreground hover:bg-muted/60"
-                          )}
-                        >
-                          <span
-                            class={cn(
-                              "inline-flex size-7 shrink-0 items-center justify-center rounded-sm transition-colors",
-                              isSelected
-                                ? "bg-primary/15 text-primary"
-                                : "bg-muted/60 text-muted-foreground"
-                            )}
-                          >
-                            <cmd.icon class="size-3.5" />
-                          </span>
-
-                          <span class="flex min-w-0 flex-1 flex-col">
-                            <span class="truncate text-sm font-medium text-foreground">
-                              {#each highlight(cmd.title, query) as part, i (i)}
-                                {#if part.hit}
-                                  <span class="text-primary">{part.text}</span>
-                                {:else}
-                                  {part.text}
-                                {/if}
-                              {/each}
-                            </span>
-                            {#if cmd.description}
-                              <span class="truncate text-xs text-muted-foreground">
-                                {#each highlight(cmd.description, query) as part, i (i)}
-                                  {#if part.hit}
-                                    <span class="text-primary/80">{part.text}</span>
-                                  {:else}
-                                    {part.text}
-                                  {/if}
-                                {/each}
-                              </span>
-                            {/if}
-                          </span>
-
-                          <ChevronRight
-                            class={cn(
-                              "size-3.5 shrink-0 transition-all",
-                              isSelected
-                                ? "translate-x-0.5 text-primary opacity-100"
-                                : "opacity-0 -translate-x-1"
-                            )}
-                          />
-                        </button>
-                      </li>
-                    {/each}
-                  </ul>
-                </div>
-              {/each}
-            </div>
-          {:else if query}
-            <div class="px-4 py-10 text-center">
-              <p
-                class="label-eyebrow text-muted-foreground"
-              >
-                No matches
-              </p>
-              <p class="mt-2 text-sm text-muted-foreground">
-                Nothing for
-                <span class="font-mono text-foreground">"{query}"</span>.
-              </p>
-            </div>
-          {/if}
-        </div>
-      </div>
-
-      <div
-        class="flex w-full items-center justify-between gap-2 border-t border-border bg-muted/30 px-3 py-2"
-      >
-        <div class="flex items-center gap-3 text-caption text-muted-foreground">
+      {@render searchField("border-b border-border")}
+      {@render resultList("min-h-0 flex-1")}
+      <div class="flex items-center justify-between gap-2 border-t border-border bg-muted px-4 py-2 text-caption text-muted-foreground">
+        <span class="flex items-center gap-3">
           <span class="inline-flex items-center gap-1.5">
-            <kbd
-              class="inline-flex h-4 select-none items-center rounded-xs border border-border bg-background px-1 font-mono text-caption"
-            >
-              <CornerDownLeft class="size-2.5" />
+            <kbd class="inline-grid h-5 min-w-5 place-items-center rounded-sm border border-border bg-background px-1">
+              <CornerDownLeft class="size-3" />
             </kbd>
-            <span class="label-eyebrow text-muted-foreground">Open</span>
+            Open
           </span>
           <span class="inline-flex items-center gap-1.5">
-            <kbd
-              class="inline-flex h-4 select-none items-center rounded-xs border border-border bg-background px-1 font-mono text-caption"
-            >
-              ↑
-            </kbd>
-            <kbd
-              class="inline-flex h-4 select-none items-center rounded-xs border border-border bg-background px-1 font-mono text-caption"
-            >
-              ↓
-            </kbd>
-            <span class="label-eyebrow text-muted-foreground">Navigate</span>
+            <kbd class="inline-grid h-5 min-w-5 place-items-center rounded-sm border border-border bg-background px-1">↑</kbd>
+            <kbd class="inline-grid h-5 min-w-5 place-items-center rounded-sm border border-border bg-background px-1">↓</kbd>
+            Move
           </span>
-        </div>
-        <span
-          class="label-eyebrow text-muted-foreground"
-        >
-          {results.length} / {commands.length}
         </span>
+        <span class="tabular-nums">{results.length} results</span>
       </div>
     </div>
   </div>

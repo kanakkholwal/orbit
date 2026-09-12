@@ -5,9 +5,11 @@
 </script>
 
 <Seo
-  title="{config.appName} — Workspace"
+  title="{config.appName} -  Workspace"
   description={config.appDescription}
   keywords={config.appKeywords}
 />
 
-<WorkspaceHome />
+<div class="mx-auto w-full max-w-6xl px-4 py-6 md:px-8 md:py-8">
+  <WorkspaceHome />
+</div>

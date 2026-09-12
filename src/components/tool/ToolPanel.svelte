@@ -12,44 +12,28 @@
     contentClass?: string;
   }
 
-  let {
-    title,
-    counter,
-    description,
-    children,
-    actions,
-    class: className = "",
-    contentClass = "",
-  }: Props = $props();
+  let { title, counter, description, children, actions, class: className = "", contentClass = "" }: Props = $props();
 </script>
 
-<section class={cn("flex flex-col gap-4", className)}>
-  {#if title || counter || actions}
-    <div
-      class="flex items-baseline justify-between gap-3 border-b border-border pb-3"
-    >
-      <div class="flex flex-col gap-1">
+<section class={cn("flex flex-col gap-3", className)}>
+  {#if title || counter !== undefined || actions}
+    <div class="flex items-end justify-between gap-3">
+      <div class="flex min-w-0 flex-col gap-0.5">
         {#if title}
-          <span class="label-eyebrow text-muted-foreground">
+          <h3 class="flex items-baseline gap-2 text-body font-medium text-foreground">
             {title}
-          </span>
+            {#if counter !== undefined}
+              <span class="text-caption font-normal tabular-nums text-muted-foreground">{counter}</span>
+            {/if}
+          </h3>
         {/if}
         {#if description}
-          <p class="text-xs text-muted-foreground">{description}</p>
+          <p class="text-caption text-muted-foreground">{description}</p>
         {/if}
       </div>
-      <div class="flex items-center gap-3">
-        {@render actions?.()}
-        {#if counter !== undefined}
-          <span
-            class="font-mono text-caption tabular-nums text-muted-foreground"
-          >
-            {typeof counter === "number"
-              ? String(counter).padStart(2, "0")
-              : counter}
-          </span>
-        {/if}
-      </div>
+      {#if actions}
+        <div class="flex shrink-0 items-center gap-2">{@render actions()}</div>
+      {/if}
     </div>
   {/if}
 

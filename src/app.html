@@ -35,8 +35,8 @@
 				--boot-muted: hsl(215 16% 47%);
 				--boot-border: hsl(220 14% 88%);
 				--boot-track: hsl(220 14% 92%);
-				--boot-primary: hsl(175, 84%, 32%);
-				--boot-primary-soft: hsl(175 84% 32% / 0.10);
+				--boot-primary: #047857;
+				--boot-primary-soft: rgb(4 120 87 / 0.10);
 			}
 
 			html.dark {
@@ -56,7 +56,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				font-family: "Google Sans", "Inter", system-ui, sans-serif;
+				font-family: "Inter Variable", "Inter", system-ui, sans-serif;
 			}
 
 			#boot {
@@ -154,9 +154,9 @@
 			}
 
 			@keyframes bootPulse {
-				0%   { box-shadow: 0 0 0 0 hsl(175 84% 32% / 0.6); }
-				70%  { box-shadow: 0 0 0 6px hsl(175 84% 32% / 0); }
-				100% { box-shadow: 0 0 0 0 hsl(175 84% 32% / 0); }
+				0%   { box-shadow: 0 0 0 0 rgb(4 120 87 / 0.6); }
+				70%  { box-shadow: 0 0 0 6px rgb(4 120 87 / 0); }
+				100% { box-shadow: 0 0 0 0 rgb(4 120 87 / 0); }
 			}
 
 			@keyframes bootFade {

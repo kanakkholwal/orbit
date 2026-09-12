@@ -5,7 +5,7 @@
   type Props = {
     eyebrow?: string;
     title: string;
-    /** Second clause of the headline, set in the brand teal. */
+    /** Second clause of the headline, set in the brand emerald. */
     accent?: string;
     /** Chapter numeral on the rule, e.g. "01". */
     index?: string;
@@ -33,7 +33,7 @@
     {#if eyebrow}
       <span class="label-eyebrow text-primary">{eyebrow}</span>
     {/if}
-    <h2 class="text-balance text-heading text-foreground sm:text-heading-lg">
+    <h2 class="text-balance text-foreground text-heading-lg font-medium">
       {title}{#if accent}&nbsp;<span class="text-primary">{accent}</span>{/if}
     </h2>
   </div>

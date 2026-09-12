@@ -147,7 +147,7 @@
 
 {#snippet shareTitle()}
   <span class="text-base font-semibold tracking-tight text-foreground">
-    {data.title ? `Share “${data.title}”` : "Share this page"}
+    {data.title ? `Share ${data.title}` : "Share this page"}
   </span>
 {/snippet}
 
