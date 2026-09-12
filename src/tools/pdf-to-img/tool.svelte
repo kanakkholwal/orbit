@@ -1,141 +1,128 @@
 <script lang="ts">
-  import { FileRow, ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { FileRow, OptionGroup, ProgressLine, ResultCard, SegmentedControl, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { Input } from "$components/ui/input";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { cn } from "$lib/utils";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconArrowRight as ArrowRight, IconLoader2 as LoaderCircle } from "@tabler/icons-svelte";
-  import { PdfToJpgState } from "./helper.svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { PdfToJpgState, type ImageFormat } from "./helper.svelte";
 
   const store = new PdfToJpgState();
+  const uid = $props.id();
 
-  const formats = ["jpeg", "png", "webp"] as const;
+  const formats: { value: ImageFormat; label: string; hint: string }[] = [
+    { value: "jpeg", label: "JPG", hint: "Small files that open anywhere. Best for photos and scans." },
+    { value: "png", label: "PNG", hint: "Sharp text and lines with no quality loss. Larger files." },
+    { value: "webp", label: "WebP", hint: "Smaller than JPG at the same quality. Great for websites." },
+  ];
+
+  const s = $derived(store.state);
+  const busy = $derived(s.isProcessing);
+  const format = $derived(formats.find((f) => f.value === s.format) ?? formats[0]);
+  const lossless = $derived(s.format === "png");
+  const qualityWord = $derived(s.quality >= 0.85 ? "High" : s.quality >= 0.6 ? "Balanced" : "Small files");
+  const imageLabel = (n: number) => `${n} ${n === 1 ? "image" : "images"}`;
 </script>
 
-{#if !store.state.file}
-  <UploadArea
-    accept=".pdf"
-    multiple={false}
-    onFilesSelected={(files) => store.loadFile(files[0])}
-  />
+{#if !s.file}
+  <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to turn into images</h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Save every page as a picture you can share, post or put in a slide.
+      </p>
+    {/snippet}
+  </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
-    <ToolBar
-      label={store.state.file.name}
-      count={store.state.pageCount}
-      onReset={() => store.reset()}
-      resetLabel="Clear"
+  <div class="flex flex-col gap-4">
+    {#if store.result && !busy}
+      <ResultCard
+        title={`Saved ${imageLabel(store.result.count)}`}
+        description={`All pages are bundled in ${store.result.name}.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={() => store.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+      </ResultCard>
+    {/if}
+
+    <FileRow
+      name={s.file.name}
+      meta={`${formatBytes(s.file.size)} · ${s.pageCount} ${s.pageCount === 1 ? "page" : "pages"}`}
+      onRemove={busy ? undefined : () => store.reset()}
     />
 
-    <ToolPanel title="Source">
-      <FileRow name={store.state.file.name}>
-        <span class="font-mono tabular-nums">
-          {formatBytes(store.state.file.size)}
-        </span>
-        <span class="text-muted-foreground">·</span>
-        <span class="font-mono tabular-nums">
-          {store.state.pageCount} pages
-        </span>
-      </FileRow>
-    </ToolPanel>
-
-    <ToolPanel title="Format">
-      <div class="grid grid-cols-3 gap-1 rounded-sm bg-muted/40 p-1">
-        {#each formats as fmt}
-          <button
-            type="button"
-            onclick={() => (store.state.format = fmt)}
-            class={cn(
-              "rounded-sm px-3 py-1.5 label-eyebrow transition-colors",
-              store.state.format === fmt
-                ? "bg-card text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {fmt}
-          </button>
-        {/each}
+    <dl class="grid grid-cols-1 divide-y divide-border rounded-2xl border border-border bg-card sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+      <div class="flex flex-col gap-0.5 p-4">
+        <dt class="text-caption text-muted-foreground">You get</dt>
+        <dd class="text-body-lg font-medium tabular-nums text-foreground">{imageLabel(s.pageCount)}</dd>
       </div>
-
-      {#if store.state.format !== "png"}
-        <div class="mt-5 flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <span
-              class="label-eyebrow text-muted-foreground"
-            >
-              Quality
-            </span>
-            <span class="font-mono text-sm tabular-nums text-primary">
-              {Math.round(store.state.quality * 100)}%
-            </span>
-          </div>
-          <Input
-            id="quality-range"
-            type="range"
-            min="0.1"
-            max="1.0"
-            step="0.05"
-            bind:value={store.state.quality}
-            class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted/60 accent-primary"
-          />
-          <div
-            class="flex justify-between label-eyebrow text-muted-foreground"
-          >
-            <span>Low</span>
-            <span>Balanced</span>
-            <span>High</span>
-          </div>
-        </div>
-      {/if}
-    </ToolPanel>
-
-    <ToolPanel title="Summary">
-      <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-border bg-border/60 sm:grid-cols-3">
-        <div class="flex flex-col gap-1 bg-card px-4 py-3">
-          <dt class="label-eyebrow text-muted-foreground">
-            Format
-          </dt>
-          <dd class="font-mono text-sm uppercase tabular-nums text-foreground">
-            {store.state.format}
-          </dd>
-        </div>
-        {#if store.state.format !== "png"}
-          <div class="flex flex-col gap-1 bg-card px-4 py-3">
-            <dt class="label-eyebrow text-muted-foreground">
-              Quality
-            </dt>
-            <dd class="font-mono text-sm tabular-nums text-foreground">
-              {Math.round(store.state.quality * 100)}%
-            </dd>
-          </div>
-        {/if}
-        <div class="flex flex-col gap-1 bg-card px-4 py-3">
-          <dt class="label-eyebrow text-muted-foreground">
-            Output
-          </dt>
-          <dd class="font-mono text-sm tabular-nums text-foreground">
-            ZIP · {store.state.pageCount} images
-          </dd>
-        </div>
-      </dl>
-    </ToolPanel>
-
-    <ToolFooter hint={store.isProcessing ? store.progressLabel : "Convert pages to images"}>
-      <Button
-        size="lg"
-        class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
-        onclick={() => store.convert()}
-        disabled={store.isProcessing}
-      >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progressLabel}
-        {:else}
-          Convert
-          <ArrowRight class="size-4" />
-        {/if}
-      </Button>
-    </ToolFooter>
+      <div class="flex flex-col gap-0.5 p-4">
+        <dt class="text-caption text-muted-foreground">Format</dt>
+        <dd class="text-body-lg font-medium text-foreground">{format.label}</dd>
+      </div>
+      <div class="flex flex-col gap-0.5 p-4">
+        <dt class="text-caption text-muted-foreground">Download</dt>
+        <dd class="text-body-lg font-medium text-foreground">One ZIP file</dd>
+      </div>
+    </dl>
   </div>
+
+  <WorkspaceInspector title="Images">
+    <div class="flex flex-col gap-6">
+      <OptionGroup label="Format" description={format.hint}>
+        <SegmentedControl name="{uid}-format" options={formats} bind:value={store.state.format} />
+      </OptionGroup>
+
+      <div role="group" aria-labelledby="{uid}-quality-label" class="flex flex-col gap-1">
+        <div class="flex items-baseline justify-between gap-3">
+          <label id="{uid}-quality-label" for="{uid}-quality" class="text-body font-medium text-foreground">Quality</label>
+          <span class="text-body tabular-nums text-muted-foreground">
+            {lossless ? "Full" : `${qualityWord} · ${Math.round(s.quality * 100)}%`}
+          </span>
+        </div>
+        <input
+          id="{uid}-quality"
+          type="range"
+          min="0.1"
+          max="1"
+          step="0.05"
+          bind:value={store.state.quality}
+          disabled={lossless}
+          class="h-10 w-full cursor-pointer accent-primary disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <p class="text-caption text-muted-foreground">
+          {lossless ? "PNG always keeps full quality." : "Lower quality makes smaller files."}
+        </p>
+      </div>
+    </div>
+  </WorkspaceInspector>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if busy && store.step.total > 0}
+        <ProgressLine label="Converting pages" current={store.step.current} total={store.step.total} class="max-w-md" />
+      {:else if busy}
+        <span class="flex items-center gap-2 text-foreground">
+          <Loader class="size-4 animate-spin text-primary" />
+          Getting ready…
+        </span>
+      {:else}
+        <span class="block truncate">{imageLabel(s.pageCount)} · {format.label}</span>
+      {/if}
+    {/snippet}
+
+    <Button variant="primary" onclick={() => store.convert()} disabled={busy}>
+      {busy ? "Converting…" : `Convert to ${format.label}`}
+    </Button>
+  </ToolFooter>
 {/if}

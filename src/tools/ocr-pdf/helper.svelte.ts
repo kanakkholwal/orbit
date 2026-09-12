@@ -131,11 +131,19 @@ export class OcrPdfState  extends PdfEngine{
         this.downloadBlob(blob, 'ocr-text.txt');
     }
 
+    get resultName() {
+        return `${this.file?.file.name.replace('.pdf', '') || 'document'}_searchable.pdf`;
+    }
+
+    get resultFiles(): File[] {
+        if (!this.searchablePdfBytes) return [];
+        return [new File([this.searchablePdfBytes as BlobPart], this.resultName, { type: 'application/pdf' })];
+    }
+
     downloadPdf() {
         if (!this.searchablePdfBytes) return;
         const blob = new Blob([this.searchablePdfBytes as BlobPart], { type: 'application/pdf' });
-        const originalName = this.file?.file.name.replace('.pdf', '') || 'document';
-        this.downloadBlob(blob, `${originalName}_searchable.pdf`);
+        this.downloadBlob(blob, this.resultName);
     }
 
 

@@ -1,213 +1,209 @@
 <script lang="ts">
+  import { OptionGroup, ResultCard, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-  } from "$components/ui/dialog";
-  import { Input } from "$components/ui/input";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { IconFolders as FolderTree, IconPlus as Plus, IconArrowForwardUp as Redo, IconDeviceFloppy as Save, IconArrowBackUp as Undo } from "@tabler/icons-svelte";
-  import { onMount } from "svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
+  import {
+    IconArrowBackUp as Undo,
+    IconArrowForwardUp as Redo,
+    IconChevronLeft as ChevronLeft,
+    IconChevronRight as ChevronRight,
+    IconDownload as Download,
+    IconBookmarks as Bookmarks,
+    IconFileImport as FileImport,
+    IconLoader2 as Loader,
+    IconRefresh as Refresh,
+  } from "@tabler/icons-svelte";
   import BookmarkItem from "./BookmarkItem.svelte";
-  import { BookmarkPdfState, type BookmarkNode } from "./helper.svelte";
+  import { BookmarkPdfState } from "./helper.svelte";
   import Viewer from "./Viewer.svelte";
+  import { workspace } from "$stores/workspace.svelte";
+
   const store = new BookmarkPdfState();
+  const uid = $props.id();
 
-  let showModal = $state(false);
+  let newTitle = $state("");
+  let selectedId = $state<string | null>(null);
   let editingId = $state<string | null>(null);
-  let parentId = $state<string | null>(null);
-  let modalTitle = $state("");
 
-  onMount(() => {
-    const handleEdit = (e: any) => {
-      if (e.detail.nodeId) {
-        const findNode = (nodes: BookmarkNode[]): BookmarkNode | undefined => {
-          for (const n of nodes) {
-            if (n.id === e.detail.nodeId) return n;
-            const f = findNode(n.children);
-            if (f) return f;
-          }
-        };
-        const node = findNode(store.state.bookmarks);
-        if (node) {
-          editingId = node.id;
-          modalTitle = node.title;
-          parentId = null;
-          showModal = true;
-        }
-      } else if (e.detail.parentId) {
-        editingId = null;
-        parentId = e.detail.parentId;
-        modalTitle = "";
-        showModal = true;
-      }
-    };
-    document.addEventListener("edit-bookmark", handleEdit);
-    return () => document.removeEventListener("edit-bookmark", handleEdit);
-  });
+  const current = $derived(store.state.currentPage);
+  const total = $derived(store.totalCount);
+  const canUndo = $derived(store.state.historyIndex > 0);
+  const canRedo = $derived(store.state.historyIndex < store.state.history.length - 1);
+  const bookmarkLabel = (n: number) => `${n} ${n === 1 ? "bookmark" : "bookmarks"}`;
 
-  function saveModal() {
-    if (editingId) {
-      store.updateBookmark(editingId, { title: modalTitle });
-    } else {
-      let parentNode: BookmarkNode | null = null;
-      if (parentId) {
-        const findNode = (nodes: BookmarkNode[]): BookmarkNode | undefined => {
-          for (const n of nodes) {
-            if (n.id === parentId) return n;
-            const f = findNode(n.children);
-            if (f) return f;
-          }
-        };
-        parentNode = findNode(store.state.bookmarks) || null;
-      }
-      store.addBookmark(parentNode, modalTitle);
-    }
-    showModal = false;
+  function addRoot() {
+    const title = newTitle.trim();
+    if (!title) return;
+    selectedId = store.addBookmark(null, title);
+    newTitle = "";
+  }
+
+  function clearAll() {
+    store.reset();
+    selectedId = null;
+    editingId = null;
+    newTitle = "";
   }
 </script>
 
 {#if !store.state.file}
   <UploadArea
-    accept=".pdf"
+    accept=".pdf,application/pdf"
     multiple={false}
+    disabled={store.state.isProcessing}
     onFilesSelected={(files) => store.loadFile(files[0])}
-  />
-{:else}
-  <div
-    class="flex h-full flex-col gap-3 overflow-hidden lg:flex-row"
   >
-    <aside
-      class="flex w-full flex-col overflow-hidden rounded-md border border-border bg-card lg:w-96"
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">
+        {store.state.isProcessing ? "Opening your PDF" : "Drop a PDF to add bookmarks"}
+      </h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Add a clickable table of contents so readers can jump straight to each section.
+      </p>
+    {/snippet}
+  </UploadArea>
+{:else}
+  <div class="flex flex-col gap-4">
+    {#if store.result && !store.state.isProcessing}
+      <ResultCard
+        title={`Saved with ${bookmarkLabel(store.result.count)}`}
+        description={`${store.result.name} is downloaded.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={clearAll}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="bookmark-pdf" />
+      </ResultCard>
+    {/if}
+
+    <ToolBar
+      label={store.state.file.name}
+      meta={`${store.state.pageCount} ${store.state.pageCount === 1 ? "page" : "pages"}`}
+      onReset={store.state.isProcessing ? undefined : clearAll}
+      resetLabel="Clear"
     >
-      <header class="flex items-center justify-between gap-2 border-b border-border px-3 py-2.5">
-        <div class="flex items-center gap-2">
-          <span
-            class="inline-flex size-7 items-center justify-center rounded-sm bg-primary/10 text-primary"
-          >
-            <FolderTree class="size-3.5" />
-          </span>
-          <span
-            class="label-eyebrow text-foreground"
-          >
-            Bookmarks
-          </span>
-        </div>
+      {#snippet actions()}
+        <Button variant="outline" size="sm" class="xl:hidden" onclick={() => (workspace.inspectorDrawerOpen = true)}>
+          <Bookmarks />
+          Bookmarks
+        </Button>
         <div class="flex items-center gap-1">
           <Button
+            variant="outline"
             size="icon-sm"
-            variant="ghost"
-            class="rounded-sm text-muted-foreground hover:text-foreground"
-            onclick={() => store.undo()}
-            disabled={store.state.historyIndex <= 0}
-            title="Undo"
+            disabled={current <= 1}
+            onclick={() => store.setPage(current - 1)}
+            aria-label="Previous page"
           >
-            <Undo class="size-3.5" />
+            <ChevronLeft />
           </Button>
+          <span class="min-w-24 px-1 text-center text-body tabular-nums text-foreground" aria-live="polite">
+            Page {current} of {store.state.pageCount}
+          </span>
           <Button
+            variant="outline"
             size="icon-sm"
-            variant="ghost"
-            class="rounded-sm text-muted-foreground hover:text-foreground"
-            onclick={() => store.redo()}
-            disabled={store.state.historyIndex >= store.state.history.length - 1}
-            title="Redo"
+            disabled={current >= store.state.pageCount}
+            onclick={() => store.setPage(current + 1)}
+            aria-label="Next page"
           >
-            <Redo class="size-3.5" />
+            <ChevronRight />
           </Button>
         </div>
-      </header>
+      {/snippet}
+    </ToolBar>
 
-      <div class="flex items-center gap-2 border-b border-border bg-muted/10 px-3 py-2.5">
-        <Input
-          bind:value={modalTitle}
-          placeholder="New bookmark…"
-          class="h-9 flex-1 rounded-sm font-mono text-sm"
-          onkeydown={(e) =>
-            e.key === "Enter" && store.addBookmark(null, modalTitle)}
-        />
-        <Button
-          variant="outline"
-          size="icon-sm"
-          class="rounded-sm"
-          onclick={() => store.addBookmark(null, modalTitle)}
-        >
-          <Plus class="size-3.5" />
-        </Button>
-      </div>
+    <Viewer {store} class="h-[max(22rem,calc(100dvh-17rem))]" />
+  </div>
 
-      <div class="flex-1 overflow-y-auto p-2">
-        {#if store.state.bookmarks.length === 0}
-          <div class="mt-10 flex flex-col items-center gap-3 text-center">
-            <p
-              class="label-eyebrow text-muted-foreground"
-            >
-              No bookmarks yet
-            </p>
-            <Button
-              variant="outline"
-              size="sm"
-              class="rounded-sm bg-primary/10 text-primary hover:bg-primary/15"
-              onclick={() => store.extractExisting()}
-            >
-              Extract from PDF
+  <WorkspaceInspector title="Bookmarks">
+    <div class="flex flex-col gap-6">
+      <OptionGroup label="Add a bookmark" description={`Links to page ${current}, the page you're looking at.`}>
+        <div class="flex gap-2">
+          <label for={`${uid}-new`} class="sr-only">Bookmark name</label>
+          <input
+            id={`${uid}-new`}
+            type="text"
+            bind:value={newTitle}
+            placeholder="For example, Chapter 1"
+            onkeydown={(e) => e.key === "Enter" && addRoot()}
+            class="h-10 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+          />
+          <Button variant="outline" onclick={addRoot} disabled={!newTitle.trim()}>Add</Button>
+        </div>
+      </OptionGroup>
+
+      <section class="flex flex-col gap-2.5" aria-labelledby={`${uid}-list`}>
+        <div class="flex items-center justify-between gap-2">
+          <h3 id={`${uid}-list`} class="text-body font-medium text-foreground">
+            Your bookmarks
+            <span class="font-normal tabular-nums text-muted-foreground">{total}</span>
+          </h3>
+          <div class="flex items-center gap-1">
+            <Button variant="ghost" size="icon-sm" onclick={() => store.undo()} disabled={!canUndo} aria-label="Undo">
+              <Undo />
+            </Button>
+            <Button variant="ghost" size="icon-sm" onclick={() => store.redo()} disabled={!canRedo} aria-label="Redo">
+              <Redo />
             </Button>
           </div>
+        </div>
+
+        {#if store.state.bookmarks.length === 0}
+          <p class="rounded-xl border border-dashed border-border px-3 py-4 text-center text-body text-muted-foreground">
+            No bookmarks yet. Add one above, or bring in the ones this PDF already has.
+          </p>
         {:else}
-          {#each store.state.bookmarks as node (node.id)}
-            <BookmarkItem {node} {store} />
-          {/each}
+          <p class="text-caption text-muted-foreground">Select a bookmark to rename, nest or remove it.</p>
+          <ul class="-mx-1 flex flex-col">
+            {#each store.state.bookmarks as node (node.id)}
+              <BookmarkItem
+                {node}
+                {store}
+                {selectedId}
+                {editingId}
+                onselect={(id) => (selectedId = id)}
+                onedit={(id) => (editingId = id)}
+              />
+            {/each}
+          </ul>
         {/if}
-      </div>
 
-      <footer class="border-t border-border p-3">
-        <Button
-          class="w-full rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
-          onclick={() => store.save()}
-        >
-          <Save class="size-4" />
-          Download PDF
+        <Button variant="outline" class="w-full" onclick={() => store.extractExisting()}>
+          <FileImport />
+          Import bookmarks from this PDF
         </Button>
-      </footer>
-    </aside>
-
-    <div class="relative min-w-0 flex-1 overflow-hidden rounded-md border border-border bg-card">
-      <Viewer {store} />
+      </section>
     </div>
-  </div>
+  </WorkspaceInspector>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.state.isProcessing}
+        <span class="flex items-center gap-2 text-foreground">
+          <Loader class="size-4 animate-spin text-primary" />
+          Saving your PDF…
+        </span>
+      {:else if total === 0}
+        <span class="block truncate">Add at least one bookmark to save.</span>
+      {:else}
+        <span class="block truncate tabular-nums">{bookmarkLabel(total)} will be added to the PDF.</span>
+      {/if}
+    {/snippet}
+
+    <Button variant="primary" onclick={() => store.save()} disabled={store.state.isProcessing || total === 0}>
+      {store.state.isProcessing ? "Saving…" : "Save bookmarked PDF"}
+    </Button>
+  </ToolFooter>
 {/if}
-
-<Dialog bind:open={showModal}>
-  <DialogContent>
-    <DialogHeader>
-      <DialogTitle>{editingId ? "Edit bookmark" : "Add child"}</DialogTitle>
-      <DialogDescription>
-        {editingId
-          ? "Edit the title. The destination remains unchanged."
-          : "Add a new child bookmark under the selected parent."}
-      </DialogDescription>
-    </DialogHeader>
-    <Input
-      bind:value={modalTitle}
-      class="mt-3 h-10 rounded-sm font-mono text-sm"
-      placeholder="Title"
-    />
-    <div class="mt-4 flex justify-end gap-2">
-      <Button
-        variant="ghost"
-        class="rounded-sm"
-        onclick={() => (showModal = false)}
-      >
-        Cancel
-      </Button>
-      <Button
-        class="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
-        onclick={saveModal}
-      >
-        Save
-      </Button>
-    </div>
-  </DialogContent>
-</Dialog>

@@ -1,88 +1,98 @@
 <script lang="ts">
-  import { ToolBar, ToolFooter } from "$components/tool";
+  import { ResultCard, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { IconArrowRight as ArrowRight, IconFileUpload as FileUp, IconLoader2 as LoaderCircle, IconSparkles as Sparkles } from "@tabler/icons-svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import {
+    IconDownload as Download,
+    IconFileUpload as FileUp,
+    IconLoader2 as Loader,
+    IconRefresh as Refresh,
+    IconSparkles as Sparkles,
+  } from "@tabler/icons-svelte";
   import { MdToPdfState } from "./helper.svelte";
 
   const store = new MdToPdfState();
+  const uid = $props.id();
 
-  let fileInput: HTMLInputElement;
+  let fileInput = $state<HTMLInputElement | null>(null);
 
-  function onPick(e: Event) {
-    const target = e.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (file) store.loadFile(file);
-    target.value = "";
-  }
+  const lineCount = $derived(store.isEmpty ? 0 : store.markdown.split("\n").length);
+  const resultFiles = $derived(store.resultFiles);
+  const showResult = $derived(!!store.result && !store.isProcessing && store.result.source === store.markdown);
 </script>
 
-<div class="flex flex-col gap-6">
-  <ToolBar label="Markdown → PDF" count={store.charCount} onReset={() => store.reset()}>
+<div class="flex flex-col gap-4">
+  {#if showResult && store.result}
+    <ResultCard title="Your PDF is ready" description={`${store.result.name} is downloaded.`}>
+      {#snippet actions()}
+        <Button variant="outline" onclick={() => store.downloadResult()}>
+          <Download />
+          Download again
+        </Button>
+        <Button variant="ghost" onclick={() => store.reset()}>
+          <Refresh />
+          Start over
+        </Button>
+      {/snippet}
+      <FileSuggestions files={resultFiles} heading="Continue with" exclude="md-to-pdf" />
+    </ResultCard>
+  {/if}
+
+  <ToolBar
+    label="Markdown"
+    meta={`${lineCount.toLocaleString()} ${lineCount === 1 ? "line" : "lines"} · ${store.charCount.toLocaleString()} characters`}
+    onReset={store.isEmpty || store.isProcessing ? undefined : () => store.reset()}
+    resetLabel="Clear"
+  >
     {#snippet actions()}
-      <input
-        bind:this={fileInput}
-        type="file"
-        accept=".md,.markdown,.txt,text/markdown,text/plain"
-        class="hidden"
-        onchange={onPick}
-      />
-      <Button
-        variant="outline"
-        size="sm"
-        class="rounded-md"
-        onclick={() => fileInput.click()}
-      >
-        <FileUp class="size-3.5" />
-        <span class="hidden sm:inline">Load .md</span>
+      <Button variant="ghost" size="sm" onclick={() => store.loadSample()} disabled={store.isProcessing}>
+        <Sparkles />
+        Try a sample
       </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        class="rounded-md"
-        onclick={() => store.loadSample()}
-      >
-        <Sparkles class="size-3.5" />
-        <span class="hidden sm:inline">Sample</span>
+      <Button variant="outline" size="sm" onclick={() => fileInput?.click()} disabled={store.isProcessing}>
+        <FileUp />
+        Open a file
       </Button>
     {/snippet}
   </ToolBar>
 
-  <div class="flex flex-col gap-2">
-    <label
-      for="md-input"
-      class="label-eyebrow text-muted-foreground"
-    >
-      Markdown
-    </label>
-    <textarea
-      id="md-input"
-      bind:value={store.markdown}
-      spellcheck="false"
-      placeholder="# Start typing Markdown…&#10;&#10;Paste or load a .md file, then convert to a clean PDF — entirely on your device."
-      class="min-h-105 w-full resize-y rounded-lg border border-border bg-card p-4 font-mono text-caption leading-relaxed text-foreground shadow-xs outline-none placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring"
-    ></textarea>
-  </div>
+  <label for="{uid}-md" class="sr-only">Markdown</label>
+  <textarea
+    id="{uid}-md"
+    bind:value={store.markdown}
+    spellcheck="false"
+    placeholder={"# Start writing\n\nType or paste Markdown here, or open a .md file."}
+    class="scrollbar-subtle min-h-[max(24rem,calc(100svh-17rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-body leading-relaxed text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+  ></textarea>
 
-  <ToolFooter
-    hint={store.isProcessing
-      ? store.progressLabel
-      : store.isEmpty
-        ? "Paste or load Markdown to begin"
-        : `${store.charCount.toLocaleString()} characters · output: ${store.fileName}.pdf`}
-  >
-    <Button
-      size="lg"
-      class="rounded-md bg-primary px-6 text-primary-foreground hover:bg-primary-active"
-      onclick={() => store.convert()}
-      disabled={store.isProcessing || store.isEmpty}
-    >
-      {#if store.isProcessing}
-        <LoaderCircle class="size-4 animate-spin" />
-        {store.progressLabel}
-      {:else}
-        Convert to PDF
-        <ArrowRight class="size-4" />
-      {/if}
-    </Button>
-  </ToolFooter>
+  <input
+    bind:this={fileInput}
+    type="file"
+    accept=".md,.markdown,.txt,text/markdown,text/plain"
+    class="hidden"
+    onchange={(e) => {
+      const file = e.currentTarget.files?.[0];
+      if (file) store.loadFile(file);
+      e.currentTarget.value = "";
+    }}
+  />
 </div>
+
+<ToolFooter>
+  {#snippet hint()}
+    {#if store.isProcessing}
+      <span class="flex items-center gap-2 text-foreground">
+        <Loader class="size-4 animate-spin text-primary" />
+        Creating {store.fileName}.pdf…
+      </span>
+    {:else if store.isEmpty}
+      <span class="block truncate">Write or paste Markdown, or open a file.</span>
+    {:else}
+      <span class="block truncate">Saves as {store.fileName}.pdf</span>
+    {/if}
+  {/snippet}
+
+  <Button variant="primary" onclick={() => store.convert()} disabled={store.isProcessing || store.isEmpty}>
+    {store.isProcessing ? "Creating PDF…" : "Create PDF"}
+  </Button>
+</ToolFooter>

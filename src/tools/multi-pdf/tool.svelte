@@ -1,220 +1,236 @@
 <script lang="ts">
+  import { OptionGroup, ProgressLine, ResultCard, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { arrayMove, sortableList } from "$lib/actions/sortable-list";
-  import { cn } from "$lib/utils";
   import {
-    IconSquareCheck as CheckSquare,
+    IconArrowBackUp as Undo,
+    IconArrowForwardUp as Redo,
     IconDownload as Download,
     IconFilePlus as FilePlus,
-    IconLoader2 as LoaderCircle,
-    IconArrowForwardUp as Redo2,
-    IconRotate2 as RotateCcw,
-    IconRotateClockwise as RotateCw,
-    IconSquare as Square,
-    IconTrash as Trash2,
-    IconArrowBackUp as Undo2,
-    IconCloudUpload as UploadCloud,
+    IconLoader2 as Loader,
+    IconPlus as Plus,
+    IconRefresh as Refresh,
+    IconRotate2 as RotateLeft,
+    IconRotateClockwise as RotateRight,
+    IconTrash as Trash,
   } from "@tabler/icons-svelte";
   import { setContext } from "svelte";
-  import { fade, slide } from "svelte/transition";
   import { PDF_STATE_KEY, PdfEditorState } from "./helper.svelte";
   import PdfPage from "./PdfPage.svelte";
 
   const pdfState = new PdfEditorState();
   setContext(PDF_STATE_KEY, pdfState);
 
-  let uploadArea: ReturnType<typeof UploadArea>;
+  let addInput = $state<HTMLInputElement | null>(null);
 
-  const toolbarBtn =
-    "inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 label-eyebrow transition-colors text-muted-foreground hover:bg-muted/60 hover:text-foreground";
+  const selectedCount = $derived(pdfState.selectedIds.size);
+  const docs = $derived(pdfState.documentCount);
+  const busy = $derived(pdfState.loader.show);
+  const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
+  const mod = isMac ? "⌘" : "Ctrl";
+
+  const shortcuts = [
+    { keys: `${mod} Z`, label: "Undo" },
+    { keys: `${mod} Shift Z`, label: "Redo" },
+    { keys: `${mod} A`, label: "Select all pages" },
+    { keys: "Delete", label: "Delete selected pages" },
+    { keys: "Esc", label: "Clear selection" },
+  ];
+
+  function onKeydown(e: KeyboardEvent) {
+    if (pdfState.pages.length === 0 || busy) return;
+    const target = e.target as HTMLElement | null;
+    if (target?.closest("input, textarea, select, [contenteditable='true'], [role='dialog']")) return;
+    const cmd = e.metaKey || e.ctrlKey;
+    const key = e.key.toLowerCase();
+    if (cmd && key === "z") {
+      e.preventDefault();
+      if (e.shiftKey) pdfState.redo();
+      else pdfState.undo();
+    } else if (cmd && key === "y") {
+      e.preventDefault();
+      pdfState.redo();
+    } else if (cmd && key === "a") {
+      e.preventDefault();
+      pdfState.selectAll();
+    } else if ((e.key === "Delete" || e.key === "Backspace") && selectedCount > 0) {
+      e.preventDefault();
+      pdfState.bulkDelete();
+    } else if (e.key === "Escape" && selectedCount > 0) {
+      pdfState.deselectAll();
+    }
+  }
+
+  const iconButton = "text-muted-foreground";
 </script>
 
-<UploadArea
-  bind:this={uploadArea}
-  onFilesSelected={(files) => pdfState.loadPdfs(files)}
-  class={pdfState.pages.length === 0 ? "h-full" : "hidden"}
-/>
+<svelte:window onkeydown={onKeydown} />
 
-{#if pdfState.pages.length > 0}
-  <div class="flex flex-col gap-4 pb-32">
-    <div
-      class="sticky top-0 z-20 flex items-baseline justify-between gap-3 border-b border-border bg-card/70 py-2 backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55"
-    >
-      <span
-        class="label-eyebrow text-primary"
-      >
-        Pages
-      </span>
-      <span class="font-mono text-caption tabular-nums text-muted-foreground">
-        {String(pdfState.selectedIds.size).padStart(2, "0")} / {String(pdfState.pages.length).padStart(2, "0")}
-      </span>
+{#if pdfState.pages.length === 0}
+  {#if busy}
+    <div class="flex min-h-80 flex-col items-center justify-center gap-4">
+      <Loader class="size-5 animate-spin text-primary" />
+      <ProgressLine label={pdfState.loader.text || "Opening files"} current={pdfState.loader.progress} total={100} class="w-full max-w-sm" />
     </div>
+  {:else}
+    <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => pdfState.loadPdfs(files)}>
+      {#snippet title()}
+        <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to rearrange</h3>
+      {/snippet}
+      {#snippet description()}
+        <p class="max-w-sm text-pretty text-body text-muted-foreground">
+          Reorder, rotate, duplicate and delete pages from one or more files, then save them as one PDF or several.
+        </p>
+      {/snippet}
+    </UploadArea>
+  {/if}
+{:else}
+  <div class="flex flex-col gap-4">
+    {#if pdfState.result && !busy}
+      <ResultCard
+        title={pdfState.result.documents > 1 ? `Saved ${pdfState.result.documents} documents` : "Saved your PDF"}
+        description={`${pdfState.result.name} is downloaded.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => pdfState.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={() => pdfState.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        {#if pdfState.resultFiles.length > 0}
+          <FileSuggestions files={pdfState.resultFiles} heading="Continue with" exclude="multi-pdf" />
+        {/if}
+      </ResultCard>
+    {/if}
+
+    <ToolBar
+      label="Pages"
+      count={pdfState.pages.length}
+      meta={selectedCount > 0 ? `${selectedCount} selected` : undefined}
+    >
+      {#snippet actions()}
+        {#if selectedCount > 0}
+          <Button variant="ghost" size="icon-sm" class={iconButton} onclick={() => pdfState.bulkRotate(-90)} aria-label="Rotate selected pages left" title="Rotate left">
+            <RotateLeft class="size-4" />
+          </Button>
+          <Button variant="ghost" size="icon-sm" class={iconButton} onclick={() => pdfState.bulkRotate(90)} aria-label="Rotate selected pages right" title="Rotate right">
+            <RotateRight class="size-4" />
+          </Button>
+          <Button variant="ghost" size="sm" class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive" onclick={() => pdfState.bulkDelete()}>
+            <Trash class="size-4" />
+            Delete {selectedCount}
+          </Button>
+          <Button variant="ghost" size="sm" class="text-muted-foreground" onclick={() => pdfState.deselectAll()}>Clear</Button>
+          <span class="mx-1 hidden h-5 w-px bg-border sm:block" aria-hidden="true"></span>
+        {:else}
+          <Button variant="ghost" size="sm" class="text-muted-foreground" onclick={() => pdfState.selectAll()}>Select all</Button>
+        {/if}
+
+        <Button variant="ghost" size="icon-sm" class={iconButton} disabled={!pdfState.canUndo} onclick={() => pdfState.undo()} aria-label="Undo" title={`Undo (${mod} Z)`}>
+          <Undo class="size-4" />
+        </Button>
+        <Button variant="ghost" size="icon-sm" class={iconButton} disabled={!pdfState.canRedo} onclick={() => pdfState.redo()} aria-label="Redo" title={`Redo (${mod} Shift Z)`}>
+          <Redo class="size-4" />
+        </Button>
+        <Button variant="outline" size="sm" onclick={() => pdfState.addBlankPage()}>
+          <FilePlus />
+          <span class="hidden md:inline">Blank page</span>
+          <span class="sr-only md:hidden">Add blank page</span>
+        </Button>
+        <Button variant="outline" size="sm" disabled={busy} onclick={() => addInput?.click()}>
+          <Plus />
+          <span class="hidden md:inline">Add files</span>
+          <span class="sr-only md:hidden">Add files</span>
+        </Button>
+      {/snippet}
+    </ToolBar>
+
+    <p class="text-body text-muted-foreground">
+      Tap a page to select it. Drag pages to reorder, and use the scissors to start a new document after a page.
+    </p>
 
     <div
       use:sortableList={{
-        onReorder: (o, n) => (pdfState.pages = arrayMove(pdfState.pages, o, n)),
+        onReorder: (o, n) => {
+          pdfState.snapshot();
+          pdfState.pages = arrayMove(pdfState.pages, o, n);
+        },
+        options: { animation: 200, ghostClass: "opacity-40", delay: 150, delayOnTouchOnly: true },
       }}
-      class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 3xl:grid-cols-6"
+      class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6"
     >
-      {#each pdfState.pages as page, i (page?.id || i)}
-        {#if page}
-          <PdfPage {page} index={i} />
-        {/if}
+      {#each pdfState.pages as page, i (page.id)}
+        <PdfPage {page} index={i} isLast={i === pdfState.pages.length - 1} />
       {/each}
     </div>
+
+    <input
+      bind:this={addInput}
+      type="file"
+      accept=".pdf,application/pdf"
+      multiple
+      class="hidden"
+      onchange={(e) => {
+        const picked = Array.from(e.currentTarget.files ?? []);
+        if (picked.length > 0) pdfState.loadPdfs(picked);
+        e.currentTarget.value = "";
+      }}
+    />
   </div>
-{/if}
 
-<div
-  class={cn(
-    "fixed inset-x-0 bottom-4 z-40 mx-auto w-full max-w-5xl px-3 sm:bottom-6 sm:px-4",
-    pdfState.pages.length === 0 && "hidden"
-  )}
-  transition:slide={{ duration: 320, delay: 120 }}
-  style="padding-bottom: max(env(safe-area-inset-bottom), 0px);"
->
-  <div
-    class="flex w-full flex-wrap items-center justify-between gap-1.5 rounded-md border border-border bg-card/70 px-2 py-1.5 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.18)] backdrop-blur-2xl backdrop-saturate-150 supports-backdrop-filter:bg-card/55 lg:flex-nowrap"
-  >
-    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
-      <button
-        type="button"
-        class={toolbarBtn}
-        onclick={() => uploadArea.click()}
-        title="Add PDF"
-      >
-        <UploadCloud class="size-3.5" />
-        <span class="hidden sm:inline">Add</span>
-      </button>
-      <button
-        type="button"
-        class={toolbarBtn}
-        onclick={() => pdfState.addBlankPage()}
-        title="Add blank page"
-      >
-        <FilePlus class="size-3.5" />
-        <span class="hidden md:inline">Blank</span>
-      </button>
-    </div>
+  <WorkspaceInspector title="Document">
+    <div class="flex flex-col gap-6">
+      <OptionGroup label="Result">
+        <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
+          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <dt class="text-muted-foreground">Pages</dt>
+            <dd class="font-medium tabular-nums text-foreground">{pdfState.pages.length}</dd>
+          </div>
+          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <dt class="text-muted-foreground">Documents</dt>
+            <dd class="font-medium tabular-nums text-foreground">{docs}</dd>
+          </div>
+          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <dt class="text-muted-foreground">Saved as</dt>
+            <dd class="font-medium text-foreground">{docs > 1 ? "ZIP of PDFs" : "One PDF"}</dd>
+          </div>
+        </dl>
+      </OptionGroup>
 
-    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
-      <button
-        type="button"
-        class={toolbarBtn}
-        onclick={() => pdfState.undo()}
-        title="Undo"
-      >
-        <Undo2 class="size-3.5" />
-        <span class="hidden xl:inline">Undo</span>
-      </button>
-      <button
-        type="button"
-        class={toolbarBtn}
-        onclick={() => pdfState.redo()}
-        title="Redo"
-      >
-        <Redo2 class="size-3.5" />
-        <span class="hidden xl:inline">Redo</span>
-      </button>
+      <OptionGroup label="Keyboard shortcuts">
+        <ul class="flex flex-col gap-2">
+          {#each shortcuts as s (s.label)}
+            <li class="flex items-center justify-between gap-3 text-body">
+              <span class="text-muted-foreground">{s.label}</span>
+              <kbd class="shrink-0 rounded-md border border-border bg-muted px-1.5 py-0.5 font-sans text-caption font-medium text-foreground">{s.keys}</kbd>
+            </li>
+          {/each}
+        </ul>
+      </OptionGroup>
     </div>
+  </WorkspaceInspector>
 
-    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
-      <button
-        type="button"
-        class={toolbarBtn}
-        onclick={() => pdfState.bulkRotate(-90)}
-        title="Rotate left"
-      >
-        <RotateCcw class="size-3.5" />
-        <span class="hidden xl:inline">Left</span>
-      </button>
-      <button
-        type="button"
-        class={toolbarBtn}
-        onclick={() => pdfState.bulkRotate(90)}
-        title="Rotate right"
-      >
-        <RotateCw class="size-3.5" />
-        <span class="hidden xl:inline">Right</span>
-      </button>
-    </div>
+  <ToolFooter>
+    {#snippet hint()}
+      {#if busy}
+        <ProgressLine label={pdfState.loader.text || "Working"} current={pdfState.loader.progress} total={100} class="max-w-md" />
+      {:else}
+        <span class="block truncate tabular-nums">
+          {pdfState.pages.length} {pdfState.pages.length === 1 ? "page" : "pages"} ·
+          {docs > 1 ? `saves as ${docs} PDFs in a ZIP` : "saves as one PDF"}
+        </span>
+      {/if}
+    {/snippet}
 
-    <div class="flex items-center gap-1 lg:border-r lg:border-border lg:pr-1.5">
-      <button
-        type="button"
-        class={cn(
-          toolbarBtn,
-          pdfState.selectedIds.size === pdfState.pages.length &&
-            "bg-primary/10 text-primary"
-        )}
-        onclick={() => pdfState.selectAll()}
-        title="Select all"
-      >
-        <CheckSquare class="size-3.5" />
-        <span class="hidden xl:inline">All</span>
-      </button>
-      <button
-        type="button"
-        class={toolbarBtn}
-        onclick={() => pdfState.deselectAll()}
-        title="Deselect"
-      >
-        <Square class="size-3.5" />
-        <span class="hidden xl:inline">None</span>
-      </button>
-    </div>
-
-    <div class="flex items-center gap-1.5">
-      <button
-        type="button"
-        class={cn(
-          toolbarBtn,
-          "hover:bg-destructive/10 hover:text-destructive"
-        )}
-        onclick={() => pdfState.bulkDelete()}
-        title="Delete selected"
-      >
-        <Trash2 class="size-3.5" />
-        <span class="hidden md:inline">Delete</span>
-      </button>
-      <Button
-        size="sm"
-        class="rounded-sm bg-primary text-primary-foreground hover:bg-primary/90"
-        onclick={() => pdfState.download()}
-      >
-        <Download class="size-3.5" />
-        Export
-      </Button>
-    </div>
-  </div>
-</div>
-
-{#if pdfState.loader.show}
-  <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-md"
-    transition:fade={{ duration: 160 }}
-  >
-    <div
-      class="flex w-full max-w-sm flex-col items-center gap-4 rounded-md border border-border bg-card p-6 shadow-2xl"
-    >
-      <span
-        class="inline-flex size-10 items-center justify-center rounded-sm bg-primary/10 text-primary"
-      >
-        <LoaderCircle class="size-4 animate-spin" />
-      </span>
-      <p
-        class="label-eyebrow text-muted-foreground"
-      >
-        Processing
-      </p>
-      <p class="text-sm text-foreground">{pdfState.loader.text}</p>
-      <div class="h-1.5 w-full overflow-hidden rounded-full bg-muted/60">
-        <div
-          class="h-full bg-primary transition-all duration-300"
-          style="width: {pdfState.loader.progress}%"
-        ></div>
-      </div>
-    </div>
-  </div>
+    <Button variant="primary" disabled={busy} onclick={() => pdfState.download()}>
+      {busy ? "Saving…" : docs > 1 ? `Save ${docs} PDFs` : "Save PDF"}
+    </Button>
+  </ToolFooter>
 {/if}

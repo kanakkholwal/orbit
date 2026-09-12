@@ -1,277 +1,299 @@
 <script lang="ts">
-  import { ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { FileRow, OptionGroup, ResultCard, SegmentedControl, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { Input } from "$components/ui/input";
-  import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import { openFilesInTool } from "$lib/runtime/pending-files.svelte";
   import { PROXY_SOURCE_URL } from "$lib/runtime/proxy-url";
-  import { cn } from "$lib/utils";
+  import { formatBytes } from "$utils/helper";
   import {
-    IconRosetteDiscountCheck as BadgeCheck,
-    IconDownload as DownloadIcon,
-    IconExternalLink as ExternalLink,
+    IconCertificate as Certificate,
+    IconDownload as Download,
+    IconEye as Eye,
+    IconEyeOff as EyeOff,
     IconFileUpload as FileUp,
-    IconInfoCircle as Info,
-    IconLoader2 as LoaderCircle,
-    IconShieldCheck as ShieldCheck,
+    IconRefresh as Refresh,
+    IconRosetteDiscountCheck as BadgeCheck,
   } from "@tabler/icons-svelte";
-  import { SignPdfState } from "./helper.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
+  import { SignPdfState, type CertMode } from "./helper.svelte";
 
   const store = new SignPdfState();
+  const uid = $props.id();
 
-  let certInput: HTMLInputElement;
+  let certInput = $state<HTMLInputElement | null>(null);
+  let showPassphrase = $state(false);
 
-  const fieldLabel =
-    "label-eyebrow text-muted-foreground";
-  const fieldInput = "h-10 rounded-md";
+  const inputClass =
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+
+  const modes: { value: CertMode; label: string }[] = [
+    { value: "upload", label: "Use my certificate" },
+    { value: "generate", label: "Create one" },
+  ];
+
+  const detailFields = [
+    { key: "reason", label: "Reason", placeholder: "I approve this document" },
+    { key: "location", label: "Place", placeholder: "City or office" },
+    { key: "contactInfo", label: "Contact", placeholder: "Email or name" },
+  ] as const;
+
+  const showResult = $derived(!store.isProcessing && store.result !== null);
+  const generating = $derived(store.certMode === "generate");
+  const generateBlocker = $derived(
+    !store.genName.trim()
+      ? "Enter your name to create a certificate."
+      : store.passphrase.length < 4
+        ? "Set a password of at least 4 characters first."
+        : ""
+  );
+
+  const blocker = $derived(
+    !store.hasCert
+      ? generating
+        ? "Create a certificate to continue"
+        : "Choose your certificate file to continue"
+      : store.passphrase.length === 0
+        ? "Enter the certificate password to continue"
+        : ""
+  );
+
+  function clearResult() {
+    store.result = null;
+  }
+
+  function startOver() {
+    store.reset();
+    showPassphrase = false;
+  }
+
+  function sign() {
+    store.sign().catch(() => {});
+  }
 </script>
 
 {#if !store.hasPdf}
-  <UploadArea
-    accept="application/pdf"
-    multiple={false}
-    onFilesSelected={(f) => store.loadFile(f[0])}
-  >
+  <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(f) => store.loadFile(f[0])}>
     {#snippet title()}
-      <h3 class="text-display-sm text-foreground">Digitally sign a PDF</h3>
+      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to sign</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-md text-sm leading-relaxed text-muted-foreground">
-        Apply a real, cryptographic (PAdES) digital signature with your
-        certificate — tamper-evident and verifiable. Everything happens on your
-        device; your document and private key never leave the browser.
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Add a digital signature that proves who signed and shows if anything changes later. The file never leaves this device.
       </p>
     {/snippet}
   </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
-    <ToolBar
-      label="Sign · {store.fileName}.pdf"
-      onReset={() => store.reset()}
-      resetLabel="Start over"
+  <div class="flex flex-col gap-4">
+    {#if showResult && store.result}
+      <ResultCard
+        title="PDF signed"
+        description={`${store.result.name} is downloaded. Editing it from now on will break the signature.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={startOver}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p class="text-body text-muted-foreground">Want proof it worked? Open the signed copy in the checker.</p>
+          <Button variant="outline" onclick={() => openFilesInTool(store.resultFiles, "validate-signature-pdf")}>
+            <BadgeCheck />
+            Check the signature
+          </Button>
+        </div>
+      </ResultCard>
+    {/if}
+
+    <FileRow
+      name={`${store.fileName}.pdf`}
+      meta={formatBytes(store.pdfSize)}
+      onRemove={store.isProcessing ? undefined : startOver}
     />
 
-    <!-- Certificate -->
-    <ToolPanel title="Certificate">
-      <div class="flex flex-col gap-5">
-        <div class="grid grid-cols-2 gap-2">
+    <section class="flex flex-col gap-5 rounded-2xl border border-border bg-card p-4 sm:p-5" oninput={clearResult}>
+      <div class="flex flex-col gap-0.5">
+        <h2 class="text-body-lg font-medium text-foreground">Your certificate</h2>
+        <p class="text-body text-muted-foreground">
+          A certificate is a small file that proves the signature is yours. Use one you have, or create one now.
+        </p>
+      </div>
+
+      <SegmentedControl name="{uid}-cert-mode" options={modes} bind:value={store.certMode} />
+
+      {#if !generating}
+        <div class="flex flex-col gap-2">
+          <input
+            bind:this={certInput}
+            type="file"
+            accept=".p12,.pfx,application/x-pkcs12"
+            class="hidden"
+            onchange={(e) => {
+              const f = e.currentTarget.files?.[0];
+              if (f) {
+                store.loadCert(f);
+                clearResult();
+              }
+              e.currentTarget.value = "";
+            }}
+          />
+          {#if store.hasCert}
+            <FileRow name={store.p12Name} meta="Certificate ready" icon={Certificate}>
+              {#snippet trailing()}
+                <Button variant="ghost" size="sm" onclick={() => certInput?.click()}>Change</Button>
+              {/snippet}
+            </FileRow>
+          {:else}
+            <Button variant="outline" class="w-fit" onclick={() => certInput?.click()}>
+              <FileUp />
+              Choose certificate file
+            </Button>
+          {/if}
+          <p class="text-caption text-muted-foreground">
+            A .p12 or .pfx file, usually from your company or a certificate provider.
+          </p>
+        </div>
+      {:else}
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div class="flex flex-col gap-2">
+            <label for="{uid}-gen-name" class="text-body font-medium text-foreground">Your name</label>
+            <input id="{uid}-gen-name" type="text" bind:value={store.genName} placeholder="Jane Doe" class={inputClass} />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="{uid}-gen-org" class="text-body font-medium text-foreground">Organisation</label>
+            <input id="{uid}-gen-org" type="text" bind:value={store.genOrg} placeholder="Optional" class={inputClass} />
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="{uid}-gen-country" class="text-body font-medium text-foreground">Country code</label>
+            <input
+              id="{uid}-gen-country"
+              type="text"
+              bind:value={store.genCountry}
+              placeholder="Like US or IN"
+              maxlength={2}
+              class={inputClass}
+            />
+          </div>
+        </div>
+      {/if}
+
+      <div class="flex flex-col gap-2">
+        <label for="{uid}-passphrase" class="text-body font-medium text-foreground">Certificate password</label>
+        <div class="relative">
+          <input
+            id="{uid}-passphrase"
+            type={showPassphrase ? "text" : "password"}
+            autocomplete={generating ? "new-password" : "current-password"}
+            bind:value={store.passphrase}
+            aria-describedby="{uid}-passphrase-hint"
+            class="{inputClass} pr-11"
+          />
           <button
             type="button"
-            onclick={() => (store.certMode = "upload")}
-            class={cn(
-              "rounded-md border px-4 py-2.5 text-sm font-medium transition-colors",
-              store.certMode === "upload"
-                ? "border-primary/40 bg-primary/10 text-primary"
-                : "border-border bg-card text-muted-foreground hover:text-foreground"
-            )}
+            class="absolute right-0.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+            aria-label={showPassphrase ? "Hide certificate password" : "Show certificate password"}
+            aria-pressed={showPassphrase}
+            onclick={() => (showPassphrase = !showPassphrase)}
           >
-            Use my certificate
-          </button>
-          <button
-            type="button"
-            onclick={() => (store.certMode = "generate")}
-            class={cn(
-              "rounded-md border px-4 py-2.5 text-sm font-medium transition-colors",
-              store.certMode === "generate"
-                ? "border-primary/40 bg-primary/10 text-primary"
-                : "border-border bg-card text-muted-foreground hover:text-foreground"
-            )}
-          >
-            Create a self-signed one
+            {#if showPassphrase}<EyeOff class="size-4" />{:else}<Eye class="size-4" />{/if}
           </button>
         </div>
+        <p id="{uid}-passphrase-hint" class="text-caption text-muted-foreground">
+          {generating
+            ? "Choose a password of at least 4 characters to protect the new certificate."
+            : "The password that came with your certificate file."}
+        </p>
+      </div>
 
-        {#if store.certMode === "upload"}
-          <div class="flex flex-col gap-3">
-            <input
-              bind:this={certInput}
-              type="file"
-              accept=".p12,.pfx,application/x-pkcs12"
-              class="hidden"
-              onchange={(e) => {
-                const f = (e.target as HTMLInputElement).files?.[0];
-                if (f) store.loadCert(f);
-                (e.target as HTMLInputElement).value = "";
-              }}
-            />
-            <Button
-              variant="outline"
-              class="w-fit rounded-md"
-              onclick={() => certInput.click()}
-            >
-              <FileUp class="size-4" />
-              {store.p12Name || "Choose .p12 / .pfx file"}
-            </Button>
-            <p class="text-xs text-muted-foreground">
-              A PKCS#12 certificate file, typically issued by a certificate
-              authority. It is read locally and never uploaded.
-            </p>
-          </div>
-        {:else}
-          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div class="flex flex-col gap-1.5">
-              <Label for="gen-name" class={fieldLabel}>Name *</Label>
-              <Input
-                id="gen-name"
-                bind:value={store.genName}
-                placeholder="Jane Doe"
-                class={fieldInput}
-              />
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <Label for="gen-org" class={fieldLabel}>Organisation</Label>
-              <Input
-                id="gen-org"
-                bind:value={store.genOrg}
-                placeholder="Optional"
-                class={fieldInput}
-              />
-            </div>
-            <div class="flex flex-col gap-1.5">
-              <Label for="gen-country" class={fieldLabel}>Country</Label>
-              <Input
-                id="gen-country"
-                bind:value={store.genCountry}
-                placeholder="e.g. US"
-                maxlength={2}
-                class={fieldInput}
-              />
-            </div>
-          </div>
+      {#if generating}
+        <div class="flex flex-col gap-3 border-t border-border pt-4">
           <div class="flex flex-wrap items-center gap-2">
             <Button
               variant="outline"
-              class="rounded-md"
-              onclick={() => store.generateCert()}
-              disabled={store.generating}
+              onclick={() => {
+                store.generateCert();
+                clearResult();
+              }}
+              disabled={store.generating || generateBlocker !== ""}
             >
-              {#if store.generating}
-                <LoaderCircle class="size-4 animate-spin" />
-                Generating…
-              {:else}
-                <BadgeCheck class="size-4" />
-                {store.hasCert ? "Regenerate" : "Generate certificate"}
-              {/if}
+              <BadgeCheck />
+              {store.generating ? "Creating…" : store.hasCert ? "Create again" : "Create certificate"}
             </Button>
             {#if store.hasCert}
-              <Button
-                variant="ghost"
-                class="rounded-md text-muted-foreground"
-                onclick={() => store.downloadCert()}
-              >
-                <DownloadIcon class="size-4" />
-                Save .p12
+              <Button variant="ghost" onclick={() => store.downloadCert()}>
+                <Download />
+                Save certificate
               </Button>
             {/if}
           </div>
-          <p class="text-xs leading-relaxed text-muted-foreground">
-            A self-signed certificate makes the signature tamper-evident, but is
-            not backed by a trusted authority, so validators will show "identity
-            not verified". Set the passphrase below before generating.
+          <p class="text-caption text-muted-foreground">
+            {#if generateBlocker}
+              {generateBlocker}
+            {:else if store.hasCert}
+              Certificate ready. Save it to sign more files with the same identity.
+            {/if}
+            A certificate you create yourself shows changes to the file, but checkers will say your identity is not verified.
           </p>
-        {/if}
-
-        <div class="flex flex-col gap-1.5">
-          <Label for="passphrase" class={fieldLabel}>Certificate passphrase *</Label>
-          <Input
-            id="passphrase"
-            type="password"
-            bind:value={store.passphrase}
-            placeholder="••••••••"
-            class={fieldInput}
-          />
         </div>
-      </div>
-    </ToolPanel>
+      {/if}
+    </section>
 
-    <!-- Signature details -->
-    <ToolPanel title="Signature details">
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div class="flex flex-col gap-1.5">
-          <Label for="reason" class={fieldLabel}>Reason</Label>
-          <Input id="reason" bind:value={store.reason} class={fieldInput} />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <Label for="location" class={fieldLabel}>Location</Label>
-          <Input
-            id="location"
-            bind:value={store.location}
-            placeholder="Optional"
-            class={fieldInput}
-          />
-        </div>
-        <div class="flex flex-col gap-1.5 sm:col-span-2">
-          <Label for="contact" class={fieldLabel}>Contact info</Label>
-          <Input
-            id="contact"
-            bind:value={store.contactInfo}
-            placeholder="Optional — email or name"
-            class={fieldInput}
-          />
-        </div>
-      </div>
-    </ToolPanel>
-
-    <!-- Trust & verification disclosure -->
-    <div
-      class="flex flex-col gap-3 rounded-lg border border-border bg-background-muted/40 p-5"
-    >
-      <div class="flex items-center gap-2">
-        <ShieldCheck class="size-4 text-primary" />
-        <span class="label-eyebrow text-foreground">Privacy & verification</span>
-      </div>
-      <p class="text-sm leading-relaxed text-muted-foreground">
-        Signing runs entirely in your browser — your PDF and private key are
-        never uploaded. The resulting signature is independently verifiable
-        (try the
-        <a href="/tools/validate-signature-pdf" class="text-primary underline-offset-2 hover:underline">Validate Signature</a>
-        tool).
-      </p>
-      <div class="flex items-start gap-2 rounded-md bg-card/60 p-3">
-        <Info class="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
-        <p class="text-xs leading-relaxed text-muted-foreground">
-          <span class="font-medium text-foreground">Optional trusted timestamps & revocation checks</span>
-          (RFC&nbsp;3161 / OCSP) are the only steps that would ever contact the
-          outside world. Because browsers can't reach those authorities
-          directly, Orbit routes just a hash — never your document — through a
-          tiny same-origin proxy. The signature itself is produced fully offline.
-          The proxy is open source and auditable:
-          <a
-            href={PROXY_SOURCE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1 text-primary underline-offset-2 hover:underline"
-          >
-            view the proxy source
-            <ExternalLink class="size-3" />
-          </a>.
-        </p>
-      </div>
-    </div>
-
-    <ToolFooter
-      hint={store.isProcessing
-        ? store.progressLabel
-        : !store.hasCert
-          ? "Add or generate a certificate to sign"
-          : store.passphrase.length === 0
-            ? "Enter the certificate passphrase"
-            : "Ready to sign"}
-    >
-      <Button
-        size="lg"
-        class="rounded-md bg-primary px-6 text-primary-foreground hover:bg-primary-active"
-        onclick={() => store.sign()}
-        disabled={!store.canSign}
+    <p class="px-1 text-caption text-muted-foreground">
+      Signing happens on this device, and your PDF and certificate are never uploaded. Only optional trusted timestamps
+      go online, and they send a fingerprint of the file, never the file itself.
+      <a
+        href={PROXY_SOURCE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-primary underline-offset-2 hover:underline"
       >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progressLabel}
-        {:else}
-          <ShieldCheck class="size-4" />
-          Sign PDF
-        {/if}
-      </Button>
-    </ToolFooter>
+        See the code that does this
+      </a>
+    </p>
   </div>
+
+  <WorkspaceInspector title="Signature details">
+    <div class="flex flex-col gap-6" oninput={clearResult}>
+      <OptionGroup label="Shown with the signature" description="People checking the signature can see these. All are optional.">
+        <div class="flex flex-col gap-3">
+          {#each detailFields as field (field.key)}
+            <div class="flex flex-col gap-1.5">
+              <label for="{uid}-{field.key}" class="text-caption text-muted-foreground">{field.label}</label>
+              <input
+                id="{uid}-{field.key}"
+                type="text"
+                bind:value={store[field.key]}
+                placeholder={field.placeholder}
+                class={inputClass}
+              />
+            </div>
+          {/each}
+        </div>
+      </OptionGroup>
+    </div>
+  </WorkspaceInspector>
+
+  <ToolFooter>
+    {#snippet hint()}
+      <span class="block truncate">
+        {#if store.isProcessing}
+          Signing your PDF…
+        {:else if showResult}
+          Signed and downloaded
+        {:else if blocker}
+          {blocker}
+        {:else}
+          Ready to sign with {store.p12Name}
+        {/if}
+      </span>
+    {/snippet}
+
+    <Button variant="primary" onclick={sign} disabled={!store.canSign}>
+      {store.isProcessing ? "Signing…" : "Sign PDF"}
+    </Button>
+  </ToolFooter>
 {/if}

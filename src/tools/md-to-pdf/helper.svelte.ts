@@ -18,18 +18,19 @@ const greeting = "hello world";
 console.log(greeting);
 \`\`\`
 
-> Everything stays local — nothing is uploaded.
+> Everything stays on your device. Nothing is uploaded.
 
 ---
 
 1. Paste or load Markdown
-2. Click *Convert to PDF*
+2. Click *Create PDF*
 3. Download the result
 `;
 
 export class MdToPdfState extends PdfEngine {
     markdown = $state('');
     fileName = $state('document');
+    result = $state.raw<{ blob: Blob; name: string; source: string } | null>(null);
 
     get isEmpty(): boolean {
         return this.markdown.trim().length === 0;
@@ -52,21 +53,33 @@ export class MdToPdfState extends PdfEngine {
 
     async convert() {
         if (this.isEmpty) return;
+        const source = this.markdown;
         await this.handleProcess(
             async () => {
-                const bytes = await markdownToPdf(this.markdown, { title: this.fileName });
+                const bytes = await markdownToPdf(source, { title: this.fileName });
                 const blob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
-                this.downloadBlob(blob, `${this.fileName || 'document'}.pdf`);
+                const name = `${this.fileName || 'document'}.pdf`;
+                this.result = { blob, name, source };
+                this.downloadBlob(blob, name);
             },
             {
                 loading: 'Rendering PDF…',
                 success: 'PDF ready.',
                 error: 'Failed to convert Markdown.'
             }
-        );
+        ).catch(() => {});
+    }
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
     }
 
     reset() {
+        this.result = null;
         this.markdown = '';
         this.fileName = 'document';
     }

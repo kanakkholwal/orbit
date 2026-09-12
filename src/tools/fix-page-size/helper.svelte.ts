@@ -16,6 +16,31 @@ export class FixPageSizeState extends PdfEngine {
     backgroundColor = $state('#ffffff');
 
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
+    /** Output page size in points, after orientation. Mirrors `process()`. */
+    get targetDimensions(): [number, number] {
+        let w: number;
+        let h: number;
+        if (this.targetSize === 'Custom') {
+            const unit = this.customUnits === 'in' ? 72 : 72 / 25.4;
+            w = Number(this.customWidth) * unit;
+            h = Number(this.customHeight) * unit;
+        } else {
+            [w, h] = PageSizes[this.targetSize as keyof typeof PageSizes];
+        }
+        if ((this.orientation === 'landscape' && w < h) || (this.orientation === 'portrait' && w > h)) [w, h] = [h, w];
+        return [w, h];
+    }
+
     loadFile(files: File[]) {
         const validFile = files.find(
             f => f.type === 'application/pdf' || f.name.toLowerCase().endsWith('.pdf')
@@ -27,10 +52,12 @@ export class FixPageSizeState extends PdfEngine {
         }
 
         this.file = { file: validFile, originalSize: validFile.size };
+        this.result = null;
     }
 
     reset() {
         this.file = null;
+        this.result = null;
         this.isProcessing = false;
     }
 
@@ -39,6 +66,7 @@ export class FixPageSizeState extends PdfEngine {
         if (!this.file) return;
 
         this.isProcessing = true;
+        this.result = null;
         try {
             let targetWidth: number;
             let targetHeight: number;
@@ -113,7 +141,9 @@ export class FixPageSizeState extends PdfEngine {
             const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
             
             const originalName = this.file.file.name.replace(/\.pdf$/i, '');
-            this.downloadBlob(blob, `${originalName}_standardized.pdf`);
+            const name = `${originalName}_standardized.pdf`;
+            this.result = { blob, name };
+            this.downloadBlob(blob, name);
 
         } catch (e: any) {
             console.error('[Fix Page Size] Error:', e);

@@ -29,6 +29,16 @@ export class PageNumberState extends PdfEngine {
         startFromPage: 1
     });
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
 // Actions
 
     async loadFile(file: File) {
@@ -42,6 +52,7 @@ export class PageNumberState extends PdfEngine {
             const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
             this.state.file = file;
+            this.result = null;
             this.state.pageCount = pdfDoc.getPageCount();
         } catch (e) {
             console.error(e);
@@ -54,6 +65,7 @@ export class PageNumberState extends PdfEngine {
     reset() {
         this.state.file = null;
         this.state.pageCount = 0;
+        this.result = null;
     }
 
     // Processing
@@ -61,6 +73,7 @@ export class PageNumberState extends PdfEngine {
     async process() {
         if (!this.state.file) return;
 
+        this.result = null;
         await this.handleProcess(async () => {
             const arrayBuffer = await this.state.file!.arrayBuffer();
             const pdfDoc = await PDFDocument.load(arrayBuffer);
@@ -126,7 +139,9 @@ export class PageNumberState extends PdfEngine {
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
 
             const originalName = this.state.file!.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_numbered.pdf`);
+            const name = `${originalName}_numbered.pdf`;
+            this.result = { blob, name };
+            this.downloadBlob(blob, name);
         }, {
             loading: 'Adding page numbers...',
             success: 'PDF numbered successfully!',

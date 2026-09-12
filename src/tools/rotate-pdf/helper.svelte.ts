@@ -1,4 +1,3 @@
-// FIX: Ensure this extension matches the file created in Step 1
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, degrees } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
@@ -13,25 +12,33 @@ export interface RotatePdfStateData {
     file: File | null;
     pageCount: number;
     pages: RotatePageData[];
-    isProcessing: boolean;
-    progress: string;
 }
+
+export const normalizeTurn = (deg: number) => ((deg % 360) + 360) % 360;
 
 export class RotatePdfState extends PdfEngine {
     state = $state<RotatePdfStateData>({
         file: null,
         pageCount: 0,
-        pages: [],
-        isProcessing: false,
-        progress: ''
+        pages: []
     });
+
+    result = $state.raw<{ blob: Blob; name: string; turned: number } | null>(null);
 
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
+    get turnedCount() {
+        return this.state.pages.filter(p => normalizeTurn(p.rotation) !== 0).length;
+    }
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
     async loadFile(file: File) {
         if (!file) return;
-        this.state.isProcessing = true;
-        this.state.progress = 'Loading PDF...';
+        this.isProcessing = true;
+        this.result = null;
 
         try {
             const arrayBuffer = await file.arrayBuffer();
@@ -42,17 +49,15 @@ export class RotatePdfState extends PdfEngine {
 
             this.state.file = file;
             this.state.pageCount = this.pdfJsDoc.numPages;
-
             this.state.pages = Array.from({ length: this.pdfJsDoc.numPages }, (_, i) => ({
                 pageIndex: i,
                 rotation: 0
             }));
-
         } catch (e) {
             console.error(e);
-            toast.error("Failed to load PDF.");
+            toast.error('This PDF could not be opened.');
         } finally {
-            this.state.isProcessing = false;
+            this.isProcessing = false;
         }
     }
 
@@ -61,19 +66,23 @@ export class RotatePdfState extends PdfEngine {
         this.state.pages = [];
         this.state.pageCount = 0;
         this.pdfJsDoc = null;
+        this.result = null;
     }
 
     rotatePage(index: number, delta: number) {
         const page = this.state.pages[index];
         if (page) page.rotation += delta;
+        this.result = null;
     }
 
     rotateAll(delta: number) {
-        this.state.pages.forEach(p => p.rotation += delta);
+        for (const p of this.state.pages) p.rotation += delta;
+        this.result = null;
     }
 
     resetRotations() {
-        this.state.pages.forEach(p => p.rotation = 0);
+        for (const p of this.state.pages) p.rotation = 0;
+        this.result = null;
     }
 
     async renderThumbnail(canvas: HTMLCanvasElement, pageIndex: number) {
@@ -83,8 +92,8 @@ export class RotatePdfState extends PdfEngine {
 
     async save() {
         if (!this.state.file) return;
-        this.state.isProcessing = true;
-        this.state.progress = 'Saving...';
+        this.isProcessing = true;
+        this.progress = { text: 'Saving…', current: 0, total: 0 };
 
         try {
             const arrayBuffer = await this.state.file.arrayBuffer();
@@ -94,21 +103,24 @@ export class RotatePdfState extends PdfEngine {
             this.state.pages.forEach((p, i) => {
                 const page = pages[i];
                 const currentRotation = page.getRotation().angle;
-                page.setRotation(degrees(currentRotation + p.rotation));
+                page.setRotation(degrees(normalizeTurn(currentRotation + p.rotation)));
             });
 
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
 
-            const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_rotated.pdf`);
-
+            const name = `${this.state.file.name.replace(/\.pdf$/i, '')}_rotated.pdf`;
+            this.result = { blob, name, turned: this.turnedCount };
+            this.downloadBlob(blob, name);
         } catch (e: any) {
             console.error(e);
-            toast.error(`Save failed: ${e.message}`);
+            toast.error(`Could not save the PDF: ${e.message}`);
         } finally {
-            this.state.isProcessing = false;
+            this.isProcessing = false;
         }
     }
 
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
 }

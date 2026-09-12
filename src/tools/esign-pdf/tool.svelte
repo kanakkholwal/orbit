@@ -1,337 +1,404 @@
 <script lang="ts">
-  import { ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { OptionGroup, ResultCard, SegmentedControl, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { Input } from "$components/ui/input";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { cn } from "$lib/utils";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
+  import { workspace } from "$stores/workspace.svelte";
   import {
     IconChevronLeft as ChevronLeft,
     IconChevronRight as ChevronRight,
+    IconDownload as Download,
     IconEraser as Eraser,
-    IconLoader2 as LoaderCircle,
-    IconPencil as PenLine,
-    IconLetterT as Type,
-    IconUpload as Upload,
+    IconLoader2 as Loader,
+    IconPhoto as Photo,
+    IconRefresh as Refresh,
+    IconSignature as SignatureIcon,
   } from "@tabler/icons-svelte";
+  import { untrack } from "svelte";
   import { EsignPdfState } from "./helper.svelte";
 
   const store = new EsignPdfState();
+  const uid = $props.id();
 
   type Mode = "draw" | "type" | "upload";
   let mode = $state<Mode>("draw");
   let typedName = $state("");
+  let uploadedName = $state<string | null>(null);
+  let uploadInput = $state<HTMLInputElement | null>(null);
 
-  const modes: { id: Mode; label: string; icon: typeof PenLine }[] = [
-    { id: "draw", label: "Draw", icon: PenLine },
-    { id: "type", label: "Type", icon: Type },
-    { id: "upload", label: "Upload", icon: Upload },
+  const modes: { value: Mode; label: string }[] = [
+    { value: "draw", label: "Draw" },
+    { value: "type", label: "Type" },
+    { value: "upload", label: "Image" },
   ];
 
-  // ── Drawing pad ───────────────────────────────────────────────────────────
-  let pad = $state<HTMLCanvasElement>()!;
+  const INK = "#1a1916";
+  const SCRIPT_FONT = '"Segoe Script", "Brush Script MT", cursive';
+
+  let pad = $state<HTMLCanvasElement | null>(null);
   let drawing = false;
   let hasInk = $state(false);
 
+  $effect(() => {
+    if (mode !== "draw" || !pad) hasInk = false;
+  });
+
   function padPos(e: PointerEvent) {
-    const r = pad.getBoundingClientRect();
+    const r = pad!.getBoundingClientRect();
     return {
-      x: ((e.clientX - r.left) / r.width) * pad.width,
-      y: ((e.clientY - r.top) / r.height) * pad.height,
+      x: ((e.clientX - r.left) / r.width) * pad!.width,
+      y: ((e.clientY - r.top) / r.height) * pad!.height,
     };
   }
   function startDraw(e: PointerEvent) {
+    if (!pad) return;
     drawing = true;
     hasInk = true;
     const ctx = pad.getContext("2d")!;
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3;
     ctx.lineCap = "round";
-    ctx.strokeStyle = "#1a1916";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = INK;
     const { x, y } = padPos(e);
     ctx.beginPath();
     ctx.moveTo(x, y);
     pad.setPointerCapture(e.pointerId);
   }
   function moveDraw(e: PointerEvent) {
-    if (!drawing) return;
+    if (!drawing || !pad) return;
     const ctx = pad.getContext("2d")!;
     const { x, y } = padPos(e);
     ctx.lineTo(x, y);
     ctx.stroke();
   }
   function endDraw() {
+    if (!drawing) return;
     drawing = false;
+    if (pad && hasInk) store.setSignature(pad.toDataURL("image/png"));
   }
   function clearPad() {
     pad?.getContext("2d")?.clearRect(0, 0, pad.width, pad.height);
     hasInk = false;
-  }
-  function useDrawn() {
-    if (!hasInk) return;
-    store.setSignature(pad.toDataURL("image/png"));
+    store.clearSignature();
   }
 
-  // ── Typed signature ───────────────────────────────────────────────────────
-  function useTyped() {
-    if (!typedName.trim()) return;
+  function applyTyped(name: string) {
+    const text = name.trim();
+    if (!text) {
+      store.clearSignature();
+      return;
+    }
     const c = document.createElement("canvas");
-    c.width = 600;
-    c.height = 200;
     const ctx = c.getContext("2d")!;
-    ctx.fillStyle = "#1a1916";
-    ctx.font = 'italic 72px "Segoe Script", "Brush Script MT", cursive';
+    ctx.font = `italic 72px ${SCRIPT_FONT}`;
+    c.width = Math.max(200, Math.ceil(ctx.measureText(text).width) + 40);
+    c.height = 140;
+    ctx.font = `italic 72px ${SCRIPT_FONT}`;
+    ctx.fillStyle = INK;
     ctx.textBaseline = "middle";
-    ctx.fillText(typedName.trim(), 20, 110);
+    ctx.fillText(text, 20, 76);
     store.setSignature(c.toDataURL("image/png"));
   }
 
-  // ── Uploaded image ────────────────────────────────────────────────────────
-  function onUpload(e: Event) {
-    const file = (e.target as HTMLInputElement).files?.[0];
+  function onUpload(e: Event & { currentTarget: HTMLInputElement }) {
+    const file = e.currentTarget.files?.[0];
+    e.currentTarget.value = "";
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => store.setSignature(reader.result as string);
+    reader.onload = () => {
+      uploadedName = file.name;
+      store.setSignature(reader.result as string);
+    };
     reader.onerror = () => store.notifyUnsupported();
     reader.readAsDataURL(file);
-    (e.target as HTMLInputElement).value = "";
   }
 
-  // ── Page preview + draggable placement ────────────────────────────────────
-  let previewCanvas = $state<HTMLCanvasElement>();
-  let stage = $state<HTMLDivElement>();
-  let dragging = false;
-  let grab = { dx: 0, dy: 0 };
+  let previewCanvas = $state<HTMLCanvasElement | null>(null);
+  let stage = $state<HTMLDivElement | null>(null);
+  let boxWidth = $state(0);
+  let boxHeight = $state(0);
+  let pageAspect = $state(1 / 1.414);
+  let rendering = $state(true);
+  let renderToken = 0;
+
+  const page = $derived(store.placement.page);
+  const stageWidth = $derived(Math.max(160, Math.min(boxWidth - 32, (boxHeight - 32) * pageAspect)));
+  const sigHeightRatio = $derived(store.placement.w * store.signatureAspect * pageAspect);
 
   $effect(() => {
-    const page = store.placement.page;
-    if (previewCanvas && store.hasPdf) {
-      store.renderPreview(previewCanvas, page);
-    }
+    const index = page;
+    const target = previewCanvas;
+    if (!target || store.pageCount === 0) return;
+    untrack(() => renderPage(target, index));
   });
 
-  function startMove(e: PointerEvent) {
+  async function renderPage(target: HTMLCanvasElement, index: number) {
+    const token = ++renderToken;
+    rendering = true;
+    const offscreen = document.createElement("canvas");
+    try {
+      await store.renderPreview(offscreen, index, 1000);
+      if (token !== renderToken) return;
+      target.width = offscreen.width;
+      target.height = offscreen.height;
+      target.getContext("2d")?.drawImage(offscreen, 0, 0);
+      if (offscreen.height > 0) pageAspect = offscreen.width / offscreen.height;
+    } finally {
+      if (token === renderToken) rendering = false;
+    }
+  }
+
+  let dragging = false;
+  const grab = { dx: 0, dy: 0 };
+
+  function clampPlacement(x: number, y: number) {
+    store.placement = {
+      ...store.placement,
+      x: Math.max(0, Math.min(x, 1 - store.placement.w)),
+      y: Math.max(0, Math.min(y, 1 - sigHeightRatio)),
+    };
+  }
+  function startMove(e: PointerEvent & { currentTarget: HTMLElement }) {
     if (!stage) return;
     dragging = true;
     const r = stage.getBoundingClientRect();
     grab.dx = (e.clientX - r.left) / r.width - store.placement.x;
     grab.dy = (e.clientY - r.top) / r.height - store.placement.y;
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    e.currentTarget.setPointerCapture(e.pointerId);
   }
   function move(e: PointerEvent) {
     if (!dragging || !stage) return;
     const r = stage.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - grab.dx;
-    const y = (e.clientY - r.top) / r.height - grab.dy;
-    store.placement = {
-      ...store.placement,
-      x: Math.max(0, Math.min(x, 1 - store.placement.w)),
-      y: Math.max(0, Math.min(y, 1)),
-    };
+    clampPlacement((e.clientX - r.left) / r.width - grab.dx, (e.clientY - r.top) / r.height - grab.dy);
   }
   function endMove() {
     dragging = false;
   }
+  function nudge(e: KeyboardEvent) {
+    const step = e.shiftKey ? 0.05 : 0.01;
+    const moves: Record<string, [number, number]> = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, -step],
+      ArrowDown: [0, step],
+    };
+    const delta = moves[e.key];
+    if (!delta) return;
+    e.preventDefault();
+    clampPlacement(store.placement.x + delta[0], store.placement.y + delta[1]);
+  }
+
+  function setSize(value: number) {
+    store.placement = { ...store.placement, w: value };
+    clampPlacement(store.placement.x, store.placement.y);
+  }
 </script>
 
 {#if !store.hasPdf}
-  <UploadArea
-    accept="application/pdf"
-    multiple={false}
-    onFilesSelected={(f) => store.loadFile(f[0])}
-  >
+  <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(f) => store.loadFile(f[0]).catch(() => {})}>
     {#snippet title()}
-      <h3 class="text-display-sm text-foreground">Sign a PDF</h3>
+      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to sign</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-md text-sm leading-relaxed text-muted-foreground">
-        Draw, type, or upload your signature, place it anywhere on the page, and
-        download. Entirely on your device — nothing is uploaded.
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Draw, type or add a picture of your signature, then place it on the page.
       </p>
     {/snippet}
   </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
-    <ToolBar label="Sign · {store.fileName}.pdf" onReset={() => store.reset()} resetLabel="Start over" />
-
-    {#if !store.signature}
-      <ToolPanel title="Create your signature">
-        <div class="flex flex-col gap-5">
-          <div class="grid grid-cols-3 gap-2">
-            {#each modes as m (m.id)}
-              {@const Icon = m.icon}
-              <button
-                type="button"
-                onclick={() => (mode = m.id)}
-                class={cn(
-                  "inline-flex items-center justify-center gap-2 rounded-md border px-3 py-2.5 text-sm font-medium transition-colors",
-                  mode === m.id
-                    ? "border-primary/40 bg-primary/10 text-primary"
-                    : "border-border bg-card text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <Icon class="size-4" />
-                {m.label}
-              </button>
-            {/each}
-          </div>
-
-          {#if mode === "draw"}
-            <div class="flex flex-col gap-3">
-              <canvas
-                bind:this={pad}
-                width="600"
-                height="200"
-                onpointerdown={startDraw}
-                onpointermove={moveDraw}
-                onpointerup={endDraw}
-                class="h-48 w-full touch-none rounded-lg border border-border bg-card"
-              ></canvas>
-              <div class="flex items-center gap-2">
-                <Button variant="ghost" size="sm" class="rounded-md" onclick={clearPad}>
-                  <Eraser class="size-3.5" />
-                  Clear
-                </Button>
-                <Button class="ml-auto rounded-md" onclick={useDrawn} disabled={!hasInk}>
-                  Use signature
-                </Button>
-              </div>
-            </div>
-          {:else if mode === "type"}
-            <div class="flex flex-col gap-3">
-              <Input
-                bind:value={typedName}
-                placeholder="Type your name"
-                class="h-12 rounded-md text-lg"
-              />
-              {#if typedName.trim()}
-                <div
-                  class="flex h-24 items-center rounded-lg border border-border bg-card px-5"
-                >
-                  <span
-                    class="text-4xl text-foreground"
-                    style="font-family: 'Segoe Script', 'Brush Script MT', cursive; font-style: italic;"
-                  >
-                    {typedName}
-                  </span>
-                </div>
-              {/if}
-              <Button class="ml-auto w-fit rounded-md" onclick={useTyped} disabled={!typedName.trim()}>
-                Use signature
-              </Button>
-            </div>
-          {:else}
-            <label
-              class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/20 px-6 py-12 text-center transition-colors hover:bg-muted/30"
-            >
-              <Upload class="size-5 text-muted-foreground" />
-              <span class="text-sm text-muted-foreground">
-                Upload a signature image (PNG with transparency works best)
-              </span>
-              <input type="file" accept="image/*" class="hidden" onchange={onUpload} />
-            </label>
-          {/if}
-        </div>
-      </ToolPanel>
-    {:else}
-      <ToolPanel title="Place your signature">
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-wrap items-center gap-3">
-            <div class="flex items-center gap-1">
-              <Button
-                variant="outline"
-                size="icon-sm"
-                class="rounded-md"
-                onclick={() => store.setPage(store.placement.page - 1)}
-                disabled={store.placement.page === 0}
-              >
-                <ChevronLeft class="size-4" />
-              </Button>
-              <span class="px-2 font-mono text-xs tabular-nums text-muted-foreground">
-                {store.placement.page + 1} / {store.pageCount}
-              </span>
-              <Button
-                variant="outline"
-                size="icon-sm"
-                class="rounded-md"
-                onclick={() => store.setPage(store.placement.page + 1)}
-                disabled={store.placement.page >= store.pageCount - 1}
-              >
-                <ChevronRight class="size-4" />
-              </Button>
-            </div>
-
-            <label class="flex items-center gap-2 text-xs text-muted-foreground">
-              Size
-              <input
-                type="range"
-                min="0.1"
-                max="0.6"
-                step="0.01"
-                value={store.placement.w}
-                oninput={(e) =>
-                  (store.placement = {
-                    ...store.placement,
-                    w: parseFloat((e.target as HTMLInputElement).value),
-                  })}
-                class="accent-primary"
-              />
-            </label>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              class="ml-auto rounded-md text-muted-foreground"
-              onclick={() => store.clearSignature()}
-            >
-              Change signature
-            </Button>
-          </div>
-
-          <div
-            bind:this={stage}
-            class="relative mx-auto w-full max-w-2xl overflow-hidden rounded-lg border border-border bg-card"
-          >
-            <canvas bind:this={previewCanvas} class="block h-auto w-full"></canvas>
-            {#if store.signature}
-              <img
-                src={store.signature}
-                alt="signature"
-                draggable="false"
-                onpointerdown={startMove}
-                onpointermove={move}
-                onpointerup={endMove}
-                style="left: {store.placement.x * 100}%; top: {store.placement.y *
-                  100}%; width: {store.placement.w * 100}%;"
-                class="absolute cursor-move touch-none select-none rounded-xs outline-2 outline-primary/40 hover:outline-primary"
-              />
-            {/if}
-          </div>
-          <p class="text-center text-xs text-muted-foreground">
-            Drag the signature to position it, then apply.
-          </p>
-        </div>
-      </ToolPanel>
+  <div class="flex flex-col gap-4">
+    {#if store.result && !store.isProcessing}
+      <ResultCard
+        title="Signed PDF saved"
+        description={`Your signature is on page ${store.result.page}. ${store.result.name} is downloaded.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={() => store.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="esign-pdf" />
+      </ResultCard>
     {/if}
 
-    <ToolFooter
-      hint={store.isProcessing
-        ? store.progressLabel
-        : store.signature
-          ? "Drag to position, then apply"
-          : "Create a signature to continue"}
+    <ToolBar
+      label={`${store.fileName}.pdf`}
+      meta={`${store.pageCount} ${store.pageCount === 1 ? "page" : "pages"}`}
+      onReset={store.isProcessing ? undefined : () => store.reset()}
+      resetLabel="Clear"
     >
-      <Button
-        size="lg"
-        class="rounded-md bg-primary px-6 text-primary-foreground hover:bg-primary-active"
-        onclick={() => store.apply()}
-        disabled={!store.ready || store.isProcessing}
-      >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progressLabel}
-        {:else}
-          Apply & download
+      {#snippet actions()}
+        <div class="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onclick={() => store.setPage(page - 1)}
+            disabled={page === 0}
+            aria-label="Previous page"
+          >
+            <ChevronLeft />
+          </Button>
+          <span class="min-w-24 px-1 text-center text-body tabular-nums text-foreground" aria-live="polite">
+            Page {page + 1} of {store.pageCount}
+          </span>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            onclick={() => store.setPage(page + 1)}
+            disabled={page >= store.pageCount - 1}
+            aria-label="Next page"
+          >
+            <ChevronRight />
+          </Button>
+        </div>
+      {/snippet}
+    </ToolBar>
+
+    {#if !store.signature}
+      <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3">
+        <p class="text-body text-muted-foreground">Create your signature, then drag it into place on the page.</p>
+        <Button variant="outline" size="sm" class="xl:hidden" onclick={() => (workspace.inspectorDrawerOpen = true)}>
+          <SignatureIcon />
+          Create signature
+        </Button>
+      </div>
+    {:else}
+      <p class="text-body text-muted-foreground">
+        Drag your signature where it belongs, or select it and use the arrow keys.
+      </p>
+    {/if}
+
+    <div
+      bind:clientWidth={boxWidth}
+      bind:clientHeight={boxHeight}
+      class="relative flex h-[max(22rem,calc(100dvh-21rem))] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-muted p-4"
+    >
+      {#if rendering}
+        <div class="absolute inset-0 z-10 flex items-center justify-center gap-2 bg-muted" aria-live="polite">
+          <Loader class="size-4 animate-spin text-primary" />
+          <span class="text-body text-muted-foreground">Loading page {page + 1}</span>
+        </div>
+      {/if}
+      <div bind:this={stage} class="relative shadow-sm" style:width={`${stageWidth}px`}>
+        <canvas
+          bind:this={previewCanvas}
+          class="block h-auto w-full bg-fixed-light"
+          aria-label={`Page ${page + 1} of ${store.fileName}.pdf`}
+        ></canvas>
+        {#if store.signature}
+          <button
+            type="button"
+            aria-label="Signature. Drag it, or use the arrow keys to move it."
+            onpointerdown={startMove}
+            onpointermove={move}
+            onpointerup={endMove}
+            onpointercancel={endMove}
+            onkeydown={nudge}
+            style:left={`${store.placement.x * 100}%`}
+            style:top={`${store.placement.y * 100}%`}
+            style:width={`${store.placement.w * 100}%`}
+            class="absolute cursor-move touch-none select-none rounded-md outline-2 outline-offset-2 outline-primary outline-dashed focus-visible:outline-solid"
+          >
+            <img src={store.signature} alt="" draggable="false" class="pointer-events-none block w-full" />
+          </button>
         {/if}
-      </Button>
-    </ToolFooter>
+      </div>
+    </div>
   </div>
+
+  <WorkspaceInspector title="Signature">
+    <div class="flex flex-col gap-6">
+      <OptionGroup label="Your signature">
+        <SegmentedControl name={`${uid}-mode`} options={modes} bind:value={mode} />
+
+        {#if mode === "draw"}
+          <canvas
+            bind:this={pad}
+            width="600"
+            height="240"
+            onpointerdown={startDraw}
+            onpointermove={moveDraw}
+            onpointerup={endDraw}
+            onpointercancel={endDraw}
+            aria-label="Drawing area. Sign with your mouse, finger or pen."
+            class="h-40 w-full touch-none rounded-xl border border-border bg-fixed-light"
+          ></canvas>
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-caption text-muted-foreground">Sign with your mouse, finger or pen.</p>
+            <Button variant="ghost" onclick={clearPad} disabled={!hasInk && !store.signature}>
+              <Eraser />
+              Clear
+            </Button>
+          </div>
+        {:else if mode === "type"}
+          <label for={`${uid}-name`} class="sr-only">Your name</label>
+          <input
+            id={`${uid}-name`}
+            type="text"
+            autocomplete="name"
+            bind:value={typedName}
+            oninput={() => applyTyped(typedName)}
+            placeholder="Type your name"
+            class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+          />
+          {#if typedName.trim()}
+            <div class="flex h-24 items-center overflow-hidden rounded-xl border border-border bg-fixed-light px-4">
+              <span class="truncate text-heading-sm text-fixed-dark" style:font-family={SCRIPT_FONT} style:font-style="italic">
+                {typedName}
+              </span>
+            </div>
+          {/if}
+        {:else}
+          <Button variant="outline" class="w-full" onclick={() => uploadInput?.click()}>
+            <Photo />
+            {uploadedName ? "Choose a different image" : "Choose an image"}
+          </Button>
+          <p class="truncate text-caption text-muted-foreground" title={uploadedName ?? undefined}>
+            {uploadedName ?? "A PNG with a clear background looks best."}
+          </p>
+          <input bind:this={uploadInput} type="file" accept="image/png,image/jpeg,image/webp" class="hidden" onchange={onUpload} />
+        {/if}
+      </OptionGroup>
+
+      <OptionGroup label="Size" description={store.signature ? undefined : "Create a signature to adjust its size."}>
+        <label for={`${uid}-size`} class="sr-only">Signature size</label>
+        <input
+          id={`${uid}-size`}
+          type="range"
+          min="0.1"
+          max="0.6"
+          step="0.01"
+          value={store.placement.w}
+          disabled={!store.signature}
+          oninput={(e) => setSize(e.currentTarget.valueAsNumber)}
+          class="h-9 w-full accent-primary disabled:opacity-50"
+        />
+      </OptionGroup>
+    </div>
+  </WorkspaceInspector>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.isProcessing}
+        <span class="flex items-center gap-2 text-foreground">
+          <Loader class="size-4 animate-spin text-primary" />
+          Signing page {page + 1}…
+        </span>
+      {:else if !store.signature}
+        <span class="block truncate">Create a signature to continue.</span>
+      {:else}
+        <span class="block truncate tabular-nums">Your signature goes on page {page + 1}.</span>
+      {/if}
+    {/snippet}
+
+    <Button variant="primary" onclick={() => store.apply().catch(() => {})} disabled={!store.ready || store.isProcessing}>
+      {store.isProcessing ? "Saving…" : "Save signed PDF"}
+    </Button>
+  </ToolFooter>
 {/if}

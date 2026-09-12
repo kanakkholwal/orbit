@@ -1,47 +1,102 @@
 <script lang="ts">
-  import { Input } from '$components/ui/input';
-  import { Label } from '$components/ui/label';
-  import { IconGripVertical as GripVertical, IconTrash as Trash2 } from '@tabler/icons-svelte';
-  import type { UploadedFile } from './helper.svelte';
+  import { Button } from "$components/ui/button";
+  import { formatBytes } from "$utils/helper";
+  import {
+    IconArrowDown as ArrowDown,
+    IconArrowUp as ArrowUp,
+    IconGripVertical as GripVertical,
+    IconX as X,
+  } from "@tabler/icons-svelte";
+  import type { MergeState, UploadedFile } from "./helper.svelte";
 
-  let { file, onRemove } = $props<{ 
-    file: UploadedFile; 
-    onRemove: () => void 
-  }>();
+  type Props = {
+    file: UploadedFile;
+    index: number;
+    total: number;
+    store: MergeState;
+  };
+
+  let { file, index, total, store }: Props = $props();
+
+  const issue = $derived(store.rangeIssue(file));
+  const pages = $derived(store.pagesFor(file));
+  const inputId = $props.id();
 </script>
 
-<div class="group flex items-center gap-3 rounded-lg border border-border bg-card p-3 shadow-sm transition-colors hover:border-primary/50">
-  <div class="drag-handle cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
-    <GripVertical size={20} />
+<div
+  class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border bg-card py-2 pl-1 pr-2 transition-colors duration-150 sm:flex-nowrap {issue
+    ? 'border-destructive'
+    : 'border-border'}"
+>
+  <div class="flex items-center">
+    <span
+      class="drag-handle grid size-9 cursor-grab place-items-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground active:cursor-grabbing"
+      aria-hidden="true"
+    >
+      <GripVertical class="size-4" />
+    </span>
+    <span class="grid size-8 place-items-center rounded-lg bg-muted text-body font-medium tabular-nums text-foreground">
+      {index + 1}
+    </span>
   </div>
 
-  <div class="min-w-0 flex-1">
-    <div class="truncate font-medium text-foreground" title={file.name}>
-      {file.name}
-    </div>
-    <div class="text-xs text-muted-foreground">
-      {(file.size / 1024 / 1024).toFixed(2)} MB • {file.pageCount} Pages
-    </div>
+  <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+    <span class="truncate text-body font-medium text-foreground" title={file.name}>{file.name}</span>
+    <span class="text-caption tabular-nums text-muted-foreground">
+      {formatBytes(file.size)} · {file.pageRange.trim() && !issue
+        ? `${pages} of ${file.pageCount} pages`
+        : `${file.pageCount} ${file.pageCount === 1 ? "page" : "pages"}`}
+    </span>
   </div>
 
-  <div class="flex flex-col items-end gap-1">
-    <Label for="range-{file.id}" class="label-eyebrow text-muted-foreground">
-      Pages (e.g. 1-3, 5)
-    </Label>
-    <Input
-      id="range-{file.id}"
+  <div class="order-last flex w-full flex-col gap-1 pl-10 sm:order-0 sm:w-40 sm:pl-0">
+    <label for={inputId} class="sr-only">Pages to include from {file.name}</label>
+    <input
+      id={inputId}
       type="text"
+      inputmode="numeric"
       bind:value={file.pageRange}
-      placeholder="All"
-      class="h-8 w-32 rounded-md px-3 py-1 text-sm"
+      placeholder={`All ${file.pageCount} pages`}
+      aria-invalid={issue ? "true" : undefined}
+      aria-describedby={issue ? `${inputId}-issue` : undefined}
+      class="h-9 w-full rounded-lg border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring {issue
+        ? 'border-destructive'
+        : 'border-border'}"
     />
+    {#if issue}
+      <span id={`${inputId}-issue`} class="text-caption text-destructive">{issue}</span>
+    {/if}
   </div>
 
-  <button 
-    onclick={onRemove}
-    class="ml-2 rounded-md p-2 text-destructive hover:bg-destructive/10 transition-colors"
-    title="Remove file"
-  >
-    <Trash2 size={18} />
-  </button>
+  <div class="flex items-center">
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      class="text-muted-foreground"
+      disabled={index === 0}
+      onclick={() => store.moveFile(index, -1)}
+      aria-label={`Move ${file.name} up`}
+    >
+      <ArrowUp class="size-4" />
+    </Button>
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      class="text-muted-foreground"
+      disabled={index === total - 1}
+      onclick={() => store.moveFile(index, 1)}
+      aria-label={`Move ${file.name} down`}
+    >
+      <ArrowDown class="size-4" />
+    </Button>
+    <Button
+      variant="ghost"
+      size="icon-sm"
+      class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+      onclick={() => store.removeFile(file.id)}
+      aria-label={`Remove ${file.name}`}
+    >
+      <X class="size-4" />
+    </Button>
+  </div>
 </div>

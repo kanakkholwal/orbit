@@ -9,7 +9,7 @@
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
   import { IconAlertCircle as CircleAlert, IconLoader2 as Loader } from "@tabler/icons-svelte";
-  import { untrack, type Component } from "svelte";
+  import { untrack } from "svelte";
   import { fade } from "svelte/transition";
   import type { PageProps } from "./$types";
 
@@ -19,23 +19,8 @@
   const layout = $derived(tool.layout ?? "form");
   const showGuide = $derived(!appState.isTauri && layout !== "immersive");
 
-  let ToolComponent: Component | null = $state(null);
-  let loading = $state(true);
-  let error = $state(false);
-
-  $effect(() => {
-    loading = true;
-    ToolComponent = null;
-    error = false;
-    tool
-      .component()
-      .then((mod) => (ToolComponent = mod.default))
-      .catch((e) => {
-        console.error("Error loading tool component:", e);
-        error = true;
-      })
-      .finally(() => (loading = false));
-  });
+  // One promise per slug; {#await} only ever renders the latest, so a slow import can't resurface.
+  const toolModule = $derived(tool.component());
 
   // untrack: recordRecentTool reads and writes the same state, which would re-trigger this effect.
   $effect(() => {
@@ -66,24 +51,26 @@
 <Seo title={`${tool.title} - Free Online PDF Tool`} description={tool.description} keywords={tool?.keywords} />
 
 {#snippet toolBody()}
-  {#if loading}
-    <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3" in:fade={{ duration: 150 }}>
-      <Loader class="size-5 animate-spin text-primary" />
-      <p class="text-body text-muted-foreground">Opening {tool.title}</p>
-    </div>
-  {:else if error}
-    <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3 px-6 text-center" in:fade={{ duration: 150 }}>
-      <CircleAlert class="size-5 text-destructive" />
-      <p class="text-body font-medium text-foreground">{tool.title} didn't load</p>
-      <p class="max-w-sm text-body text-muted-foreground">Check your connection, then try again.</p>
-      <div class="mt-2 flex gap-2">
-        <Button variant="outline" size="sm" onclick={() => window.location.reload()}>Try again</Button>
-        <Button variant="ghost" size="sm" href="/explore">Browse tools</Button>
+  {#key tool.slug}
+    {#await toolModule}
+      <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3" in:fade={{ duration: 150 }}>
+        <Loader class="size-5 animate-spin text-primary" />
+        <p class="text-body text-muted-foreground">Opening {tool.title}</p>
       </div>
-    </div>
-  {:else if ToolComponent}
-    <ToolComponent />
-  {/if}
+    {:then mod}
+      <mod.default />
+    {:catch}
+      <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3 px-6 text-center" in:fade={{ duration: 150 }}>
+        <CircleAlert class="size-5 text-destructive" />
+        <p class="text-body font-medium text-foreground">{tool.title} didn't load</p>
+        <p class="max-w-sm text-body text-muted-foreground">Check your connection, then try again.</p>
+        <div class="mt-2 flex gap-2">
+          <Button variant="outline" size="sm" onclick={() => window.location.reload()}>Try again</Button>
+          <Button variant="ghost" size="sm" href="/explore">Browse tools</Button>
+        </div>
+      </div>
+    {/await}
+  {/key}
 {/snippet}
 
 {#if layout === "immersive"}
@@ -95,7 +82,7 @@
     <section
       aria-label={`${tool.title} workspace`}
       class={cn(
-        "w-full flex-1 px-3 py-4 sm:px-6 sm:py-6",
+        "w-full min-h-[80dvh] flex-1 px-3 py-4 sm:px-6 sm:py-6",
         layout === "form" && "mx-auto max-w-5xl"
       )}
     >

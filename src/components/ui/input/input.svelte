@@ -25,9 +25,9 @@
 		bind:this={ref}
 		data-slot={dataSlot}
 		class={cn(
-			"selection:bg-primary selection:text-primary-foreground border-input placeholder:text-placeholder flex h-9 w-full min-w-0 rounded-xs border bg-card px-3 pt-1.5 text-sm shadow-none transition-[color,border-color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50",
-			"focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
-			"aria-invalid:border-destructive aria-invalid:ring-destructive",
+			"selection:bg-primary selection:text-primary-foreground placeholder:text-placeholder flex h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 py-2 text-body text-foreground outline-none transition-colors duration-150 file:mr-3 file:border-0 file:bg-transparent file:text-body file:font-medium file:text-foreground disabled:cursor-not-allowed disabled:opacity-50",
+			"focus-visible:border-ring",
+			"aria-invalid:border-destructive",
 			className
 		)}
 		type="file"
@@ -40,9 +40,9 @@
 		bind:this={ref}
 		data-slot={dataSlot}
 		class={cn(
-			"border-input bg-card selection:bg-primary selection:text-primary-foreground ring-offset-input placeholder:text-muted-foreground flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-			"focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
-			"aria-invalid:border-destructive aria-invalid:ring-destructive",
+			"selection:bg-primary selection:text-primary-foreground placeholder:text-placeholder flex h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-base text-foreground outline-none transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 md:text-body",
+			"focus-visible:border-ring",
+			"aria-invalid:border-destructive",
 			className
 		)}
 		{type}

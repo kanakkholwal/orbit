@@ -22,6 +22,16 @@ export class ExtractPagesState extends PdfEngine {
 
     private pdfDoc: PDFDocument | null = null;
 
+    result = $state.raw<{ blob: Blob; name: string; count: number } | null>(null);
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
+    targetPages(range: string): number[] {
+        return this.parsePageRanges(range, this.state.pageCount);
+    }
+
 // Actions
 
     async loadFile(file: File) {
@@ -35,6 +45,7 @@ export class ExtractPagesState extends PdfEngine {
             
             this.state.file = file;
             this.state.pageCount = this.pdfDoc.getPageCount();
+            this.result = null;
         } catch (e) {
             console.error(e);
             toast.error("Failed to load PDF.");
@@ -48,6 +59,7 @@ export class ExtractPagesState extends PdfEngine {
         this.state.pageCount = 0;
         this.state.pagesToExtract = '';
         this.pdfDoc = null;
+        this.result = null;
     }
 
 // Processing
@@ -63,6 +75,7 @@ export class ExtractPagesState extends PdfEngine {
         }
 
         this.state.isProcessing = true;
+        this.result = null;
         this.state.progress = 'Extracting...';
 
         try {
@@ -83,7 +96,9 @@ export class ExtractPagesState extends PdfEngine {
 
             this.state.progress = 'Creating ZIP...';
             const zipBlob = await zip.generateAsync({ type: 'blob' });
-            this.downloadBlob(zipBlob, `${baseName}_extracted.zip`);
+            const name = `${baseName}_extracted.zip`;
+            this.result = { blob: zipBlob, name, count: indices.length };
+            this.downloadBlob(zipBlob, name);
 
         } catch (e: any) {
             console.error(e);

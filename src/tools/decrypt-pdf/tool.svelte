@@ -1,122 +1,144 @@
 <script lang="ts">
-  import { FileRow, ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { FileRow, ResultCard, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { Input } from "$components/ui/input";
-  import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconArrowRight as ArrowRight, IconEye as Eye, IconEyeOff as EyeOff, IconLoader2 as LoaderCircle, IconLockOpen as Unlock } from "@tabler/icons-svelte";
+  import {
+    IconDownload as Download,
+    IconEye as Eye,
+    IconEyeOff as EyeOff,
+    IconRefresh as Refresh,
+  } from "@tabler/icons-svelte";
   import { DecryptPdfState } from "./helper.svelte";
 
   const store = new DecryptPdfState();
+  const uid = $props.id();
 
   let showPassword = $state(false);
+
+  const showResult = $derived(!store.isProcessing && store.result !== null);
+
+  function startOver() {
+    store.removeFile();
+    showPassword = false;
+  }
 </script>
 
 {#if !store.state.file}
-  <UploadArea
-    accept=".pdf"
-    multiple={false}
-    onFilesSelected={(files) => store.setFile(files[0])}
-  />
+  <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.setFile(files[0])}>
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to unlock</h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Enter its password once and save a copy that opens without it. The file never leaves this device.
+      </p>
+    {/snippet}
+  </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
-    <ToolBar
-      label="Decrypt"
-      onReset={() => store.removeFile()}
-      resetLabel="Clear"
+  <div class="flex flex-col gap-4">
+    {#if showResult && store.result}
+      <ResultCard
+        title="Password removed"
+        description={`${store.result.name} is downloaded and opens without a password.`}
+      >
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={startOver}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="decrypt-pdf" />
+      </ResultCard>
+    {/if}
+
+    <FileRow
+      name={store.state.file.name}
+      meta={formatBytes(store.state.file.size)}
+      onRemove={store.isProcessing ? undefined : startOver}
     />
 
-    <ToolPanel title="Source">
-      <FileRow
-        name={store.state.file.name}
-        onRemove={() => store.removeFile()}
-      >
-        <span class="font-mono tabular-nums">
-          {formatBytes(store.state.file.size)}
-        </span>
-      </FileRow>
-    </ToolPanel>
+    <form
+      class="flex flex-col gap-5 rounded-2xl border border-border bg-card p-4 sm:p-5"
+      onsubmit={(e) => {
+        e.preventDefault();
+        if (store.state.password && !store.isProcessing) store.decrypt();
+      }}
+    >
+      <div class="flex flex-col gap-0.5">
+        <h2 class="text-body-lg font-medium text-foreground">Enter the password</h2>
+        <p class="text-body text-muted-foreground">Use the password you type to open this file.</p>
+      </div>
 
-    <ToolPanel title="Password">
       <div class="flex flex-col gap-2">
-        <Label
-          for="pwd-input"
-          class="label-eyebrow text-muted-foreground"
-        >
-          PDF password
-          <span class="text-destructive">*</span>
-        </Label>
+        <label for="{uid}-password" class="text-body font-medium text-foreground">Password</label>
         <div class="relative">
-          <Input
-            id="pwd-input"
+          <input
+            id="{uid}-password"
             type={showPassword ? "text" : "password"}
+            autocomplete="current-password"
             bind:value={store.state.password}
-            placeholder="Enter the password to decrypt"
-            class="h-10 rounded-sm pr-10 font-mono text-sm"
+            oninput={() => {
+              store.error = "";
+              store.result = null;
+            }}
+            aria-invalid={store.error !== ""}
+            aria-describedby="{uid}-password-hint"
+            class="h-10 w-full rounded-lg border border-border bg-background px-3 pr-11 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring aria-invalid:border-destructive"
           />
           <button
             type="button"
-            onclick={() => (showPassword = !showPassword)}
-            class="absolute right-2 top-1/2 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-xs text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            class="absolute right-0.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
             aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-pressed={showPassword}
+            onclick={() => (showPassword = !showPassword)}
           >
-            {#if showPassword}
-              <EyeOff class="size-3.5" />
-            {:else}
-              <Eye class="size-3.5" />
-            {/if}
+            {#if showPassword}<EyeOff class="size-4" />{:else}<Eye class="size-4" />{/if}
           </button>
         </div>
-        <p class="text-xs leading-relaxed text-muted-foreground">
-          The password is permanently removed from the downloaded file.
+        <p
+          id="{uid}-password-hint"
+          class="text-caption {store.error ? 'text-destructive' : 'text-muted-foreground'}"
+          aria-live="polite"
+        >
+          {store.error || "The copy you save will open without asking for it."}
         </p>
       </div>
 
-      <div
-        class="mt-5 flex items-start gap-3 rounded-sm border border-warning/30 bg-warning/5 px-4 py-3"
-      >
-        <span
-          class="inline-flex size-7 shrink-0 items-center justify-center rounded-sm bg-warning/15 text-warning"
-        >
-          <Unlock class="size-3.5" />
-        </span>
-        <div class="flex flex-col gap-1">
-          <span
-            class="label-eyebrow text-warning"
-          >
-            Local only
-          </span>
-          <p class="text-xs leading-relaxed text-muted-foreground">
-            Decryption runs entirely in your browser. The file and password are
-            never sent to a server.
-          </p>
-        </div>
-      </div>
-    </ToolPanel>
-
-    <ToolFooter
-      hint={store.isProcessing
-        ? store.progressLabel
-        : store.state.password
-          ? "Unlock the document"
-          : "Enter the password to continue"}
-    >
-      <Button
-        size="lg"
-        class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
-        onclick={() => store.decrypt()}
-        disabled={store.isProcessing || !store.state.password}
-      >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progressLabel}
-        {:else}
-          <Unlock class="size-4" />
-          Decrypt
-          <ArrowRight class="size-4" />
-        {/if}
-      </Button>
-    </ToolFooter>
+      <p class="border-t border-border pt-4 text-caption text-muted-foreground">
+        Unlocking happens on this device. Your file and password are never sent anywhere.
+      </p>
+    </form>
   </div>
+
+  <ToolFooter>
+    {#snippet hint()}
+      <span class="block truncate">
+        {#if store.isProcessing}
+          {store.state.progress}
+        {:else if showResult}
+          Unlocked and downloaded
+        {:else if store.error}
+          Try the password again
+        {:else if !store.state.password}
+          Enter the password to continue
+        {:else}
+          Ready to save a copy without the password
+        {/if}
+      </span>
+    {/snippet}
+
+    <Button
+      variant="primary"
+      onclick={() => store.decrypt()}
+      disabled={store.isProcessing || !store.state.password}
+    >
+      {store.isProcessing ? "Unlocking…" : "Remove password"}
+    </Button>
+  </ToolFooter>
 {/if}

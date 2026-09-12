@@ -42,6 +42,20 @@ export class HeaderFooterState extends PdfEngine {
 
     private pdfLibDoc: PDFDocument | null = null;
 
+    result = $state.raw<{ blob: Blob; name: string } | null>(null);
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
+    }
+
+    targetPages(range: string): number[] {
+        return this.parsePageRanges(range, this.state.pageCount);
+    }
+
     async loadFile(files: File[]) {
         if (!files || files.length === 0) return;
         const file = files[0];
@@ -54,6 +68,7 @@ export class HeaderFooterState extends PdfEngine {
             this.state.file = file;
             this.state.originalSize = file.size;
             this.state.pageCount = this.pdfLibDoc.getPageCount();
+            this.result = null;
         } catch (e) {
             console.error("Error loading PDF", e);
             toast.error("Failed to load the PDF file.");
@@ -67,15 +82,19 @@ export class HeaderFooterState extends PdfEngine {
         this.pdfLibDoc = null;
         this.state.pageCount = 0;
         this.state.originalSize = 0;
+        this.result = null;
     }
 
     async process() {
         if (!this.pdfLibDoc || !this.state.file) return;
         this.state.isProcessing = true;
+        this.result = null;
 
         try {
-            const helveticaFont = await this.pdfLibDoc.embedFont(StandardFonts.Helvetica);
-            const allPages = this.pdfLibDoc.getPages();
+            // Draw on a fresh copy so a second run does not stack text on the loaded document.
+            const doc = await PDFDocument.load(await this.state.file.arrayBuffer());
+            const helveticaFont = await doc.embedFont(StandardFonts.Helvetica);
+            const allPages = doc.getPages();
             const totalPages = allPages.length;
             const margin = 40;
 
@@ -120,11 +139,13 @@ export class HeaderFooterState extends PdfEngine {
                 if (processed.footerRight) page.drawText(processed.footerRight, { ...drawOptions, x: width - margin - helveticaFont.widthOfTextAtSize(processed.footerRight, this.state.fontSize), y: margin });
             }
 
-            const newPdfBytes = await this.pdfLibDoc.save();
+            const newPdfBytes = await doc.save();
             const blob = new Blob([newPdfBytes as BlobPart], { type: 'application/pdf' });
             
             const originalName = this.state.file.name.replace('.pdf', '');
-            this.downloadBlob(blob, `${originalName}_header_footer.pdf`);
+            const name = `${originalName}_header_footer.pdf`;
+            this.result = { blob, name };
+            this.downloadBlob(blob, name);
 
         } catch (e: any) {
             console.error(e);

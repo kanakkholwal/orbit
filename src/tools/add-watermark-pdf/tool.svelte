@@ -1,234 +1,257 @@
 <script lang="ts">
-  import { FileRow, ToolBar, ToolFooter, ToolPanel } from "$components/tool";
+  import { FileRow, OptionGroup, ResultCard, SegmentedControl, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { Input } from "$components/ui/input";
-  import { Label } from "$components/ui/label";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
-    IconArrowRight as ArrowRight,
-    IconPhoto as ImageIcon,
-    IconLoader2 as LoaderCircle,
-    IconLetterT as Type,
+    IconDownload as Download,
+    IconLoader2 as Loader,
+    IconPhoto as Photo,
+    IconRefresh as Refresh,
   } from "@tabler/icons-svelte";
-  import { AddWatermarkState } from "./helper.svelte";
+  import { AddWatermarkState, type WatermarkType } from "./helper.svelte";
 
   const store = new AddWatermarkState();
+  const uid = $props.id();
+
+  const PAGE_W = 595.28;
+  const PAGE_H = 841.89;
+  const field =
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+
+  const types: { value: WatermarkType; label: string }[] = [
+    { value: "text", label: "Text" },
+    { value: "image", label: "Image" },
+  ];
+  const swatches = [
+    { value: "#ff0000", label: "Red" },
+    { value: "#6b6b6b", label: "Grey" },
+    { value: "#000000", label: "Black" },
+    { value: "#0060c9", label: "Blue" },
+  ];
+  const lines = [100, 92, 96, 70, 0, 100, 88, 94, 60, 0, 100, 90, 82];
+
+  let imageInput = $state<HTMLInputElement | null>(null);
+  let textWidth = $state(0);
+  let natural = $state({ w: 0, h: 0 });
+
+  const s = $derived(store.state);
+  const isText = $derived(s.watermarkType === "text");
+  const imageUrl = $derived(s.imageFile ? URL.createObjectURL(s.imageFile) : null);
+  $effect(() => {
+    const url = imageUrl;
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  });
+
+  const blocker = $derived(
+    isText && !s.text.trim()
+      ? "Type the watermark text to continue."
+      : !isText && !s.imageFile
+        ? "Choose an image to continue."
+        : null
+  );
+  const imageW = $derived(((natural.w * s.imageScale) / PAGE_W) * 100);
+  const imageH = $derived(((natural.h * s.imageScale) / PAGE_H) * 100);
 </script>
 
-{#if !store.state.file}
-  <UploadArea
-    accept=".pdf"
-    multiple={false}
-    onFilesSelected={(files) => store.loadFile(files[0])}
-  />
+{#if !s.file}
+  <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to watermark</h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Stamp text or a logo across every page, like "Confidential" or "Draft".
+      </p>
+    {/snippet}
+  </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
-    <ToolBar
-      label="Watermark"
-      onReset={() => store.reset()}
-      resetLabel="Clear"
+  <div class="flex flex-col gap-4">
+    {#if store.result && !store.isProcessing}
+      <ResultCard title="Watermark added" description={`${store.result.name} is downloaded.`}>
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResult()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={() => store.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="add-watermark-pdf" />
+      </ResultCard>
+    {/if}
+
+    <FileRow
+      name={s.file.name}
+      meta={formatBytes(s.file.size)}
+      onRemove={store.isProcessing ? undefined : () => store.reset()}
     />
 
-    <ToolPanel title="Source">
-      <FileRow name={store.state.file.name} onRemove={() => store.reset()}>
-        <span class="font-mono tabular-nums">
-          {formatBytes(store.state.file.size)}
-        </span>
-      </FileRow>
-    </ToolPanel>
+    <section aria-label="Preview" class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-muted px-4 py-6 sm:py-10">
+      <div
+        class="@container relative w-full max-w-sm overflow-hidden rounded-sm shadow-sm"
+        style:aspect-ratio="{PAGE_W} / {PAGE_H}"
+        style:background-color="#ffffff"
+        aria-hidden="true"
+      >
+        <div class="absolute inset-[9%] flex flex-col gap-[2.4cqw]">
+          {#each lines as width, i (i)}
+            <span class="h-[1.6cqw] rounded-full" style:width="{width}%" style:background-color="#e5e5e5"></span>
+          {/each}
+        </div>
 
-    <ToolPanel title="Type">
-      <div class="grid grid-cols-2 gap-1 rounded-sm bg-muted/40 p-1">
-        {#each [
-          { id: "text", label: "Text", icon: Type },
-          { id: "image", label: "Image", icon: ImageIcon },
-        ] as opt}
-          <button
-            type="button"
-            onclick={() => (store.state.watermarkType = opt.id as any)}
-            class={cn(
-              "inline-flex items-center justify-center gap-1.5 rounded-sm px-3 py-1.5 label-eyebrow transition-colors",
-              store.state.watermarkType === opt.id
-                ? "bg-card text-foreground shadow-sm"
-                : "text-muted-foreground hover:text-foreground"
-            )}
+        {#if isText && s.text}
+          <span
+            bind:offsetWidth={textWidth}
+            class="pointer-events-none absolute whitespace-nowrap font-bold leading-none"
+            style:font-family="Helvetica, Arial, sans-serif"
+            style:font-size="{(s.fontSize / PAGE_W) * 100}cqw"
+            style:color={s.color}
+            style:opacity={s.opacity}
+            style:left="calc(50% - {textWidth / 2}px)"
+            style:bottom="calc({50 - ((0.4625 * s.fontSize) / PAGE_H) * 100}% - 0.21em)"
+            style:transform-origin="0 calc(100% - 0.21em)"
+            style:transform="rotate({-s.rotation}deg)"
           >
-            <opt.icon class="size-3" />
-            {opt.label}
-          </button>
-        {/each}
+            {s.text}
+          </span>
+        {:else if !isText && imageUrl}
+          <img
+            src={imageUrl}
+            alt=""
+            onload={(e) => {
+              const img = e.currentTarget as HTMLImageElement;
+              natural = { w: img.naturalWidth, h: img.naturalHeight };
+            }}
+            class="pointer-events-none absolute max-w-none"
+            style:width="{imageW}%"
+            style:left="{50 - imageW / 2}%"
+            style:bottom="{50 - imageH / 2}%"
+            style:opacity={s.opacity}
+            style:transform-origin="0 100%"
+            style:transform="rotate({-s.rotation}deg)"
+          />
+        {/if}
       </div>
-    </ToolPanel>
+      <p class="text-center text-caption text-muted-foreground">
+        Preview on a standard page. The same watermark goes on every page.
+      </p>
+    </section>
 
-    <ToolPanel title="Settings">
-      {#if store.state.watermarkType === "text"}
-        <div class="flex flex-col gap-5">
-          <div class="flex flex-col gap-2">
-            <Label
-              for="wm-text"
-              class="label-eyebrow text-muted-foreground"
+    <input
+      bind:this={imageInput}
+      type="file"
+      accept="image/png,image/jpeg"
+      class="hidden"
+      onchange={(e) => {
+        const picked = e.currentTarget.files?.[0];
+        if (picked) store.state.imageFile = picked;
+        e.currentTarget.value = "";
+      }}
+    />
+  </div>
+
+  <WorkspaceInspector title="Watermark">
+    <div class="flex flex-col gap-6">
+      <OptionGroup label="Type">
+        <SegmentedControl name="{uid}-type" options={types} bind:value={store.state.watermarkType} />
+      </OptionGroup>
+
+      {#if isText}
+        <OptionGroup label="Text">
+          <label for="{uid}-text" class="sr-only">Watermark text</label>
+          <input id="{uid}-text" type="text" bind:value={store.state.text} placeholder="CONFIDENTIAL" class={field} />
+        </OptionGroup>
+
+        <OptionGroup label="Colour">
+          <div class="flex flex-wrap items-center gap-2">
+            {#each swatches as swatch (swatch.value)}
+              <button
+                type="button"
+                aria-label={swatch.label}
+                aria-pressed={s.color.toLowerCase() === swatch.value}
+                onclick={() => (store.state.color = swatch.value)}
+                class={cn(
+                  "size-10 rounded-full border border-border outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                  s.color.toLowerCase() === swatch.value && "ring-2 ring-primary ring-offset-2 ring-offset-background"
+                )}
+                style:background-color={swatch.value}
+              ></button>
+            {/each}
+            <label
+              class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-body text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
             >
-              Text
-            </Label>
-            <Input
-              id="wm-text"
-              type="text"
-              bind:value={store.state.text}
-              class="h-10 rounded-sm font-mono text-sm"
-            />
+              <span class="size-5 rounded-full border border-border" style:background-color={s.color}></span>
+              <span class="uppercase tabular-nums">{s.color}</span>
+              <span class="sr-only">Pick a custom colour</span>
+              <input type="color" bind:value={store.state.color} class="absolute inset-0 size-full cursor-pointer opacity-0" />
+            </label>
           </div>
+        </OptionGroup>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col gap-2">
-              <Label
-                for="wm-size"
-                class="label-eyebrow text-muted-foreground"
-              >
-                Size · pt
-              </Label>
-              <Input
-                id="wm-size"
-                type="number"
-                bind:value={store.state.fontSize}
-                min="10"
-                max="200"
-                class="h-10 rounded-sm font-mono text-sm tabular-nums"
-              />
-            </div>
-            <div class="flex flex-col gap-2">
-              <Label
-                for="wm-color"
-                class="label-eyebrow text-muted-foreground"
-              >
-                Color
-              </Label>
-              <div class="flex items-center gap-2">
-                <Input
-                  id="wm-color"
-                  type="color"
-                  bind:value={store.state.color}
-                  class="h-10 w-16 cursor-pointer rounded-sm p-1"
-                />
-                <span class="font-mono text-xs uppercase tabular-nums text-muted-foreground">
-                  {store.state.color}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {@render slider("size", "Size", 10, 200, 2, `${s.fontSize} pt`)}
       {:else}
-        <div class="flex flex-col gap-5">
-          <div class="flex flex-col gap-2">
-            <Label
-              for="input:watermark"
-              class="label-eyebrow text-muted-foreground"
-            >
-              Watermark image
-            </Label>
-            <Input
-              type="file"
-              id="input:watermark"
-              accept="image/png, image/jpeg"
-              onchange={(e) => {
-                const files = e.currentTarget.files;
-                if (files && files.length > 0) store.state.imageFile = files[0];
-              }}
-              class="h-10 rounded-sm font-mono text-xs"
-            />
-          </div>
+        <OptionGroup label="Image" description="PNG or JPG. A transparent PNG looks best.">
+          {#if s.imageFile}
+            <FileRow name={s.imageFile.name} meta={formatBytes(s.imageFile.size)} icon={Photo} />
+          {/if}
+          <Button variant="outline" onclick={() => imageInput?.click()}>
+            <Photo />
+            {s.imageFile ? "Choose another image" : "Choose an image"}
+          </Button>
+        </OptionGroup>
 
-          <div class="flex flex-col gap-2">
-            <div class="flex items-center justify-between">
-              <Label
-                for="wm-scale"
-                class="label-eyebrow text-muted-foreground"
-              >
-                Scale
-              </Label>
-              <span class="font-mono text-sm tabular-nums text-primary">
-                {store.state.imageScale}x
-              </span>
-            </div>
-            <input
-              id="wm-scale"
-              type="range"
-              min="0.1"
-              max="2"
-              step="0.1"
-              bind:value={store.state.imageScale}
-              class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted/60 accent-primary"
-            />
-          </div>
-        </div>
+        {@render slider("scale", "Size", 0.1, 2, 0.1, `${Math.round(s.imageScale * 100)}%`)}
       {/if}
 
-      <div class="mt-6 flex flex-col gap-5 border-t border-border pt-5">
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <Label
-              for="wm-opacity"
-              class="label-eyebrow text-muted-foreground"
-            >
-              Opacity
-            </Label>
-            <span class="font-mono text-sm tabular-nums text-primary">
-              {Math.round(store.state.opacity * 100)}%
-            </span>
-          </div>
-          <input
-            id="wm-opacity"
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            bind:value={store.state.opacity}
-            class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted/60 accent-primary"
-          />
-        </div>
+      {@render slider("opacity", "Opacity", 0, 1, 0.05, `${Math.round(s.opacity * 100)}%`)}
+      {@render slider("rotation", "Angle", -180, 180, 5, `${s.rotation}°`)}
+    </div>
+  </WorkspaceInspector>
 
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center justify-between">
-            <Label
-              for="wm-rotation"
-              class="label-eyebrow text-muted-foreground"
-            >
-              Rotation
-            </Label>
-            <span class="font-mono text-sm tabular-nums text-primary">
-              {store.state.rotation}°
-            </span>
-          </div>
-          <input
-            id="wm-rotation"
-            type="range"
-            min="-180"
-            max="180"
-            step="5"
-            bind:value={store.state.rotation}
-            class="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-muted/60 accent-primary"
-          />
-        </div>
-      </div>
-    </ToolPanel>
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.isProcessing}
+        <span class="flex items-center gap-2 text-foreground">
+          <Loader class="size-4 animate-spin text-primary" />
+          Adding watermark…
+        </span>
+      {:else if blocker}
+        <span class="block truncate text-destructive">{blocker}</span>
+      {:else}
+        <span class="block truncate">
+          {isText ? `"${s.text}"` : "Image"} on every page · {Math.round(s.opacity * 100)}% opacity
+        </span>
+      {/if}
+    {/snippet}
 
-    <ToolFooter hint={store.isProcessing ? store.progressLabel : "Add watermark"}>
-      <Button
-        size="lg"
-        class="rounded-sm bg-primary px-6 text-primary-foreground shadow-sm shadow-primary/20 hover:bg-primary/90"
-        onclick={() => store.process()}
-        disabled={store.isProcessing ||
-          (store.state.watermarkType === "image" && !store.state.imageFile)}
-      >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progressLabel}
-        {:else}
-          Add watermark
-          <ArrowRight class="size-4" />
-        {/if}
-      </Button>
-    </ToolFooter>
-  </div>
+    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
+      {store.isProcessing ? "Adding…" : "Add watermark"}
+    </Button>
+  </ToolFooter>
 {/if}
+
+{#snippet slider(key: "size" | "scale" | "opacity" | "rotation", label: string, min: number, max: number, step: number, readout: string)}
+  <div class="flex flex-col gap-1">
+    <div class="flex items-baseline justify-between gap-3">
+      <label for="{uid}-{key}" class="text-body font-medium text-foreground">{label}</label>
+      <span class="text-body tabular-nums text-muted-foreground">{readout}</span>
+    </div>
+    {#if key === "size"}
+      <input id="{uid}-{key}" type="range" {min} {max} {step} bind:value={store.state.fontSize} class="h-10 w-full cursor-pointer accent-primary" />
+    {:else if key === "scale"}
+      <input id="{uid}-{key}" type="range" {min} {max} {step} bind:value={store.state.imageScale} class="h-10 w-full cursor-pointer accent-primary" />
+    {:else if key === "opacity"}
+      <input id="{uid}-{key}" type="range" {min} {max} {step} bind:value={store.state.opacity} class="h-10 w-full cursor-pointer accent-primary" />
+    {:else}
+      <input id="{uid}-{key}" type="range" {min} {max} {step} bind:value={store.state.rotation} class="h-10 w-full cursor-pointer accent-primary" />
+    {/if}
+  </div>
+{/snippet}

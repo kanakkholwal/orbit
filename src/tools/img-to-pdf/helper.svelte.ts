@@ -7,7 +7,17 @@ export interface ImageFile {
     previewUrl?: string;
 }
 
-export type Quality = 'high' | 'medium' | 'low';
+export type PageSize = 'fit' | 'a4' | 'letter' | 'legal';
+export type Orientation = 'auto' | 'portrait' | 'landscape';
+export type MarginSize = 'none' | 'small' | 'large';
+
+const PAGE_POINTS: Record<Exclude<PageSize, 'fit'>, [number, number]> = {
+    a4: [595.28, 841.89],
+    letter: [612, 792],
+    legal: [612, 1008],
+};
+
+const MARGIN_POINTS: Record<MarginSize, number> = { none: 0, small: 18, large: 36 };
 
 // Match original supported list
 export const ACCEPTED_FORMATS = [
@@ -19,7 +29,12 @@ export const ACCEPTED_FORMATS = [
 
 export class JpgToPdfState extends PdfEngine {
     files = $state<ImageFile[]>([]);
-    quality = $state<Quality>('medium');
+    settings = $state<{ pageSize: PageSize; orientation: Orientation; margin: MarginSize }>({
+        pageSize: 'fit',
+        orientation: 'auto',
+        margin: 'none',
+    });
+    result = $state.raw<{ blob: Blob; name: string; pages: number } | null>(null);
     isProcessing = $state(false);
     progress = $state({ current: 0, total: 0, text: '' });
 
@@ -34,9 +49,32 @@ export class JpgToPdfState extends PdfEngine {
         }));
 
         this.files.push(...entries);
+        if (entries.length > 0) this.result = null;
+    }
+
+    reorder(files: ImageFile[]) {
+        this.files = files;
+        this.result = null;
+    }
+
+    moveFile(index: number, delta: -1 | 1) {
+        const target = index + delta;
+        if (target < 0 || target >= this.files.length) return;
+        const next = [...this.files];
+        [next[index], next[target]] = [next[target], next[index]];
+        this.reorder(next);
+    }
+
+    get resultFiles(): File[] {
+        return this.result ? [new File([this.result.blob], this.result.name, { type: 'application/pdf' })] : [];
+    }
+
+    downloadResult() {
+        if (this.result) this.downloadBlob(this.result.blob, this.result.name);
     }
 
     removeFile(id: string) {
+        this.result = null;
         const index = this.files.findIndex(f => f.id === id);
         if (index !== -1) {
             if (this.files[index].previewUrl) URL.revokeObjectURL(this.files[index].previewUrl!);
@@ -47,6 +85,7 @@ export class JpgToPdfState extends PdfEngine {
     reset() {
         this.files.forEach(f => { if (f.previewUrl) URL.revokeObjectURL(f.previewUrl); });
         this.files = [];
+        this.result = null;
         this.isProcessing = false;
     }
 
@@ -88,9 +127,12 @@ export class JpgToPdfState extends PdfEngine {
 
             // FIX: Use the method from your legacy code directly
             // This avoids the "mupdf.Document is not a constructor" error
-            const pdfBlob = await pymupdf.imagesToPdf(processedFiles);
+            const rawBlob = await pymupdf.imagesToPdf(processedFiles);
+            const { blob: pdfBlob, pages } = await this.layoutPages(rawBlob);
 
-            this.downloadBlob(pdfBlob, 'converted_images.pdf');
+            const name = 'converted_images.pdf';
+            this.result = { blob: pdfBlob, name, pages };
+            this.downloadBlob(pdfBlob, name);
 
         } catch (e: any) {
             console.error(e);
@@ -101,6 +143,34 @@ export class JpgToPdfState extends PdfEngine {
     }
 
 // Helpers
+
+    private async layoutPages(blob: Blob): Promise<{ blob: Blob; pages: number }> {
+        const { PDFDocument } = await import('pdf-lib');
+        const src = await PDFDocument.load(await blob.arrayBuffer());
+        const { pageSize, orientation, margin } = this.settings;
+        const m = MARGIN_POINTS[margin];
+        if (pageSize === 'fit' && m === 0) return { blob, pages: src.getPageCount() };
+
+        const out = await PDFDocument.create();
+        const embedded = await out.embedPages(src.getPages());
+        for (const page of embedded) {
+            let w: number;
+            let h: number;
+            if (pageSize === 'fit') {
+                [w, h] = [page.width + m * 2, page.height + m * 2];
+            } else {
+                [w, h] = PAGE_POINTS[pageSize];
+                const landscape = orientation === 'landscape' || (orientation === 'auto' && page.width > page.height);
+                if (landscape) [w, h] = [h, w];
+            }
+            const scale = pageSize === 'fit' ? 1 : Math.min((w - m * 2) / page.width, (h - m * 2) / page.height);
+            const dw = page.width * scale;
+            const dh = page.height * scale;
+            out.addPage([w, h]).drawPage(page, { x: (w - dw) / 2, y: (h - dh) / 2, width: dw, height: dh });
+        }
+        const bytes = await out.save();
+        return { blob: new Blob([bytes as BlobPart], { type: 'application/pdf' }), pages: out.getPageCount() };
+    }
 
     private async handleHeic(file: File): Promise<File> {
         if (file.name.match(/\.(heic|heif)$/i) || file.type === 'image/heic') {
