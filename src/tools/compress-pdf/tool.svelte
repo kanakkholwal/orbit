@@ -1,204 +1,215 @@
 <script lang="ts">
   import {
+    ChoiceList,
     FileRow,
+    OptionGroup,
+    OptionToggle,
+    ProgressLine,
+    ResultCard,
+    SegmentedControl,
     StatusPill,
     ToolBar,
     ToolFooter,
-    ToolPanel,
   } from "$components/tool";
   import { Button } from "$components/ui/button";
-  import { Label } from "$components/ui/label";
-  import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-  } from "$components/ui/select";
   import UploadArea from "$components/ui/UploadArea.svelte";
-  import { cn } from "$lib/utils";
+  import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
+  import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
   import {
     IconArrowRight as ArrowRight,
-    IconLoader2 as LoaderCircle,
-    IconSettings2 as Settings2,
-    IconBolt as Zap,
+    IconDownload as Download,
+    IconPlus as Plus,
+    IconRefresh as Refresh,
   } from "@tabler/icons-svelte";
-  import { slide } from "svelte/transition";
-  import { CompressState } from "./helper.svelte";
+  import { CompressState, type Algorithm, type CompressionLevel } from "./helper.svelte";
 
   const store = new CompressState();
-  let showAdvanced = $state(false);
+  let addInput = $state<HTMLInputElement | null>(null);
+
+  const methods: { value: Algorithm; label: string }[] = [
+    { value: "condense", label: "Optimize" },
+    { value: "photon", label: "Flatten" },
+  ];
+
+  const levels: { value: CompressionLevel; label: string; hint: string }[] = [
+    { value: "light", label: "Light", hint: "Smallest change, best quality" },
+    { value: "balanced", label: "Balanced", hint: "Good size and quality for most files" },
+    { value: "aggressive", label: "Strong", hint: "Much smaller, images soften" },
+    { value: "extreme", label: "Maximum", hint: "Smallest file, visible quality loss" },
+  ];
+
+  const pendingCount = $derived(store.files.filter((f) => f.status === "pending").length);
+  const flatten = $derived(store.settings.algorithm === "photon");
+  const runLabel = $derived(
+    store.isProcessing
+      ? "Compressing…"
+      : pendingCount > 0
+        ? `Compress ${pendingCount} ${pendingCount === 1 ? "file" : "files"}`
+        : "Compress"
+  );
+  const showResult = $derived(!store.isProcessing && store.doneFiles.length > 0);
+  const savedPercent = $derived(
+    store.doneFiles.length > 0
+      ? Math.round(
+          (store.savedBytes / store.doneFiles.reduce((sum, f) => sum + f.originalSize, 0)) * 100
+        )
+      : 0
+  );
 </script>
 
 {#if store.files.length === 0}
-  <UploadArea
-    accept=".pdf"
-    onFilesSelected={(files) => store.addFiles(files)}
-  />
+  <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
+    {#snippet title()}
+      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to compress</h3>
+    {/snippet}
+    {#snippet description()}
+      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        Make files small enough to email or upload. Add as many as you like; they never leave this device.
+      </p>
+    {/snippet}
+  </UploadArea>
 {:else}
-  <div class="flex flex-col gap-8">
-    <ToolBar
-      label="Selected"
-      count={store.files.length}
-      onReset={() => store.reset()}
-      resetLabel="Clear all"
-    />
-
-    <ToolPanel title="Files" counter={store.files.length}>
-      <ul class="flex flex-col gap-2">
-        {#each store.files as file (file.id)}
-          <li>
-            <FileRow
-              name={file.file.name}
-              onRemove={file.status === "pending"
-                ? () => store.removeFile(file.id)
-                : undefined}
-            >
-              <span class="font-mono tabular-nums">
-                {formatBytes(file.originalSize)}
-              </span>
-              {#if file.status === "done" && file.compressedSize}
-                <ArrowRight class="size-3 text-muted-foreground" />
-                <span class="font-mono tabular-nums text-success">
-                  {formatBytes(file.compressedSize)}
-                </span>
-                <span
-                  class="rounded-xs bg-success/10 px-1.5 py-0.5 font-mono text-caption tabular-nums text-success"
-                >
-                  -{Math.round(
-                    (1 - file.compressedSize / file.originalSize) * 100
-                  )}%
-                </span>
-              {/if}
-
-              {#snippet trailing()}
-                {#if file.status === "processing"}
-                  <StatusPill status="processing" label="Compressing" />
-                {:else if file.status === "done"}
-                  <StatusPill status="done" />
-                {:else if file.status === "error"}
-                  <StatusPill status="error" label={file.error || "Error"} />
-                {/if}
-              {/snippet}
-            </FileRow>
-          </li>
-        {/each}
-      </ul>
-    </ToolPanel>
-
-    <ToolPanel title="Settings">
-      <div class="grid gap-5 sm:grid-cols-2">
-        <div class="flex flex-col gap-2">
-          <Label
-            class="label-eyebrow text-muted-foreground"
-            for="settings.algorithm">Algorithm</Label
-          >
-          <div class="grid grid-cols-2 gap-1 rounded-sm bg-muted/40 p-1">
-            {#each [
-              { id: "condense", label: "Condense" },
-              { id: "photon", label: "Photon" },
-            ] as opt}
-              <button
-                type="button"
-                onclick={() => (store.settings.algorithm = opt.id as any)}
-                class={cn(
-                  "rounded-sm px-3 py-1.5 text-xs font-medium transition-colors",
-                  store.settings.algorithm === opt.id
-                    ? "bg-card text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {opt.label}
-              </button>
-            {/each}
-          </div>
-          <p class="text-xs leading-relaxed text-muted-foreground">
-            {store.settings.algorithm === "condense"
-              ? "Best for most PDFs. Removes hidden data and optimizes assets."
-              : "Converts pages to images. Best for scanned docs or strict flattening."}
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <Label
-            class="label-eyebrow text-muted-foreground"
-            for="settings.level">Compression level</Label
-          >
-          <Select type="single" bind:value={store.settings.level}>
-            <SelectTrigger class="h-9 w-full rounded-sm" id="settings.level">
-              {store.settings.level}
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="light">Light · highest quality</SelectItem>
-              <SelectItem value="balanced">Balanced · recommended</SelectItem>
-              <SelectItem value="aggressive">Aggressive</SelectItem>
-              <SelectItem value="extreme">Extreme · lowest quality</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <div class="mt-6">
-        <button
-          type="button"
-          onclick={() => (showAdvanced = !showAdvanced)}
-          class="inline-flex items-center gap-1.5 label-eyebrow text-primary transition-colors hover:text-primary/80"
-          aria-expanded={showAdvanced}
-        >
-          <Settings2 class="size-3" />
-          {showAdvanced ? "Hide" : "Show"} advanced
-        </button>
-
-        {#if showAdvanced}
-          <ul
-            transition:slide={{ duration: 220 }}
-            class="mt-4 flex flex-col divide-y divide-border overflow-hidden rounded-sm border border-border bg-muted/20"
-          >
-            {#each [
-              { key: "convertToGrayscale" as const, label: "Convert to grayscale", body: "Drops color channels for smaller output." },
-              { key: "removeMetadata" as const, label: "Remove metadata", body: "Strips author, title, and editing history." },
-              { key: "subsetFonts" as const, label: "Subset fonts", body: "Embed only the glyphs the document uses." },
-            ] as opt}
-              <li>
-                <label
-                  class="flex cursor-pointer items-start gap-3 px-4 py-3 text-sm transition-colors hover:bg-muted/30"
-                >
-                  <input
-                    type="checkbox"
-                    bind:checked={store.settings[opt.key]}
-                    class="mt-1 size-3.5 rounded-xs border-border accent-primary"
-                  />
-                  <span class="flex flex-col gap-0.5">
-                    <span class="font-medium text-foreground">{opt.label}</span>
-                    <span class="text-xs text-muted-foreground">{opt.body}</span>
-                  </span>
-                </label>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </div>
-    </ToolPanel>
-
-    <ToolFooter
-      hint={store.isProcessing
-        ? store.progress.text
-        : `Compress ${store.files.length} file${store.files.length === 1 ? "" : "s"}`}
-    >
-      <Button
-        size="lg"
-        class="rounded-sm px-6"
-        onclick={() => store.process()}
-        disabled={store.isProcessing}
+  <div class="flex flex-col gap-4">
+    {#if showResult}
+      <ResultCard
+        title={store.savedBytes > 0 ? `Saved ${formatBytes(store.savedBytes)}` : "Compression finished"}
+        description={store.savedBytes > 0
+          ? `${store.doneFiles.length} ${store.doneFiles.length === 1 ? "file is" : "files are"} ${savedPercent}% smaller and downloaded.`
+          : "These files were already well optimized, so the size barely changed."}
       >
-        {#if store.isProcessing}
-          <LoaderCircle class="size-4 animate-spin" />
-          {store.progress.text}
-        {:else}
-          <Zap class="size-4" />
-          Compress
-        {/if}
-      </Button>
-    </ToolFooter>
+        {#snippet actions()}
+          <Button variant="outline" onclick={() => store.downloadResults()}>
+            <Download />
+            Download again
+          </Button>
+          <Button variant="ghost" onclick={() => store.reset()}>
+            <Refresh />
+            Start over
+          </Button>
+        {/snippet}
+        <FileSuggestions files={store.resultFiles} heading="Continue with" exclude="compress-pdf" />
+      </ResultCard>
+    {/if}
+
+    <ToolBar
+      label="Files"
+      count={store.files.length}
+      meta={formatBytes(store.totalSize)}
+      onReset={store.isProcessing ? undefined : () => store.reset()}
+      resetLabel="Clear all"
+    >
+      {#snippet actions()}
+        <Button variant="outline" size="sm" disabled={store.isProcessing} onclick={() => addInput?.click()}>
+          <Plus />
+          Add files
+        </Button>
+      {/snippet}
+    </ToolBar>
+
+    <ul class="flex flex-col gap-2">
+      {#each store.files as file (file.id)}
+        <li>
+          <FileRow
+            name={file.file.name}
+            onRemove={file.status === "pending" && !store.isProcessing ? () => store.removeFile(file.id) : undefined}
+          >
+            <span>{formatBytes(file.originalSize)}</span>
+            {#if file.status === "done" && file.compressedSize}
+              <ArrowRight class="size-3" aria-label="compressed to" />
+              <span class="font-medium text-foreground">{formatBytes(file.compressedSize)}</span>
+              <span class="text-success">
+                {Math.max(0, Math.round((1 - file.compressedSize / file.originalSize) * 100))}% smaller
+              </span>
+            {/if}
+
+            {#snippet trailing()}
+              {#if file.status === "processing"}
+                <StatusPill status="processing" label="Compressing" />
+              {:else if file.status === "done"}
+                <StatusPill status="done" />
+              {:else if file.status === "error"}
+                <StatusPill status="error" label={file.error || "Failed"} />
+              {/if}
+            {/snippet}
+          </FileRow>
+        </li>
+      {/each}
+    </ul>
+
+    <input
+      bind:this={addInput}
+      type="file"
+      accept=".pdf,application/pdf"
+      multiple
+      class="hidden"
+      onchange={(e) => {
+        const picked = Array.from(e.currentTarget.files ?? []);
+        if (picked.length > 0) store.addFiles(picked);
+        e.currentTarget.value = "";
+      }}
+    />
   </div>
+
+  <WorkspaceInspector title="Compression">
+    <div class="flex flex-col gap-6">
+      <OptionGroup
+        label="Method"
+        description={store.settings.algorithm === "condense"
+          ? "Shrinks images and removes hidden data. Text stays selectable."
+          : "Turns each page into an image. Best for scans; text becomes unselectable."}
+      >
+        <SegmentedControl name="compress-method" options={methods} bind:value={store.settings.algorithm} />
+      </OptionGroup>
+
+      <OptionGroup label="Strength">
+        <ChoiceList name="compress-level" choices={levels} bind:value={store.settings.level} />
+      </OptionGroup>
+
+      <OptionGroup label="Extras" description={flatten ? "Only apply to Optimize." : undefined}>
+        <div class="-my-2.5 flex flex-col divide-y divide-border">
+          <OptionToggle
+            label="Remove metadata"
+            description="Author, title and editing history"
+            bind:checked={store.settings.removeMetadata}
+            disabled={flatten}
+          />
+          <OptionToggle
+            label="Trim fonts"
+            description="Keep only the characters the document uses"
+            bind:checked={store.settings.subsetFonts}
+            disabled={flatten}
+          />
+          <OptionToggle
+            label="Black and white"
+            description="Drop colour for an even smaller file"
+            bind:checked={store.settings.convertToGrayscale}
+            disabled={flatten}
+          />
+        </div>
+      </OptionGroup>
+    </div>
+  </WorkspaceInspector>
+
+  <ToolFooter>
+    {#snippet hint()}
+      {#if store.isProcessing}
+        <ProgressLine label={store.progress.text} current={store.progress.current} total={store.progress.total} class="max-w-md" />
+      {:else if pendingCount > 0}
+        <span class="block truncate">
+          {pendingCount} {pendingCount === 1 ? "file" : "files"} ready · {levels.find((l) => l.value === store.settings.level)?.label}
+        </span>
+      {:else}
+        <span class="block truncate">All files compressed</span>
+      {/if}
+    {/snippet}
+
+    <Button
+      variant="primary"
+      onclick={() => store.process()}
+      disabled={store.isProcessing || pendingCount === 0}
+    >
+      {runLabel}
+    </Button>
+  </ToolFooter>
 {/if}

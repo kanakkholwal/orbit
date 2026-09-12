@@ -7,6 +7,7 @@
 [data-theme="light"] {
   --background: #ffffff;
   --canvas: #f5f5f5;
+  --workspace: #ffffff;
   --paper: #f5f5f5;
   --background-muted: #f5f5f5;
   --background-inset: #f5f5f5;
@@ -92,6 +93,7 @@
 [data-theme="dark"] {
   --background: #0a0a0a;
   --canvas: #0a0a0a;
+  --workspace: #111111;
   --paper: #262626;
   --background-muted: #171717;
   --background-inset: #171717;
@@ -501,6 +503,11 @@
   border-color: var(--border);
 }
 
+@utility workspace-surface {
+  --background: var(--workspace);
+  background-color: var(--workspace);
+}
+
 @utility panel-card {
   background-color: var(--card);
   border: 1px solid var(--border);
@@ -626,6 +633,17 @@ body {
   background-image: radial-gradient(var(--dot-grid) 1px, transparent 1px);
   background-size: 16px 16px;
   mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+}
+
+.scrollbar-subtle {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--foreground) 16%, transparent) transparent;
+}
+.scrollbar-subtle::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-subtle::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-subtle::-webkit-scrollbar-thumb {
+  background: color-mix(in oklch, var(--foreground) 16%, transparent);
+  border-radius: 9999px;
 }
 
 .scrollbar-transparent {

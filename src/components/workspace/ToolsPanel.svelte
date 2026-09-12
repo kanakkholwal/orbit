@@ -31,7 +31,7 @@
       <span class="text-caption tabular-nums text-muted-foreground">{toolList.length}</span>
     </div>
     <label
-      class="flex h-9 items-center gap-2 rounded-lg border border-border bg-background px-2.5 focus-within:ring-2 focus-within:ring-ring"
+      class="flex h-9 items-center gap-2 rounded-lg border border-border bg-background px-2.5 transition-colors duration-150 focus-within:border-ring"
     >
       <Search class="size-4 shrink-0 text-muted-foreground" />
       <span class="sr-only">Filter tools</span>
@@ -46,7 +46,7 @@
           type="button"
           onclick={() => (query = "")}
           aria-label="Clear filter"
-          class="grid size-6 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+          class="grid size-6 place-items-center rounded-md text-muted-foreground outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
         >
           <X class="size-3.5" />
         </button>
@@ -54,7 +54,7 @@
     </label>
   </div>
 
-  <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-3">
+  <div class="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-3">
     {#if groups.length === 0}
       <p class="px-1 py-6 text-body text-muted-foreground">No tools match “{query}”.</p>
     {/if}
@@ -72,10 +72,10 @@
                 onclick={onnavigate}
                 aria-current={active ? "page" : undefined}
                 class={cn(
-                  "flex min-h-9 items-center gap-2.5 rounded-lg px-2 text-body transition-[background-color,color,box-shadow] duration-150",
+                  "flex min-h-9 items-center gap-2.5 rounded-lg px-2 text-body outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                   active
-                    ? "bg-background font-medium text-foreground shadow-sm ring-1 ring-border"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? "bg-muted font-medium text-foreground"
+                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                 )}
               >
                 <tool.icon class={cn("size-4 shrink-0", active && "text-primary")} />
@@ -92,7 +92,7 @@
     <a
       href="/explore"
       onclick={onnavigate}
-      class="flex h-9 items-center justify-between rounded-lg px-2 text-body text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      class="flex h-9 items-center justify-between rounded-lg px-2 text-body text-muted-foreground outline-none transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
     >
       Browse all tools
       <ArrowRight class="size-4" />

@@ -1,12 +1,13 @@
 <script lang="ts">
+  import { page } from "$app/state";
   import { trackFileUpload } from "$lib/analytics-tracker";
   import { fileDropState, registerFileDrop } from "$lib/runtime/file-drop.svelte";
+  import { takePendingFiles } from "$lib/runtime/pending-files.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
   import { IconCloudUpload as UploadCloud } from "@tabler/icons-svelte";
   import { onMount, type Snippet } from "svelte";
   import { toast } from "svelte-sonner";
-  import { fade } from "svelte/transition";
   import { buttonVariants } from "./button";
 
   interface Props {
@@ -42,10 +43,12 @@
   let isDragging = $state(false);
   let fileInput: HTMLInputElement;
 
-  // On desktop, Tauri intercepts HTML drag/drop — register this area as the
-  // active native-drop intake target and mirror the native drag state.
+  // Tauri intercepts HTML drag/drop, so register this area as a native-drop intake.
   onMount(() => {
-    if (!appState.isTauri || disabled) return;
+    if (disabled) return;
+    const handed = takePendingFiles(page.url.pathname);
+    if (handed.length > 0) queueMicrotask(() => validateAndEmit(handed));
+    if (!appState.isTauri) return;
     return registerFileDrop((dropped) => validateAndEmit(dropped));
   });
 
@@ -147,10 +150,8 @@
 <button
   type="button"
   class={cn(
-    "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-md border border-dashed transition-colors duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-    dragActive
-      ? "border-primary/60 bg-primary/5"
-      : "border-border bg-muted/20 hover:border-primary/40 hover:bg-muted/30",
+    "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+    dragActive ? "border-primary bg-primary/5" : "border-border bg-card hover:border-border-strong",
     disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
     className
   )}
@@ -161,86 +162,54 @@
   onclick={click}
   {disabled}
 >
-  <div class="relative z-5 flex flex-col items-center gap-5 px-6 py-12 sm:py-16 md:py-20">
-    <div class="flex flex-col items-center gap-3">
-      <span
-        class={cn(
-          "inline-flex size-12 items-center justify-center rounded-sm transition-colors",
-          dragActive
-            ? "bg-primary/15 text-primary"
-            : "bg-muted/60 text-foreground group-hover:bg-primary/10 group-hover:text-primary"
-        )}
-      >
-        {#if icon}
-          {@render icon()}
-        {:else}
-          <UploadCloud class="size-5" stroke={1.5} />
-        {/if}
-      </span>
-      <span
-        class={cn(
-          "label-eyebrow transition-colors",
-          dragActive ? "text-primary" : "text-muted-foreground"
-        )}
-      >
-        {dragActive ? "Drop to upload" : "Upload"} · {acceptLabel}
-      </span>
-    </div>
+  <div class="flex flex-col items-center gap-5 px-6 py-12 text-center sm:py-16">
+    <span
+      class={cn(
+        "grid size-14 place-items-center rounded-2xl transition-[background-color,color,transform] duration-200 ease-craft",
+        dragActive ? "scale-105 bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+      )}
+    >
+      {#if icon}
+        {@render icon()}
+      {:else}
+        <UploadCloud class="size-6" stroke={1.75} />
+      {/if}
+    </span>
 
-    <div class="flex flex-col items-center gap-2 text-center">
-      {#if title}
+    <div class="flex flex-col items-center gap-1.5">
+      {#if dragActive}
+        <h3 class="text-heading-sm font-medium text-foreground">Drop to add</h3>
+      {:else if title}
         {@render title()}
       {:else}
-        <h3 class="text-xl font-medium tracking-tight text-foreground sm:text-2xl">
-          Drop files here
-        </h3>
+        <h3 class="text-heading-sm font-medium text-foreground">Drop files here</h3>
       {/if}
       {#if description}
         {@render description()}
       {:else}
-        <p class="max-w-sm text-sm leading-relaxed text-muted-foreground">
-          Drag and drop, paste, or click to browse from your device. Files stay
-          on this machine.
+        <p class="max-w-sm text-pretty text-body text-muted-foreground">
+          Or choose them from your device. Files are opened here and never uploaded.
         </p>
       {/if}
     </div>
 
-    <div class="relative z-10 flex flex-col items-center gap-3">
+    <div class="flex flex-col items-center gap-3">
       {#if action}
         {@render action()}
       {:else}
-        <span
-          class={cn(
-            buttonVariants({ variant: "default", size: "default" }),
-            "rounded-sm"
-          )}
-        >
-          Select files
+        <span class={buttonVariants({ variant: "primary", size: "default" })}>
+          Choose {multiple ? "files" : "a file"}
         </span>
       {/if}
       {#if hint}
         {@render hint()}
-      {:else if maxSize !== Infinity}
-        <p class="label-eyebrow text-muted-foreground">
-          Max {(maxSize / (1024 * 1024)).toFixed(0)} MB per file
+      {:else}
+        <p class="text-caption text-muted-foreground">
+          {acceptLabel}{maxSize !== Infinity ? ` · up to ${(maxSize / (1024 * 1024)).toFixed(0)} MB each` : ""} · stays on this device
         </p>
       {/if}
     </div>
   </div>
 
-  <input
-    bind:this={fileInput}
-    type="file"
-    {accept}
-    {multiple}
-    class="hidden"
-    onchange={handleInputChange}
-  />
-
-  {#if dragActive}
-    <div
-      class="pointer-events-none absolute inset-0 z-0 bg-primary/5"
-      transition:fade={{ duration: 150 }}
-    ></div>
-  {/if}
+  <input bind:this={fileInput} type="file" {accept} {multiple} class="hidden" onchange={handleInputChange} />
 </button>

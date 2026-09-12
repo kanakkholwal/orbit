@@ -50,7 +50,9 @@
     {/if}
   </div>
 
-  <SearchTrigger class="hidden w-64 md:flex lg:w-80" />
+  {#if tool}
+    <SearchTrigger class="hidden w-64 md:flex lg:w-80" />
+  {/if}
 
   <div class="flex flex-1 items-center justify-end gap-1.5">
     {#if workspace.inspector && !wide}

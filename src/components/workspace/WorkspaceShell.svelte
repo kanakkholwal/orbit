@@ -21,7 +21,7 @@
   const wideQuery = new MediaQuery("min-width: 1280px");
   const wide = $derived(wideQuery.current);
   const immersive = $derived(tool?.layout === "immersive");
-  const showPanel = $derived(wide && workspace.panelPinned && !immersive);
+  const panelOpen = $derived(workspace.panelPinned && !immersive);
 
   onNavigate(() => workspace.closeDrawers());
 
@@ -34,26 +34,52 @@
   <div class={cn("flex w-full overflow-hidden bg-canvas", appState.isTauri ? "h-full" : "h-dvh")}>
     <ShellRail {wide} class="hidden md:flex" />
 
-    {#if showPanel}
-      <aside aria-label="Tools" class="hidden w-64 shrink-0 xl:block">
-        <ToolsPanel />
+    {#if wide}
+      <aside
+        aria-label="Tools"
+        inert={!panelOpen}
+        class={cn(
+          "shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-craft",
+          panelOpen ? "w-64 opacity-100" : "w-0 opacity-0"
+        )}
+      >
+        <ToolsPanel class="w-64" />
       </aside>
     {/if}
 
+    {#if wide && !immersive}
+      <button
+        type="button"
+        onclick={() => workspace.togglePanel(true)}
+        aria-label={panelOpen ? "Collapse tools panel" : "Expand tools panel"}
+        aria-expanded={panelOpen}
+        title={panelOpen ? "Collapse tools panel" : "Expand tools panel"}
+        class={cn(
+          "group relative w-2 shrink-0 outline-none",
+          panelOpen ? "cursor-w-resize" : "cursor-e-resize"
+        )}
+      >
+        <span
+          aria-hidden="true"
+          class="absolute inset-y-4 left-1/2 w-0.5 -translate-x-1/2 rounded-full bg-transparent transition-colors duration-150 group-hover:bg-border-strong group-focus-visible:bg-ring"
+        ></span>
+      </button>
+    {/if}
+
     <div
-      class="flex min-w-0 flex-1 flex-col overflow-hidden bg-background md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
+      class="workspace-surface flex min-w-0 flex-1 flex-col overflow-hidden md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
     >
       <ContextBar {tool} {wide} />
 
       <div class="flex min-h-0 flex-1">
-        <main id="workspace" class="relative min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
+        <main id="workspace" class="scrollbar-subtle relative min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
           {@render children()}
         </main>
 
         {#if workspace.inspector && wide}
           <aside
             aria-label={workspace.inspector.title}
-            class="flex w-80 shrink-0 flex-col overflow-y-auto overscroll-contain border-l border-border"
+            class="scrollbar-subtle flex w-80 shrink-0 flex-col overflow-y-auto overscroll-contain border-l border-border"
           >
             <h2 class="px-4 pb-2 pt-4 text-body font-medium text-foreground">{workspace.inspector.title}</h2>
             <div class="px-4 pb-4">{@render workspace.inspector.content()}</div>

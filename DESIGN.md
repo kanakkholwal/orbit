@@ -249,8 +249,8 @@ tools panel, context bar, workspace, inspector, action bar.
 | Region | Size | Behaviour |
 | --- | --- | --- |
 | Rail | 56px, `bg-canvas` | Logo mark, Home, Explore, Search, panel toggle, up to 5 recent tools, Docs, desktop app (web), theme. 40px targets, tooltips on the right. Hidden below `md`. |
-| Tools panel | 256px, `bg-canvas` | Filterable tool list by category. Inline and pinnable from 1280px (remembered in `localStorage`). Below 1280px a left drawer; on mobile a bottom drawer. Hidden for immersive tools. |
-| Workspace card | fills the rest | `bg-background`, 14px radius, hairline, `shadow-xs`, 8px inset from the window from `md`. Full-bleed on mobile. |
+| Tools panel | 256px, `bg-canvas` | Filterable tool list by category, no visible scrollbar. Inline from 1280px; opens and closes with a 300ms width + fade (`ease-craft`), remembered in `localStorage`. An 8px edge strip between panel and card toggles it (hover shows a line, `w-resize`/`e-resize` cursor). Below 1280px a left drawer; on mobile a bottom drawer. Hidden for immersive tools. |
+| Workspace card | fills the rest | `workspace-surface`: `--workspace` (`#ffffff` light, `#111111` dark) and re-points `--background` for everything inside, so the card lifts off the `#0a0a0a` canvas in dark as it does in light. 14px radius, hairline, `shadow-xs`, 8px inset from `md`. Full-bleed on mobile. |
 | Context bar | 56px min | Tool icon + `h1` title + category, or the page name. Centred search trigger (`md`+), Settings button when an inspector exists below 1280px, Share. |
 | Workspace (`main#workspace`) | flex-1 | The only scroll container. Tool sticky bars stick to it. |
 | Inspector | 320px | Filled by a tool via `<WorkspaceInspector title>`. Right column from 1280px, right drawer below, bottom drawer on mobile. |
@@ -276,6 +276,58 @@ Prefer drawers (`vaul-svelte`, `$components/ui/drawer`) over dialogs: bottom on 
 tablet and desktop, `shouldScaleBackground={false}`. The command menu is a centred dialog on desktop
 and a bottom drawer on mobile; it is mounted once by the shell and opened through
 `workspace.searchOpen` (⌘K / Ctrl K, the rail, the tab bar, `SearchTrigger`).
+
+### Active and focus states in the shell
+
+- Active nav item: `bg-muted`, medium weight, emerald icon. No ring, no shadow.
+- Hover: `bg-muted/60`.
+- Keyboard focus: `ring-2 ring-inset ring-ring` (inset so it never clips inside scroll areas).
+- Text fields in the shell: border turns `--ring` on focus, no outer ring.
+- Scrollbars: hidden in the rail and tools panel (`no-scrollbar`); thin and gutterless in the
+  workspace and inspector (`scrollbar-subtle`).
+
+### Explore and Home
+
+- **Explore** (`ToolLauncher`): tilted chip, question headline with emerald key words, a glass card
+  (`bg-card/85`, blur, `shadow-lg`) holding category chips (active chip: emerald icon tile) over a
+  56px search field with "Choose a file" and a round submit, on the plain workspace surface with no
+  background decoration. Enter opens the best match.
+  Below it, the library: one section per category, `ToolCard` grid.
+- **Home** (`WorkspaceHome`): greeting, "Start with a file" drop card + "Jump back in" recent list,
+  four popular tools, category cards linking to Explore's filters.
+- **ToolCard**: 18px card, 40px bordered icon tile (emerald on hover), 16px title, two-line
+  description, arrow appears on hover. No footer.
+
+### Tool template
+
+Reference implementation: [compress-pdf/tool.svelte](src/tools/compress-pdf/tool.svelte). Every
+tool moves through the same four states, built from `$components/tool`:
+
+| State | Workspace | Inspector | Action bar |
+| --- | --- | --- | --- |
+| Empty | `UploadArea`: 18px dashed card, 56px emerald icon tile, `text-heading-sm` title naming the job ("Drop PDFs to compress"), one-line promise, emerald "Choose files", meta line (type · size limit · stays on this device) | none | none |
+| Loaded | `ToolBar` (title, count, total size, Add files, Clear all), then `FileRow`s (40px icon tile, name, size line, `StatusPill`, 36px remove) | `WorkspaceInspector` with `OptionGroup`s | `ToolFooter`: summary left, one `variant="primary"` action right ("Compress 3 files") |
+| Running | Rows show per-file `StatusPill` | Controls stay editable for the next run | `ProgressLine` (label, "2 of 5", determinate bar); action disabled with "…" label |
+| Done | `ResultCard` above the list: check glyph, outcome in numbers ("Saved 8.1 MB"), Download again, Start over, then "Continue with" suggestions that hand the output files to the next tool | unchanged | summary says what's left |
+
+Inspector controls:
+
+- `SegmentedControl`: 2-4 short, mutually exclusive modes (native radios, arrow-key friendly).
+- `ChoiceList`: 3-5 options that each need a one-line hint (radio cards, emerald when selected).
+- `OptionToggle`: on/off extras as a label, hint and `Switch`. Disable, don't hide, options that
+  don't apply to the chosen mode, and say why in the group description.
+- `OptionGroup`: label + optional description around any control. Groups sit 24px apart.
+
+`ToolFooter` renders into the shell's pinned action bar through `WorkspaceActionBar`, so every tool
+using it gets a pinned primary action without further changes. Tools that auto-download still show
+the `ResultCard` so the outcome and next step are visible.
+
+### File hand-off
+
+Dropping or choosing a file on Explore or Home shows `FileSuggestions`: the tools that can open it
+(PDFs: 12 common tools; images: Image to PDF). Picking one calls `openFilesInTool`, and the tool's
+primary `UploadArea` takes the files on mount (`takePendingFiles`), so the file is never chosen
+twice. Files meant for one page are discarded if the user lands anywhere else.
 
 ### File drops
 

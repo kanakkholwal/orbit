@@ -31,7 +31,7 @@
 
 <nav
   aria-label="Workspace"
-  class={cn("flex w-14 shrink-0 flex-col items-center gap-1 py-2", className)}
+  class={cn("no-scrollbar flex w-14 shrink-0 flex-col items-center gap-1 overflow-y-auto py-2", className)}
 >
   <a
     href="/"
@@ -69,5 +69,5 @@
   {#if !appState.isTauri}
     <RailLink label="Get the desktop app" icon={Download} href="/download" />
   {/if}
-  <ThemeToggle class="size-10 rounded-lg hover:bg-muted" />
+  <ThemeToggle class="size-10 shrink-0 rounded-lg hover:bg-muted/60 focus-visible:ring-inset" />
 </nav>

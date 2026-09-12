@@ -1,193 +1,126 @@
 <script lang="ts">
   import { ToolCard } from "$components/tool";
-  import { Input } from "$components/ui/input";
+  import StartWithFile from "$components/workspace/StartWithFile.svelte";
   import { toolsCategories } from "$constants/tools";
-  import { recentTools } from "$lib/runtime/recent-tools.svelte";
-  import { cn } from "$lib/utils";
-  import { getTool, toolList } from "$tools/list";
-  import { IconArrowUpRight as ArrowUpRight, IconHistory as History, IconSearch as Search } from "@tabler/icons-svelte";
-  import { cubicOut } from "svelte/easing";
-  import { fly } from "svelte/transition";
+  import { clearRecentTools, recentTools } from "$lib/runtime/recent-tools.svelte";
+  import { getTool, toolList, type ToolConfig } from "$tools/list";
+  import { IconArrowRight as ArrowRight, IconChevronRight as ChevronRight, IconHistory as History } from "@tabler/icons-svelte";
 
-  // "Jump back in" — recently opened tools (persisted, see recent-tools store).
-  let recent = $derived(
-    recentTools.items.map((r) => getTool(r.slug)).filter((t) => t !== null)
+  const popularSlugs = ["merge-pdf", "compress-pdf", "esign-pdf", "pdf-to-docx"];
+  const popular = popularSlugs.map((slug) => getTool(slug)).filter((t): t is ToolConfig => t !== null);
+
+  const recent = $derived(
+    recentTools.items
+      .map((r) => getTool(r.slug))
+      .filter((t): t is ToolConfig => t !== null)
+      .slice(0, 6)
   );
 
-  let searchQuery = $state("");
-  let activeCategory = $state<string>("all");
+  const categoryName = (id: string) => toolsCategories.find((c) => c.id === id)?.name ?? "";
 
-  let normalizedQuery = $derived(searchQuery.trim().toLowerCase());
-
-  let filteredTools = $derived(
-    toolList.filter((t) => {
-      const matchesQuery =
-        !normalizedQuery ||
-        t.title.toLowerCase().includes(normalizedQuery) ||
-        t.description.toLowerCase().includes(normalizedQuery) ||
-        t.keywords?.some((k) => k.includes(normalizedQuery));
-      const matchesCategory =
-        activeCategory === "all" || t.category === activeCategory;
-      return matchesQuery && matchesCategory;
-    })
-  );
-
-  let categoryTabs = $derived([
-    { id: "all", name: "All", count: toolList.length },
-    ...toolsCategories.map((c) => ({
-      id: c.id,
-      name: c.name,
-      count: c.tools?.length ?? 0,
-    })),
-  ]);
-
-  // Time-aware greeting (local runtime; calm, non-gimmicky).
   const greeting = (() => {
     const h = new Date().getHours();
     if (h < 5) return "Working late";
     if (h < 12) return "Good morning";
     if (h < 17) return "Good afternoon";
-    if (h < 22) return "Good evening";
-    return "Winding down";
+    return "Good evening";
   })();
 </script>
 
 <div class="flex w-full flex-col gap-10">
-  <header
-    class="flex flex-col gap-5 border-b border-border pb-8"
-    in:fly={{ y: 10, duration: 480, easing: cubicOut }}
-  >
-    <span class="label-eyebrow text-primary">Workspace</span>
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-      <div class="flex flex-col gap-2">
-        <h1 class="text-display-md text-foreground sm:text-display-lg">
-          {greeting}.
-        </h1>
-        <p class="max-w-xl text-sm leading-relaxed text-muted-foreground">
-          Pick a tool. Drop a file. Everything stays on this device.
-        </p>
-      </div>
-
-      <div class="relative w-full lg:w-80">
-        <Search
-          class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-        />
-        <Input
-          type="search"
-          placeholder="Search {toolList.length} tools…"
-          bind:value={searchQuery}
-          class="h-11 rounded-xl pl-9 pr-12 text-sm placeholder:text-muted-foreground"
-        />
-        <kbd
-          class="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 rounded-xs border border-border bg-muted/60 px-1.5 py-0.5 font-mono text-caption uppercase tracking-wider text-muted-foreground lg:inline-block"
-        >
-          /
-        </kbd>
-      </div>
-    </div>
+  <header class="flex flex-col gap-1">
+    <h1 class="text-heading-lg font-medium text-foreground">{greeting}</h1>
+    <p class="text-body text-muted-foreground md:text-body-lg">
+      Pick up where you left off, or start with a file. Everything stays on this device.
+    </p>
   </header>
 
-  {#if recent.length > 0}
-    <section
-      class="flex flex-col gap-4"
-      in:fly={{ y: 8, duration: 480, delay: 60, easing: cubicOut }}
-    >
-      <div class="flex items-center gap-2">
-        <History class="size-3.5 text-muted-foreground" />
-        <span class="label-eyebrow text-muted-foreground">Jump back in</span>
+  <div class="grid grid-cols-1 gap-3 lg:grid-cols-5">
+    <StartWithFile class="lg:col-span-3" />
+
+    <section class="panel-card flex flex-col p-4 sm:p-5 lg:col-span-2" aria-labelledby="recent-heading">
+      <div class="flex items-center justify-between gap-3">
+        <h2 id="recent-heading" class="text-body-lg font-medium text-foreground">Jump back in</h2>
+        {#if recent.length > 0}
+          <button
+            type="button"
+            onclick={clearRecentTools}
+            class="rounded-md px-1.5 py-0.5 text-caption text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            Clear
+          </button>
+        {/if}
       </div>
-      <ul
-        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      >
-        {#each recent as tool (tool.slug)}
-          <li class="contents">
-            <ToolCard {tool} delay={null} />
-          </li>
-        {/each}
-      </ul>
+
+      {#if recent.length > 0}
+        <ul class="-mx-2 mt-3 flex flex-col gap-0.5">
+          {#each recent as tool (tool.slug)}
+            <li>
+              <a
+                href={`/tools/${tool.slug}`}
+                class="group flex items-center gap-3 rounded-lg px-2 py-2 outline-none transition-colors duration-150 hover:bg-muted focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+              >
+                <span class="grid size-9 shrink-0 place-items-center rounded-lg border border-border bg-background text-foreground group-hover:text-primary">
+                  <tool.icon class="size-4" />
+                </span>
+                <span class="min-w-0 flex-1">
+                  <span class="block truncate text-body font-medium text-foreground">{tool.title}</span>
+                  <span class="block truncate text-caption text-muted-foreground">{categoryName(tool.category)}</span>
+                </span>
+                <ChevronRight class="size-4 shrink-0 text-muted-foreground" />
+              </a>
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <div class="flex flex-1 flex-col items-center justify-center gap-2 py-10 text-center">
+          <History class="size-5 text-muted-foreground" />
+          <p class="max-w-56 text-body text-muted-foreground">Tools you open will show up here.</p>
+        </div>
+      {/if}
     </section>
-  {/if}
+  </div>
 
-  <nav
-    class="-mx-1 flex flex-wrap items-center gap-1 overflow-x-auto px-1 pb-1 sm:overflow-visible"
-    in:fly={{ y: 8, duration: 480, delay: 80, easing: cubicOut }}
-  >
-    {#each categoryTabs as tab (tab.id)}
-      <button
-        type="button"
-        onclick={() => (activeCategory = tab.id)}
-        aria-pressed={activeCategory === tab.id}
-        class={cn(
-          "inline-flex shrink-0 items-center gap-2 rounded-md px-3 py-1.5 label-eyebrow transition-colors duration-200",
-          activeCategory === tab.id
-            ? "bg-primary/10 text-primary"
-            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-        )}
+  <section class="flex flex-col gap-4" aria-labelledby="popular-heading">
+    <div class="flex items-end justify-between gap-4">
+      <h2 id="popular-heading" class="text-subheading font-medium text-foreground">Popular tools</h2>
+      <a
+        href="/explore"
+        class="flex items-center gap-1 rounded-md text-body text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <span>{tab.name}</span>
-        <span
-          class={cn(
-            "tabular-nums text-caption",
-            activeCategory === tab.id
-              ? "text-primary/70"
-              : "text-muted-foreground"
-          )}
-        >
-          {String(tab.count).padStart(2, "0")}
-        </span>
-      </button>
-    {/each}
-  </nav>
-
-  <section in:fly={{ y: 10, duration: 480, delay: 140, easing: cubicOut }}>
-    <div
-      class="mb-6 flex items-baseline justify-between border-b border-border pb-3"
-    >
-      <span class="label-eyebrow text-muted-foreground">
-        {activeCategory === "all"
-          ? "All tools"
-          : toolsCategories.find((c) => c.id === activeCategory)?.name}
-      </span>
-      <span class="font-mono text-caption tabular-nums text-muted-foreground">
-        {String(filteredTools.length).padStart(2, "0")} / {String(
-          toolList.length
-        ).padStart(2, "0")}
-      </span>
+        All {toolList.length} tools
+        <ArrowRight class="size-4" />
+      </a>
     </div>
+    <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {#each popular as tool (tool.slug)}
+        <li class="contents"><ToolCard {tool} delay={null} /></li>
+      {/each}
+    </ul>
+  </section>
 
-    {#if filteredTools.length === 0}
-      <div
-        class="flex flex-col items-center gap-3 rounded-lg border border-border bg-muted/20 px-6 py-16 text-center"
-      >
-        <Search class="size-5 text-muted-foreground" />
-        <p class="label-eyebrow text-muted-foreground">No matches</p>
-        <p class="max-w-xs text-sm text-muted-foreground">
-          Nothing found for
-          <span class="font-mono text-foreground">"{searchQuery}"</span>. Try a
-          different keyword or clear the filter.
-        </p>
-        <button
-          type="button"
-          onclick={() => {
-            searchQuery = "";
-            activeCategory = "all";
-          }}
-          class="mt-2 inline-flex items-center gap-1 label-eyebrow text-primary transition-colors hover:text-primary/80"
-        >
-          Reset filters
-          <ArrowUpRight class="size-3" />
-        </button>
-      </div>
-    {:else}
-      <ul
-        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      >
-        {#each filteredTools as tool, i (tool.slug)}
-          <li class="contents">
-            <ToolCard {tool} index={i} delay={40 + (i % 12) * 30} />
-          </li>
-        {/each}
-      </ul>
-    {/if}
+  <section class="flex flex-col gap-4" aria-labelledby="categories-heading">
+    <h2 id="categories-heading" class="text-subheading font-medium text-foreground">Browse by category</h2>
+    <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {#each toolsCategories as category (category.id)}
+        <li>
+          <a
+            href={`/explore?category=${category.id}`}
+            class="group flex h-full flex-col gap-3 rounded-2xl border border-border bg-card p-4 outline-none transition-[border-color,box-shadow] duration-200 hover:border-border-strong hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <span class="flex items-center justify-between">
+              <span class="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
+                <category.icon class="size-5" />
+              </span>
+              <span class="text-caption tabular-nums text-muted-foreground">{category.tools?.length ?? 0} tools</span>
+            </span>
+            <span>
+              <span class="block text-body-lg font-medium text-foreground">{category.name}</span>
+              <span class="mt-0.5 block text-body text-muted-foreground">{category.description}</span>
+            </span>
+          </a>
+        </li>
+      {/each}
+    </ul>
   </section>
 </div>

@@ -14,7 +14,7 @@
   let { label, icon: Glyph, href, active = false, onclick }: Props = $props();
 
   const base =
-    "grid size-10 place-items-center rounded-lg transition-[background-color,color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+    "grid size-10 place-items-center rounded-lg outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
 </script>
 
 <Tooltip.Root>
@@ -29,8 +29,8 @@
           class={cn(
             base,
             active
-              ? "bg-background text-primary shadow-sm ring-1 ring-border"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              ? "bg-muted text-primary"
+              : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
           )}
         >
           <Glyph class="size-5" stroke={1.75} />
@@ -41,7 +41,7 @@
           type="button"
           aria-label={label}
           {onclick}
-          class={cn(base, "text-muted-foreground hover:bg-muted hover:text-foreground")}
+          class={cn(base, "text-muted-foreground hover:bg-muted/60 hover:text-foreground")}
         >
           <Glyph class="size-5" stroke={1.75} />
         </button>

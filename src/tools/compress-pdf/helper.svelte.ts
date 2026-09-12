@@ -77,6 +77,23 @@ export class CompressState extends PdfEngine {
         this.isProcessing = false;
     }
 
+    get doneFiles() {
+        return this.files.filter(f => f.status === 'done' && f.resultBlob);
+    }
+
+    get totalSize() {
+        return this.files.reduce((sum, f) => sum + f.originalSize, 0);
+    }
+
+    get savedBytes() {
+        return this.doneFiles.reduce((sum, f) => sum + (f.originalSize - (f.compressedSize ?? f.originalSize)), 0);
+    }
+
+    /** Compressed outputs as Files, for handing to another tool. */
+    get resultFiles(): File[] {
+        return this.doneFiles.map(f => new File([f.resultBlob!], `compressed_${f.file.name}`, { type: 'application/pdf' }));
+    }
+
 // Compression Logic
 
     async process() {
@@ -99,10 +116,11 @@ export class CompressState extends PdfEngine {
             }
             this.progress.text = 'Compressing files...';
 
-            for (let i = 0; i < this.files.length; i++) {
-                const fileEntry = this.files[i];
+            const queue = this.files.filter(f => f.status === 'pending');
+            for (let i = 0; i < queue.length; i++) {
+                const fileEntry = queue[i];
                 fileEntry.status = 'processing';
-                this.progress = { current: i + 1, total: this.files.length, text: `Compressing ${fileEntry.file.name}...` };
+                this.progress = { current: i + 1, total: queue.length, text: `Compressing ${fileEntry.file.name}` };
 
                 try {
                     let resultBlob: Blob;
@@ -199,7 +217,7 @@ export class CompressState extends PdfEngine {
         return new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
     }
 
-    private async downloadResults() {
+    async downloadResults() {
         const successful = this.files.filter(f => f.status === 'done');
         if (successful.length === 0) return;
 

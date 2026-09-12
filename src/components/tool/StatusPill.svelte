@@ -16,38 +16,37 @@
 
   let { status, label, class: className = "" }: Props = $props();
 
-  // Every state carries a glyph as well as a tint: two of these hues collide
-  // under tritanopia, so colour is never the only signal.
+  // Emerald and the success green collide under colour blindness, so every state also has a glyph.
   const tone: Record<Status, string> = {
-    idle: "border-border bg-paper text-muted-foreground",
-    processing: "border-transparent bg-primary/10 text-primary",
-    done: "border-transparent bg-success/10 text-success",
-    error: "border-transparent bg-destructive/10 text-destructive",
+    idle: "bg-muted text-muted-foreground",
+    processing: "bg-primary/10 text-primary",
+    done: "bg-success/10 text-success",
+    error: "bg-destructive/10 text-destructive",
   };
 
   const fallback: Record<Status, string> = {
     idle: "Ready",
     processing: "Working",
     done: "Done",
-    error: "Error",
+    error: "Failed",
   };
 </script>
 
 <span
   class={cn(
-    "label-eyebrow inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1",
+    "inline-flex max-w-48 items-center gap-1.5 rounded-full px-2 py-0.5 text-caption font-medium",
     tone[status],
     className
   )}
 >
   {#if status === "processing"}
-    <LoaderCircle class="size-3 animate-spin" />
+    <LoaderCircle class="size-3.5 shrink-0 animate-spin" />
   {:else if status === "done"}
-    <CircleCheck class="size-3" />
+    <CircleCheck class="size-3.5 shrink-0" />
   {:else if status === "error"}
-    <CircleAlert class="size-3" />
+    <CircleAlert class="size-3.5 shrink-0" />
   {:else}
-    <span class="size-1.5 rounded-full bg-current" aria-hidden="true"></span>
+    <span class="size-1.5 shrink-0 rounded-full bg-current" aria-hidden="true"></span>
   {/if}
-  <span>{label ?? fallback[status]}</span>
+  <span class="truncate">{label ?? fallback[status]}</span>
 </span>
