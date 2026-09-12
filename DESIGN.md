@@ -1,21 +1,19 @@
 # Orbit Design System
 
-A near-white, border-first editorial surface for a privacy-first PDF toolkit. Structure comes
-from 1px hairlines and dense monochrome type, never from elevation. One teal does the talking.
+A blueprint surface for a privacy-first PDF toolkit. White cards sit on a light gray canvas between
+dashed column rails. Structure comes from 1px hairlines, generous spacing and one emerald accent.
 
-> **Borders, not depth.** A container is a 1px `#e5e5e5` edge and a radius. If a surface needs a
-> shadow to read, it needs better spacing instead.
+> **Borders, not depth.** A container is a 1px hairline and a radius. If a surface needs a shadow
+> to read, it needs better spacing instead.
 
-This document is Orbit's application of the **Dub** style reference. Two things are Orbit's own
-and are exempt from the mirror:
+Orbit's CSS mirrors the **Rune Icons** reference (layout, neutrals, dark palette, radii, type scale,
+card grammar). Three things are Orbit's own:
 
 | Exempt | Value | Why |
 | --- | --- | --- |
-| Typeface | Google Sans Variable | Orbit's voice. One face carries display and body. |
-| Brand accent | teal, hue 178 | Orbit's identity. Replaces Dub's Electric Blue everywhere. |
-
-Everything else: surfaces, neutrals, type scale, radii, elevation, spacing, component
-grammar: follows the reference.
+| Heading face | Google Sans Variable | Orbit's voice on every `h1`-`h6` and display text. |
+| Body face | Inter Variable | Dense UI copy, tables, inputs. |
+| Brand accent | emerald, `#047857` / `#34d399` | Orbit's identity. Replaced teal (hue 178) in Sept 2026. |
 
 Tokens live in [app.css](src/app.css). Never hardcode a hex in a component.
 
@@ -27,67 +25,59 @@ Tokens live in [app.css](src/app.css). Never hardcode a hex in a component.
 
 | Role | Light | Dark | Token |
 | --- | --- | --- | --- |
-| Canvas | `#ffffff` | `#0a0a0a` | `--background` |
-| Paper (alt band, hover fill) | `#f5f5f5` | `#171717` | `--paper` → `bg-paper` |
-| Card | `#ffffff` | `#0a0a0a` | `--card` |
-| Hairline | `#e5e5e5` | `#262626` | `--border` |
-| Strong border | `#d4d4d4` | `#383838` | `--border-strong` |
-| Body text | `#171717` | `#fafafa` | `--foreground` |
-| Muted text | `#525252` | `#a3a3a3` | `--muted-foreground` |
+| Page canvas (public pages, desktop home) | `#f5f5f5` | `#0a0a0a` | `--canvas` → `bg-canvas` |
+| App background | `#ffffff` | `#0a0a0a` | `--background` |
+| Card | `#ffffff` | `#171717` | `--card` |
+| Muted fill, hover fill | `#f5f5f5` | `#262626` | `--muted`, `--paper` |
+| Hairline | `#e5e5e5` | `rgb(255 255 255 / .10)` | `--border` |
+| Strong border | `#d4d4d4` | `rgb(255 255 255 / .16)` | `--border-strong` |
+| Input border | `#e5e5e5` | `rgb(255 255 255 / .15)` | `--input` |
+| Ink | `#0a0a0a` | `#fafafa` | `--foreground` |
+| Muted ink | `#6b6b6b` | `#a1a1a1` | `--muted-foreground` |
 | Placeholder | `#737373` | `#737373` | `--placeholder` |
 
-Cards are white on a white canvas. They are told apart by the hairline, not by tone. That is the
-whole idea, and it is why the hairline is never diluted.
+These are Rune's values with one exception.
 
-**Muted text is `#525252`, not Dub's `#737373`.** Fog measures 4.74:1 on white but **4.35:1 on the
-paper band**, and Orbit alternates white and paper sections, so muted copy would fail on every
-other section. Steel measures 7.81:1 and holds everywhere. `#737373` is kept for placeholders and
-disabled states only, where the 4.5:1 floor does not apply.
+**Muted ink is `#6b6b6b`, not Rune's `#737373`.** `#737373` measures 4.35:1 on the gray canvas, below
+the 4.5:1 body floor. `#6b6b6b` measures 4.89:1 on the canvas and 5.33:1 on white, and is visually
+indistinguishable. Dark muted ink `#a1a1a1` measures 7.66:1 on `#0a0a0a`.
 
-**Dark mode is derived, not copied.** The reference ships light only. Every dark neutral holds the
-light relationship against a `#0a0a0a` canvas: the hairline measures 1.31:1 in dark against 1.26:1
-in light, muted ink 7.85:1 against 7.81:1.
+**Cards on public pages** use `panel-card`: white in light, `--background` (`#0a0a0a`) in dark, so a
+dark card is told apart from the canvas by its hairline alone, as in the reference. App-shell cards
+use `bg-card` (`#171717` in dark) for a raised layer.
 
 ### The accent
 
-`--primary` is `oklch(0.52 0.105 178)` light, `oklch(0.72 0.1 178)` dark. It measures **5.14:1** on
-white, **4.71:1** on paper, **8.36:1** on the dark canvas.
+| Token | Light | Dark |
+| --- | --- | --- |
+| `--primary` | `#047857` (emerald-700) | `#34d399` (emerald-400) |
+| `--primary-active` | `#065f46` | `#10b981` |
+| `--primary-foreground` | `#ffffff` | `#0a0a0a` |
 
-**L is 0.52, not the original 0.565.** The brighter teal measured 3.96:1 on the canvas while being
-used as 11px eyebrow text and as the second clause of the hero headline. Same hue, same chroma,
-legible.
+Light measures **5.48:1** on white, **5.03:1** on the canvas, **4.74:1** on a `bg-primary/10` tint.
+Dark measures **10.30:1** on `#0a0a0a` and 9.33:1 on `#171717`.
 
-`--primary` is reserved for:
+**Not emerald-600.** Tailwind's default `#059669` measures 3.77:1 on white and 3.46:1 on the canvas,
+so it fails as headline accent and link text.
 
-1. Links inside body copy.
-2. Active states and selection.
-3. Focus rings (`--ring` is `--primary`, at full strength: a ring needs 3:1).
-4. The accent clause in a headline.
-5. Toggle "on" states and progress fills.
+`--primary` is for: the accent words in a headline, the primary brand action, links in body copy,
+active and selected states, focus rings, and toggle-on / progress fills. Never a large flat
+background fill; the brand panels below are raster gradients, not the token.
 
-**Never a decorative tint, and never a large background fill.** It is a highlight colour, not a
-surface colour.
+### Brand gradient panels
 
-### The filled action is black, not teal
+Two noise-grain emerald gradients with fine grid lines, generated to match Rune's
+`cta-gradient` / `search-gradient` assets:
 
-`--action` is `#0a0a0a` light / `#fafafa` dark. `<Button>` with no variant is that fill.
+| Utility | Asset | Use |
+| --- | --- | --- |
+| `panel-brand` | `static/assets/landing/cta-gradient.webp` (2400×1000) | Closing CTA, `BrandPanel` |
+| `panel-brand-tall` | `static/assets/landing/search-gradient.webp` (1200×1600) | Tool finder panel |
 
-**One filled action per surface.** Blue highlights, black commits. A second filled button on the
-same view is the most common way this system gets diluted: the second action is `variant="outline"`.
-
-### Feature-tag hues
-
-One hue per tag, never two on one component, always rendered duotone (`glyph-duotone`: full-strength
-stroke over a 20% fill of the same hue). No tinted tile behind the glyph.
-
-| Tag | Light | Dark | Token |
-| --- | --- | --- | --- |
-| Tangerine | `#ea580c` | `#fb923c` | `--color-tag-tangerine` |
-| Lavender | `#7c3aed` | `#a78bfa` | `--color-tag-lavender` |
-| Green | `#16a34a` | `#4ade80` | `--color-tag-green` |
-
-Tangerine (3.56:1) and green (3.30:1) clear the 3:1 icon floor but **not** the 4.5:1 text floor in
-light mode. They are for glyphs, tags, and emphasized phrases at 18px and above, never body copy.
+Both stay the same in dark mode. White text measures 4.70:1 on the base `#05845f` and 7.18:1 on the
+deep tone, but only 3.12:1 on the brightest streak (`#22a57b`). So text on a brand panel is either
+48px+ headline or centred body copy away from the streaks. The one exception is the tool finder's 12px tile labels, which sit on the glass card rather than the raw gradient. Regenerate
+with `node scripts/gen-brand-gradients.mjs` rather than editing the images by hand.
 
 ### Semantic colour
 
@@ -98,14 +88,9 @@ light mode. They are for glyphs, tags, and emphasized phrases at 18px and above,
 | `--warning` | `#8a5c00` | `#ff9f0a` |
 | `--info` | `#0060c9` | `#409cff` |
 
-Each light value doubles as ink on a neutral surface **and** as a fill under white text, so both
-jobs clear 4.5:1 from one token. The Apple system values these replaced did not: warning measured
-2.96:1 as text, and it is used as text.
-
-**State is never colour alone.** Teal and the success green collide under tritanopia (OKLab dE
-0.089, below the 0.10 threshold); teal and info blue collide harder (0.050). Every `StatusPill`
-carries a glyph (a spinner, a check, an alert, or a dot for idle), so hue is corroborating
-evidence, not the signal.
+**State is never colour alone.** Emerald and the success green collide under every vision type
+(OKLab dE 0.079), and no success green escapes it (`#15803d` 0.050, olive `#4d7c0f` 0.083). Every
+status carries a glyph or a word; hue is corroborating evidence, not the signal.
 
 ### Contrast floors
 
@@ -115,208 +100,213 @@ evidence, not the signal.
 | Focus ring, control boundary, meaningful icon | 3:1 |
 | Two controls distinguished by colour | 3:1 luminance **or** >0.10 OKLab dE under CVD |
 
-**Never fade a text or border token with an opacity modifier.** `text-muted-foreground/50` measures
-1.94:1; `/40` measures 1.60:1. 318 such dilutions were removed in this pass. If copy should be
-quieter it takes `text-muted-foreground`, full stop. Tints on *fills* (`bg-primary/10`) are fine;
-the rule is about ink and hairlines.
+**Never fade a text token with an opacity modifier** (`text-muted-foreground/50` measures 1.94:1).
+Tints on fills (`bg-primary/10`) and on white text over a brand panel (`text-white/80`) are fine.
 
 ---
 
 ## Typography
 
-One face: **Google Sans Variable**. Hierarchy comes from size, weight and tracking, not a second
-family. `--font-mono` is Source Code Pro, for code and technical readouts only.
+Self-hosted through Fontsource, imported in `src/routes/+layout.svelte` and `+error.svelte`.
 
-- **h1, h2**: weight **500**, tracking `-0.02em`. Medium, not bold: headings read confident, never
-  shouty. This is the signature.
-- **h3-h6**: weight 600, tracking `-0.01em`.
-- **Body**: weight 400. 500 for emphasis and button labels, 600 for important UI labels.
+| Token | Face | Package | Applies to |
+| --- | --- | --- | --- |
+| `--font-heading` / `font-display` | Google Sans Variable | `@fontsource-variable/google-sans` | `h1`-`h6` (base layer), logo wordmark |
+| `--font-sans` | Inter Variable | `@fontsource-variable/inter` | `body` and everything that inherits |
+| `--font-mono` | Source Code Pro Variable | `@fontsource-variable/source-code-pro` | Code, checksums, keycaps |
+
+Headings are weight **500** (`font-medium`), as in the reference. h1/h2 carry `-0.02em` tracking.
 
 ### Scale
 
-Nine steps. Line height rides along via Tailwind v4's `--text-*--line-height` pairing, so
-`text-body` sets both and no call site needs a `leading-` utility.
+Tailwind's default type scale, the same as Rune's, with Orbit role names on top. Line height rides
+along with each step.
 
-| Token | Size | Line height | Use |
+| Token | Tailwind | Size / line | Role |
 | --- | --- | --- | --- |
-| `text-caption` | 11px | 1.5 | Eyebrows, micro-labels, table meta |
-| `text-body` | 14px | 1.43 | Dense data, card copy, table rows |
-| `text-body-lg` | **16px** | 1.5 | **Canonical body size** |
-| `text-body-xl` | 18px | 1.56 | Ledes |
-| `text-subheading` | 20px | 1.4 | h3 |
-| `text-heading-sm` | 24px | 1.33 | Panel titles |
-| `text-heading` | 30px | 1.38 | Section h2 |
-| `text-heading-lg` | 36px | 1.11 | Large section h2, interior h1 |
-| `text-display` | 48px | 1.0 | Hero h1 only |
+| `text-caption` | `text-xs` | 12 / 16 | Chips, meta, tags, footer legal |
+| `text-body` | `text-sm` | 14 / 20 | Body copy, card copy, buttons, FAQ answers |
+| `text-body-lg` | `text-base` | 16 / 24 | Card titles (h3), FAQ questions, ledes from `md` |
+| `text-body-xl` | `text-lg` | 18 / 28 | Rare emphasis |
+| `text-subheading` | `text-xl` | 20 / 28 | Changelog entry title, legal section h2, specimen title |
+| `text-heading-sm` | `text-2xl` | 24 / 32 | Prose section h2 (docs), version numbers |
+| `text-heading` | `text-3xl` | 30 / 36 | Prose section h2 from `sm` |
+| `text-heading-lg` | `text-4xl` | 36 / 40 | Page h1 (mobile), split-section h2, FAQ title |
+| `text-display` | `text-5xl` | 48 / 1 | Page h1 from `md`, brand panel h2 |
+| `text-display-xl` | `text-6xl` | 60 / 1 | Landing hero h1 and closing CTA from `lg`, nothing else |
 
-`<body>` is 16px. **No ad-hoc `text-[Npx]`**: the page previously carried 72 of them, including
-9px, 10px and 11px hardcodes.
+`text-7xl` and above clamp to 60px. **No ad-hoc `text-[Npx]`.**
 
-**Tailwind's default steps are re-pointed onto this scale**, so `text-sm` is 14px, `text-xs` is
-11px, `text-2xl` is 24px, and `text-5xl` through `text-9xl` all clamp to 48px. 262 existing call
-sites therefore sit on the scale without a rename, and a stray `text-7xl` cannot invent a tenth step.
+### Roles, applied everywhere
 
-Legacy Orbit names (`text-title-sm`, `text-display-md`, `text-micro`, …) are aliased onto the same
-steps. Prefer the canonical names in new markup.
+| Element | Classes |
+| --- | --- |
+| Landing hero h1 | `text-heading-sm sm:text-heading-lg md:text-display lg:text-display-xl font-medium` |
+| Page h1 (`PageHero`) | `text-heading-lg md:text-display font-medium`, accent on a second line |
+| Section h2 (`SplitSection`) | `text-heading-lg font-medium`, accent on a second line |
+| Prose h2 (docs) | `text-heading-sm sm:text-heading font-medium` |
+| Card h3 | `text-body md:text-body-lg font-medium` (bento) / `text-body-lg font-medium` |
+| Lede | `text-body md:text-body-lg text-muted-foreground` |
+| Body | `text-body text-muted-foreground`, `leading-relaxed` in long copy |
+| Meta | `text-caption` |
 
-Use `text-balance` on every headline and `text-pretty` on every body paragraph.
+### tailwind-merge
 
-### Eyebrows
-
-`label-eyebrow`: 11px, weight 600, **sentence case, no letter-spacing**. Colour is set by the
-caller (`text-muted-foreground` or `text-primary`). Uppercase letter-spaced micro-labels are gone;
-at 11px they cost legibility and, repeated, read as a tic.
+`cn()` uses `extendTailwindMerge(twMergeConfig)` from [utils.ts](src/lib/utils.ts), which registers
+every `text-*` role and custom shadow name. Without it, tailwind-merge reads `text-body` as a colour
+and silently drops it when a `text-foreground` follows. Add any new size or shadow token there.
 
 ---
 
 ## Shape
 
-Five radii. Nothing else.
+Rune's radius scale (`--radius` 10px base).
 
-| Element | Value | Utility |
+| Utility | Value | Use |
 | --- | --- | --- |
-| Tags, badges, pills | 9999px | `rounded-full` |
-| Inputs | 6px | `rounded-xs` |
-| Buttons | 8px | `rounded-sm` / `rounded-md` |
-| Cards | 12px | `rounded-lg` / `.surface` |
-| Large feature surfaces, mockups | 16px | `rounded-xl` / `.surface-lg` |
+| `rounded-sm` / `rounded-xs` | 6px | Chip inner tiles, keycaps |
+| `rounded-md` | 8px | Buttons, navbar controls, tilted chips |
+| `rounded-lg` | 10px | Tool tiles, list rows, nav items |
+| `rounded-xl` | 14px | Inset visuals, search inputs, navbar shell |
+| `rounded-2xl` | 18px | Cards (`panel-card`), FAQ cards, bento cards (mobile), panels |
+| `rounded-3xl` | 22px | Bento cards from `md`, brand panels, footer card, glass search card |
+| `rounded-full` | 9999px | Pills, status tags |
 
-Tailwind's `rounded-2xl` and `rounded-3xl` are collapsed onto 16px, so the vocabulary cannot be
-exceeded from a call site.
+Nest radii inward: a 14px visual inside an 18-22px card, never the reverse.
 
 ---
 
 ## Elevation
 
-Borders define containers. Shadows are allowed in exactly three places:
+Borders define containers. Shadows:
 
 | Use | Token |
 | --- | --- |
-| Filled button lift | `--shadow-subtle` = `rgba(0,0,0,.05) 0 1px 2px` |
-| Product mockup / elevated feature card | `--shadow-ring` = `rgba(0,0,0,.1) 0 0 0 4px` |
-| Floating overlays (menus, dialogs, sheets) | `--shadow-md` / `--shadow-lg` |
+| Buttons, navbar shell | `shadow-xs` / `shadow-sm` |
+| Inset visuals inside a bento card | `shadow-sm` |
+| Bento card hover (pointer feedback only) | `shadow-lg` |
+| Floating overlays, specimen tile, brand-panel glass card | `shadow-md` / `shadow-lg` |
 
-**Cards carry no shadow.** Inputs carry no shadow.
-
----
-
-## Surfaces
-
-| Class | Use |
-| --- | --- |
-| `.surface` | Cards. Card fill, 1px hairline, 12px. |
-| `.surface-lg` | Feature and showcase panels. 16px. |
-| `.surface-alt` | Nested tonal panel. Paper, no border, 16px. A border inside a border is two edges. |
-| `.mockup-frame` | Product screenshots. 16px, 4px ring, no border. |
-| `.pill` | Hero feature tags. Transparent, no border, 9999px. |
-| `.pill-outline` | Badges and status chips. Card fill, hairline, 9999px. |
-| `.pressable` | Press feedback for anything pressable that is not a `<Button>`. |
-
-### Backgrounds
-
-The canvas is flat. The only texture is `.bg-dot-grid`: a 16px dot array at ~7% opacity with a
-radial fade. This is the blueprint signature, and it is applied once. No aurora, no gradient wash,
-no photo behind a headline. `--gradient-conic-spectrum` has no equivalent here: Orbit has no
-decorative gradient.
+**Cards carry no shadow at rest.** Inputs carry no shadow.
 
 ---
 
 ## Layout
 
-- **Page max width:** 1200px: `<Container width="wide">` / `max-w-page`.
-- **Section rhythm:** 64px: `<Section>` default is `py-16`.
-- **Card padding:** 16px. **Element gap:** 8px. Base unit 4px, compact density.
-- Sections alternate canvas and `<Section band>` (paper + hairline top and bottom) for tonal
-  separation. Mixing the two is what makes the rhythm read.
-- Section dividers are `border-t border-border`. No solid rules, no gradients.
+### The rail frame
 
-### Page rhythm (home)
+Every public page renders inside `<RailFrame>`, which owns the navbar, `<main>`, the footer and the
+rails. Pages never import `Navbar` or `Footer` directly.
 
-1. **Hero**: announcement pill, two-line headline with the accent clause on line two, one-paragraph
-   subhead, filled + outlined CTA pair, four-stat rule.
-2. **01 · Tools**: chapter rule, 5/7 editorial split, `gap-px` hairline grid of tools.
-3. **02 · Architecture**: paper band, 5/7 split, three details on hairlines with duotone glyphs.
-4. **03 · How it works**: `gap-px` hairline grid, three numbered steps.
-5. **04 · FAQ**: sticky title left, single-open accordion right.
-6. **Closing CTA**: paper band, one filled action, the three steps restated.
-7. **Footer**.
+- **Column** (`rail-column`): `min(95vw, 1440px)`, `min(90vw, 1440px)` from `md`, `min(85vw, 1800px)`
+  from 1536px.
+- **Rails:** two fixed 2px dashed lines on the column edges in `--border` (`rail-dash border-x-2`).
+- **Rows:** `<RailRow>` = a full-bleed 2px dashed rule, then the column with `p-3 sm:p-6`. The first
+  row passes `divider={false}`. `label` names the section for assistive tech.
+
+### Row paddings (from the reference)
+
+| Row | Padding |
+| --- | --- |
+| Landing hero | `pt-32 sm:pt-36 pb-4 sm:pb-6`; hero grid `lg:h-[calc(100svh-10rem)] lg:max-h-195` |
+| Tool finder | `py-10 sm:py-14`, inner `py-6`, halves `gap-5` |
+| Bento, CTA, generic rows | `p-3 sm:p-6` |
+| FAQ / split sections | inner `px-1 sm:px-4 lg:px-16`, `py-6 sm:py-8 lg:py-10`, title column `lg:w-110`, `lg:gap-20` |
+| Footer | `py-10 sm:py-14` |
+
+The navbar floats (`fixed`), so the first row carries the navbar's height in its top padding.
+
+### Page primitives (`src/components/site`)
+
+| Component | Shape |
+| --- | --- |
+| `PageHero` | Tilted check chip, h1 with emerald second line, lede, actions, optional `aside` column |
+| `SplitSection` | Title + accent + description (+ `aside`) left, content right; `sticky` keeps the title in view |
+| `BrandPanel` | `panel-brand` 22px card, centred white h2, body, `ink` + `light` actions |
+| `FaqList variant="cards"` | Numbered 18px cards, emerald index, chevron rotates, one open |
+
+### Pages
+
+- **Home** (`Web.Home`): hero (`HeroSection` + `HeroIllustration`), tool finder, benefits bento, FAQ,
+  closing CTA, footer.
+- **About, Docs, Changelog, Download, Install, Privacy, Terms**: `PageHero`, then `SplitSection` rows of
+  `panel-card`s, ending in a `BrandPanel` where there is a next step. Docs owns the technical detail
+  (engines, runtimes); marketing pages speak to non-technical visitors.
+- **Error**: canvas + rails, one `panel-card`, the same h1 + accent pattern.
+- **Desktop home** (`Desktop.Home`): rendered at `/` in Tauri, or on the web with `/?mode=desktop`
+  (shows "Exit preview"). App toolbar with search (`/` focuses it), greeting, recent or popular tools,
+  category sidebar + compact tool grid. No marketing sections, no rails. It owns its scroll inside
+  the fixed Tauri frame.
 
 ---
 
 ## Components
 
-### ChapterRule
+### Navbar
 
-`01` in the display face at 24px weight 500, the section label as an eyebrow, and the section's one
-action, all on a single hairline across the column. This is how a section opens. A centred heading
-stack reads like a slide; a chapter rule reads editorial.
+`FloatingMenu`'s behaviour is untouched; styling comes through its `classes` prop in
+[navbar.svelte](src/components/common/navbar.svelte): 14px radius, one hairline, `bg-background/80`
+with blur, `shadow-sm` (`--shadow-craft-floating`), 40px controls with 8px radius, muted ghost
+GitHub link, emerald filled Download.
 
 ### Buttons
 
 | Variant | Treatment |
 | --- | --- |
-| `default` | Near-black fill, white text, 8px. **One per surface.** |
-| `outline` | Card fill, hairline border, 8px. The workhorse. |
-| `ghost` | Transparent, paper on hover. Nav items and icon controls. |
-| `primary` | Teal fill. Only where the brand action must read as branded. |
-| `light` | White fill on a dark band. |
-| `destructive` | Destructive fill, its paired foreground. |
+| `default` | Near-black fill (`--action`), flips to near-white in dark. |
+| `primary` | Emerald fill. The page's brand action (hero, download). |
+| `outline` | Card fill, hairline. Secondary actions. |
+| `ghost` | Transparent, muted fill on hover. |
+| `ink` | Fixed near-black in both themes. Primary action on a brand panel. |
+| `light` | Fixed white in both themes. Secondary action on a brand panel. |
+| `destructive` | Destructive fill. |
 
-Press feedback is `active:scale-[0.98]`, 100ms. There is no hover-grow and no radius morph. Focus is
-a 2px `--ring` with a 2px offset, never a diluted `ring/50`.
+The hero pairs `primary` + `default`, as the reference pairs brand + black. Default size is 40px.
+Press feedback is `active:scale-[0.98]`. Focus is a 2px `--ring` with a 2px offset.
 
-### Inputs
+### Tool finder
 
-White fill, **1px near-black border** (`--input` is `#0a0a0a`), 6px radius, no shadow. The black
-border is a signature: inputs feel important, not optional. Placeholders take `--placeholder`.
+Left: a white plate with corner brackets, a faint 24px grid, the hovered tool's icon in a thick-bordered
+tile, title, description, "Open tool". Right: `panel-brand-tall` with a glass card (`bg-white/10`,
+`backdrop-blur-[2px]`), a white search field, 40px white tiles with 12px white labels, and an icon
+segmented control on a white track with a skeuomorphic sliding thumb.
 
-### Cards
+### Hero illustration
 
-`.surface`: card fill, 1px hairline, 12px, 16px padding, **no shadow**. The most frequent component
-in the system. Rely on the border and spacing for structure.
+`HeroIllustration.svelte` generates isometric line art from box and ramp definitions (30° projection)
+in the reference's style: canvas-toned faces, `--foreground` 1.25px strokes, hatched ramps, emerald
+accent tile, pillars fading into the canvas through a mask. A document travels from the input
+pillar to the output pillar on a 7s loop; the cloud is crossed out. Height is capped at
+`min(34rem, 100svh - 14rem)` so it never collides with the navbar.
 
-`ToolCard` takes `framing="cell"` to drop its border and radius when it sits inside a `gap-px`
-hairline grid, so a card never nests inside a card.
+### Bento
 
-### StatusPill
+Transparent cards, `rounded-2xl md:rounded-3xl`, `hover:shadow-lg`. Visuals are white inset cards
+over the canvas. Every card states a user benefit in plain language (privacy, offline, signing,
+tool range, no account). No stack names, protocols or runtimes on marketing pages.
 
-Tinted fill, pill radius, a glyph for every state including idle. See the CVD note under Semantic
-colour for why the glyph is not optional.
+### Tilted chips
 
-### FaqList
-
-Hairline-divided rows, one open at a time, first open on load, plus-rotates-to-close as the only
-affordance. No card, no chevron column. Height animates through Svelte's `slide`, which native
-`<details>` cannot do.
-
-### Reveal
-
-Wrap scroll-in content in `<Reveal delay={stagger(i)}>`. It **starts visible** and only hides once
-the observer is confirmed, so content is never stuck at `opacity: 0` when JS never runs. It exits
-early under `prefers-reduced-motion`.
+`-rotate-2` to `rotate-6` label chips. Hairline, 8px radius, 12px semibold. At most two per view.
 
 ---
 
 ## Motion
 
-One entry/exit curve: `--ease-craft` = `cubic-bezier(0.32, 0.72, 0, 1)`. `ease-in` is never used on
-UI: it withholds the first frames, which is exactly when the user is watching.
+One entry/exit curve: `--ease-craft` = `cubic-bezier(0.32, 0.72, 0, 1)`.
 
 | Use | Duration |
 | --- | --- |
 | Press feedback | 100ms |
-| Hover / state colour change | 200ms |
-| Cross-fade, panel | 300ms |
+| Hover / state colour change | 150-200ms |
+| Segmented thumb, panel | 300ms |
 | Overlay enter / exit | 200 / 150ms |
-| Sheet enter | 300ms |
 
-Scale deltas are 2% (`0.98`), never smaller. Stagger steps are 30-70ms and cap at 6-8 items, so a
-30-card grid does not ladder in over two seconds.
+Ambient loops (all stop under `prefers-reduced-motion`): hero document travel (7s), bento signature
+draw (4.5s), bento tool marquee (48s, pauses on hover), CTA floating glyphs.
 
-**Svelte `transition:` directives run on WAAPI and bypass the CSS reduced-motion guard.** Gate them
-in JS: `rise()` and `stagger()` in [motion.ts](src/lib/motion.ts) already do, returning a short fade
-and a zero delay when reduced motion is set. Never hand-roll `in:fly` with raw values on a public
-page.
+**Svelte `transition:` directives bypass the CSS reduced-motion guard.** Use `rise()` and `stagger()`
+from [motion.ts](src/lib/motion.ts); never hand-roll `in:fly` with raw values.
 
 ---
 
@@ -324,34 +314,27 @@ page.
 
 **Do**
 
-- Define containers with `border-border` at full strength.
-- Use the nine-step type scale and the five-radius vocabulary.
-- Keep one filled near-black action per surface; everything else is outline or ghost.
-- Give each feature tag exactly one hue, rendered duotone.
-- Reserve `--primary` to the listed roles.
-- Use 16px as the canonical body size; 14px for dense data; 11px for micro-labels.
-- Test new sections in both light and dark.
+- Build public pages from `RailFrame` → `RailRow` → `PageHero` / `SplitSection` / `panel-card`.
+- Use the role table for every text size.
+- Put the emerald on the key words of a title, on a second line.
+- Write marketing copy for non-technical people; keep engine and runtime detail in Docs.
+- Test in light and dark, and at 125% OS scaling.
 
 **Don't**
 
-- Don't fade text or hairlines with an opacity modifier: use `text-muted-foreground`.
-- Don't use a drop shadow to define a card.
-- Don't use pure black for body text: `#171717` and `#fafafa` are the ink.
-- Don't apply the teal to a large background fill.
-- Don't put two chromatic colours on one component.
+- Don't fade text tokens with an opacity modifier.
+- Don't use emerald-600 or a flat emerald fill as a background.
+- Don't put a fake metric in a marketing visual. If a number is shown, it must be true.
 - Don't write `text-[13px]` or any other ad-hoc size or radius.
-- Don't use `uppercase` + letter-spaced eyebrows; use `label-eyebrow`.
-- Don't add `backdrop-filter` to a page surface. The floating navbar is the one exception and it is
-  deliberate.
+- Don't add a size or shadow token without registering it in `twMergeConfig`.
+- Don't place small text over the bright streak of a brand panel.
 
 ---
 
 ## Scope
 
-The public pages (`/`, `/explore`, `/about`, `/docs`, `/changelog`, `/download`, legal) and the
-shared `components/ui` primitives are the reference implementation. The `(app)` shell and the PDF
-editor inherit the same tokens; where they diverge it is for density, not for a second system.
+Public pages and the shared `components/ui` primitives are the reference implementation. The `(app)`
+shell and PDF editor inherit the tokens; where they diverge it is for density.
 
-`src/components/site/` holds the page-level primitives: `Container`, `Section`, `ChapterRule`,
-`SectionHeader`, `PageHero`, `FaqList`, `Reveal`. Build public pages from these rather than
-hand-rolling section markup.
+The browser extension's side panel (`extension/entrypoints/side-panel/app.css`) carries its own token
+copy. Only its brand colour tracks this document; its neutrals and font still predate the redesign.

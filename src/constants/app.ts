@@ -12,6 +12,7 @@ const config = {
     supportEmail: "support@nexonauts.com",
     appDomain: "orbit.nexonauts.com",
     github: "https://github.com/kanakkholwal/orbit",
+    twitter: "https://twitter.com/kanakkholwal",
     adsensePublisherId: dev ? "" : (PUBLIC_ADSENSE_PUBLISHER_ID?.trim() || ""),
     googleAnalyticsId: dev ? "" : (PUBLIC_GOOGLE_ANALYTICS_ID?.trim() || ""),
 }

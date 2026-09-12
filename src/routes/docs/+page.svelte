@@ -1,431 +1,191 @@
 <script lang="ts">
-  import Footer from "$components/common/footer.svelte";
-  import Navbar from "$components/common/navbar.svelte";
+  import { BrandPanel, FaqList, PageHero, RailFrame, RailRow } from "$components/site";
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
   import { config, faqs } from "$constants/app";
-  import { cn } from "$lib/utils";
   import { toolList } from "$tools/list";
   import {
     IconArrowUpRight as ArrowUpRight,
+    IconBolt as Zap,
     IconBrandGithub as Github,
     IconInfinity as InfinityIcon,
     IconShield as Shield,
     IconWifiOff as WifiOff,
-    IconBolt as Zap,
   } from "@tabler/icons-svelte";
-  import { cubicOut } from "svelte/easing";
-  import { fly } from "svelte/transition";
 
   const sections = [
     { id: "getting-started", label: "Getting started" },
     { id: "installation", label: "Installation" },
     { id: "tools", label: "Tools" },
-    { id: "privacy", label: "Privacy" },
+    { id: "how-it-works", label: "How it works" },
     { id: "faq", label: "FAQ" },
   ];
 
   const guarantees = [
-    {
-      icon: Shield,
-      title: "100% private",
-      body: "Files never leave your device. Every operation runs locally in your browser or app shell.",
-    },
-    {
-      icon: Zap,
-      title: "Native speed",
-      body: "WebAssembly engines deliver desktop-grade performance, even on hundred-page documents.",
-    },
-    {
-      icon: WifiOff,
-      title: "Offline ready",
-      body: "Works in airplane mode once loaded. The desktop app needs no network at all.",
-    },
-    {
-      icon: InfinityIcon,
-      title: "No limits",
-      body: "Process files of any size. Constraints are your machine's, not ours.",
-    },
+    { icon: Shield, title: "Private", body: "Files never leave your device. Every tool runs in your browser or the desktop app." },
+    { icon: Zap, title: "Fast", body: "No upload and no queue, so work starts the moment you drop a file." },
+    { icon: WifiOff, title: "Offline", body: "Once installed, every tool keeps working without an internet connection." },
+    { icon: InfinityIcon, title: "No limits", body: "No page caps and no file-size quotas beyond your own computer's memory." },
   ];
 
   const installSteps = [
+    { title: "Use it in the browser", body: "Open any tool from the home page. Nothing to install and nothing to sign up for." },
     {
-      label: "01",
-      title: "Open the web app",
-      body: "Visit the home page. Tools load instantly and remain available offline as a PWA.",
+      title: "Or download the desktop app",
+      body: "Get the installer for Windows (.exe or .msi), macOS (.dmg) or Linux (.AppImage or .deb) from the download page.",
     },
-    {
-      label: "02",
-      title: "Download the desktop build",
-      body: "Pick the installer for your OS from GitHub Releases — Windows (.msi/.exe), macOS (.dmg), or Linux (.AppImage/.deb).",
-    },
-    {
-      label: "03",
-      title: "Launch and pin",
-      body: "Open the app, pin it to your dock or taskbar, and you have a permanent local PDF workshop.",
-    },
+    { title: "Pin it", body: "Pin Orbit to your dock or taskbar and it opens like any other app." },
   ];
 
-  const privacyPoints = [
-    {
-      title: "Local processing",
-      body: "Every transformation runs on your CPU. There is no server roundtrip, by design.",
-    },
-    {
-      title: "No analytics on contents",
-      body: "We never inspect, log, or fingerprint document contents. Anonymous usage signals are opt-in.",
-    },
-    {
-      title: "Audit-ready",
-      body: "The full source is on GitHub. Reviewers can verify every claim against the code.",
-    },
+  const engines = [
+    { name: "qpdf", role: "Repairs, restructures and encrypts files", runtime: "WebAssembly" },
+    { name: "Tesseract", role: "Reads text from scanned pages", runtime: "WebAssembly" },
+    { name: "PDF.js", role: "Renders pages on screen", runtime: "JavaScript" },
+    { name: "pdf-lib", role: "Writes and edits PDF files", runtime: "JavaScript" },
+    { name: "Tauri", role: "Wraps the desktop app with a Rust core", runtime: "Native" },
   ];
+
+  const faqItems = faqs.map((f) => ({ q: f.question, a: f.answer }));
 </script>
 
 <Seo
   title="Documentation"
-  description="Get started with Orbit PDF — installation, tools, privacy, and answers to common questions."
-  keywords={[
-    "orbit pdf docs",
-    "pdf toolkit guide",
-    "offline pdf editor docs",
-  ]}
+  description="Get started with Orbit PDF: installation, tools, how it works and answers to common questions."
+  keywords={["orbit pdf docs", "pdf toolkit guide", "offline pdf editor docs"]}
 />
 
-<div class="relative flex min-h-screen w-full flex-col">
-  <Navbar />
+<RailFrame>
+  <RailRow divider={false} label="Documentation">
+    <PageHero
+      badge="Documentation"
+      title="Everything you need"
+      accent="to get started"
+      lede={`How to install ${config.appName}, what each tool does, and exactly how your files stay private.`}
+    />
+  </RailRow>
 
-  <div
-    class="mx-auto flex w-full max-w-6xl flex-col gap-12 px-5 pb-24 pt-32 md:flex-row md:gap-16 md:px-8 md:pt-40"
-  >
-    <aside class="md:w-56 md:shrink-0">
-      <div class="sticky top-32 flex flex-col gap-6">
-        <div
-          class="flex items-baseline justify-between border-b border-border pb-3"
-        >
-          <span
-            class="label-eyebrow text-muted-foreground"
-          >
-            On this page
-          </span>
-        </div>
-        <nav class="flex flex-col">
-          {#each sections as s, i}
+  <RailRow label="Guide">
+    <div class="flex flex-col gap-10 px-1 py-6 sm:px-4 sm:py-8 lg:flex-row lg:gap-20 lg:px-16 lg:py-10">
+      <aside class="shrink-0 lg:w-56">
+        <nav class="panel-card flex flex-col p-2 lg:sticky lg:top-28" aria-label="On this page">
+          {#each sections as s, i (s.id)}
             <a
               href={`#${s.id}`}
-              class={cn(
-                "group flex items-baseline justify-between border-b border-border py-2.5 text-body text-muted-foreground transition-colors duration-300 hover:text-foreground"
-              )}
+              class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-body text-muted-foreground transition-colors duration-200 hover:bg-muted hover:text-foreground"
             >
-              <span class="relative">
-                {s.label}
-                <span
-                  aria-hidden="true"
-                  class="absolute -bottom-0.5 left-0 h-px w-0 bg-foreground transition-[width] duration-300 ease-out group-hover:w-full"
-                ></span>
-              </span>
-              <span
-                class="font-mono text-caption tabular-nums text-muted-foreground"
-              >
+              {s.label}
+              <span class="text-caption tabular-nums text-muted-foreground">
                 {String(i + 1).padStart(2, "0")}
               </span>
             </a>
           {/each}
         </nav>
-      </div>
-    </aside>
+      </aside>
 
-    <main class="flex-1">
-      <header
-        class="flex flex-col gap-5 border-b border-border pb-12"
-        in:fly={{ y: 12, duration: 500, easing: cubicOut }}
-      >
-        <span
-          class="label-eyebrow text-primary"
-        >
-          Documentation
-        </span>
-        <h1
-          class="text-heading text-foreground sm:text-heading-lg"
-        >
-          Build with confidence,
-          <span class="text-primary">work in private.</span>
-        </h1>
-        <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
-          Everything you need to install, integrate, and trust {config.appName}
-          — written for engineers, designed for everyone.
-        </p>
-      </header>
-
-      <section
-        id="getting-started"
-        class="mt-20 scroll-mt-32"
-      >
-        <div
-          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
-        >
-          <h2
-            class="label-eyebrow text-muted-foreground"
-          >
-            Getting started
-          </h2>
-          <span
-            class="font-mono text-caption tabular-nums text-muted-foreground"
-          >
-            01
-          </span>
-        </div>
-
-        <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
-          {config.appName} is a privacy-first PDF toolkit. There is nothing to sign
-          up for and nothing to install for the web tools — open a tool, drop a
-          file, get a result.
-        </p>
-
-        <ul class="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border border-border bg-border/60 sm:grid-cols-2">
-          {#each guarantees as g, i}
-            <li
-              class="flex flex-col gap-2 bg-card p-6"
-              in:fly={{
-                y: 12,
-                duration: 480,
-                delay: 100 + i * 60,
-                easing: cubicOut,
-              }}
-            >
-              <span class="inline-flex size-7 items-center justify-center rounded-sm bg-primary/10 text-primary">
-                <g.icon class="size-3.5" />
-              </span>
-              <h3 class="text-body font-medium text-foreground">{g.title}</h3>
-              <p class="text-body leading-relaxed text-muted-foreground">
-                {g.body}
-              </p>
-            </li>
-          {/each}
-        </ul>
-      </section>
-
-      <section id="installation" class="mt-24 scroll-mt-32">
-        <div
-          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
-        >
-          <h2
-            class="label-eyebrow text-muted-foreground"
-          >
-            Installation
-          </h2>
-          <span
-            class="font-mono text-caption tabular-nums text-muted-foreground"
-          >
-            02
-          </span>
-        </div>
-
-        <ol class="flex flex-col gap-8">
-          {#each installSteps as step, i (step.label)}
-            <li
-              class="flex flex-col gap-2 border-l border-border pl-6"
-              in:fly={{
-                y: 12,
-                duration: 480,
-                delay: 80 + i * 70,
-                easing: cubicOut,
-              }}
-            >
-              <span
-                class="label-eyebrow text-primary"
-              >
-                Step {step.label}
-              </span>
-              <h3 class="text-xl font-medium tracking-tight text-foreground">
-                {step.title}
-              </h3>
-              <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
-                {step.body}
-              </p>
-            </li>
-          {/each}
-        </ol>
-
-        <div
-          class="mt-8 rounded-md border border-warning/30 bg-warning/5 p-5 text-body leading-relaxed text-warning-foreground"
-          in:fly={{ y: 8, duration: 420, delay: 320, easing: cubicOut }}
-        >
-          <p class="label-eyebrow text-warning">
-            Note
+      <div class="flex min-w-0 flex-1 flex-col gap-16">
+        <section id="getting-started" class="scroll-mt-28">
+          <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">Getting started</h2>
+          <p class="mt-3 max-w-2xl text-body leading-relaxed text-muted-foreground">
+            {config.appName} is a private PDF toolkit. Open a tool, drop a file, save the result.
           </p>
-          <p class="mt-2 text-foreground">
-            Desktop installers are signed with self-issued certificates. SmartScreen
-            and Gatekeeper warnings on first launch are expected for independent
-            open-source projects — the source is fully auditable.
+          <ul class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {#each guarantees as g (g.title)}
+              <li class="panel-card flex flex-col gap-3 p-6">
+                <span class="grid size-10 place-items-center rounded-lg border border-border">
+                  <g.icon class="size-5 text-primary" />
+                </span>
+                <h3 class="text-body-lg font-medium text-foreground">{g.title}</h3>
+                <p class="text-body leading-relaxed text-muted-foreground">{g.body}</p>
+              </li>
+            {/each}
+          </ul>
+        </section>
+
+        <section id="installation" class="scroll-mt-28">
+          <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">Installation</h2>
+          <ol class="mt-6 flex flex-col gap-3">
+            {#each installSteps as step, i (step.title)}
+              <li class="panel-card flex gap-4 px-6 py-5">
+                <span class="text-body font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3 class="text-body-lg font-medium text-foreground">{step.title}</h3>
+                  <p class="mt-1 text-body leading-relaxed text-muted-foreground">{step.body}</p>
+                </div>
+              </li>
+            {/each}
+          </ol>
+          <p class="mt-4 rounded-xl border border-warning/30 bg-warning/5 px-5 py-4 text-body leading-relaxed text-foreground">
+            The desktop installers are self-signed, so Windows SmartScreen or macOS Gatekeeper may warn on first
+            launch. That is expected for independent open-source apps.
           </p>
-        </div>
-      </section>
+        </section>
 
-      <section id="tools" class="mt-24 scroll-mt-32">
-        <div
-          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
-        >
-          <h2
-            class="label-eyebrow text-muted-foreground"
-          >
-            Tools
-          </h2>
-          <span
-            class="font-mono text-caption tabular-nums text-muted-foreground"
-          >
-            03
-          </span>
-        </div>
-
-        <ul class="flex flex-col">
-          {#each toolList.slice(0, 8) as tool, i (tool.slug)}
-            <li
-              in:fly={{
-                y: 8,
-                duration: 380,
-                delay: 60 + i * 35,
-                easing: cubicOut,
-              }}
-            >
-              <a
-                href={`/tools/${tool.slug}`}
-                class="group flex items-start justify-between gap-6 border-b border-border py-5 transition-colors duration-300 hover:bg-muted/30"
-              >
-                <div class="flex items-start gap-4">
-                  <tool.icon
-                    class="mt-0.5 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
-                  />
-                  <div class="flex flex-col gap-1">
-                    <span class="text-body font-medium text-foreground">
-                      {tool.title}
-                    </span>
-                    <span class="text-body text-muted-foreground">
+        <section id="tools" class="scroll-mt-28">
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">Tools</h2>
+            <Button href="/explore" variant="outline" size="sm">
+              All {toolList.length} tools
+              <ArrowUpRight />
+            </Button>
+          </div>
+          <ul class="panel-card mt-6 divide-y divide-border">
+            {#each toolList.slice(0, 8) as tool (tool.slug)}
+              <li>
+                <a
+                  href={`/tools/${tool.slug}`}
+                  class="group flex items-start gap-4 px-6 py-4 transition-colors duration-200 hover:bg-muted"
+                >
+                  <tool.icon class="mt-0.5 size-5 shrink-0 text-primary" />
+                  <span class="min-w-0 flex-1">
+                    <span class="block text-body font-medium text-foreground">{tool.title}</span>
+                    <span class="mt-0.5 block line-clamp-1 text-body text-muted-foreground">
                       {tool.description.split(". ")[0]}
                     </span>
-                  </div>
-                </div>
-                <ArrowUpRight
-                  class="size-4 shrink-0 text-muted-foreground transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
-                />
-              </a>
-            </li>
-          {/each}
-        </ul>
-      </section>
+                  </span>
+                  <ArrowUpRight class="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+                </a>
+              </li>
+            {/each}
+          </ul>
+        </section>
 
-      <section id="privacy" class="mt-24 scroll-mt-32">
-        <div
-          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
-        >
-          <h2
-            class="label-eyebrow text-muted-foreground"
-          >
-            Privacy
-          </h2>
-          <span
-            class="font-mono text-caption tabular-nums text-muted-foreground"
-          >
-            04
-          </span>
-        </div>
+        <section id="how-it-works" class="scroll-mt-28">
+          <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">How it works</h2>
+          <p class="mt-3 max-w-2xl text-body leading-relaxed text-muted-foreground">
+            The page loads the tool once. Your document is read into the tab's memory, processed by the engines
+            below, and written back to your disk. There is no upload endpoint to send it to.
+          </p>
+          <ul class="panel-card mt-6 divide-y divide-border">
+            {#each engines as engine (engine.name)}
+              <li class="flex flex-col gap-1 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+                <span>
+                  <span class="block text-body font-medium text-foreground">{engine.name}</span>
+                  <span class="block text-body text-muted-foreground">{engine.role}</span>
+                </span>
+                <span class="w-fit rounded-full bg-muted px-2.5 py-0.5 text-caption font-medium text-foreground">
+                  {engine.runtime}
+                </span>
+              </li>
+            {/each}
+          </ul>
+        </section>
 
-        <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
-          The privacy model is structural, not promised. The architecture
-          itself prevents the kinds of data flows that make uploads risky.
-        </p>
+        <section id="faq" class="scroll-mt-28">
+          <h2 class="mb-6 text-heading-sm font-medium text-foreground sm:text-heading">FAQ</h2>
+          <FaqList items={faqItems} variant="cards" />
+        </section>
+      </div>
+    </div>
+  </RailRow>
 
-        <ul class="mt-10 flex flex-col gap-6">
-          {#each privacyPoints as p, i}
-            <li
-              class="grid grid-cols-1 gap-2 border-b border-border pb-6 sm:grid-cols-4"
-              in:fly={{
-                y: 10,
-                duration: 460,
-                delay: 80 + i * 60,
-                easing: cubicOut,
-              }}
-            >
-              <h3
-                class="col-span-1 text-body font-medium tracking-tight text-foreground"
-              >
-                {p.title}
-              </h3>
-              <p
-                class="col-span-1 max-w-xl text-body leading-relaxed text-muted-foreground sm:col-span-3"
-              >
-                {p.body}
-              </p>
-            </li>
-          {/each}
-        </ul>
-      </section>
-
-      <section id="faq" class="mt-24 scroll-mt-32">
-        <div
-          class="mb-8 flex items-baseline justify-between border-b border-border pb-4"
-        >
-          <h2
-            class="label-eyebrow text-muted-foreground"
-          >
-            FAQ
-          </h2>
-          <span
-            class="font-mono text-caption tabular-nums text-muted-foreground"
-          >
-            05
-          </span>
-        </div>
-
-        <ul class="flex flex-col">
-          {#each faqs as faq, i (faq.question)}
-            <li
-              class="flex flex-col gap-2 border-b border-border py-6"
-              in:fly={{
-                y: 8,
-                duration: 420,
-                delay: 60 + i * 50,
-                easing: cubicOut,
-              }}
-            >
-              <h3 class="text-body font-medium text-foreground">
-                {faq.question}
-              </h3>
-              <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">
-                {faq.answer}
-              </p>
-            </li>
-          {/each}
-        </ul>
-
-        <div
-          class="mt-12 flex flex-col gap-3 rounded-md border border-border bg-muted/30 p-6 sm:flex-row sm:items-center sm:justify-between"
-          in:fly={{ y: 12, duration: 500, delay: 280, easing: cubicOut }}
-        >
-          <div>
-            <p
-              class="label-eyebrow text-muted-foreground"
-            >
-              Still stuck?
-            </p>
-            <p class="mt-1 text-body text-foreground">
-              Open an issue or peek at how it's built.
-            </p>
-          </div>
-          <Button
-            href={config.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="outline"
-            class="rounded-sm"
-          >
-            <Github size={16} />
-            View on GitHub
-          </Button>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <Footer />
-</div>
+  <RailRow label="Still stuck">
+    <BrandPanel title="Still stuck?" body="Open an issue on GitHub or browse the source to see exactly how it's built.">
+      {#snippet actions()}
+        <Button href={`${config.github}/issues`} target="_blank" rel="noopener noreferrer" variant="light">
+          Open an issue
+          <Github />
+        </Button>
+      {/snippet}
+    </BrandPanel>
+  </RailRow>
+</RailFrame>

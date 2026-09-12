@@ -6,8 +6,8 @@
   --foreground: hsl(0deg 0% 9.8%);
   --card: hsl(0, 0%, 100%);
   --card-foreground: hsl(0deg 0% 9.8%);
-  --primary: hsl(175, 84%, 32%);
-  --primary-foreground: hsl(0deg 0% 92.16%);
+  --primary: #047857;
+  --primary-foreground: #ffffff;
   --secondary: hsla(240 4.8% 95.9%);
   --muted: hsl(0, 0%, 92%);
   --muted-foreground: hsl(220 8.9% 46.1%);
@@ -22,8 +22,8 @@
   --foreground: hsl(0deg 0% 92.16%);
   --card: hsl(0deg 0% 9.8%);
   --card-foreground: hsl(0deg 0% 92.16%);
-  --primary: hsl(175, 84%, 32%);
-  --primary-foreground: hsl(0deg 0% 92.16%);
+  --primary: #34d399;
+  --primary-foreground: #0a0a0a;
   --secondary: hsla(240 3.7% 15.9%);
   --muted: hsl(0deg 0.01% 12.16%);
   --muted-foreground: hsl(217.9 10.6% 64.9%);

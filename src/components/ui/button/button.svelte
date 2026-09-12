@@ -32,6 +32,7 @@
         // The primary action on .band-dark. Fixed values: the band does not
         // flip the theme, so bg-dark there would render near-black on near-black.
         light: "bg-fixed-light text-fixed-dark shadow-subtle hover:opacity-90",
+        ink: "bg-fixed-dark text-fixed-light shadow-subtle hover:opacity-90",
         raw: "",
       },
       size: {

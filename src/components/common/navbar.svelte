@@ -40,7 +40,7 @@
 
 {#if isTauri}
   <header
-    class="flex h-12 w-full items-center justify-between border-b border-border/50 bg-card/80 px-4 backdrop-blur-2xl supports-backdrop-filter:bg-card/60"
+    class="flex h-12 w-full items-center justify-between border-b border-border bg-background/80 px-4 backdrop-blur-xl"
     data-tauri-drag-region
   >
     <a
@@ -57,30 +57,29 @@
     primaryButton={{ label: "Download", href: "/download" }}
     secondaryButton={{ label: "GitHub", href: config.github }}
     classes={{
-      root: "border border-border/50 bg-card/40 ring-1 ring-white/10 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.18)] backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-card/30 dark:ring-white/5",
-      overlay: "bg-background/70 backdrop-blur-xl backdrop-saturate-150",
-      header: "px-2 py-1 lg:max-w-5xl",
-      toggleButton: "rounded-full px-2.5 hover:bg-secondary/70",
+      root: "rounded-xl border-border bg-background/80 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-background/70",
+      overlay: "bg-background/70 backdrop-blur-xl",
+      header: "p-1.5",
+      toggleButton: "rounded-md pr-3 hover:bg-muted",
       toggleLine: "bg-foreground group-hover:bg-foreground",
       logo: "gap-2",
-      secondaryButton:
-        "rounded-full text-muted-foreground hover:bg-secondary/70 hover:text-foreground",
-      primaryButton:
-        "rounded-sm bg-primary/5 text-primary hover:bg-primary/10 shadow-sm px-3 sm:px-4",
-      menuWrapper: "border-border/50",
+      actions: "gap-1.5",
+      secondaryButton: "rounded-md px-3 text-muted-foreground hover:bg-muted hover:text-foreground",
+      primaryButton: "rounded-md bg-primary px-4 text-primary-foreground shadow-xs hover:bg-primary-active",
+      menuWrapper: "border-border",
       grid: "p-3 md:p-4",
       group: "rounded-xl",
-      groupMuted: "bg-muted/40",
-      groupTitle: "text-muted-foreground/60",
+      groupMuted: "bg-muted",
+      groupTitle: "text-muted-foreground",
       link: "text-muted-foreground hover:text-foreground",
       linkUnderline: "bg-foreground",
-      divider: "border-border/40",
+      divider: "border-border",
     }}
   >
     {#snippet logo()}
       <a
         href="/"
-        class="flex items-center transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 rounded-full"
+        class="flex items-center rounded-md transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-label={`${config.appName} home`}
       >
         <Logo />
@@ -88,7 +87,7 @@
     {/snippet}
 
     {#snippet actions()}
-      <ThemeToggle class="size-9 rounded-sm" />
+      <ThemeToggle class="size-10 rounded-md hover:bg-muted" />
     {/snippet}
   </FloatingMenu>
 {/if}
