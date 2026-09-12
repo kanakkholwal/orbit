@@ -176,12 +176,20 @@ function compileBlock(block: Block, ctx: Ctx): FormeNode | null {
     case "table": {
       const p = block.props;
       const count = Math.max(p.columns.length, 1);
-      const weights = p.columns.map((_, i) => (i === 0 && count > 2 ? 2 : 1));
+      const weights = p.columns.map((_, i) => p.widths?.[i] ?? (i === 0 && count > 2 ? 2 : 1));
       const total = weights.reduce((sum, w) => sum + w, 0);
       const cellAlign = (i: number) => (p.numericLast && i > 0 ? "right" : "left");
+      const bodySize = p.compact ? theme.bodySize - 2.5 : theme.bodySize;
+      const padding: Style = p.compact ? { paddingVertical: 3.5, paddingHorizontal: 5 } : { paddingVertical: 6, paddingHorizontal: 8 };
       const cell = (value: string, i: number, header: boolean) =>
-        node({ type: "TableCell", col_span: 1, row_span: 1 }, { paddingVertical: 6, paddingHorizontal: 8 }, [
-          text(ctx, value, header ? { fontSize: theme.bodySize - 1.5, fontWeight: 700, color: colors.mutedForeground, textAlign: cellAlign(i) } : { textAlign: cellAlign(i) }),
+        node({ type: "TableCell", col_span: 1, row_span: 1 }, padding, [
+          text(
+            ctx,
+            value,
+            header
+              ? { fontSize: bodySize - 1.5, fontWeight: 700, color: colors.mutedForeground, textAlign: cellAlign(i) }
+              : { textAlign: cellAlign(i), ...(p.compact ? { fontSize: bodySize, lineHeight: 1.35 } : {}) }
+          ),
         ]);
       return node({ type: "Table", columns: weights.map((w) => ({ width: mapColumnWidth({ fraction: w / total }) })) }, { marginBottom: gap }, [
         node({ type: "TableRow", is_header: true }, { borderBottomWidth: 1, borderColor: colors.foreground }, p.columns.map((c, i) => cell(c, i, true))),

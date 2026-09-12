@@ -29,26 +29,30 @@
   });
 
   const toolContent = $derived(getToolContent(tool));
-  const faqJsonLd = $derived(
-    JSON.stringify({
+  const jsonLd = $derived([
+    {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: toolContent.faqs.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: { "@type": "Answer", text: f.a },
-      })),
-    }).replace(/</g, "\\u003c")
-  );
+      "@type": "WebApplication",
+      name: tool.title,
+      description: tool.description,
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Any",
+      browserRequirements: "Requires a modern web browser",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    ...(showGuide
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: toolContent.faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+          },
+        ]
+      : []),
+  ]);
 </script>
 
-<svelte:head>
-  {#if showGuide}
-    {@html `<script type="application/ld+json">${faqJsonLd}</` + `script>`}
-  {/if}
-</svelte:head>
-
-<Seo title={tool.seoTitle ?? `${tool.title} - Free Online PDF Tool`} description={tool.description} keywords={tool?.keywords} />
+<Seo title={tool.seoTitle ?? `${tool.title}: Free, No Upload, No Watermark`} description={tool.description} keywords={tool.keywords} {jsonLd} />
 
 {#snippet toolBody()}
   {#key tool.slug}

@@ -1,3 +1,4 @@
+import { moreToolContent } from './tool-content-more';
 import type { ToolConfig } from '$tools/list';
 
 /**
@@ -355,7 +356,7 @@ const bespoke: Record<string, Partial<ToolContent>> = {
 /* ── Public accessor ──────────────────────────────────────────────────────── */
 
 export function getToolContent(tool: ToolMeta): ToolContent {
-    const b = bespoke[tool.slug] ?? {};
+    const b = bespoke[tool.slug] ?? moreToolContent[tool.slug] ?? {};
     const faqs = b.faqs ? [...b.faqs, ...universalFaqs(tool)] : universalFaqs(tool);
     return {
         intro: b.intro ?? tool.description,

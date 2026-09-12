@@ -66,7 +66,7 @@
 
 <svelte:window onkeydown={onKeydown} />
 
-<Seo title={`${config.appName} for desktop`} description={config.appDescription} keywords={config.appKeywords} />
+<Seo title="Desktop" description={config.appDescription} keywords={config.appKeywords} />
 
 <div class={cn("flex w-full flex-col bg-canvas", preview ? "min-h-screen" : "h-full overflow-y-auto")}>
   <header

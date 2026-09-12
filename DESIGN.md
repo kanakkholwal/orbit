@@ -232,6 +232,13 @@ The navbar floats (`fixed`), so the first row carries the navbar's height in its
 - **About, Docs, Changelog, Download, Install, Privacy, Terms**: `PageHero`, then `SplitSection` rows of
   `panel-card`s, ending in a `BrandPanel` where there is a next step. Docs owns the technical detail
   (engines, runtimes); marketing pages speak to non-technical visitors.
+- **Compare** (`/compare`, `/compare/[slug]`, data in `src/constants/alternatives.ts`): `PageHero`,
+  side-by-side table in a `panel-card` (Orbit column with emerald checks, dated source note), why
+  people switch, an honest "where they are stronger" list, tool cards, FAQ, other comparisons,
+  `BrandPanel`.
+- **Articles** (`/articles`, `/articles/[slug]`, data in `src/constants/articles`): hub of cards;
+  article page is a 16px/1.75 reading column (max 48rem) with emerald links and list markers, and a
+  sticky aside holding the primary tool card and "On this page" links, then related guides.
 - **Error**: canvas + rails, one `panel-card`, the same h1 + accent pattern.
 - **Desktop home** (`Desktop.Home`): rendered at `/` in Tauri, or on the web with `/?mode=desktop`
   (shows "Exit preview"). App toolbar with search (`/` focuses it), greeting, recent or popular tools,

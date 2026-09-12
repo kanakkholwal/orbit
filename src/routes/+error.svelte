@@ -5,10 +5,7 @@
   import { RailFrame, RailRow } from "$components/site";
 </script>
 
-<Seo title={page.status === 404 ? "Page not found" : "Something went wrong"} />
-<svelte:head>
-  <meta name="robots" content="noindex" />
-</svelte:head>
+<Seo title={page.status === 404 ? "Page not found" : "Something went wrong"} noindex />
 
 <RailFrame>
   <RailRow divider={false} label={`Error ${page.status}`} class="flex-1">

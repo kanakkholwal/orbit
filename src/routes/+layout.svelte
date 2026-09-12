@@ -7,7 +7,6 @@
 
   let { children } = $props();
 
-  import Seo from "$components/Seo.svelte";
   import { Toaster } from "$components/ui/sonner";
   import { config } from "$constants/app";
   import Analytics from "$lib/Analytics.svelte";
@@ -61,13 +60,6 @@
     }
   });
 </script>
-
-<Seo
-  title={config.appName}
-  description={config.appDescription}
-  keywords={config.appKeywords}
-  isBase={true}
-/>
 
 <Loader />
 <ModeWatcher />

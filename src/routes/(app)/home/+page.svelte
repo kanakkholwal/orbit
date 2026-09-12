@@ -5,7 +5,8 @@
 </script>
 
 <Seo
-  title="{config.appName} -  Workspace"
+  title="Workspace"
+  noindex
   description={config.appDescription}
   keywords={config.appKeywords}
 />

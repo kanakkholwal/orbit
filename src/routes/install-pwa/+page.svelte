@@ -142,7 +142,7 @@
 </script>
 
 <Seo
-  title={`Install ${config.appName} as a web app`}
+  title="Install as a Web App"
   description={`Install ${config.appName} on iOS, Android, Windows, macOS or Linux. Works offline, needs no account, and your files never leave your device.`}
   keywords={[...config.appKeywords, "install pwa", "add to home screen", "orbit pdf pwa"]}
 />

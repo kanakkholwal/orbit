@@ -45,7 +45,7 @@
 </script>
 
 <Seo
-  title={`About ${config.appName}`}
+  title="About"
   description={`The story and principles behind ${config.appName}, a private PDF toolkit that runs entirely on your device.`}
   keywords={["about orbit pdf", "privacy first pdf tool", "open source pdf editor"]}
 />

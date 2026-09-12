@@ -10,9 +10,16 @@
   import { stagger } from "$lib/motion";
   import { toolList } from "$tools/list";
   import { IconSearch as Search } from "@tabler/icons-svelte";
+  import { onMount } from "svelte";
 
-  let searchQuery = $state(page.url.searchParams.get("search") || "");
-  let activeCategory = $state(page.url.searchParams.get("category") || "all");
+  let searchQuery = $state("");
+  let activeCategory = $state("all");
+
+  // The page is prerendered, so the query string is only readable in the browser.
+  onMount(() => {
+    searchQuery = page.url.searchParams.get("search") || "";
+    activeCategory = page.url.searchParams.get("category") || "all";
+  });
 
   const normalizedQuery = $derived(searchQuery.trim().toLowerCase());
 
@@ -72,7 +79,8 @@
 </script>
 
 <Seo
-  title="Explore Free PDF Tools | Orbit - No Upload, 100% Offline"
+  title="All Free PDF Tools: No Upload, Works Offline | Orbit PDF"
+  isBase
   description="Explore a complete library of free, fast PDF tools. Edit, convert, merge, and process PDFs entirely in your browser with zero data uploads."
   keywords={exploreKeywords}
 />

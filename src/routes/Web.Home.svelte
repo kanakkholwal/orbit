@@ -38,10 +38,37 @@
 </script>
 
 <Seo
-  title="Free, Fast & Offline PDF Tools | Orbit"
+  title="Free PDF Tools: No Upload, No Watermark | Orbit PDF"
   description={config.appDescription}
   keywords={config.appKeywords}
   isBase={true}
+  jsonLd={[
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: config.appName,
+      url: `https://${config.appDomain}`,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `https://${config.appDomain}/explore?search={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      name: config.appName,
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "Web, Windows, macOS, Linux",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      url: `https://${config.appDomain}`,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+    },
+  ]}
 />
 
 <RailFrame>

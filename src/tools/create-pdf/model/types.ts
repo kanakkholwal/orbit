@@ -22,7 +22,16 @@ export interface BlockPropsMap {
   callout: { title: string; body: string; tone: Tone };
   letterhead: { brand: string; tagline: string; details: string; logo: string };
   addresses: { fromLabel: string; from: string; toLabel: string; to: string };
-  table: { columns: string[]; rows: string[][]; striped: boolean; numericLast: boolean };
+  table: {
+    columns: string[];
+    rows: string[][];
+    striped: boolean;
+    numericLast: boolean;
+    /** Smaller text and tighter cells, for wide data tables. */
+    compact?: boolean;
+    /** Relative column widths; defaults to a wider first column. */
+    widths?: number[];
+  };
   keyValue: { items: LabelValue[]; columns: 1 | 2 };
   totals: { items: LabelValue[]; totalLabel: string; total: string };
   stats: { items: { label: string; value: string; note: string }[] };

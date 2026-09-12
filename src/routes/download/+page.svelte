@@ -99,7 +99,7 @@
 </script>
 
 <Seo
-  title={`Download ${config.appName}`}
+  title="Download the Desktop App for Windows, macOS and Linux"
   description={`Download ${config.appName} for Windows, macOS and Linux. Free, offline PDF tools that never upload your files.`}
   keywords={downloadKeywords}
 />

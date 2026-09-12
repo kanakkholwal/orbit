@@ -91,7 +91,7 @@
 </script>
 
 <Seo
-  title={`Privacy Policy — ${config.appName}`}
+  title="Privacy Policy"
   description={`How ${config.appName} handles your data. Your files are processed entirely on your device and never uploaded. Learn about cookies, analytics, and advertising on the web version.`}
   keywords={["privacy policy", "orbit pdf privacy", "data protection", "client-side processing"]}
 />

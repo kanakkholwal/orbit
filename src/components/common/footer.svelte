@@ -14,6 +14,8 @@
       links: [
         { label: "All tools", href: "/explore" },
         { label: "Download", href: "/download" },
+        { label: "Guides", href: "/articles" },
+        { label: "Compare", href: "/compare" },
         { label: "Changelog", href: "/changelog" },
         { label: "Install PWA", href: "/install-pwa" },
       ],

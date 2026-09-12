@@ -73,7 +73,7 @@
 </script>
 
 <Seo
-  title={`Terms of Use — ${config.appName}`}
+  title="Terms of Use"
   description={`The terms governing your use of ${config.appName}, a free, open-source, privacy-first PDF toolkit that runs entirely on your device.`}
   keywords={["terms of use", "orbit pdf terms", "terms and conditions"]}
 />

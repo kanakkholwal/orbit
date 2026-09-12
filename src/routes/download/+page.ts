@@ -1,7 +1,6 @@
 import type { PageLoad } from './$types';
 
 
-export const ssr = false;
 
 export const load: PageLoad = async ({ fetch, setHeaders }) => {
   // Cache this response in the browser/CDN for 1 hour to prevent GitHub API rate limits

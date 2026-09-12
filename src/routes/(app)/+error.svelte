@@ -4,10 +4,7 @@
   import Seo from "$components/Seo.svelte";
 </script>
 
-<Seo title={page.status === 404 ? "Tool not found" : "Something went wrong"} />
-<svelte:head>
-  <meta name="robots" content="noindex" />
-</svelte:head>
+<Seo title={page.status === 404 ? "Tool not found" : "Something went wrong"} noindex />
 
 <div class="flex min-h-full items-center px-4 py-12 sm:px-8 md:py-16">
   <ErrorState
