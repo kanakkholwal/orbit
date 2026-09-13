@@ -38,8 +38,8 @@ export const toolContentBatchA: Record<string, Partial<ToolContent>> = {
         faqs: [
             { q: 'What resolution are the images?', a: 'Each page is rendered at twice its PDF size, about 144 pixels per inch. An A4 page becomes an image of roughly 1190 by 1684 pixels.' },
             { q: 'Can I convert only some pages?', a: 'No. Every page of the file is converted. To get images of a few pages, first pull them into a new PDF with Extract PDF Pages or Organize PDF, then convert that file.' },
-            { q: 'Which format should I choose?', a: 'PNG keeps text and line art perfectly sharp but produces the largest files. JPG is smaller and opens everywhere. WebP is smaller again at similar quality, but some older software cannot open it.' },
-            { q: 'Why does my password-protected PDF not load?', a: 'The file has to be opened before its pages can be drawn, and this tool does not ask for a password. Remove the password with Decrypt PDF first, then convert the unlocked copy.' }
+            { q: 'Which format should I choose?', a: 'PNG keeps text and line art perfectly sharp but produces the largest files. JPG is smaller and opens everywhere. WebP is smaller again at similar quality, but some older software cannot open it, and Safari cannot save it, so the option is hidden there.' },
+            { q: 'Can I convert a password-protected PDF?', a: 'Yes, if you know the password. The tool asks for it when the file opens and uses it only on your device. Your original file stays locked.' }
         ]
     },
     'encrypt-pdf': {

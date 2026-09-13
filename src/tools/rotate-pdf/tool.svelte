@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { OptionGroup, ResultCard, ToolBar, ToolFooter } from "$components/tool";
+  import { OptionGroup, PasswordPrompt, ResultCard, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
@@ -21,7 +21,15 @@
   const pageLabel = (n: number) => `${n} ${n === 1 ? "page" : "pages"}`;
 </script>
 
-{#if !store.state.file}
+{#if store.locked.file}
+  <PasswordPrompt
+    fileName={store.locked.file.name}
+    error={store.locked.error}
+    busy={store.locked.busy}
+    onsubmit={(password) => store.unlock(password)}
+    oncancel={() => store.reset()}
+  />
+{:else if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
       <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to turn its pages</h3>

@@ -1,11 +1,20 @@
 <script lang="ts">
-  import { FileRow, OptionGroup, ProgressLine, ResultCard, SegmentedControl, ToolFooter } from "$components/tool";
+  import {
+    FileRow,
+    OptionGroup,
+    PasswordPrompt,
+    ProgressLine,
+    ResultCard,
+    SegmentedControl,
+    ToolFooter,
+  } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
   import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
-  import { PdfToJpgState, type ImageFormat } from "./helper.svelte";
+  import { onMount } from "svelte";
+  import { canEncodeWebp, PdfToJpgState, type ImageFormat } from "./helper.svelte";
 
   const store = new PdfToJpgState();
   const uid = $props.id();
@@ -16,6 +25,14 @@
     { value: "webp", label: "WebP", hint: "Smaller than JPG at the same quality. Great for websites." },
   ];
 
+  let webpSupported = $state(true);
+
+  onMount(() => {
+    webpSupported = canEncodeWebp();
+    if (!webpSupported && store.state.format === "webp") store.state.format = "jpeg";
+  });
+
+  const formatOptions = $derived(webpSupported ? formats : formats.filter((f) => f.value !== "webp"));
   const s = $derived(store.state);
   const busy = $derived(s.isProcessing);
   const format = $derived(formats.find((f) => f.value === s.format) ?? formats[0]);
@@ -24,7 +41,15 @@
   const imageLabel = (n: number) => `${n} ${n === 1 ? "image" : "images"}`;
 </script>
 
-{#if !s.file}
+{#if store.locked.file}
+  <PasswordPrompt
+    fileName={store.locked.file.name}
+    error={store.locked.error}
+    busy={store.locked.busy}
+    onsubmit={(password) => store.unlock(password)}
+    oncancel={() => store.reset()}
+  />
+{:else if !s.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
       <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to turn into images</h3>
@@ -80,7 +105,10 @@
   <WorkspaceInspector title="Images">
     <div class="flex flex-col gap-6">
       <OptionGroup label="Format" description={format.hint}>
-        <SegmentedControl name="{uid}-format" options={formats} bind:value={store.state.format} />
+        <SegmentedControl name="{uid}-format" options={formatOptions} bind:value={store.state.format} />
+        {#if !webpSupported}
+          <p class="text-caption text-muted-foreground">This browser can't save WebP images.</p>
+        {/if}
       </OptionGroup>
 
       <div role="group" aria-labelledby="{uid}-quality-label" class="flex flex-col gap-1">

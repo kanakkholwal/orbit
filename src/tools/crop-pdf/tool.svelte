@@ -1,5 +1,13 @@
 <script lang="ts">
-  import { OptionGroup, OptionToggle, ProgressLine, ResultCard, ToolBar, ToolFooter } from "$components/tool";
+  import {
+    OptionGroup,
+    OptionToggle,
+    PasswordPrompt,
+    ProgressLine,
+    ResultCard,
+    ToolBar,
+    ToolFooter,
+  } from "$components/tool";
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
@@ -61,7 +69,15 @@
   });
 </script>
 
-{#if !store.state.file}
+{#if store.locked.file}
+  <PasswordPrompt
+    fileName={store.locked.file.name}
+    error={store.locked.error}
+    busy={store.locked.busy}
+    onsubmit={(password) => store.unlock(password)}
+    oncancel={() => store.reset()}
+  />
+{:else if !store.state.file}
   <UploadArea
     accept=".pdf,application/pdf"
     multiple={false}

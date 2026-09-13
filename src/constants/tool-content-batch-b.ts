@@ -17,9 +17,9 @@ export const toolContentBatchB: Record<string, Partial<ToolContent>> = {
         ],
         faqs: [
             { q: 'Will saving keep the bookmarks my PDF already had?', a: 'Only the bookmarks in your list are written to the new file, and they replace the old outline. To keep the existing ones, click "Import bookmarks from this PDF" first and edit from there.' },
-            { q: 'Why do some imported bookmarks point to page 1?', a: 'Some PDFs link bookmarks through named destinations instead of direct page references. When a target cannot be resolved it falls back to page 1. Select the bookmark, go to the right page and click "Use page" to fix it.' },
+            { q: 'Do bookmarks that use named destinations import correctly?', a: 'Yes. Bookmarks that point to a page directly, through a named destination or through a "go to" link all open the right page. If a target is missing from the file, the bookmark falls back to page 1. Select it, go to the right page and click "Use page" to fix it.' },
             { q: 'Can I create sub-bookmarks?', a: 'Yes. Select a bookmark and choose "Add inside". Nested bookmarks appear indented under their parent and can be expanded or collapsed in the list.' },
-            { q: 'Are bookmark colours or bold styling imported?', a: 'No. Imported bookmarks keep their names, pages and nesting, but not any colour or bold and italic styling set by the original author.' }
+            { q: 'Are bookmark colours or bold styling imported?', a: 'Yes. Imported bookmarks keep their names, pages, nesting, colour, bold and italic styling, and whether each group starts open or collapsed, and all of it is written back when you save.' }
         ]
     },
     'add-page-no-pdf': {
@@ -185,10 +185,10 @@ export const toolContentBatchB: Record<string, Partial<ToolContent>> = {
         ]
     },
     'txt-to-pdf': {
-        intro: 'Plain .txt files are handy for notes, logs and exported chat transcripts, but they look different on every device and are awkward to print or attach to a formal email. Text to PDF turns one or several text files, or text you type or paste, into a paginated PDF. Choose a font, text size and page size from A5 to A3, and long lines wrap inside a one-inch margin. Arabic and Hebrew text is detected and set right to left. The PDF is created on your computer.',
+        intro: 'Plain .txt files are handy for notes, logs and exported chat transcripts, but they look different on every device and are awkward to print or attach to a formal email. Text to PDF turns one or several text files, or text you type or paste, into a paginated PDF. Choose a font, text colour, text size and page size from A5 to A3, and long lines wrap inside a one-inch margin. Spaces and tabs are kept, so columns stay lined up in Courier. The PDF is created on your computer.',
         howItWorks: [
             'Choose "Text files" and drop one or more .txt files, or switch to "Type text" and type, paste or click "Open a file".',
-            'Pick a Font: Helvetica, Times, Tiro or Courier.',
+            'Pick a Font (Helvetica, Times or Courier) and a Colour.',
             'Set the Size in points and a "Page size" of A4, Letter, Legal, A5 or A3.',
             'Click "Create PDF" to download text_to_pdf.pdf.'
         ],
@@ -198,10 +198,10 @@ export const toolContentBatchB: Record<string, Partial<ToolContent>> = {
             { title: 'Attaching text to forms', body: 'Some upload portals only accept PDF. Paste a cover letter or statement and get a PDF to attach in a few seconds.' }
         ],
         faqs: [
-            { q: 'When I add several files, does each start on a new page?', a: 'No. Files are joined in the order listed, separated by a blank line, and flow on continuously. For a page break between them, convert each file separately and combine the PDFs with Merge PDF.' },
-            { q: 'Are spaces and tabs kept exactly?', a: 'Line breaks are kept, but runs of several spaces or tabs are shortened to a single space. Text that was lined up in columns with spaces, such as an ASCII table, will not stay aligned.' },
+            { q: 'When I add several files, does each start on a new page?', a: 'Yes. Files are added in the order listed, and each one starts on a fresh page, so a short note never runs into the end of the previous file.' },
+            { q: 'Are spaces and tabs kept exactly?', a: 'Yes. Line breaks and runs of spaces are kept, and each tab moves to the next stop every 4 characters. Choose Courier for text lined up in columns, such as an ASCII table or a log, since its letters all have the same width.' },
             { q: 'Why do accented letters look garbled?', a: 'Files are read as UTF-8. Older text files saved in another encoding, such as Windows-1252, can show strange symbols in place of accents. Re-save the file as UTF-8 in your text editor and convert again.' },
-            { q: 'Why does the first conversion take longer?', a: 'Text to PDF uses a document engine that is downloaded and started in your browser the first time you convert. Your text is not sent with it, and later conversions in the same session start straight away.' }
+            { q: 'Does it work with Arabic, Hebrew, Cyrillic or Chinese text?', a: 'Yes. Text in Western European languages uses the fast built-in fonts. When your text needs other scripts, Orbit downloads a wider set of fonts the first time and uses them instead. In that case every file flows on one after another, rather than starting on a new page.' }
         ]
     },
     'pdf-to-docx': {

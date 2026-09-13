@@ -1,3 +1,5 @@
+import { LockedPdf } from '$lib/pdf/locked-pdf.svelte';
+import { isPdfPasswordException, removeOwnerLock } from '$lib/pdf/unlock';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
@@ -31,6 +33,8 @@ export class CropPdfState extends PdfEngine {
 
     result = $state.raw<{ blob: Blob; name: string; pages: number } | null>(null);
 
+    readonly locked = new LockedPdf();
+
     private pdfJsDoc: PDFDocumentProxy | null = null;
     private fileBuffer: ArrayBuffer | null = null;
 
@@ -60,26 +64,40 @@ export class CropPdfState extends PdfEngine {
         this.progress = { text: 'Loading PDF...',current: 0, total: 0 };
         
         try {
-            this.fileBuffer = await file.arrayBuffer();
+            const original = new Uint8Array(await file.arrayBuffer());
+            const bytes = await removeOwnerLock(original);
             const pdfjs = await this.getPdfJs();
             
-            const loadingTask = pdfjs.getDocument(new Uint8Array(this.fileBuffer.slice(0)));
+            const loadingTask = pdfjs.getDocument(bytes.slice());
             this.pdfJsDoc = await loadingTask.promise;
             
-            this.state.file = file;
+            this.locked.clear();
+            this.fileBuffer = bytes.slice().buffer;
+            this.state.file = bytes === original ? file : new File([bytes as BlobPart], file.name, { type: 'application/pdf' });
             this.state.pageCount = this.pdfJsDoc.numPages;
             this.state.currentPage = 1;
             this.state.pageCrops = {};
 
         } catch (e) {
-            console.error(e);
-            toast.error("Failed to load PDF.");
+            if (isPdfPasswordException(e)) {
+                this.locked.hold(file);
+            } else {
+                console.error(e);
+                this.locked.clear();
+                toast.error("Failed to load PDF.");
+            }
         } finally {
             this.isProcessing = false;
         }
     }
 
+    async unlock(password: string) {
+        const unlocked = await this.locked.unlock(password);
+        if (unlocked) await this.loadFile(unlocked);
+    }
+
     reset() {
+        this.locked.clear();
         this.state.file = null;
         this.state.pageCrops = {};
         this.state.currentPage = 1;

@@ -35,10 +35,9 @@
   ];
 
   const fonts = [
-    { value: "helv", label: "Helvetica", hint: "Clean and modern" },
-    { value: "times", label: "Times", hint: "Classic, good for long reading" },
-    { value: "tiro", label: "Tiro", hint: "Serif with wide language coverage" },
-    { value: "cour", label: "Courier", hint: "Even spacing, keeps columns lined up" },
+    { value: "helv" as const, label: "Helvetica", hint: "Clean and modern" },
+    { value: "times" as const, label: "Times", hint: "Classic serif, good for long reading" },
+    { value: "cour" as const, label: "Courier", hint: "Monospaced, keeps spaces and tabs lined up" },
   ];
 
   const pageSizes = ["A4", "Letter", "Legal", "A5", "A3"];
@@ -150,7 +149,7 @@
       id="{uid}-text"
       bind:value={store.textContent}
       dir={store.textDirection}
-      placeholder="Type or paste text here. Right-to-left scripts such as Arabic and Hebrew are detected automatically."
+      placeholder="Type or paste text here."
       class="scrollbar-subtle min-h-[max(24rem,calc(100svh-17rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-body leading-relaxed text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
     ></textarea>
   {/if}

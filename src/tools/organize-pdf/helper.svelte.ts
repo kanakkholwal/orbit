@@ -1,3 +1,5 @@
+import { LockedPdf } from '$lib/pdf/locked-pdf.svelte';
+import { isPdfPasswordException, removeOwnerLock } from '$lib/pdf/unlock';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
@@ -23,6 +25,8 @@ export class OrganizePdfState extends PdfEngine {
     });
 
     result = $state.raw<{ blob: Blob; name: string; pages: number } | null>(null);
+
+    readonly locked = new LockedPdf();
 
     private pdfLibDoc: PDFDocument | null = null;
     private pdfJsDoc: PDFDocumentProxy | null = null;
@@ -53,26 +57,41 @@ export class OrganizePdfState extends PdfEngine {
     async loadFile(file: File) {
         if (!file) return;
         this.result = null;
+        this.isProcessing = true;
 
-        await this.handleProcess(async () => {
-            const arrayBuffer = await file.arrayBuffer();
+        try {
+            const original = new Uint8Array(await file.arrayBuffer());
+            const bytes = await removeOwnerLock(original);
 
             const pdfjs = await this.getPdfJs();
-            const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer.slice(0)));
+            const loadingTask = pdfjs.getDocument(bytes.slice());
             this.pdfJsDoc = await loadingTask.promise;
 
-            this.pdfLibDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+            this.pdfLibDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
 
-            this.state.file = file;
+            this.locked.clear();
+            this.state.file = bytes === original ? file : new File([bytes as BlobPart], file.name, { type: 'application/pdf' });
             this.state.pages = this.originalPages();
-        }, {
-            loading: 'Opening PDF…',
-            success: 'PDF ready',
-            error: 'This PDF could not be opened.'
-        });
+        } catch (e) {
+            if (isPdfPasswordException(e)) {
+                this.locked.hold(file);
+            } else {
+                console.error(e);
+                this.locked.clear();
+                toast.error('This PDF could not be opened.');
+            }
+        } finally {
+            this.isProcessing = false;
+        }
+    }
+
+    async unlock(password: string) {
+        const unlocked = await this.locked.unlock(password);
+        if (unlocked) await this.loadFile(unlocked);
     }
 
     reset() {
+        this.locked.clear();
         this.state.file = null;
         this.state.pages = [];
         this.pdfLibDoc = null;

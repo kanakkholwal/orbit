@@ -1,3 +1,5 @@
+import { LockedPdf } from '$lib/pdf/locked-pdf.svelte';
+import { isPdfPasswordException, removeOwnerLock } from '$lib/pdf/unlock';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { PDFDocument, degrees } from 'pdf-lib';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
@@ -25,6 +27,8 @@ export class RotatePdfState extends PdfEngine {
 
     result = $state.raw<{ blob: Blob; name: string; turned: number } | null>(null);
 
+    readonly locked = new LockedPdf();
+
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
     get turnedCount() {
@@ -41,27 +45,40 @@ export class RotatePdfState extends PdfEngine {
         this.result = null;
 
         try {
-            const arrayBuffer = await file.arrayBuffer();
+            const original = new Uint8Array(await file.arrayBuffer());
+            const bytes = await removeOwnerLock(original);
             const pdfjs = await this.getPdfJs();
 
-            const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer));
+            const loadingTask = pdfjs.getDocument(bytes.slice());
             this.pdfJsDoc = await loadingTask.promise;
 
-            this.state.file = file;
+            this.locked.clear();
+            this.state.file = bytes === original ? file : new File([bytes as BlobPart], file.name, { type: 'application/pdf' });
             this.state.pageCount = this.pdfJsDoc.numPages;
             this.state.pages = Array.from({ length: this.pdfJsDoc.numPages }, (_, i) => ({
                 pageIndex: i,
                 rotation: 0
             }));
         } catch (e) {
-            console.error(e);
-            toast.error('This PDF could not be opened.');
+            if (isPdfPasswordException(e)) {
+                this.locked.hold(file);
+            } else {
+                console.error(e);
+                this.locked.clear();
+                toast.error('This PDF could not be opened.');
+            }
         } finally {
             this.isProcessing = false;
         }
     }
 
+    async unlock(password: string) {
+        const unlocked = await this.locked.unlock(password);
+        if (unlocked) await this.loadFile(unlocked);
+    }
+
     reset() {
+        this.locked.clear();
         this.state.file = null;
         this.state.pages = [];
         this.state.pageCount = 0;

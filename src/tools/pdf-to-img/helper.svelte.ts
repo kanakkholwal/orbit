@@ -1,8 +1,20 @@
+import { LockedPdf } from '$lib/pdf/locked-pdf.svelte';
+import { isPdfPasswordException } from '$lib/pdf/unlock';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import JSZip from 'jszip';
 import { toast } from 'svelte-sonner';
 
 export type ImageFormat = 'jpeg' | 'png' | 'webp';
+
+/** Safari's canvas silently returns PNG data when asked for WebP. */
+export function canEncodeWebp(): boolean {
+    if (typeof document === 'undefined') return false;
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    return canvas.toDataURL('image/webp').startsWith('data:image/webp');
+}
+
+const EXTENSIONS: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 
 export interface PdfToImageStateData {
     file: File | null;
@@ -30,6 +42,7 @@ export class PdfToJpgState extends PdfEngine {
         if (this.result) this.downloadBlob(this.result.blob, this.result.name);
     }
     step = $state({ current: 0, total: 0 });
+    readonly locked = new LockedPdf();
 
 // Actions
 
@@ -45,18 +58,30 @@ export class PdfToJpgState extends PdfEngine {
             const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer));
             const pdf = await loadingTask.promise;
             
+            this.locked.clear();
             this.state.file = file;
             this.result = null;
             this.state.pageCount = pdf.numPages;
         } catch (e) {
-            console.error(e);
-            toast.error("Failed to load PDF. It might be corrupted.");
+            if (isPdfPasswordException(e)) {
+                this.locked.hold(file);
+            } else {
+                console.error(e);
+                this.locked.clear();
+                toast.error("Failed to load PDF. It might be corrupted.");
+            }
         } finally {
             this.state.isProcessing = false;
         }
     }
 
+    async unlock(password: string) {
+        const unlocked = await this.locked.unlock(password);
+        if (unlocked) await this.loadFile(unlocked);
+    }
+
     reset() {
+        this.locked.clear();
         this.state.file = null;
         this.state.pageCount = 0;
         this.state.isProcessing = false;
@@ -81,9 +106,8 @@ export class PdfToJpgState extends PdfEngine {
             const zip = new JSZip();
             const totalPages = pdf.numPages;
             
-            // Determine file extension based on format
-            const ext = this.state.format === 'jpeg' ? 'jpg' : this.state.format;
             const mimeType = `image/${this.state.format}`;
+            let ext = EXTENSIONS[mimeType];
 
             for (let i = 1; i <= totalPages; i++) {
                 this.state.progress = `Converting page ${i} of ${totalPages}...`;
@@ -109,6 +133,7 @@ export class PdfToJpgState extends PdfEngine {
                     );
 
                     if (blob) {
+                        ext = EXTENSIONS[blob.type] ?? ext;
                         zip.file(`page_${i}.${ext}`, blob);
                     }
                 }

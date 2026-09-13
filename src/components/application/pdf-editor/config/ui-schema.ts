@@ -977,3 +977,21 @@ export const viewerUISchema: UISchema = {
     },
   },
 };
+
+/** Reading-only variant for View PDF: no markup modes, comments or redaction. */
+export const readerUISchema: UISchema = (() => {
+  const schema: UISchema = structuredClone(viewerUISchema);
+  const main = schema.toolbars['main-toolbar'];
+  main.items = main.items
+    .filter((item) => item.id !== 'mode-tabs' && item.id !== 'spacer-2')
+    .map((item) =>
+      item.type === 'group' ? { ...item, items: item.items.filter((child) => child.id !== 'comment-button') } : item
+    );
+  for (const id of ['annotation-toolbar', 'shapes-toolbar', 'redaction-toolbar']) delete schema.toolbars[id];
+  delete schema.sidebars['comment-panel'];
+  delete schema.menus['mode-tabs-overflow-menu'];
+  const menus = schema.selectionMenus ?? {};
+  for (const id of ['annotation', 'groupAnnotation', 'redaction']) delete menus[id];
+  if (menus.selection) menus.selection.items = menus.selection.items.filter((item) => item.id !== 'add-link');
+  return schema;
+})();

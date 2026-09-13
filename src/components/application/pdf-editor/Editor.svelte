@@ -7,6 +7,7 @@
     germanTranslations,
     paramResolvers,
     spanishTranslations,
+    readerUISchema,
     viewerUISchema,
   } from "./config";
   import CustomZoomToolbar from "./CustomZoomToolbar.svelte";
@@ -99,6 +100,7 @@
   } from "@embedpdf/plugin-zoom/svelte";
   import { Button } from "$components/ui/button";
   import { IconAlertCircle as CircleAlert } from "@tabler/icons-svelte";
+  import { untrack } from "svelte";
   import LoadingSpinner from "./LoadingSpinner.svelte";
   import SchemaMenu from "./SchemaMenu.svelte";
   import SchemaModal from "./SchemaModal.svelte";
@@ -109,9 +111,12 @@
   let {
     initialDocuments = $bindable<InitialDocumentOptions[]>([]),
     incomingDocuments = $bindable<InitialDocumentOptions[]>([]),
+    mode = "edit",
   } = $props<{
     initialDocuments: InitialDocumentOptions[];
     incomingDocuments?: InitialDocumentOptions[];
+    /** `view` hides markup, comment and redaction tools for plain reading. */
+    mode?: "view" | "edit";
   }>();
 
   const logger = new ConsoleLogger();
@@ -186,7 +191,7 @@
       paramResolvers,
     }),
     createPluginRegistration(UIPluginPackage, {
-      schema: viewerUISchema,
+      schema: untrack(() => mode) === "view" ? readerUISchema : viewerUISchema,
     }),
   ];
 

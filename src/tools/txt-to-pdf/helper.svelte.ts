@@ -1,5 +1,6 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { toast } from 'svelte-sonner';
+import { buildTextPdf, type TextFont } from './layout';
 
 const RTL_PATTERN = /[\u0590-\u05FF\u0600-\u06FF\u0700-\u074F\u0750-\u077F\u0780-\u07BF\u07C0-\u07FF\u08A0-\u08FF\uFB1D-\uFB4F\uFB50-\uFDFF\uFE70-\uFEFF]/;
 
@@ -10,7 +11,7 @@ export class TxtToPdfState extends PdfEngine {
   result = $state.raw<{ blob: Blob; name: string; mode: 'upload' | 'text'; source: string } | null>(null);
 
   settings = $state({
-    fontFamily: 'helv',
+    fontFamily: 'helv' as TextFont,
     fontSize: 12,
     textColor: '#000000',
     pageSize: 'A4'
@@ -82,35 +83,33 @@ export class TxtToPdfState extends PdfEngine {
 
     const mode = this.mode;
     const source = this.textContent;
-    this.progress.text = 'Loading engine...';
+    this.progress.text = 'Reading text...';
     await this.handleProcess(async () => {
-      let pymupdf: any = null;
-
-      const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
-      pymupdf = await loadPyMuPDF();
-
-      let finalContent = '';
-
-      if (this.mode === 'upload') {
-        this.progress.text = 'Reading files...';
-        for (const fileObj of this.files) {
-          const text = await fileObj.file.text();
-          finalContent += text + '\n\n';
-        }
-      } else {
-        finalContent = this.textContent;
-      }
+      const texts = mode === 'upload' ? await Promise.all(this.files.map((f) => f.file.text())) : [source];
 
       this.progress.text = 'Creating PDF...';
-
-      const pdfBlob = await pymupdf.textToPdf(finalContent, {
+      const { bytes, replaced } = await buildTextPdf(texts, {
+        font: this.settings.fontFamily,
         fontSize: this.settings.fontSize,
-        pageSize: this.settings.pageSize.toLowerCase() as any, // 'a4', 'letter', etc.
-        fontName: this.settings.fontFamily as any,
         textColor: this.settings.textColor,
-        margins: 72,
+        pageSize: this.settings.pageSize
       });
 
+      let pdfBlob = new Blob([bytes as BlobPart], { type: 'application/pdf' });
+
+      // The built-in fonts only cover Western scripts; PyMuPDF's fonts render Arabic, Hebrew, Cyrillic, CJK and more.
+      if (replaced > 0) {
+        this.progress.text = 'Loading fonts for your language...';
+        const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
+        const pymupdf = await loadPyMuPDF();
+        pdfBlob = await pymupdf.textToPdf(texts.join('\n\n'), {
+          fontSize: this.settings.fontSize,
+          pageSize: this.settings.pageSize.toLowerCase(),
+          fontName: this.settings.fontFamily,
+          textColor: this.settings.textColor,
+          margins: 72
+        });
+      }
       this.result = { blob: pdfBlob, name: 'text_to_pdf.pdf', mode, source };
       this.downloadBlob(pdfBlob, 'text_to_pdf.pdf');
     }, {
@@ -118,7 +117,6 @@ export class TxtToPdfState extends PdfEngine {
       success: 'PDF created successfully!',
       error: (e) => `Failed to convert text to PDF. ${e.message || ''}`
     }).catch(() => {});
-
   }
 
 
