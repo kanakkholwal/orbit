@@ -230,7 +230,7 @@
     <LoadingSpinner message="Starting the viewer" />
   </div>
 {:else}
-  <div class="flex h-full flex-1 flex-col overflow-clip">
+  <div class="flex h-full min-h-0 flex-1 flex-col overflow-clip">
     <EmbedPDF
       engine={pdfEngine.engine}
       {logger}

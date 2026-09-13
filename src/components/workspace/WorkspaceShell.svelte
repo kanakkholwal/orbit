@@ -34,7 +34,7 @@
 </script>
 
 <Tooltip.Provider delayDuration={400}>
-  <div class={cn("flex w-full overflow-clip bg-canvas", appState.isTauri ? "h-full" : "h-dvh")}>
+  <div class={cn("flex min-h-0 w-full overflow-clip bg-canvas", appState.isTauri ? "h-full" : "h-dvh")}>
     <ShellRail wide={inlinePanel} class="hidden md:flex" />
 
     {#if wide}
@@ -70,7 +70,7 @@
     {/if}
 
     <div
-      class="workspace-surface flex min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
+      class="workspace-surface flex min-h-0 min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
     >
       <ContextBar {tool} {wide} />
 
