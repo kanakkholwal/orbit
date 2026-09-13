@@ -10,28 +10,38 @@
       "purpose": "any"
     },
     {
-      "src": "/assets/meta/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
       "src": "/assets/meta/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/meta/web-app-manifest-512x512.png",
+      "src": "/assets/meta/web-app-manifest-maskable-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/assets/meta/web-app-manifest-maskable-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/assets/meta/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ],
-  "theme_color": "#0e968b",
+  "theme_color": "#047857",
   "background_color": "#ffffff",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "scope": "/",
   "start_url": "/?source=pwa",
   "id": "com.nexonauts.orbit",
@@ -55,21 +65,36 @@
       "short_name": "Merge",
       "description": "Combine multiple PDFs into one",
       "url": "/tools/merge-pdf?source=pwa-shortcut",
-      "icons": [{ "src": "/assets/meta/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/assets/meta/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Split PDF",
       "short_name": "Split",
       "description": "Split a PDF into separate files",
       "url": "/tools/split-pdf?source=pwa-shortcut",
-      "icons": [{ "src": "/assets/meta/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/assets/meta/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
       "name": "Compress PDF",
       "short_name": "Compress",
       "description": "Reduce PDF file size",
       "url": "/tools/compress-pdf?source=pwa-shortcut",
-      "icons": [{ "src": "/assets/meta/web-app-manifest-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/assets/meta/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

@@ -78,6 +78,10 @@
   <meta property="og:locale" content="en_US" />
   <meta property="og:image" content={imageUrl} />
   <meta property="og:image:alt" content={imageAlt} />
+  {#if image === "/og.png"}
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+  {/if}
   {#if type === "article"}
     {#if publishedTime}<meta property="article:published_time" content={publishedTime} />{/if}
     {#if modifiedTime}<meta property="article:modified_time" content={modifiedTime} />{/if}

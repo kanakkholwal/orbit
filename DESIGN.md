@@ -410,6 +410,21 @@ left drawer instead of pushing the editor. Shell containers use `overflow-clip`,
 
 ## Components
 
+### Logo
+
+The aperture mark: three solid pieces of an O on a 48 by 48 grid, one source in
+[brand-mark.ts](src/lib/brand-mark.ts). `Logo.svelte` renders it in `currentColor` beside the
+Google Sans semibold "Orbit" wordmark (gap 0.32em); `markOnly` drops the wordmark, `draw` turns
+the pieces in. No strokes anywhere.
+
+| Asset | Treatment |
+| --- | --- |
+| Favicon SVG | Solid emerald mark, `#34d399` in dark mode |
+| App icons (PWA, extension, desktop, favicon.ico) | Emerald gradient tile (`#059669` to `#065f46`, 21% radius) with a white mark; maskable and Apple icons fill the square |
+| OG image (`static/og.png`, 1200 by 630) | Rendered with Takumi: canvas ground with dashed rails, tile + wordmark, two-line headline with the emerald second line, one-line promise, four chips, a large 9% emerald mark bleeding off the right edge |
+
+Regenerate everything with `bun run brand`.
+
 ### Navbar
 
 `FloatingMenu`'s behaviour is untouched; styling comes through its `classes` prop in
@@ -456,7 +471,7 @@ tool range, no account). No stack names, protocols or runtimes on marketing page
 ### Boot splash
 
 Inline in [app.html](src/app.html), so it paints before any CSS or font loads: `--canvas` ground,
-the 44px logo mark in `--foreground` drawing in (1.1s), a 96px × 2px track with an emerald segment
+the 44px aperture mark in `--foreground`, its three pieces turning into place one after another, a 96px × 2px track with an emerald segment
 sliding across. Content fades in after 150ms, so fast loads show only the canvas. A head script
 applies the stored mode-watcher theme before first paint. The root layout sets `data-done` on
 mount (200ms fade), then removes it.
