@@ -21,7 +21,7 @@
     {
       icon: Feather,
       title: "Quiet and quick",
-      body: "No ads, no pop-ups, no waiting in a queue. Open a tool, finish the job, close the tab.",
+      body: "No sign-up walls, no waiting in a queue, and nothing ever sits between you and your file. Open a tool, finish the job, close the tab.",
     },
     {
       icon: Handshake,
@@ -56,7 +56,7 @@
       badge="Free and open source"
       title="A PDF toolkit that"
       accent="respects your files"
-      lede={`${config.appName} began with a small frustration: PDF sites that are slow, full of ads and quick to ask for your file. So we built one that keeps your documents on your own device.`}
+      lede={`${config.appName} began with a small frustration: PDF sites that are slow, cap how much you can do and are quick to ask for your file. So we built one that keeps your documents on your own device.`}
     >
       {#snippet actions()}
         <Button href="/explore" variant="primary">Try the tools</Button>

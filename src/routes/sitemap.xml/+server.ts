@@ -23,7 +23,6 @@ const PAGES: Entry[] = [
 ];
 
 export const GET: RequestHandler = () => {
-  const today = new Date().toISOString().slice(0, 10);
   const entries: Entry[] = [
     ...PAGES,
     ...toolList.map((tool) => ({ path: `/tools/${tool.slug}`, priority: 0.8 })),
@@ -36,7 +35,7 @@ export const GET: RequestHandler = () => {
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     ...entries.map(
       (e) =>
-        `  <url><loc>https://${config.appDomain}${e.path}</loc><lastmod>${e.lastmod ?? today}</lastmod><priority>${e.priority.toFixed(1)}</priority></url>`
+        `  <url><loc>https://${config.appDomain}${e.path}</loc>${e.lastmod ? `<lastmod>${e.lastmod}</lastmod>` : ""}<priority>${e.priority.toFixed(1)}</priority></url>`
     ),
     "</urlset>",
   ].join("\n");

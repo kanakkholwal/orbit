@@ -47,7 +47,8 @@
         <h1 class="text-balance text-heading-lg font-medium text-foreground md:text-display">{article.title}</h1>
         <p class="text-pretty text-body-lg text-muted-foreground">{article.description}</p>
         <p class="text-body text-muted-foreground">
-          <time datetime={article.updated ?? article.published}>{formatDate(article.updated ?? article.published)}</time>
+          By <a href="/about" class="font-medium text-foreground underline-offset-4 hover:underline">the Orbit team</a>
+          · {article.updated ? "Updated" : "Published"} <time datetime={article.updated ?? article.published}>{formatDate(article.updated ?? article.published)}</time>
           · {article.readingMinutes} min read
         </p>
       </header>

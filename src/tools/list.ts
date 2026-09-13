@@ -138,7 +138,7 @@ const tools: Record<string, ToolConfig> = {
     "pdf-to-img": {
         slug: "pdf-to-img",
         title: "PDF to Image",
-        description: "Convert PDF pages into high-quality images in JPG and PNG formats. Free online PDF to image converter with batch processing and custom resolution settings.",
+        description: "Turn every page of a PDF into a sharp JPG, PNG or WebP image and download them together. Free, private and runs entirely in your browser.",
         category: 'conversion',
         icon: Bookmark,
         component: () => import('./pdf-to-img/tool.svelte'),
@@ -200,7 +200,7 @@ const tools: Record<string, ToolConfig> = {
     "crop-pdf": {
         slug: "crop-pdf",
         title: "Crop PDF",
-        description: "Crop PDF pages to remove unwanted areas or adjust layout precisely. Advanced cropping tool with visual preview and batch processing support.",
+        description: "Trim margins and unwanted areas from PDF pages with a visual crop box. Apply it to one page or all pages, and optionally remove the hidden content.",
         category: 'pdf-management',
         layout: 'canvas',
         icon: CropIcon,
@@ -211,7 +211,7 @@ const tools: Record<string, ToolConfig> = {
     "edit-pdf": {
         slug: "edit-pdf",
         title: "Edit PDF",
-        description: "Edit PDF content directly with advanced tools. Add and edit text, insert images, and manage annotations without external software.",
+        description: "Mark up a PDF in your browser: add text boxes, highlights, shapes, drawings, stamps, links and comments, or redact sensitive parts. Existing text is not rewritten.",
         category: 'pdf-management',
         layout: 'immersive',
         icon: Edit3Icon,
@@ -266,7 +266,7 @@ const tools: Record<string, ToolConfig> = {
     "add-watermark-pdf": {
         slug: "add-watermark-pdf",
         title: "Add Watermark",
-        description: "Protect your PDF by adding custom text or image watermarks to pages. Prevent unauthorized copying with visible or invisible watermark options.",
+        description: "Stamp a text or image watermark across the centre of every page, with your own opacity, size and rotation. Mark drafts and confidential copies.",
         category: 'pdf-management',
         icon: WandIcon,
         component: () => import('./add-watermark-pdf/tool.svelte'),
@@ -297,7 +297,7 @@ const tools: Record<string, ToolConfig> = {
     "background-color": {
         slug: "background-color",
         title: "Change Background Color",
-        description: "Customize your PDF by changing the background color of your pages. Apply solid colors or gradients with flexible customization options.",
+        description: "Give PDF pages a solid background colour, for easier reading or print-ready tinted pages. Choose the colour and which pages to change.",
         category: 'pdf-management',
         icon: PaintBucket,
         component: () => import('./background-color/tool.svelte'),
@@ -307,7 +307,7 @@ const tools: Record<string, ToolConfig> = {
     "remove-annotations": {
         slug: "remove-annotations",
         title: "Remove Annotations",
-        description: "Easily remove annotations from your PDF pages for a cleaner appearance. Delete comments, highlights, stamps, and markup objects selectively.",
+        description: "Strip every comment, highlight, stamp, drawing, link and form field from a PDF in one step, leaving a clean copy of the page content.",
         category: 'pdf-management',
         icon: Trash2,
         component: () => import('./remove-annotations/tool.svelte'),
@@ -349,7 +349,7 @@ const tools: Record<string, ToolConfig> = {
     "pdf-to-docx": {
         slug: "pdf-to-docx",
         title: "PDF to Docx",
-        description: "Convert PDF files to editable Word documents seamlessly. Preserve formatting, fonts, and layout with intelligent conversion technology.",
+        description: "Convert a PDF into an editable Word document. Works best on text-based files with simple layouts; scanned pages and complex columns need touching up.",
         category: 'conversion',
         icon: Layers,
         component: () => import('./pdf-to-docx/tool.svelte'),
@@ -359,7 +359,7 @@ const tools: Record<string, ToolConfig> = {
     "pdf-to-excel": {
         slug: "pdf-to-excel",
         title: "PDF to Excel",
-        description: "Convert PDF tables into editable Excel spreadsheets with high accuracy. Preserve data structure and formatting for seamless spreadsheet creation.",
+        description: "Pull the tables out of a PDF into an Excel spreadsheet you can sort and edit. Works best on tables with clear lines; cell values only.",
         category: 'conversion',
         icon: Maximize2,
         component: () => import('./pdf-to-excel/tool.svelte'),
@@ -369,7 +369,7 @@ const tools: Record<string, ToolConfig> = {
     "pdf-for-ai": {
         slug: "pdf-for-ai",
         title: "PDF for AI",
-        description: "Optimize your PDF documents for AI processing and analysis. Clean, structure, and format PDFs to enhance machine learning performance.",
+        description: "Turn a PDF into structured JSON with one Markdown chunk per page and document details, ready for AI search and retrieval pipelines.",
         category: 'pdf-management',
         icon: RefreshCw,
         component: () => import('./pdf-for-ai/tool.svelte'),
@@ -469,7 +469,7 @@ const tools: Record<string, ToolConfig> = {
     "validate-signature-pdf":{
         slug: "validate-signature-pdf",
         title: "Validate PDF Signature",
-        description: "Verify the authenticity of digital signatures in your PDF documents. Ensure document integrity and trustworthiness with our signature validation tool.",
+        description: "Inspect the digital signatures in a PDF: who signed, their certificate, when it expires and whether the signature covers the whole file.",
         category: 'security',
         icon: Lock,
         component: () => import('./validate-signature-pdf/tool.svelte'),

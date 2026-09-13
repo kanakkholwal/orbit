@@ -85,11 +85,14 @@
 {#if config.googleAnalyticsId && config.googleAnalyticsId !== ""}
   <Analytics />
 {/if}
-{#if config.adsensePublisherId && config.adsensePublisherId !== ""}
-  <script
-    async
-    id="adsense-script"
-    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-    crossorigin="anonymous"
-  ></script>
-{/if}
+<svelte:head>
+  {#if config.adsensePublisherId && !isTauri}
+    <meta name="google-adsense-account" content={config.adsensePublisherId} />
+    <script
+      async
+      id="adsense-script"
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${config.adsensePublisherId}`}
+      crossorigin="anonymous"
+    ></script>
+  {/if}
+</svelte:head>

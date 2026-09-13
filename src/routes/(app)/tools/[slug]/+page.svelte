@@ -96,10 +96,6 @@
     {#if showGuide}
       <div class="border-t border-border bg-canvas">
         <div class="mx-auto flex w-full max-w-5xl flex-col gap-14 px-3 py-12 sm:px-6">
-          {#key tool.slug}
-            <AdUnit adSlot="display-horizontal" />
-          {/key}
-
           <section class="flex flex-col gap-3">
             <h2 class="text-heading-sm font-medium text-foreground">About {tool.title}</h2>
             <p class="max-w-3xl text-body leading-relaxed text-muted-foreground md:text-body-lg">{toolContent.intro}</p>
@@ -116,6 +112,10 @@
               {/each}
             </ol>
           </section>
+
+          {#key tool.slug}
+            <AdUnit adSlot="display-horizontal" />
+          {/key}
 
           <section class="flex flex-col gap-5">
             <h2 class="text-heading-sm font-medium text-foreground">What it's good for</h2>

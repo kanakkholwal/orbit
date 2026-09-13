@@ -112,7 +112,7 @@
       accent={heroAccent}
       lede={isMobile
         ? "No app store needed. Add Orbit to your home screen and it works offline, without ever uploading your files."
-        : "Free installers for every major platform. No account, no tracking, and your documents never leave your computer."}
+        : "Free installers for every major platform. No account, no ads in the app, and your documents never leave your computer."}
     >
       {#snippet actions()}
         {#if isMobile}

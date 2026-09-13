@@ -1,3 +1,6 @@
+import { toolContentBatchA } from './tool-content-batch-a';
+import { toolContentBatchB } from './tool-content-batch-b';
+import { toolContentBatchC } from './tool-content-batch-c';
 import { moreToolContent } from './tool-content-more';
 import type { ToolConfig } from '$tools/list';
 
@@ -29,6 +32,13 @@ type ToolMeta = Pick<ToolConfig, 'slug' | 'title' | 'description' | 'category'>;
 
 /* ── Universal facts, true for every Orbit tool ───────────────────────────── */
 
+/** Tools that fetch something the first time they run, so the offline answer has to say so. */
+const OFFLINE_EXCEPTIONS: Record<string, string> = {
+    'ocr-pdf': 'Mostly. The first time you read text in a language, its recognition data is downloaded once. After that, OCR for that language works without an internet connection.',
+    'create-pdf': 'Yes, after the first PDF you make. The PDF engine downloads once the first time you preview or download, then it works without an internet connection.',
+    'read-pdf-aloud': 'Yes, with a voice that is installed on your device. Voices marked Online in the voice list need an internet connection.'
+};
+
 function universalFaqs(tool: ToolMeta): ToolFaq[] {
     return [
         {
@@ -41,7 +51,7 @@ function universalFaqs(tool: ToolMeta): ToolFaq[] {
         },
         {
             q: `Does ${tool.title} work offline?`,
-            a: `Yes. After the page has loaded once, the tool keeps working without an internet connection. You can also install Orbit as a desktop app or PWA for a fully offline experience.`
+            a: OFFLINE_EXCEPTIONS[tool.slug] ?? `Yes. After the page has loaded once, the tool keeps working without an internet connection. You can also install Orbit as a desktop app or PWA for a fully offline experience.`
         },
         {
             q: `Is my data safe?`,
@@ -356,7 +366,7 @@ const bespoke: Record<string, Partial<ToolContent>> = {
 /* ── Public accessor ──────────────────────────────────────────────────────── */
 
 export function getToolContent(tool: ToolMeta): ToolContent {
-    const b = bespoke[tool.slug] ?? moreToolContent[tool.slug] ?? {};
+    const b = bespoke[tool.slug] ?? moreToolContent[tool.slug] ?? toolContentBatchA[tool.slug] ?? toolContentBatchB[tool.slug] ?? toolContentBatchC[tool.slug] ?? {};
     const faqs = b.faqs ? [...b.faqs, ...universalFaqs(tool)] : universalFaqs(tool);
     return {
         intro: b.intro ?? tool.description,
