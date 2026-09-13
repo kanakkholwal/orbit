@@ -7,16 +7,27 @@
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
+  import { canInstallNatively, promptInstall } from "$lib/pwa.svelte";
+  import { appState } from "$stores/app-state.svelte";
   import { workspace } from "$stores/workspace.svelte";
   import type { ToolConfig } from "$tools/list";
   import {
     IconAdjustmentsHorizontal as Adjustments,
     IconCompass as Compass,
+    IconDownload as Download,
     IconHome as Home,
     IconShare as Share,
   } from "@tabler/icons-svelte";
+  import { toast } from "svelte-sonner";
 
   let { tool, wide }: { tool: ToolConfig | null; wide: boolean } = $props();
+
+  const installable = $derived(!appState.isTauri && canInstallNatively());
+
+  async function install() {
+    const result = await promptInstall();
+    if (result === "accepted") toast.success(`${config.appName} is installed. Open it from your apps anytime, even offline.`);
+  }
 
   const path = $derived(page.url.pathname);
   const category = $derived(tool ? toolsCategories.find((c) => c.id === tool.category)?.name : null);
@@ -59,6 +70,12 @@
       <Button variant="outline" size="sm" onclick={() => (workspace.inspectorDrawerOpen = true)}>
         <Adjustments />
         {workspace.inspector.title}
+      </Button>
+    {/if}
+    {#if installable}
+      <Button variant="outline" size="sm" onclick={install} aria-label={`Install ${config.appName}`} title="Install as an app that works offline">
+        <Download />
+        <span class="hidden sm:inline">Install</span>
       </Button>
     {/if}
     {#if tool}

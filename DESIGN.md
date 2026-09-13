@@ -258,7 +258,7 @@ tools panel, context bar, workspace, inspector, action bar.
 | Rail | 56px, `bg-canvas` | Logo mark, Home, Explore, Search, panel toggle, up to 5 recent tools, Docs, desktop app (web), theme. 40px targets, tooltips on the right. Hidden below `md`. |
 | Tools panel | 256px, `bg-canvas` | Filterable tool list by category, no visible scrollbar. Inline from 1280px; opens and closes with a 300ms width + fade (`ease-craft`), remembered in `localStorage`. An 8px edge strip between panel and card toggles it (hover shows a line, `w-resize`/`e-resize` cursor). Below 1280px, and on immersive tools, a left drawer; on mobile a bottom drawer. |
 | Workspace card | fills the rest | `workspace-surface`: `--workspace` (`#ffffff` light, `#111111` dark) and re-points `--background` for everything inside, so the card lifts off the `#0a0a0a` canvas in dark as it does in light. 14px radius, hairline, `shadow-xs`, 8px inset from `md`. Full-bleed on mobile. |
-| Context bar | 56px min | Tool icon + `h1` title + category, or the page name. Centred search trigger (`md`+), Settings button when an inspector exists below 1280px, Share. |
+| Context bar | 56px min | Tool icon + `h1` title + category, or the page name. Centred search trigger (`md`+), Settings button when an inspector exists below 1280px, Install (outline `sm`, only when the browser offers its install prompt, never in the desktop app), Share. |
 | Workspace (`main#workspace`) | flex-1 | The only scroll container. Tool sticky bars stick to it. |
 | Inspector | 320px | Filled by a tool via `<WorkspaceInspector title>`. Right column from 1280px, right drawer below, bottom drawer on mobile. |
 | Action bar | auto | Filled via `<WorkspaceActionBar>`. Pinned under the workspace with safe-area padding. |
