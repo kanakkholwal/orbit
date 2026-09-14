@@ -34,7 +34,7 @@
 </script>
 
 <Tooltip.Provider delayDuration={400}>
-  <div class={cn("flex min-h-0 w-full overflow-clip bg-canvas", appState.isTauri ? "h-full" : "h-dvh")}>
+  <div class={cn("flex min-h-0 w-full overflow-clip bg-canvas", appState.isTauri ? "h-full" : "fixed inset-0")}>
     <ShellRail wide={inlinePanel} class="hidden md:flex" />
 
     {#if wide}

@@ -84,7 +84,7 @@
       Search for a tool, or drop in a file and pick what to do with it.
     </p>
 
-    <div class="mt-8 w-full rounded-2xl border border-border bg-card/85 p-2 text-left shadow-lg backdrop-blur-xl">
+    <div class="mt-8 w-full rounded-2xl border border-border bg-card/85 p-2 text-left backdrop-blur-xl">
       <div class="no-scrollbar flex gap-1 overflow-x-auto p-1" role="group" aria-label="Filter by category">
         {#each allChips as chip (chip.id)}
           {@const active = category === chip.id}

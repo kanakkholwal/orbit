@@ -79,8 +79,7 @@
           Enjoying {config.appName}?
         </p>
         <p class="text-xs text-muted-foreground leading-snug">
-          Share a quick testimonial on X or drop a star on GitHub — it really
-          helps.
+          Share a quick testimonial on X or drop a star on GitHub
         </p>
       </div>
     </div>
