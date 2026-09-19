@@ -5,6 +5,7 @@
   import { ToolCard } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { getToolContent } from "$constants/tool-content";
+  import { warmEnginesForTool } from "$lib/engine-warmup";
   import { recordRecentTool } from "$lib/runtime/recent-tools.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
@@ -26,6 +27,18 @@
   $effect(() => {
     const slug = tool?.slug;
     if (slug) untrack(() => recordRecentTool(slug));
+  });
+
+  $effect(() => {
+    const slug = tool?.slug;
+    if (!slug) return;
+
+    let cancel = () => {};
+    toolModule.then(() => {
+      cancel = warmEnginesForTool(slug);
+    }).catch(() => {});
+
+    return () => cancel();
   });
 
   const toolContent = $derived(getToolContent(tool));

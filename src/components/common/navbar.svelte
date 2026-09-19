@@ -27,7 +27,7 @@
       ],
     },
     {
-      title: "Company",
+      title: "Product",
       variant: "muted" as const,
       links: [
         { label: "About", href: "/about" },
@@ -60,12 +60,12 @@
       root: "rounded-xl border-border bg-background/80 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-background/70",
       overlay: "bg-background/70 backdrop-blur-xl",
       header: "p-1.5",
-      toggleButton: "rounded-md pr-3 hover:bg-muted",
+      toggleButton: "rounded-md pr-0 hover:bg-muted sm:pr-3",
       toggleLine: "bg-foreground group-hover:bg-foreground",
       logo: "gap-2",
       actions: "gap-1.5",
       secondaryButton: "rounded-md px-3 text-muted-foreground hover:bg-muted hover:text-foreground",
-      primaryButton: "rounded-md bg-primary px-4 text-primary-foreground shadow-xs hover:bg-primary-active",
+      primaryButton: "rounded-md bg-primary px-2.5 text-primary-foreground sm:px-4 shadow-xs hover:bg-primary-active",
       menuWrapper: "border-border",
       grid: "p-3 md:p-4",
       group: "rounded-xl",
@@ -87,7 +87,7 @@
     {/snippet}
 
     {#snippet actions()}
-      <ThemeToggle class="size-10 rounded-md hover:bg-muted" />
+      <ThemeToggle class="size-9 rounded-md hover:bg-muted sm:size-10" />
     {/snippet}
   </FloatingMenu>
 {/if}

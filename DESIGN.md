@@ -25,26 +25,53 @@ Tokens live in [app.css](src/app.css). Never hardcode a hex in a component.
 
 | Role | Light | Dark | Token |
 | --- | --- | --- | --- |
-| Page canvas (public pages, desktop home) | `#f5f5f5` | `#0a0a0a` | `--canvas` → `bg-canvas` |
-| App background | `#ffffff` | `#0a0a0a` | `--background` |
-| Card | `#ffffff` | `#171717` | `--card` |
-| Muted fill, hover fill | `#f5f5f5` | `#262626` | `--muted`, `--paper` |
-| Hairline | `#e5e5e5` | `rgb(255 255 255 / .10)` | `--border` |
-| Strong border | `#d4d4d4` | `rgb(255 255 255 / .16)` | `--border-strong` |
-| Input border | `#e5e5e5` | `rgb(255 255 255 / .15)` | `--input` |
-| Ink | `#0a0a0a` | `#fafafa` | `--foreground` |
-| Muted ink | `#6b6b6b` | `#a1a1a1` | `--muted-foreground` |
-| Placeholder | `#737373` | `#737373` | `--placeholder` |
+| Page canvas (public pages, desktop home) | `#f5f5f5` | `#151515` | `--canvas` → `bg-canvas` |
+| App background | `#ffffff` | `#151515` | `--background` |
+| Card | `#ffffff` | `#1a1a1d` | `--card` |
+| Muted fill, hover fill | `#f5f5f5` | `#212124` | `--muted`, `--paper` |
+| Hairline | `#e5e5e5` | `#2b2b2f` | `--border` |
+| Strong border | `#d4d4d4` | `#3c3c42` | `--border-strong` |
+| Input border | `#e5e5e5` | `#75757e` | `--input` |
+| Ink | `#0a0a0a` | `#e9e9ec` | `--foreground` |
+| Muted ink | `#6b6b6b` | `#a3a3a9` | `--muted-foreground` |
+| Placeholder | `#737373` | `#8d8d95` | `--placeholder` |
 
 These are Rune's values with one exception.
 
 **Muted ink is `#6b6b6b`, not Rune's `#737373`.** `#737373` measures 4.35:1 on the gray canvas, below
 the 4.5:1 body floor. `#6b6b6b` measures 4.89:1 on the canvas and 5.33:1 on white, and is visually
-indistinguishable. Dark muted ink `#a1a1a1` measures 7.66:1 on `#0a0a0a`.
+indistinguishable. Dark muted ink `#a3a3a9` measures 7.28:1 on `#151515`.
 
-**Cards on public pages** use `panel-card`: white in light, `--background` (`#0a0a0a`) in dark, so a
+**Cards on public pages** use `panel-card`: white in light, `--background` (`#151515`) in dark, so a
 dark card is told apart from the canvas by its hairline alone, as in the reference. App-shell cards
-use `bg-card` (`#171717` in dark) for a raised layer.
+use `bg-card` (`#1a1a1d` in dark) for a raised layer.
+
+
+**This dark ramp is shared.** `nexonauts`, `orbit`, `glyphtex` and `college-ecosystem` carry
+the same surfaces, inks and borders so the four read as one family; only `--primary` differs
+per repo. The ramp and the reasoning behind it live in `nexonauts/.notes/DESIGN.md` under
+"Dark, retuned off pure black". A change to a surface value belongs in all four.
+
+| Token | Value | L\* | Note |
+| --- | --- | --- | --- |
+| `--background`, `--canvas` | `#151515` | 6.8 | the page |
+| `--card`, `--popover` | `#1a1a1d` | 9.4 | +2.6 over the page |
+| `--muted`, `--secondary`, `--accent`, `--paper` | `#212124` | 12.9 | +3.5 over card |
+| `--border` | `#2b2b2f` | 17.7 | decorative, exempt from 3:1 |
+| `--border-strong` | `#3c3c42` | 25.5 | |
+| `--input` | `#75757e` | 49.5 | 3.81:1 on card, the control-boundary floor |
+| `--foreground` | `#e9e9ec` | 92.4 | 15.07:1 on the page, 14.33:1 on card |
+| `--muted-foreground` | `#a3a3a9` | 67.2 | 7.28:1 on the page, 6.92:1 on card |
+| `--placeholder` | `#8d8d95` | 64.6 | 5.54:1 on the page |
+
+Two things changed beyond the values. **Borders are solid neutrals, not white at low alpha**,
+so a hairline measures the same on every surface instead of drifting with whatever sits behind
+it. And **ink is `#e9e9ec`, not `#fafafa`**: on a near-black ground `#fafafa` measures over
+18:1, which halates on OLED, and WCAG has no upper bound so no gate catches it.
+
+In this repo `--muted` is a *raised* hover fill, so it takes the lift value. Nexonauts uses
+the same token name for a recessed band tint (`#0c0c0e`); do not copy that value onto a fill
+that is meant to lift.
 
 ### The accent
 
@@ -359,6 +386,23 @@ Dropping or choosing a file on Explore or Home shows `FileSuggestions`: the tool
 primary `UploadArea` takes the files on mount (`takePendingFiles`), so the file is never chosen
 twice. Files meant for one page are discarded if the user lands anywhere else.
 
+View PDF is the exception: it swaps its `UploadArea` for the editor on mount, so it claims the
+handed files during component init instead, and only shows the editor once they are decoded.
+
+### Engine warm-up
+
+A tool's heavy engine loads while the user is still reading the page, not when they press the
+action. [engine-warmup.ts](src/lib/engine-warmup.ts) maps each slug to its engines (`pdfjs`,
+`qpdf`, `jszip`, `forge`, `signpdf`, `forme`, `pymupdf`) and the tool page warms them in
+`requestIdleCallback` once the tool body has rendered.
+
+- Bundled engines warm on page load. PyMuPDF is remote and tens of MB, so it waits for a chosen
+  file: `UploadArea` calls `warmEnginesForPath` as soon as one is accepted, which is still long
+  before the action button.
+- Nothing warms on a save-data or 2g connection, and remote engines stay cold offline.
+- Every loader memoises an in-flight promise (`loadPdfJs`, `initializeQpdf`, `loadPyMuPDF`,
+  `loadEngine`), so a warm-up and a real call never load twice.
+
 ### File drops
 
 Tauri drops go to the earliest registered `UploadArea` on the page (the primary intake), not the
@@ -432,6 +476,22 @@ Regenerate everything with `bun run brand`.
 with blur, `shadow-sm` (`--shadow-craft-floating`), 40px controls with 8px radius, muted ghost
 GitHub link, emerald filled Download.
 
+Responsive rules, all inside [FloatingMenu.svelte](src/lib/motion-core/floating-menu/FloatingMenu.svelte):
+
+| Width | Header | Panel |
+| --- | --- | --- |
+| < 640px | Flex row: toggle (icon only, 36px theme button, tighter Download) then the logo, actions right | One column, 20px links, capped at `100dvh - 5rem` with its own scroll and bottom safe-area padding |
+| 640-767px | Three-column grid (`1fr auto 1fr`), logo centred, "Menu" label appears | Two columns |
+| 768-1279px | Same grid, 40px controls | Three columns, no inner scroll |
+| 1280px+ | Ghost GitHub link joins the actions | Three columns |
+
+The GitHub link waits for `xl` because the shell is `50vw` there; any earlier and the actions
+column overruns the centred logo. The open widths (95→100% mobile, 70→85% tablet, 50→75% desktop)
+are GSAP-driven, so the timeline is built inside `gsap.matchMedia()`: a resize past a breakpoint
+reverts the inline widths, re-splits the link text, and closes the menu rather than leaving the
+mobile sheet stretched across a desktop window. The same context honours `prefers-reduced-motion`
+by collapsing every duration to zero.
+
 ### Buttons
 
 | Variant | Treatment |
@@ -490,6 +550,19 @@ icon rows on a 404, and a support link.
 ### Tilted chips
 
 `-rotate-2` to `rotate-6` label chips. Hairline, 8px radius, 12px semibold. At most two per view.
+
+### Other products
+
+Sibling Nexonauts products live in [products.ts](src/constants/products.ts) (name, tagline,
+summary) and surface in two places, never more:
+
+| Where | Shape |
+| --- | --- |
+| Footer | A "More from Nexonauts" row between the link columns and the legal line: eyebrow label, then name + tagline + a 14px arrow per product. No cards, no logos. |
+| About, before the closing CTA | `SplitSection` holding `ProductGrid`: 18px cards, name with an arrow, emerald tagline in caps, two-line summary. |
+
+All links are `target="_blank"` with `rel="noopener noreferrer"`. Keep the taglines to three words
+and the summaries to one sentence taken from the product's own description.
 
 ---
 

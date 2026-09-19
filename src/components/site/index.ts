@@ -3,6 +3,7 @@ export { default as ChapterRule } from "./ChapterRule.svelte";
 export { default as Container } from "./Container.svelte";
 export { default as FaqList } from "./FaqList.svelte";
 export { default as PageHero } from "./PageHero.svelte";
+export { default as ProductGrid } from "./ProductGrid.svelte";
 export { default as RailFrame } from "./RailFrame.svelte";
 export { default as RailRow } from "./RailRow.svelte";
 export { default as Reveal } from "./Reveal.svelte";

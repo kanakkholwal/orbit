@@ -2,7 +2,9 @@
   import Logo from "$components/Logo.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
+  import { siblingProducts } from "$constants/products";
   import { toolsCategories } from "$constants/tools";
+  import { IconArrowUpRight as ArrowUpRight } from "@tabler/icons-svelte";
   import { IconBrandGithub as Github } from "@tabler/icons-svelte";
   import { IconBrandTwitter as Twitter } from "@tabler/icons-svelte";
   const currentYear = new Date().getFullYear();
@@ -130,8 +132,33 @@
       </div>
     </div>
 
+    <nav
+      class="mt-8 flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-baseline sm:gap-6"
+      aria-label="Other products"
+    >
+      <span class="label-eyebrow shrink-0 text-foreground">More from Nexonauts</span>
+      <ul class="flex flex-wrap gap-x-5 gap-y-2">
+        {#each siblingProducts as product (product.href)}
+          <li>
+            <a
+              href={product.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group inline-flex items-baseline gap-1.5 text-body text-muted-foreground transition-colors duration-200 hover:text-foreground"
+            >
+              <span class="font-medium text-foreground">{product.name}</span>
+              <span>{product.tagline}</span>
+              <ArrowUpRight
+                class="size-3.5 shrink-0 self-center text-placeholder transition-colors duration-200 group-hover:text-primary"
+              />
+            </a>
+          </li>
+        {/each}
+      </ul>
+    </nav>
+
     <div
-      class="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-border pt-5 text-caption text-muted-foreground"
+      class="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 border-t border-border pt-5 text-caption text-muted-foreground"
     >
       <p>© {currentYear} {config.appName} · v{config.appVersion}</p>
       <p>GPL-3.0 · Runs entirely on your device</p>

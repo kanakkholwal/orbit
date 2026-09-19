@@ -1,14 +1,23 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
+  import { browser } from "$app/environment";
+  import { page } from "$app/state";
   import { Editor } from "$components/application/pdf-editor";
   import UploadArea from "$components/ui/UploadArea.svelte";
+  import { takePendingFiles } from "$lib/runtime/pending-files.svelte";
   import { pdfViewerState } from "$lib/runtime/pdf-viewer-state.svelte";
 
   const state = pdfViewerState;
 
+  // Claimed during init: the UploadArea that normally takes handed files is replaced on mount.
+  const handed = browser ? takePendingFiles(page.url.pathname) : [];
+
   onMount(() => {
-    state.viewerMounted = true;
+    const ready = handed.length > 0 ? state.addFiles(handed) : Promise.resolve();
+    ready.then(() => {
+      state.viewerMounted = true;
+    });
 
     return () => {
       state.viewerMounted = false;

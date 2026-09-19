@@ -153,6 +153,7 @@ export function formatIsoDate(isoDateString: any): string {
 }
 
 let qpdfInstance: any = null;
+let qpdfPromise: Promise<any> | null = null;
 
 /**
  * Initialize qpdf-wasm singleton.
@@ -161,16 +162,18 @@ let qpdfInstance: any = null;
 export async function initializeQpdf() {
   if (qpdfInstance) return qpdfInstance;
 
-  try {
-    qpdfInstance = await createModule({
-      locateFile: () => "/wasm/qpdf.wasm",
+  qpdfPromise ??= createModule({ locateFile: () => "/wasm/qpdf.wasm" })
+    .then((instance: any) => {
+      qpdfInstance = instance;
+      return instance;
+    })
+    .catch((error: unknown) => {
+      qpdfPromise = null;
+      console.error('Failed to initialize qpdf-wasm:', error);
+      throw error;
     });
-  } catch (error) {
-    console.error('Failed to initialize qpdf-wasm:', error);
-    throw error;
-  }
 
-  return qpdfInstance;
+  return qpdfPromise;
 }
 
 export function formatStars(num: number) {

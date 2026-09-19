@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { BrandPanel, PageHero, RailFrame, RailRow, SplitSection } from "$components/site";
+  import { BrandPanel, PageHero, ProductGrid, RailFrame, RailRow, SplitSection } from "$components/site";
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
@@ -98,6 +98,16 @@
           </div>
         {/each}
       </dl>
+    </SplitSection>
+  </RailRow>
+
+  <RailRow label="Other products">
+    <SplitSection
+      title="More from"
+      accent="Nexonauts"
+      description="Other tools from the same team, built with the same care."
+    >
+      <ProductGrid />
     </SplitSection>
   </RailRow>
 

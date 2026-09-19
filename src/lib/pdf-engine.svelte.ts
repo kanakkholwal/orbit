@@ -1,5 +1,6 @@
 import type * as PDFJS from 'pdfjs-dist';
 import { BaseEngine } from './base-engine.svelte';
+import { loadPdfJs } from './pdf/pdfjs';
 
 // Single source of truth lives in base-engine; re-exported here for convenience.
 export type { ProgressState } from './base-engine.svelte';
@@ -26,14 +27,8 @@ export class PdfEngine extends BaseEngine {
     protected async getPdfJs() {
         if (this.pdfjsLib) return this.pdfjsLib;
 
-        const lib = await import('pdfjs-dist');
-
-        lib.GlobalWorkerOptions.workerSrc = new URL(
-            'pdfjs-dist/build/pdf.worker.min.mjs',
-            import.meta.url
-        ).toString();
-        this.pdfjsLib = lib;
-        return lib;
+        this.pdfjsLib = await loadPdfJs();
+        return this.pdfjsLib;
     }
 
     /**

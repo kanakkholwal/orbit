@@ -166,94 +166,111 @@
 		if (!menuGroups.length) return;
 
 		let cancelled = false;
-		let splits: SplitText[] = [];
+		let mediaContext: gsap.MatchMedia | null = null;
 
 		const init = async () => {
 			await document.fonts.ready;
 			if (cancelled) return;
 
-			const width = window.innerWidth;
-			const isMobile = width < 768;
-			const isTablet = width >= 768 && width < 1024;
+			mediaContext = gsap.matchMedia();
 
-			let maxWidthOpen = "75%";
-			let maxWidthInitial = "50%";
+			// Rebuilt per breakpoint so a resize re-splits the links and drops the stale inline widths.
+			mediaContext.add(
+				{
+					isMobile: "(max-width: 767px)",
+					isTablet: "(min-width: 768px) and (max-width: 1023px)",
+					reduced: "(prefers-reduced-motion: reduce)",
+				},
+				(context) => {
+					const { isMobile, isTablet, reduced } = context.conditions as {
+						isMobile: boolean;
+						isTablet: boolean;
+						reduced: boolean;
+					};
 
-			if (isMobile) {
-				maxWidthOpen = "100%";
-				maxWidthInitial = "95%";
-			} else if (isTablet) {
-				maxWidthOpen = "85%";
-				maxWidthInitial = "70%";
-			}
+					const maxWidthOpen = isMobile ? "100%" : isTablet ? "85%" : "75%";
+					const maxWidthInitial = isMobile ? "95%" : isTablet ? "70%" : "50%";
+					const duration = reduced ? 0 : 0.5;
+					const lineDuration = reduced ? 0 : 0.4;
+					const stagger = reduced ? 0 : 0.2;
 
-			gsap.set(overlayRef, { autoAlpha: 0 });
-			gsap.set(containerRef, { maxWidth: maxWidthInitial });
-			gsap.set(menuWrapperRef, { height: 0, autoAlpha: 0 });
+					gsap.set(overlayRef, { autoAlpha: 0 });
+					gsap.set(containerRef, { maxWidth: maxWidthInitial });
+					gsap.set(menuWrapperRef, { height: 0, autoAlpha: 0 });
 
-			const linkElements = gsap.utils.toArray(
-				`[data-slot="link-text"]`,
-				menuWrapperRef,
-			) as HTMLElement[];
+					const linkElements = gsap.utils.toArray(
+						`[data-slot="link-text"]`,
+						menuWrapperRef,
+					) as HTMLElement[];
 
-			splits = linkElements.map((el) =>
-				SplitText.create(el, { type: "lines", mask: "lines" }),
+					const splits = linkElements.map((el) =>
+						SplitText.create(el, { type: "lines", mask: "lines" }),
+					);
+					const allLines = splits.flatMap((s) => s.lines);
+
+					timeline = gsap.timeline({
+						paused: true,
+						defaults: { ease: "motion-core-ease", duration },
+					});
+
+					timeline
+						.to(
+							containerRef,
+							{
+								maxWidth: maxWidthOpen,
+								...(isMobile
+									? {
+											top: 0,
+											paddingTop:
+												"max(env(safe-area-inset-top), 0.5rem)",
+											borderTopLeftRadius: 0,
+											borderTopRightRadius: 0,
+										}
+									: {}),
+							},
+							0,
+						)
+						.to(overlayRef, { autoAlpha: 1 }, 0)
+						.to(menuWrapperRef, { height: "auto", autoAlpha: 1 }, stagger)
+						.to([line1Ref, line2Ref], { y: 0, duration: lineDuration }, stagger)
+						.to(line1Ref, { rotation: 45, duration: lineDuration }, stagger)
+						.to(line2Ref, { rotation: -45, duration: lineDuration }, stagger);
+
+					if (allLines.length && !reduced) {
+						timeline.from(
+							allLines,
+							{
+								yPercent: 100,
+								autoAlpha: 0,
+								stagger: 0.02,
+							},
+							0.3,
+						);
+					}
+
+					// A breakpoint flip swaps the sheet for the dropdown, so land closed instead of half-open.
+					if (untrack(() => isOpen)) {
+						isOpen = false;
+					}
+
+					return () => {
+						timeline?.kill();
+						timeline = null;
+						splits.forEach((s) => {
+							s.revert();
+						});
+					};
+				},
 			);
-			const allLines = splits.flatMap((s) => s.lines);
-
-			timeline = gsap.timeline({
-				paused: true,
-				defaults: { ease: "motion-core-ease", duration: 0.5 },
-			});
-
-			timeline
-				.to(
-					containerRef,
-					{
-						maxWidth: maxWidthOpen,
-						...(isMobile
-							? {
-									top: 0,
-									paddingTop: "0.5rem",
-									borderTopLeftRadius: 0,
-									borderTopRightRadius: 0,
-								}
-							: {}),
-					},
-					0,
-				)
-				.to(overlayRef, { autoAlpha: 1 }, 0)
-				.to(menuWrapperRef, { height: "auto", autoAlpha: 1 }, 0.2)
-				.to([line1Ref, line2Ref], { y: 0, duration: 0.4 }, 0.2)
-				.to(line1Ref, { rotation: 45, duration: 0.4 }, 0.2)
-				.to(line2Ref, { rotation: -45, duration: 0.4 }, 0.2);
-
-			if (allLines.length) {
-				timeline.from(
-					allLines,
-					{
-						yPercent: 100,
-						autoAlpha: 0,
-						stagger: 0.02,
-					},
-					0.3,
-				);
-			}
-
-			if (untrack(() => isOpen)) {
-				timeline.progress(1);
-			}
 		};
 
 		init();
 
 		return () => {
 			cancelled = true;
-			if (timeline) {
-				timeline.kill();
-				timeline = null;
-			}
-			splits.forEach((s) => s.revert());
+			mediaContext?.revert();
+			mediaContext = null;
+			timeline = null;
 		};
 	});
 </script>
@@ -292,7 +309,7 @@
 	<div
 		data-slot="header"
 		class={cn(
-			"relative z-20 flex w-full items-center justify-between p-1",
+			"relative z-20 flex w-full items-center justify-between gap-1 p-1 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]",
 			classes?.header,
 		)}
 	>
@@ -300,7 +317,7 @@
 			onclick={toggle}
 			data-slot="toggle-button"
 			class={cn(
-				"group relative flex h-10 items-center justify-center rounded-sm pr-2 transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-primary/10",
+				"group relative flex h-10 w-fit items-center justify-center justify-self-start rounded-sm pr-0 transition-[background-color] sm:pr-2 duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-primary/10",
 				classes?.toggleButton,
 			)}
 			aria-label="Toggle menu"
@@ -333,7 +350,7 @@
 		</button>
 
 		<div
-			class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform-gpu"
+			class="min-w-0 shrink transform-gpu sm:justify-self-center sm:px-1"
 			style="backface-visibility: hidden;"
 		>
 			{#if logo}
@@ -348,7 +365,7 @@
 
 		<div
 			data-slot="actions"
-			class={cn("flex items-center gap-1", classes?.actions)}
+			class={cn("flex shrink-0 items-center gap-1 justify-self-end", classes?.actions)}
 		>
 			{@render actions?.()}
 			{#if secondaryButton}
@@ -356,7 +373,7 @@
 					href={secondaryButton.href}
 					data-slot="secondary-button"
 					class={cn(
-						"hidden h-10 items-center justify-center rounded-sm px-4 text-sm font-medium text-foreground transition-[background-color,color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-background-muted hover:text-foreground md:flex",
+						"hidden h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-sm px-4 text-sm font-medium text-foreground transition-[background-color,color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-background-muted hover:text-foreground xl:flex",
 						classes?.secondaryButton,
 					)}
 				>
@@ -368,7 +385,7 @@
 					href={primaryButton.href}
 					data-slot="primary-button"
 					class={cn(
-						"flex h-10 items-center justify-center rounded-sm bg-primary/10 px-4 text-sm font-medium text-primary transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-primary/20",
+						"flex h-10 shrink-0 items-center justify-center whitespace-nowrap rounded-sm bg-primary/10 px-2.5 text-sm font-medium text-primary transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-primary/20 sm:px-4",
 						classes?.primaryButton,
 					)}
 				>
@@ -389,7 +406,7 @@
 		<div
 			data-slot="grid"
 			class={cn(
-				"grid max-h-[65vh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain p-4 md:max-h-none md:grid-cols-3 md:overflow-visible",
+				"grid max-h-[calc(100dvh-5rem)] grid-cols-1 gap-4 overflow-y-auto overscroll-contain p-4 pb-[max(env(safe-area-inset-bottom),1rem)] sm:grid-cols-2 md:max-h-none md:grid-cols-3 md:overflow-visible md:pb-4",
 				classes?.grid,
 			)}
 		>
@@ -397,7 +414,7 @@
 				<div
 					data-slot="group"
 					class={cn(
-						"flex flex-col gap-4 rounded-sm p-4 transition-colors ease-[cubic-bezier(0.625,0.05,0,1)]",
+						"flex flex-col gap-4 rounded-sm p-3 transition-colors sm:p-4 ease-[cubic-bezier(0.625,0.05,0,1)]",
 						group.variant === "muted"
 							? "bg-background-muted"
 							: "bg-transparent",
@@ -420,7 +437,7 @@
 								href={link.href}
 								data-slot="link"
 								class={cn(
-									"group/link relative block w-fit text-2xl font-normal text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground",
+									"group/link relative block w-fit max-w-full text-xl font-normal sm:text-2xl text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground",
 									classes?.link,
 								)}
 							>
