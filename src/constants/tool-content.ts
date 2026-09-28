@@ -91,7 +91,7 @@ function defaultUseCases(tool: ToolMeta): ToolUseCase[] {
 const bespoke: Record<string, Partial<ToolContent>> = {
     'md-to-pdf': {
         intro:
-            'Markdown is perfect for writing, but most people need a PDF to share or print. This tool renders your Markdown — headings, lists, bold and italic text, code blocks, blockquotes and horizontal rules — into a clean, paginated PDF, entirely in your browser. Paste your Markdown directly or load a .md file, and the conversion happens on your device with nothing uploaded.',
+            'Markdown is perfect for writing, but most people need a PDF to share or print. This tool renders GitHub-flavored Markdown — headings, lists, tables, task lists, strikethrough, alerts, code blocks, blockquotes and rules — into a clean, paginated PDF, entirely in your browser. Paste your Markdown directly or load a .md file, and the conversion happens on your device with nothing uploaded.',
         howItWorks: [
             'Paste your Markdown into the editor, or click "Load .md" to import a file.',
             'Use the "Sample" button if you want to see how formatting is rendered.',
@@ -115,7 +115,7 @@ const bespoke: Record<string, Partial<ToolContent>> = {
         faqs: [
             {
                 q: 'Which Markdown features are supported?',
-                a: 'Headings, paragraphs, ordered and unordered lists, bold and italic emphasis, inline code, fenced code blocks, blockquotes, and horizontal rules are all rendered. Images and complex tables are not yet supported.'
+                a: 'GitHub-flavored Markdown is supported: headings, paragraphs, lists (including task checkboxes), pipe and HTML tables with column alignment, strikethrough, links, inline code, fenced code blocks, blockquotes, GitHub-style alerts such as NOTE and WARNING, and horizontal rules. Remote images are shown as their alt text because the converter stays offline.'
             },
             {
                 q: 'Can I convert a .md file directly?',

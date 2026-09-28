@@ -507,12 +507,12 @@ const tools: Record<string, ToolConfig> = {
     'md-to-pdf': {
         slug: 'md-to-pdf',
         title: 'Markdown to PDF',
-        description: 'Convert Markdown into a clean, formatted PDF with headings, lists, code blocks and emphasis all rendered. Paste your Markdown or load a .md file. Free and fully offline; nothing is uploaded.',
+        description: 'Convert GitHub-flavored Markdown into a clean PDF, including tables, task lists, strikethrough, alerts and code blocks. Paste your Markdown or load a .md file. Free and fully offline; nothing is uploaded.',
         category: 'conversion',
         icon: FileText,
         component: () => import('./md-to-pdf/tool.svelte'),
         color: 'text-blue-500',
-        keywords: ['markdown to pdf', 'md to pdf', 'convert markdown to pdf', 'markdown pdf converter', 'render markdown as pdf', 'md file to pdf', 'export markdown to pdf', 'free markdown to pdf']
+        keywords: ['markdown to pdf', 'md to pdf', 'convert markdown to pdf', 'markdown pdf converter', 'github flavored markdown pdf', 'markdown table to pdf', 'render markdown as pdf', 'md file to pdf', 'export markdown to pdf', 'free markdown to pdf']
     },
     'pdf-to-md': {
         slug: 'pdf-to-md',

@@ -3,21 +3,32 @@ import { markdownToPdf } from '$utils/md-to-pdf';
 
 const SAMPLE = `# Document title
 
-A short paragraph with **bold**, *italic*, and \`inline code\`. Markdown is
-converted to a clean PDF entirely on your device.
+A short paragraph with **bold**, *italic*, ~~strikethrough~~, and \`inline code\`.
+GitHub-flavored Markdown — tables, task lists, alerts — is converted locally.
 
 ## Features
 
 - Headings, paragraphs and lists
-- **Bold** and *italic* runs
-- Fenced code blocks
-- Blockquotes and rules
+- **Bold**, *italic*, and ~~deleted~~ runs
+- Fenced code blocks with a language label
+- Blockquotes, [alerts](https://github.com), and rules
 
-\`\`\`
+| Tool | Status | Notes |
+| :--- | :---: | ---: |
+| Merge PDF | Done | Combine files |
+| Split PDF | Done | Extract ranges |
+| Markdown | New | GFM tables |
+
+- [x] Paste or load Markdown
+- [x] Check the table above
+- [ ] Download the PDF
+
+\`\`\`ts
 const greeting = "hello world";
 console.log(greeting);
 \`\`\`
 
+> [!NOTE]
 > Everything stays on your device. Nothing is uploaded.
 
 ---
