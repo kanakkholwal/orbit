@@ -1,37 +1,17 @@
-import Root from "./select.svelte";
-import Group from "./select-group.svelte";
-import Label from "./select-label.svelte";
-import Item from "./select-item.svelte";
-import Content from "./select-content.svelte";
-import Trigger from "./select-trigger.svelte";
-import Separator from "./select-separator.svelte";
-import ScrollDownButton from "./select-scroll-down-button.svelte";
-import ScrollUpButton from "./select-scroll-up-button.svelte";
-import GroupHeading from "./select-group-heading.svelte";
-import Portal from "./select-portal.svelte";
-
-export {
-	Root,
-	Group,
-	Label,
-	Item,
-	Content,
-	Trigger,
-	Separator,
-	ScrollDownButton,
-	ScrollUpButton,
-	GroupHeading,
-	Portal,
-	//
-	Root as Select,
-	Group as SelectGroup,
-	Label as SelectLabel,
-	Item as SelectItem,
-	Content as SelectContent,
-	Trigger as SelectTrigger,
-	Separator as SelectSeparator,
-	ScrollDownButton as SelectScrollDownButton,
-	ScrollUpButton as SelectScrollUpButton,
-	GroupHeading as SelectGroupHeading,
-	Portal as SelectPortal,
-};
+export { default as Select } from "./select.svelte";
+export { default as SelectContent } from "./select-content.svelte";
+export { default as SelectGroup } from "./select-group.svelte";
+export { default as SelectItem } from "./select-item.svelte";
+export { default as SelectLabel } from "./select-label.svelte";
+export { default as SelectSeparator } from "./select-separator.svelte";
+export { default as SelectTrigger } from "./select-trigger.svelte";
+export { default as SelectValue } from "./select-value.svelte";
+export { selectTrigger, selectContent, type SelectContentSize, type SelectTriggerVariant, type SelectTriggerSize } from "./variants";
+export { default as Root } from "./select.svelte";
+export { default as Content } from "./select-content.svelte";
+export { default as Group } from "./select-group.svelte";
+export { default as Item } from "./select-item.svelte";
+export { default as Label } from "./select-label.svelte";
+export { default as Separator } from "./select-separator.svelte";
+export { default as Trigger } from "./select-trigger.svelte";
+export { default as Value } from "./select-value.svelte";

@@ -1,20 +1,16 @@
 <script lang="ts">
-	import type { HTMLAttributes } from "svelte/elements";
-	import { cn, type WithElementRef } from "$lib/utils.js";
+import type { Snippet } from "svelte";
+import type { HTMLAttributes } from "svelte/elements";
+import { cn } from "$lib/cn.js";
+import { menu } from "$lib/menu.js";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		children,
-		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLSpanElement>> = $props();
+let {
+	children,
+	class: classProp,
+	...rest
+}: { children?: Snippet; class?: string } & HTMLAttributes<HTMLElement> = $props();
 </script>
 
-<span
-	bind:this={ref}
-	data-slot="dropdown-menu-shortcut"
-	class={cn("text-muted-foreground ms-auto text-xs tracking-widest", className)}
-	{...restProps}
->
+<kbd {...rest} data-slot="dropdown-menu-shortcut" class={cn(menu().shortcut(), classProp)}>
 	{@render children?.()}
-</span>
+</kbd>

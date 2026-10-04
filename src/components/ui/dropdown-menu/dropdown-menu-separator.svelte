@@ -1,17 +1,9 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
+import type { HTMLAttributes } from "svelte/elements";
+import { cn } from "$lib/cn.js";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: DropdownMenuPrimitive.SeparatorProps = $props();
+let { class: classProp, ...rest }: { class?: string } & HTMLAttributes<HTMLHRElement> =
+	$props();
 </script>
 
-<DropdownMenuPrimitive.Separator
-	bind:ref
-	data-slot="dropdown-menu-separator"
-	class={cn("bg-border -mx-1 my-1 h-px", className)}
-	{...restProps}
-/>
+<hr {...rest} data-slot="dropdown-menu-separator" class={cn("-mx-1 my-1 border-border", classProp)} />

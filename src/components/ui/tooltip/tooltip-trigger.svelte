@@ -1,7 +1,12 @@
 <script lang="ts">
-	import { Tooltip as TooltipPrimitive } from "bits-ui";
+import { Tooltip as TooltipPrimitive } from "bits-ui";
+import { cn } from "$lib/cn.js";
 
-	let { ref = $bindable(null), ...restProps }: TooltipPrimitive.TriggerProps = $props();
+let { class: classProp, ...rest }: TooltipPrimitive.TriggerProps = $props();
 </script>
 
-<TooltipPrimitive.Trigger bind:ref data-slot="tooltip-trigger" {...restProps} />
+<TooltipPrimitive.Trigger
+	{...rest}
+	data-slot="tooltip-trigger"
+	class={cn("inline-flex", classProp)}
+/>

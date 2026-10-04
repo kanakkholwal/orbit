@@ -1,31 +1,45 @@
 <script lang="ts">
-	import { RadioGroup as RadioGroupPrimitive } from "bits-ui";
-	import { IconCircle as CircleIcon } from "@tabler/icons-svelte";
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+import { RadioGroup as RadioGroupPrimitive } from "bits-ui";
+import type { Snippet } from "svelte";
+import { cn } from "$lib/cn.js";
+import { getRadioGroupItemContext } from "./context";
+import { radioGroup } from "./variants";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: WithoutChildrenOrChild<RadioGroupPrimitive.ItemProps> = $props();
+let {
+	children,
+	value,
+	label,
+	description,
+	disabled = false,
+	class: classProp,
+	...rest
+}: Omit<RadioGroupPrimitive.ItemProps, "value" | "disabled" | "class" | "children"> & {
+	children?: Snippet;
+	value: string;
+	label?: string;
+	description?: string;
+	disabled?: boolean;
+	class?: string;
+} = $props();
+
+const group = getRadioGroupItemContext();
+const frame = $derived(radioGroup({ variant: group.variant, size: group.size }));
 </script>
 
-<RadioGroupPrimitive.Item
-	bind:ref
-	data-slot="radio-group-item"
-	class={cn(
-		"border-input text-primary focus-visible:border-ring focus-visible:ring-ring aria-invalid:ring-destructive aria-invalid:border-destructive aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50",
-		className
-	)}
-	{...restProps}
->
-	{#snippet children({ checked })}
-		<div data-slot="radio-group-indicator" class="relative flex items-center justify-center">
-			{#if checked}
-				<CircleIcon
-					class="fill-primary absolute start-1/2 top-1/2 size-2 -translate-x-1/2 -translate-y-1/2"
-				/>
-			{/if}
-		</div>
-	{/snippet}
-</RadioGroupPrimitive.Item>
+<label data-slot="radio-group-item" class={cn(frame.label(), classProp)}>
+	<RadioGroupPrimitive.Item {...rest} {value} {disabled} class={frame.ring()}>
+		{#snippet children({ checked })}
+			<span data-on={checked} class={frame.dot()}></span>
+		{/snippet}
+	</RadioGroupPrimitive.Item>
+	<span class="min-w-0">
+		{#if children}
+			{@render children()}
+		{:else if label}
+			<span class="block">{label}</span>
+		{/if}
+		{#if description}
+			<span class="block text-muted-foreground text-xs leading-relaxed">{description}</span>
+		{/if}
+	</span>
+</label>

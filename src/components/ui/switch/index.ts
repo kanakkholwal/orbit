@@ -1,3 +1,3 @@
-import Root from "./switch.svelte";
-
-export { Root, Root as Switch };
+export { default as Switch } from "./switch.svelte";
+export { switchTrack, switchThumb, type SwitchSize } from "./variants";
+export { default as Root } from "./switch.svelte";

@@ -1,40 +1,46 @@
 <script lang="ts">
-	import { Drawer as DrawerPrimitive } from "vaul-svelte";
-	import DrawerPortal from "./drawer-portal.svelte";
-	import DrawerOverlay from "./drawer-overlay.svelte";
-	import { cn } from "$lib/utils.js";
-	import type { ComponentProps } from "svelte";
-	import type { WithoutChildrenOrChild } from "$lib/utils.js";
+import type { Snippet } from "svelte";
+import { Drawer } from "vaul-svelte";
+import { cn } from "$lib/cn.js";
+import { type DrawerVariant, drawerFrame } from "./variants";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		portalProps,
-		children,
-		...restProps
-	}: DrawerPrimitive.ContentProps & {
-		portalProps?: WithoutChildrenOrChild<ComponentProps<typeof DrawerPortal>>;
-	} = $props();
+let {
+	children,
+	class: classProp,
+	handle = true,
+	variant = "default",
+	...rest
+}: {
+	children?: Snippet;
+	class?: string;
+	/** Hide the drag handle; only sensible with `dismissible={false}`. */
+	handle?: boolean;
+	variant?: DrawerVariant;
+} & Omit<Drawer.ContentProps, "children"> = $props();
+
+const frame = $derived(drawerFrame({ variant }));
 </script>
 
-<DrawerPortal {...portalProps}>
-	<DrawerOverlay />
-	<DrawerPrimitive.Content
-		bind:ref
+<Drawer.Portal>
+	<Drawer.Overlay data-slot="drawer-overlay" class={frame.overlay()} />
+	<!-- The frame is the rim (`framed`) or the surface itself (`default`). -->
+	<Drawer.Content
 		data-slot="drawer-content"
-		class={cn(
-			"group/drawer-content bg-background fixed z-50 flex h-auto flex-col",
-			"data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b",
-			"data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t",
-			"data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:end-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-s data-[vaul-drawer-direction=right]:sm:max-w-sm",
-			"data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:start-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-e data-[vaul-drawer-direction=left]:sm:max-w-sm",
-			className
-		)}
-		{...restProps}
+		data-variant={variant}
+		class={cn(frame.panel(), classProp)}
+		{...rest}
 	>
-		<div
-			class="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block"
-		></div>
-		{@render children?.()}
-	</DrawerPrimitive.Content>
-</DrawerPortal>
+		{#if handle}
+			{#if variant === "framed"}
+				<Drawer.Handle class={frame.handle()} />
+			{:else}
+				<div aria-hidden="true" class={frame.handleBar()}></div>
+			{/if}
+		{/if}
+		<!-- data-vaul-no-drag: dragging should only start from the rail, not anywhere in the
+		body, since vaul otherwise treats the whole panel as a drag target. -->
+		<div data-slot="drawer-surface" data-vaul-no-drag class={frame.surface()}>
+			{@render children?.()}
+		</div>
+	</Drawer.Content>
+</Drawer.Portal>

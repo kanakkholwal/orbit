@@ -1,29 +1,40 @@
 <script lang="ts">
-	import { cn, type WithoutChild } from "$lib/utils.js";
-	import { IconChevronDown as ChevronDownIcon } from "@tabler/icons-svelte";
-	import { Select as SelectPrimitive } from "bits-ui";
+import { Select as SelectPrimitive } from "bits-ui";
+import { cn } from "$lib/cn.js";
+import {
+	type SelectTriggerSize,
+	type SelectTriggerVariant,
+	selectTrigger,
+} from "./variants";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		children,
-		size = "default",
-		...restProps
-	}: WithoutChild<SelectPrimitive.TriggerProps> & {
-		size?: "sm" | "default";
-	} = $props();
+let {
+	class: classProp,
+	children,
+	variant = "default",
+	size = "default",
+	...rest
+}: SelectPrimitive.TriggerProps & {
+	variant?: SelectTriggerVariant;
+	size?: SelectTriggerSize;
+} = $props();
 </script>
 
 <SelectPrimitive.Trigger
-	bind:ref
+	{...rest}
 	data-slot="select-trigger"
+	data-variant={variant}
 	data-size={size}
-	class={cn(
-		"data-placeholder:text-placeholder [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring data-[state=open]:border-ring aria-invalid:border-destructive flex w-fit items-center justify-between gap-2 rounded-lg border border-border bg-background px-3 text-body text-foreground whitespace-nowrap outline-none transition-colors duration-150 select-none disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-10 data-[size=sm]:h-9 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
-		className
-	)}
-	{...restProps}
+	class={cn(selectTrigger({ variant, size }), "group/select-trigger", classProp)}
 >
 	{@render children?.()}
-	<ChevronDownIcon class="size-4 text-muted-foreground" />
+	<!-- Only the chevron turns; a leading icon passed as children stays put. -->
+	<svg
+		viewBox="0 0 16 16"
+		fill="none"
+		aria-hidden="true"
+		data-slot="select-icon"
+		class="size-3.5 shrink-0 text-muted-foreground transition-[rotate] duration-(--duration-exit) ease-(--ease-out) group-data-[state=open]/select-trigger:rotate-180 group-data-[state=open]/select-trigger:duration-(--duration-dropdown) motion-reduce:transition-none"
+	>
+		<path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+	</svg>
 </SelectPrimitive.Trigger>

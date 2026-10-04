@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { Dialog as SheetPrimitive } from "bits-ui";
+import { Dialog as SheetPrimitive } from "bits-ui";
+import { cn } from "$lib/cn.js";
 
-	let { ref = $bindable(null), ...restProps }: SheetPrimitive.TriggerProps = $props();
+let { class: classProp, ...rest }: SheetPrimitive.TriggerProps = $props();
 </script>
 
-<SheetPrimitive.Trigger bind:ref data-slot="sheet-trigger" {...restProps} />
+<SheetPrimitive.Trigger {...rest} data-slot="sheet-trigger" class={cn("inline-flex", classProp)} />

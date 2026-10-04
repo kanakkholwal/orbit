@@ -1,27 +1,57 @@
 <script lang="ts">
-	import { Switch as SwitchPrimitive } from "bits-ui";
-	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
+import { Switch as SwitchPrimitive } from "bits-ui";
+import { cn } from "$lib/cn.js";
+import { type SwitchSize, switchThumb, switchTrack } from "./variants";
 
-	let {
-		ref = $bindable(null),
-		checked = $bindable(false),
-		class: className,
-		...restProps
-	}: WithoutChildrenOrChild<SwitchPrimitive.RootProps> = $props();
+type Props = Omit<
+	SwitchPrimitive.RootProps,
+	"checked" | "disabled" | "class" | "children"
+> & {
+	checked?: boolean;
+	disabled?: boolean;
+	size?: SwitchSize;
+	label?: string;
+	"aria-label"?: string;
+	class?: string;
+};
+
+let {
+	checked = $bindable(false),
+	disabled = false,
+	size = "md",
+	label,
+	"aria-label": ariaLabel,
+	class: classProp,
+	id: idProp,
+	...rest
+}: Props = $props();
+
+const autoId = $props.id();
+const id = $derived(idProp ?? autoId);
 </script>
 
-<SwitchPrimitive.Root
-	bind:ref
-	bind:checked
-	data-slot="switch"
-	class={cn(
-		"peer inline-flex h-6 w-10 shrink-0 items-center rounded-full p-0.5 outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=unchecked]:bg-placeholder",
-		className
-	)}
-	{...restProps}
->
-	<SwitchPrimitive.Thumb
-		data-slot="switch-thumb"
-		class="pointer-events-none block size-5 rounded-full bg-fixed-light shadow-sm transition-transform duration-200 ease-craft data-[state=checked]:translate-x-4 data-[state=unchecked]:translate-x-0"
-	/>
-</SwitchPrimitive.Root>
+{#snippet control()}
+	<SwitchPrimitive.Root
+		{...rest}
+		{id}
+		{disabled}
+		bind:checked
+		aria-label={label ? undefined : (ariaLabel ?? "Toggle")}
+		data-slot="switch"
+		class={cn(switchTrack({ size }), !label && classProp)}
+	>
+		<SwitchPrimitive.Thumb class={switchThumb({ size })} />
+	</SwitchPrimitive.Root>
+{/snippet}
+
+<!-- Bare, so this can replace a shadcn switch; the wrapper only appears with a label. -->
+{#if label}
+	<span class={cn("inline-flex items-center gap-2.5", classProp)}>
+		{@render control()}
+		<label for={id} class={cn("text-foreground text-sm", disabled && "opacity-50")}>
+			{label}
+		</label>
+	</span>
+{:else}
+	{@render control()}
+{/if}

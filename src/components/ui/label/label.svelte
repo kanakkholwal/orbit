@@ -1,20 +1,37 @@
 <script lang="ts">
-	import { cn } from "$lib/utils.js";
-	import { Label as LabelPrimitive } from "bits-ui";
+import type { Snippet } from "svelte";
+import type { HTMLLabelAttributes } from "svelte/elements";
+import { cn } from "$lib/cn.js";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: LabelPrimitive.RootProps = $props();
+let {
+	children,
+	for: htmlFor,
+	class: classProp,
+	required = false,
+	disabled = false,
+	ref = $bindable(null),
+	...rest
+}: Omit<HTMLLabelAttributes, "class" | "for" | "children"> & {
+	children?: Snippet;
+	for?: string;
+	class?: string;
+	required?: boolean;
+	disabled?: boolean;
+	ref?: HTMLLabelElement | null;
+} = $props();
 </script>
 
-<LabelPrimitive.Root
-	bind:ref
+<label
+	bind:this={ref}
 	data-slot="label"
+	{...rest}
+	for={htmlFor}
 	class={cn(
-		"flex items-center gap-2 text-body leading-snug font-medium text-foreground select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
-		className
+		"inline-flex items-center gap-1 font-medium text-foreground text-sm",
+		disabled && "pointer-events-none opacity-50",
+		classProp,
 	)}
-	{...restProps}
-/>
+>
+	{@render children?.()}
+	{#if required}<span aria-hidden="true" class="text-destructive-strong">*</span>{/if}
+</label>

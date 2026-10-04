@@ -1,17 +1,28 @@
 <script lang="ts">
-	import { cn, type WithElementRef, type WithoutChildren } from "$lib/utils.js";
-	import type { HTMLAttributes } from "svelte/elements";
+import type { HTMLAttributes } from "svelte/elements";
+import { cn } from "$lib/cn.js";
+import { type SkeletonShape, skeleton } from "./variants";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: WithoutChildren<WithElementRef<HTMLAttributes<HTMLDivElement>>> = $props();
+let {
+	width,
+	height,
+	shape = "line",
+	class: classProp,
+	...rest
+}: HTMLAttributes<HTMLDivElement> & {
+	/** Overrides the class width; omit to size with classes. */
+	width?: string;
+	height?: string;
+	shape?: SkeletonShape;
+	class?: string;
+} = $props();
 </script>
 
 <div
-	bind:this={ref}
+	aria-hidden="true"
 	data-slot="skeleton"
-	class={cn("bg-accent animate-pulse rounded-md", className)}
-	{...restProps}
+	{...rest}
+	style:width
+	style:height
+	class={cn(skeleton({ shape }), classProp)}
 ></div>
