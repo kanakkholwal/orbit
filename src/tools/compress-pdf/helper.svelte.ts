@@ -1,3 +1,4 @@
+import { releaseCanvas, safeScale, yieldToMain } from '$lib/device-limits';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import JSZip from 'jszip';
 import { PDFDocument } from 'pdf-lib';
@@ -184,17 +185,18 @@ export class CompressState extends PdfEngine {
         const preset = PHOTON_PRESETS[this.settings.level];
         const arrayBuffer = await file.arrayBuffer();
 
-        const loadingTask = this.pdfjsLib!.getDocument(new Uint8Array(arrayBuffer.slice(0)));
+        const loadingTask = this.pdfjsLib!.getDocument(new Uint8Array(arrayBuffer));
         const pdfDoc = await loadingTask.promise;
         const newPdf = await PDFDocument.create();
 
         for (let i = 1; i <= pdfDoc.numPages; i++) {
             const page = await pdfDoc.getPage(i);
-            const viewport = page.getViewport({ scale: preset.scale });
+            const base = page.getViewport({ scale: 1 });
+            const viewport = page.getViewport({ scale: safeScale(base.width, base.height, preset.scale) });
 
             const canvas = document.createElement('canvas');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+            canvas.width = Math.floor(viewport.width);
+            canvas.height = Math.floor(viewport.height);
             const ctx = canvas.getContext('2d');
 
             if (ctx) {
@@ -206,12 +208,16 @@ export class CompressState extends PdfEngine {
                 const imgBytes = await blob.arrayBuffer();
                 const embeddedImg = await newPdf.embedJpg(imgBytes);
 
-                const newPage = newPdf.addPage([viewport.width, viewport.height]);
+                const newPage = newPdf.addPage([base.width, base.height]);
                 newPage.drawImage(embeddedImg, {
-                    x: 0, y: 0, width: viewport.width, height: viewport.height
+                    x: 0, y: 0, width: base.width, height: base.height
                 });
             }
+            releaseCanvas(canvas);
+            page.cleanup();
+            await yieldToMain();
         }
+        await pdfDoc.destroy();
 
         const pdfBytes = await newPdf.save();
         return new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });

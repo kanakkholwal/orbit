@@ -101,7 +101,9 @@
   import { Button } from "$components/ui/button";
   import { IconAlertCircle as CircleAlert } from "$lib/icons";
   import { untrack } from "svelte";
+  import type { PluginRegistry } from "@embedpdf/core";
   import LoadingSpinner from "./LoadingSpinner.svelte";
+  import StartMode from "./StartMode.svelte";
   import SchemaMenu from "./SchemaMenu.svelte";
   import SchemaModal from "./SchemaModal.svelte";
   import SchemaPanel from "./SchemaPanel.svelte";
@@ -112,11 +114,14 @@
     initialDocuments = $bindable<InitialDocumentOptions[]>([]),
     incomingDocuments = $bindable<InitialDocumentOptions[]>([]),
     mode = "edit",
+    startMode = "edit",
   } = $props<{
     initialDocuments: InitialDocumentOptions[];
     incomingDocuments?: InitialDocumentOptions[];
     /** `view` hides markup, comment and redaction tools for plain reading. */
     mode?: "view" | "edit";
+    /** `redact` opens the redaction toolbar as soon as a document is ready. */
+    startMode?: "edit" | "redact";
   }>();
 
   const logger = new ConsoleLogger();
@@ -195,7 +200,11 @@
     }),
   ];
 
-  async function handleInitialized() {}
+  let registryRef = $state<PluginRegistry | null>(null);
+
+  async function handleInitialized(registry: PluginRegistry) {
+    registryRef = registry;
+  }
 
   $effect(() => {
     const provides = documentManager.provides;
@@ -241,6 +250,7 @@
         {#if pluginsReady}
           <div class="flex h-full flex-col">
             {#if activeDocumentId}
+              {#if startMode === "redact"}<StartMode registry={registryRef} documentId={activeDocumentId} />{/if}
               <TabBar {documentStates} {activeDocumentId} />
               <UIProvider
                 documentId={activeDocumentId}

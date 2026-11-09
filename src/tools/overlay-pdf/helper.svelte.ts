@@ -1,3 +1,4 @@
+import { outputRatio } from '$lib/device-limits';
 import { PdfEngine } from "$lib/pdf-engine.svelte";
 import { PDFDocument } from "pdf-lib";
 import { toast } from "svelte-sonner";
@@ -144,7 +145,7 @@ export class OverlayState extends PdfEngine {
         const page = await doc.getPage(pageIndex + 1);
         const base = page.getViewport({ scale: 1 });
         const viewport = page.getViewport({ scale: cssWidth / base.width });
-        const ratio = window.devicePixelRatio || 1;
+        const ratio = outputRatio();
         canvas.width = Math.max(1, Math.floor(viewport.width * ratio));
         canvas.height = Math.max(1, Math.floor(viewport.height * ratio));
         const ctx = canvas.getContext("2d");

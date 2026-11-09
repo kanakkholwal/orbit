@@ -4,6 +4,7 @@
   import { FaqList } from "$components/site";
   import { ToolCard } from "$components/tool";
   import { Button } from "$components/ui/button";
+  import { config } from "$constants/app";
   import { getToolContent } from "$constants/tool-content";
   import { warmEnginesForTool } from "$lib/engine-warmup";
   import { recordRecentTool } from "$lib/runtime/recent-tools.svelte";
@@ -41,20 +42,53 @@
     return () => cancel();
   });
 
-  const toolContent = $derived(getToolContent(tool));
+  const base = $derived(getToolContent(tool));
+  const pair = $derived(data.pair);
+  const toolContent = $derived({
+    ...base,
+    faqs: pair
+      ? [
+          {
+            q: `How do I convert back with ${pair.title}?`,
+            a: `Use the ${pair.title} tool on Orbit. It does the reverse conversion, is free, and also runs entirely in your browser, so the file is not uploaded.`,
+          },
+          ...base.faqs,
+        ]
+      : base.faqs,
+  });
+  const origin = `https://${config.appDomain}`;
   const jsonLd = $derived([
     {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       name: tool.title,
       description: tool.description,
+      url: `${origin}/tools/${tool.slug}`,
       applicationCategory: "BusinessApplication",
       operatingSystem: "Any",
       browserRequirements: "Requires a modern web browser",
+      isAccessibleForFree: true,
+      featureList: ["Runs in your browser", "No upload", "No watermark", "No account", "Works offline after first load"],
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+      ...(pair ? { isRelatedTo: { "@type": "WebApplication", name: pair.title, url: `${origin}/tools/${pair.slug}` } } : {}),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Tools", item: `${origin}/explore` },
+        { "@type": "ListItem", position: 2, name: tool.title, item: `${origin}/tools/${tool.slug}` },
+      ],
     },
     ...(showGuide
       ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            name: `How to use ${tool.title}`,
+            totalTime: "PT1M",
+            step: toolContent.howItWorks.map((text, i) => ({ "@type": "HowToStep", position: i + 1, text })),
+          },
           {
             "@context": "https://schema.org",
             "@type": "FAQPage",
@@ -128,6 +162,18 @@
             </ol>
           </section>
 
+          {#if pair}
+            <a
+              href={`/tools/${pair.slug}`}
+              class="group flex items-center justify-between gap-4 rounded-2xl border border-border bg-background p-1 outline-none transition-colors duration-(--duration-base) hover:border-border-strong focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <span class="flex flex-1 flex-col gap-1 rounded-[11px] bg-card p-5">
+                <span class="text-xs text-muted-foreground">Need the reverse?</span>
+                <span class="text-base font-medium text-foreground">{pair.title}</span>
+                <span class="text-sm text-muted-foreground">{pair.description}</span>
+              </span>
+            </a>
+          {/if}
           {#key tool.slug}
             <AdUnit adSlot="display-horizontal" />
           {/key}

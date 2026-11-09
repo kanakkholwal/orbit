@@ -1,6 +1,7 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { trackFileUpload } from "$lib/analytics-tracker";
+  import { LARGE_FILE_BYTES } from "$lib/device-limits";
   import { warmEnginesForPath } from "$lib/engine-warmup";
   import { fileDropState, registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { takePendingFiles } from "$lib/runtime/pending-files.svelte";
@@ -124,6 +125,8 @@
       return true;
     });
     if (validFiles.length > 0) {
+      if (validFiles.some((f) => f.size > LARGE_FILE_BYTES))
+        toast.warning("This file is large for this device. If the page slows down or reloads, try a smaller file.");
       files = [...files, ...validFiles];
       validFiles.forEach((file) => {
         trackFileUpload(file.name, file.size, file.type || "unknown");

@@ -1,3 +1,4 @@
+import { releaseCanvas, safeScale, yieldToMain } from '$lib/device-limits';
 import { LockedPdf } from '$lib/pdf/locked-pdf.svelte';
 import { isPdfPasswordException, removeOwnerLock } from '$lib/pdf/unlock';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
@@ -232,11 +233,12 @@ export class CropPdfState extends PdfEngine {
                 const page = await this.pdfJsDoc!.getPage(i);
                 
                 // 1. Render Page to Canvas (High Res)
-                const scale = 2.5;
+                const base = page.getViewport({ scale: 1 });
+                const scale = safeScale(base.width, base.height, 2.5);
                 const viewport = page.getViewport({ scale });
                 const canvas = document.createElement('canvas');
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
+                canvas.width = Math.floor(viewport.width);
+                canvas.height = Math.floor(viewport.height);
                 const ctx = canvas.getContext('2d')!;
                 
                 await page.render({ canvasContext: ctx, viewport,canvas }).promise;
@@ -248,8 +250,8 @@ export class CropPdfState extends PdfEngine {
                 const cropH = viewport.height * crop.height;
 
                 const finalCanvas = document.createElement('canvas');
-                finalCanvas.width = cropW;
-                finalCanvas.height = cropH;
+                finalCanvas.width = Math.max(1, Math.floor(cropW));
+                finalCanvas.height = Math.max(1, Math.floor(cropH));
                 const finalCtx = finalCanvas.getContext('2d')!;
 
                 finalCtx.drawImage(
@@ -270,6 +272,9 @@ export class CropPdfState extends PdfEngine {
                         height: cropH / scale
                     });
                 }
+                releaseCanvas(canvas, finalCanvas);
+                page.cleanup();
+                await yieldToMain();
             } else {
                 // Copy original page if not cropped
                 const [copied] = await newPdf.copyPages(sourcePdf, [i - 1]);

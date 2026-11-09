@@ -3,6 +3,7 @@ import { toolContentBatchB } from './tool-content-batch-b';
 import { toolContentBatchC } from './tool-content-batch-c';
 import { moreToolContent } from './tool-content-more';
 import type { ToolConfig } from '$tools/list';
+import { ALIAS_BASE } from '$tools/extra';
 
 /**
  * Long-form, SEO-oriented content for each tool page: a plain-language intro,
@@ -366,7 +367,10 @@ const bespoke: Record<string, Partial<ToolContent>> = {
 /* ── Public accessor ──────────────────────────────────────────────────────── */
 
 export function getToolContent(tool: ToolMeta): ToolContent {
-    const b = bespoke[tool.slug] ?? moreToolContent[tool.slug] ?? toolContentBatchA[tool.slug] ?? toolContentBatchB[tool.slug] ?? toolContentBatchC[tool.slug] ?? {};
+    const lookup = (slug: string) => bespoke[slug] ?? moreToolContent[slug] ?? toolContentBatchA[slug] ?? toolContentBatchB[slug] ?? toolContentBatchC[slug];
+    const own = lookup(tool.slug);
+    const shared = !own && ALIAS_BASE[tool.slug] ? lookup(ALIAS_BASE[tool.slug]) : undefined;
+    const b = own ?? (shared ? { ...shared, intro: undefined } : {});
     const faqs = b.faqs ? [...b.faqs, ...universalFaqs(tool)] : universalFaqs(tool);
     return {
         intro: b.intro ?? tool.description,

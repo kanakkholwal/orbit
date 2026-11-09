@@ -1,3 +1,4 @@
+import { mapLimit } from '$lib/device-limits';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { toast } from 'svelte-sonner';
 
@@ -163,7 +164,7 @@ export class ScanToPdfState extends PdfEngine {
     async setEnhance(on: boolean) {
         this.settings.enhance = on;
         this.result = null;
-        await Promise.all(this.pages.map(page => this.refresh(page)));
+        await mapLimit(this.pages, (page) => this.refresh(page));
     }
 
     reorder(pages: ScanPage[]) {

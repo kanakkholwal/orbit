@@ -51,11 +51,13 @@ import {
     IconLayoutGrid,
     IconPaperclip,
     IconPhotoScan,
+    IconPresentation,
     IconScan,
     IconShieldSearch,
     IconStackFront,
 } from "$lib/icons";
 import type { Component } from 'svelte';
+import { buildExtraTools, PAIRS } from './extra';
 
 
 
@@ -557,6 +559,30 @@ const tools: Record<string, ToolConfig> = {
         color: 'text-green-600',
         keywords: ["excel to pdf","xlsx to pdf","csv to pdf","convert excel to pdf","spreadsheet to pdf","xls to pdf","ods to pdf","print excel sheet to pdf","excel table to pdf","repeat header row pdf","landscape excel pdf","free excel to pdf converter","excel to pdf offline"]
     },
+    'spreadsheet-viewer': {
+        slug: 'spreadsheet-viewer',
+        title: "CSV and Excel Viewer",
+        description: "Open CSV, TSV, Excel and OpenDocument spreadsheets in a fast grid that handles tens of thousands of rows. Search, sort, switch sheets and export, all on your device.",
+        seoTitle: "Open and Preview Large CSV and Excel Files Online",
+        category: 'conversion',
+        layout: 'canvas',
+        icon: IconFileSpreadsheet,
+        component: () => import('./spreadsheet-viewer/tool.svelte'),
+        color: 'text-green-600',
+        keywords: ["csv viewer","excel viewer","open large csv","view xlsx online","spreadsheet preview","csv file viewer","tsv viewer","ods viewer","search csv","sort csv online","large csv viewer","open csv without excel"]
+    },
+    'pdf-to-pptx': {
+        slug: 'pdf-to-pptx',
+        title: "PDF to PowerPoint",
+        description: "Turn every PDF page into a PowerPoint slide that looks exactly like the page. Page text goes into the speaker notes. Private, with nothing uploaded.",
+        seoTitle: "Convert PDF to PowerPoint Without Uploading",
+        category: 'conversion',
+        layout: 'form',
+        icon: IconPresentation,
+        component: () => import('./pdf-to-pptx/tool.svelte'),
+        color: 'text-orange-500',
+        keywords: ["pdf to powerpoint","pdf to pptx","convert pdf to ppt","pdf to slides","pdf to presentation","pdf to pptx offline","free pdf to powerpoint converter","pdf pages to slides"]
+    },
     'scan-to-pdf': {
         slug: 'scan-to-pdf',
         title: "Scan to PDF",
@@ -763,10 +789,14 @@ const tools: Record<string, ToolConfig> = {
     },
 };
 
+Object.assign(tools, buildExtraTools(tools));
 
 Object.freeze(tools);
 
 export const getTool = (slug: string) => tools[slug] || null;
+
+/** The tool that does the reverse conversion, if there is one. */
+export const getPair = (slug: string): ToolConfig | null => (PAIRS[slug] ? tools[PAIRS[slug]] ?? null : null);
 
 export { tools };
 

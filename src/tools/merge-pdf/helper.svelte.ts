@@ -1,6 +1,6 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import { nanoid } from 'nanoid';
-import { PDFDocument } from 'pdf-lib';
+import { assemblePdf, type PlanPage } from '$lib/pdf/assemble';
 import type * as PDFJS from 'pdfjs-dist';
 
 export const MERGE_STATE_KEY = Symbol('MERGE_STATE');
@@ -15,8 +15,6 @@ export interface UploadedFile {
     pageCount: number;
     // For File Mode: User can type "1-5, 8"
     pageRange: string;
-    // Cache the PDF document for merging later
-    pdfDoc?: PDFDocument;
 }
 
 export interface PageItem {
@@ -47,13 +45,11 @@ export class MergeState extends PdfEngine {
                 const file = newFiles[i];
                 const arrayBuffer = await file.arrayBuffer();
 
-                const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer.slice(0)));
+                const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer));
                 const docProxy = await loadingTask.promise;
 
                 const fileId = nanoid();
                 this.pdfJsDocs.set(fileId, docProxy);
-
-                const pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
 
                 this.files.push({
                     id: fileId,
@@ -61,8 +57,7 @@ export class MergeState extends PdfEngine {
                     name: file.name,
                     size: file.size,
                     pageCount: docProxy.numPages,
-                    pageRange: '',
-                    pdfDoc
+                    pageRange: ''
                 });
 
                 for (let p = 0; p < docProxy.numPages; p++) {
@@ -160,34 +155,25 @@ export class MergeState extends PdfEngine {
         if (!this.canMerge) return;
 
         await this.handleProcess(async () => {
-            const mergedPdf = await PDFDocument.create();
+            const sources: Record<string, File> = {};
+            const plan: PlanPage[] = [];
+            for (const f of this.files) sources[f.id] = f.file;
 
             if (this.mode === 'file') {
                 for (const file of this.files) {
-                    if (!file.pdfDoc) continue;
-                    const pageIndices = file.pageRange.trim()
+                    const indices = file.pageRange.trim()
                         ? this.parsePageRange(file.pageRange, file.pageCount)
-                        : file.pdfDoc.getPageIndices();
-                    const copiedPages = await mergedPdf.copyPages(file.pdfDoc, pageIndices);
-                    for (const page of copiedPages) mergedPdf.addPage(page);
+                        : Array.from({ length: file.pageCount }, (_, i) => i);
+                    for (const page of indices) plan.push({ src: file.id, page });
                 }
             } else {
-                const fileCache = new Map<string, PDFDocument>();
-                this.files.forEach(f => { if (f.pdfDoc) fileCache.set(f.id, f.pdfDoc); });
-
-                for (const pageItem of this.allPages) {
-                    const sourceDoc = fileCache.get(pageItem.fileId);
-                    if (sourceDoc) {
-                        const [copiedPage] = await mergedPdf.copyPages(sourceDoc, [pageItem.pageIndex]);
-                        mergedPdf.addPage(copiedPage);
-                    }
-                }
+                for (const item of this.allPages) plan.push({ src: item.fileId, page: item.pageIndex });
             }
 
-            const pdfBytes = await mergedPdf.save();
+            const pdfBytes = await assemblePdf(sources, plan);
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
             const name = this.fileName;
-            this.result = { blob, pages: mergedPdf.getPageCount(), name };
+            this.result = { blob, pages: plan.length, name };
             this.downloadBlob(blob, name);
         }, {
             loading: 'Merging…',
