@@ -1,3 +1,15 @@
+import wordToPdf from "./how-to-convert-word-to-pdf-without-uploading";
+import largeCsv from "./how-to-open-a-large-csv-file-without-excel";
+import redactPdf from "./how-to-redact-a-pdf-properly";
+import hiddenData from "./what-is-hidden-inside-a-pdf-metadata-and-privacy";
+import pdfToPowerpoint from "./how-to-convert-a-pdf-to-powerpoint";
+import extractTables from "./how-to-extract-tables-from-a-pdf-to-csv-or-excel";
+import chromeAi from "./how-to-summarize-a-pdf-privately-with-chrome-built-in-ai";
+import cheatSheet from "./pdf-conversion-cheat-sheet-every-format-both-ways";
+import markdownReadme from "./how-to-convert-a-markdown-readme-to-pdf";
+import pageOrder from "./how-to-rotate-reorder-and-delete-pdf-pages";
+import fillForm from "./how-to-fill-in-and-flatten-a-pdf-form";
+import htmlPdf from "./how-to-convert-a-web-page-or-html-file-to-pdf";
 import compressPdfForEmail from "./how-to-compress-a-pdf-for-email";
 import convertPhotosToPdf from "./how-to-convert-jpg-or-phone-photos-to-pdf";
 import addPageNumbers from "./how-to-add-page-numbers-to-a-pdf";
@@ -24,6 +36,18 @@ export interface Article {
 }
 
 export const articles: Article[] = [
+  wordToPdf,
+  largeCsv,
+  redactPdf,
+  hiddenData,
+  pdfToPowerpoint,
+  extractTables,
+  chromeAi,
+  cheatSheet,
+  markdownReadme,
+  pageOrder,
+  fillForm,
+  htmlPdf,
   comparison,
   addPageNumbers,
   uploadSafety,
