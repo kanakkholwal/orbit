@@ -1,7 +1,7 @@
 <script lang="ts">
   import { registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { Badge } from "$components/ui/badge";
-  import { Button } from "$components/ui/button";
+  import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "$components/ui/input-group";
   import { ToggleGroup, ToggleGroupItem } from "$components/ui/toggle-group";
   import { appState } from "$stores/app-state.svelte";
   import { toolList } from "$tools/list";
@@ -85,31 +85,33 @@
     <div class="rise mt-8 w-full rounded-2xl border border-border bg-background p-1 text-left" style="--i:3">
       <div class="flex flex-col gap-3 rounded-[11px] bg-card p-3">
         <form
-          class="flex h-12 items-center gap-2 rounded-xl border border-input bg-background pl-3.5 pr-1.5 transition-shadow focus-within:ring-2 focus-within:ring-ring"
           onsubmit={(e) => {
             e.preventDefault();
             onsubmit();
           }}
         >
-          <Search class="size-5 shrink-0 text-muted-foreground" />
-          <label for="launcher-query" class="sr-only">Search tools</label>
-          <input
-            id="launcher-query"
-            type="search"
-            value={query}
-            oninput={(e) => onquery(e.currentTarget.value)}
-            placeholder="Compress, merge, sign, convert…"
-            autocomplete="off"
-            class="h-full min-w-0 flex-1 bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
-          />
-          <Button type="button" variant="ghost" size="sm" onclick={() => fileInput?.click()}>
-            <Paperclip />
-            <span class="hidden sm:inline">Choose a file</span>
-            <span class="sr-only sm:hidden">Choose a file</span>
-          </Button>
-          <Button type="submit" size="icon" aria-label="Open the best match">
-            <ArrowRight />
-          </Button>
+          <InputGroup size="lg">
+            <InputGroupAddon><Search /></InputGroupAddon>
+            <InputGroupInput
+              id="launcher-query"
+              type="search"
+              value={query}
+              oninput={(e) => onquery(e.currentTarget.value)}
+              placeholder="Compress, merge, sign, convert…"
+              aria-label="Search tools"
+              autocomplete="off"
+            />
+            <InputGroupAddon align="inline-end">
+              <InputGroupButton onclick={() => fileInput?.click()}>
+                <Paperclip />
+                <span class="hidden sm:inline">Choose a file</span>
+                <span class="sr-only sm:hidden">Choose a file</span>
+              </InputGroupButton>
+              <InputGroupButton type="submit" variant="default" aria-label="Open the best match">
+                <ArrowRight />
+              </InputGroupButton>
+            </InputGroupAddon>
+          </InputGroup>
           <input
             bind:this={fileInput}
             type="file"

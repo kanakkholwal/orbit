@@ -1,6 +1,8 @@
 <script lang="ts">
   import { CtaBanner, CtaBannerGrain } from "$components/blocks/cta-banner";
   import { Button } from "$components/ui/button";
+  import { InputGroup, InputGroupAddon, InputGroupInput } from "$components/ui/input-group";
+  import { ToggleGroup, ToggleGroupItem } from "$components/ui/toggle-group";
   import { categories } from "$constants/tools";
   import { toolList } from "$tools/list";
   import {
@@ -40,7 +42,6 @@
   const specimenCategory = $derived(
     categories.find((c) => c.id === specimen.category)?.name ?? "Tool"
   );
-  const activeIndex = $derived(filters.findIndex((f) => f.id === category));
 </script>
 
 <div class="flex h-full flex-col gap-5 py-6 lg:flex-row">
@@ -89,21 +90,16 @@
     <div
       class="relative z-10 w-full max-w-md rounded-3xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-[2px]"
     >
-      <label
-        class="flex h-11 items-center overflow-hidden rounded-xl border border-white/40 bg-white/80 text-neutral-950 focus-within:ring-2 focus-within:ring-white"
-      >
-        <span class="flex h-full items-center px-3">
-          <Search class="size-4" />
-        </span>
-        <span class="sr-only">Search tools</span>
-        <input
+      <InputGroup size="lg">
+        <InputGroupAddon><Search /></InputGroupAddon>
+        <InputGroupInput
           type="search"
           bind:value={query}
           oninput={() => (previewSlug = null)}
           placeholder="Search for tools..."
-          class="h-full min-w-0 flex-1 bg-transparent pr-4 pl-2 text-sm text-neutral-950 outline-none placeholder:text-neutral-600"
+          aria-label="Search tools"
         />
-      </label>
+      </InputGroup>
 
       <div class="mb-3 mt-4 flex min-h-50 flex-col sm:mb-4 sm:mt-6 sm:min-h-115 md:min-h-82.5">
         {#if results.length > 0}
@@ -137,55 +133,26 @@
       </div>
 
       <div class="mt-4 border-t border-white/25 pt-4">
-        <div class="rounded-xl bg-white">
-          <div
-            class="segment-track relative grid w-full gap-1 rounded-xl bg-black/10 p-1"
-            style:grid-template-columns={`repeat(${filters.length}, minmax(0, 1fr))`}
-            role="group"
-            aria-label="Filter by category"
-          >
-            <span
-              aria-hidden="true"
-              class="segment-thumb absolute inset-y-1 left-1 rounded-xl bg-neutral-100 transition-transform duration-(--duration-slow) ease-(--ease-ui-out)"
-              style:width={`calc((100% - 0.5rem - ${filters.length - 1} * 0.25rem) / ${filters.length})`}
-              style:transform={`translateX(calc(${activeIndex} * (100% + 0.25rem)))`}
-            ></span>
-            {#each filters as filter (filter.id)}
-              <button
-                type="button"
-                aria-pressed={category === filter.id}
-                aria-label={filter.name}
-                title={filter.name}
-                onclick={() => {
-                  category = filter.id;
-                  previewSlug = null;
-                }}
-                class="relative z-10 flex items-center justify-center rounded-xl py-2.5 transition-[color,transform] duration-(--duration-fast) active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-primary {category === filter.id ? 'text-neutral-950' : 'text-neutral-500'}"
-              >
-                <filter.icon class="size-5" />
-              </button>
-            {/each}
-          </div>
-        </div>
+        <ToggleGroup
+          type="single"
+          variant="segmented"
+          label="Filter by category"
+          value={category}
+          onValueChange={(v) => {
+            if (typeof v === "string" && v) {
+              category = v;
+              previewSlug = null;
+            }
+          }}
+          class="w-full"
+        >
+          {#each filters as filter (filter.id)}
+            <ToggleGroupItem value={filter.id} aria-label={filter.name} title={filter.name} class="flex-1">
+              <filter.icon />
+            </ToggleGroupItem>
+          {/each}
+        </ToggleGroup>
       </div>
     </div>
   </CtaBanner>
 </div>
-
-<style>
-  .segment-track {
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.25),
-      inset 0 1px 2px rgb(0 0 0 / 0.15);
-  }
-
-  .segment-thumb {
-    box-shadow:
-      0.6px 0.6px 0.9px -1px rgb(0 0 0 / 0.18),
-      1.3px 1.3px 1.9px -1.5px rgb(0 0 0 / 0.25),
-      3px 3px 4px -2px rgb(0 0 0 / 0.1),
-      -0.5px -0.5px 0 rgb(0 0 0 / 0.1),
-      inset 0.5px 0.5px 1px #fff,
-      inset -0.5px -0.5px 1px rgb(0 0 0 / 0.15);
-  }
-</style>

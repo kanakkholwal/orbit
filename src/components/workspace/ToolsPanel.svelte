@@ -1,6 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { Input } from "$components/ui/input";
+  import { InputGroup, InputGroupAddon, InputGroupInput } from "$components/ui/input-group";
   import { toolsCategories } from "$constants/tools";
   import { IconArrowRight as ArrowRight, IconChevronRight as Chevron, IconSearch as Search } from "$lib/icons";
   import { cn } from "$lib/utils";
@@ -40,9 +40,11 @@
 </script>
 
 <div class={cn("flex h-full min-h-0 flex-col", className)}>
-  <div class="relative px-2 pb-1 pt-2">
-    <Search class="pointer-events-none absolute left-4.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-    <Input bind:value={query} type="search" placeholder="Filter tools" aria-label="Filter tools" size="sm" class="pl-7" />
+  <div class="px-2 pb-1 pt-2">
+    <InputGroup>
+      <InputGroupAddon><Search /></InputGroupAddon>
+      <InputGroupInput bind:value={query} type="search" placeholder="Filter tools" aria-label="Filter tools" />
+    </InputGroup>
   </div>
 
   <div class="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 py-1">
@@ -52,17 +54,17 @@
 
     {#each groups as group (group.id)}
       {@const expanded = isOpen(group.id)}
-      <section class="pb-0.5" aria-labelledby={`panel-${group.id}`}>
+      <section class="pb-1" aria-labelledby={`panel-${group.id}`}>
         <h3 id={`panel-${group.id}`}>
           <button
             type="button"
             aria-expanded={expanded}
             onclick={() => toggle(group.id)}
-            class="flex h-7 w-full items-center gap-1.5 rounded-md px-1.5 text-xs font-medium text-muted-foreground outline-none transition-colors duration-(--duration-fast) hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+            class="flex h-8 w-full items-center gap-1.5 rounded-md px-2 text-sm font-medium text-foreground outline-none transition-colors duration-(--duration-fast) hover:bg-foreground/[0.04] focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
           >
             <Chevron class={cn("size-3 shrink-0 transition-transform duration-(--duration-fast)", expanded && "rotate-90")} />
             <span class="truncate">{group.name}</span>
-            <span class="ml-auto tabular-nums font-normal">{group.total}</span>
+            <span class="ml-auto text-xs tabular-nums font-normal text-muted-foreground">{group.total}</span>
           </button>
         </h3>
 
@@ -82,7 +84,7 @@
                   onclick={onnavigate}
                   aria-current={active ? "page" : undefined}
                   class={cn(
-                    "flex h-7 items-center gap-2 rounded-md px-2 text-[13px] outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+                    "flex h-8 items-center gap-2.5 rounded-md pl-7 pr-2 text-sm outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                     active
                       ? "bg-foreground/[0.06] font-medium text-foreground"
                       : "text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground"
@@ -103,7 +105,7 @@
     <a
       href="/explore"
       onclick={onnavigate}
-      class="flex h-7 items-center justify-between rounded-md px-2 text-[13px] text-muted-foreground outline-none transition-colors hover:bg-foreground/[0.04] hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+      class="flex h-7 items-center justify-between rounded-md px-2 text-sm text-muted-foreground outline-none transition-colors hover:bg-foreground/[0.04] hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
     >
       Browse all tools
       <ArrowRight class="size-3.5" />

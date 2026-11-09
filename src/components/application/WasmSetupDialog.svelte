@@ -1,91 +1,60 @@
 <script lang="ts">
-    import { goto } from '$app/navigation';
-    import { wasmStore } from '$stores/wasm-store.svelte';
-    import { IconAlertTriangle as AlertTriangle, IconCheck as Check } from "$lib/icons";
-    import { fade, scale } from 'svelte/transition';
- // Assuming SvelteKit
+  import { goto } from "$app/navigation";
+  import { Button } from "$components/ui/button";
+  import * as Dialog from "$components/ui/dialog";
+  import { IconAlertTriangle as AlertTriangle, IconCheck as Check } from "$lib/icons";
+  import { wasmStore } from "$stores/wasm-store.svelte";
 
-    // Derived values from the store
-    let isOpen = $derived(wasmStore.dialogState.isOpen);
-    let pkg = $derived(wasmStore.dialogState.packageName);
-    
-    let displayName = $derived(pkg ? wasmStore.getDisplayName(pkg) : '');
-    let features = $derived(pkg ? wasmStore.getFeatures(pkg) : []);
+  let isOpen = $derived(wasmStore.dialogState.isOpen);
+  let pkg = $derived(wasmStore.dialogState.packageName);
 
-    function handleConfigure() {
-        wasmStore.closeDialog();
-        // Redirect to settings page (ensure this route exists)
-        goto('/settings/wasm');
-    }
+  let displayName = $derived(pkg ? wasmStore.getDisplayName(pkg) : "");
+  let features = $derived(pkg ? wasmStore.getFeatures(pkg) : []);
+
+  function handleConfigure() {
+    wasmStore.closeDialog();
+    goto("/settings/wasm");
+  }
 </script>
 
-{#if isOpen && pkg}
-    <div 
-        tabindex="-1"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-        transition:fade={{ duration: 200 }}
-        onclick={() => wasmStore.closeDialog()}
-        onkeydown={(e) => e.key === 'Escape' && wasmStore.closeDialog()}
-        role="dialog"
-        aria-modal="true">
-        <div 
-            class="w-full max-w-md overflow-hidden rounded-2xl bg-gray-800 border border-gray-700 shadow-2xl"
-            transition:scale={{ start: 0.95, duration: 200 }}
-            onclick={(e) => e.stopPropagation()}
-            onkeydown={(e) => e.stopPropagation()}
-            role="button"
-            tabindex="0"
-        >
-        
-            <div class="p-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-500/20">
-                        <AlertTriangle class="h-6 w-6 text-amber-400" />
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-white">Advanced Feature Required</h3>
-                        <p class="text-sm text-gray-400">External processing module needed</p>
-                    </div>
-                </div>
+<Dialog.Root
+  bind:open={() => isOpen && !!pkg, (next) => !next && wasmStore.closeDialog()}
+  variant="framed"
+  motion="slide-up"
+>
+  <Dialog.Content>
+    <Dialog.Header>
+      <div class="mb-2 grid size-10 place-items-center rounded-xl bg-warning/15 text-warning-strong">
+        <AlertTriangle class="size-5" />
+      </div>
+      <Dialog.Title>Advanced feature required</Dialog.Title>
+      <Dialog.Description>
+        This feature needs <strong class="font-medium text-foreground">{displayName}</strong> to be configured.
+      </Dialog.Description>
+    </Dialog.Header>
 
-                <p class="mb-4 text-gray-300">
-                    This feature requires <strong class="text-white">{displayName}</strong> to be configured.
-                </p>
-
-                <div class="mb-4 rounded-lg bg-gray-700/50 p-4">
-                    <p class="mb-2 text-sm text-gray-400">Features enabled by this module:</p>
-                    <ul class="space-y-1 text-sm text-gray-300">
-                        {#each features.slice(0, 4) as feature}
-                            <li class="flex items-center gap-2">
-                                <Check class="h-4 w-4 text-green-400" />
-                                {feature}
-                            </li>
-                        {/each}
-                        {#if features.length > 4}
-                            <li class="pl-6 text-gray-500">+ {features.length - 4} more...</li>
-                        {/if}
-                    </ul>
-                </div>
-
-                <p class="text-xs text-gray-500">
-                    This module is licensed under AGPL-3.0. By configuring it, you agree to its license terms.
-                </p>
-            </div>
-
-            <div class="flex gap-3 border-t border-gray-700 p-4">
-                <button 
-                    class="flex-1 rounded-lg bg-gray-700 px-4 py-2.5 font-medium text-gray-300 transition-colors hover:bg-gray-600"
-                    onclick={() => wasmStore.closeDialog()}
-                >
-                    Cancel
-                </button>
-                <button 
-                    class="flex-1 rounded-lg bg-linear-to-r from-blue-600 to-blue-500 px-4 py-2.5 font-medium text-white transition-all hover:from-blue-500 hover:to-blue-400"
-                    onclick={handleConfigure}
-                >
-                    Configure
-                </button>
-            </div>
-        </div>
+    <div class="mt-4 rounded-xl border border-border bg-card p-4">
+      <p class="mb-2 text-sm text-muted-foreground">Features enabled by this module</p>
+      <ul class="flex flex-col gap-1.5 text-sm text-foreground">
+        {#each features.slice(0, 4) as feature (feature)}
+          <li class="flex items-center gap-2">
+            <Check class="size-4 text-success-strong" />
+            {feature}
+          </li>
+        {/each}
+        {#if features.length > 4}
+          <li class="pl-6 text-muted-foreground">+ {features.length - 4} more</li>
+        {/if}
+      </ul>
     </div>
-{/if}
+
+    <p class="mt-4 text-xs text-muted-foreground">
+      This module is licensed under AGPL-3.0. By configuring it, you agree to its license terms.
+    </p>
+
+    <Dialog.Footer>
+      <Button variant="outline" onclick={() => wasmStore.closeDialog()}>Cancel</Button>
+      <Button onclick={handleConfigure}>Configure</Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
