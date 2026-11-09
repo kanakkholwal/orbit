@@ -6,7 +6,7 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { HeaderFooterState } from "./helper.svelte";
 
   const store = new HeaderFooterState();
@@ -16,7 +16,7 @@
   const PAGE_H = 841.89;
   const MARGIN = 40;
   const field =
-    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   type SlotKey = "headerLeft" | "headerCenter" | "headerRight" | "footerLeft" | "footerCenter" | "footerRight";
   type Slot = { key: SlotKey; label: string; placeholder: string; align: "left" | "center" | "right" };
@@ -79,10 +79,10 @@
 {#if !s.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to add a header or footer</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to add a header or footer</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Put a title, date or page count at the top or bottom of every page.
       </p>
     {/snippet}
@@ -141,7 +141,7 @@
           {/each}
         {/each}
       </div>
-      <p class="text-center text-caption text-muted-foreground">
+      <p class="text-center text-xs text-muted-foreground">
         Preview of page {samplePage} on a standard page.
       </p>
     </section>
@@ -154,7 +154,7 @@
           <div class="flex flex-col gap-2">
             {#each group.slots as slot (slot.key)}
               <div class="grid grid-cols-[3.5rem_minmax(0,1fr)] items-center gap-2">
-                <label for="{uid}-{slot.key}" class="text-body text-muted-foreground">
+                <label for="{uid}-{slot.key}" class="text-sm text-muted-foreground">
                   {slot.label}<span class="sr-only"> of the {group.label.toLowerCase()}</span>
                 </label>
                 <input
@@ -210,7 +210,7 @@
             ></button>
           {/each}
           <label
-            class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-body text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
+            class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-sm text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
           >
             <span class="size-5 rounded-full border border-border" style:background-color={s.fontColor}></span>
             <span class="uppercase tabular-nums">{s.fontColor}</span>
@@ -222,8 +222,8 @@
 
       <div class="flex flex-col gap-1">
         <div class="flex items-baseline justify-between gap-3">
-          <label for="{uid}-size" class="text-body font-medium text-foreground">Text size</label>
-          <span class="text-body tabular-nums text-muted-foreground">{s.fontSize} pt</span>
+          <label for="{uid}-size" class="text-sm font-medium text-foreground">Text size</label>
+          <span class="text-sm tabular-nums text-muted-foreground">{s.fontSize} pt</span>
         </div>
         <input id="{uid}-size" type="range" min="6" max="72" step="1" bind:value={store.state.fontSize} class="h-10 w-full cursor-pointer accent-primary" />
       </div>
@@ -244,7 +244,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={busy || blocker !== null}>
+    <Button variant="default" onclick={() => store.process()} disabled={busy || blocker !== null}>
       {busy ? "Adding…" : `Add to ${pageLabel(targets.length)}`}
     </Button>
   </ToolFooter>

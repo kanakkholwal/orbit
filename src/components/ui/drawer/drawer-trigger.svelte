@@ -1,7 +1,17 @@
 <script lang="ts">
-	import { Drawer as DrawerPrimitive } from "vaul-svelte";
+import type { Snippet } from "svelte";
+import { Drawer } from "vaul-svelte";
 
-	let { ref = $bindable(null), ...restProps }: DrawerPrimitive.TriggerProps = $props();
+let {
+	children,
+	class: classProp,
+	...rest
+}: { children?: Snippet; class?: string } & Omit<
+	Drawer.TriggerProps,
+	"children"
+> = $props();
 </script>
 
-<DrawerPrimitive.Trigger bind:ref data-slot="drawer-trigger" {...restProps} />
+<Drawer.Trigger data-slot="drawer-trigger" class={classProp} {...rest}>
+	{@render children?.()}
+</Drawer.Trigger>

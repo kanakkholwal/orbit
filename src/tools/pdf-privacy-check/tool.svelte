@@ -13,7 +13,7 @@
     IconInfoCircle as InfoCircle,
     IconRefresh as Refresh,
     IconShieldCheck as ShieldCheck,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { Finding, Severity } from "./privacy";
   import { PrivacyCheckState } from "./helper.svelte";
 
@@ -43,10 +43,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to check before you share it</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to check before you share it</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         See names, hidden files, scripts and other details tucked inside, then remove them in one step. The file never leaves this device.
       </p>
     {/snippet}
@@ -92,25 +92,25 @@
     </FileRow>
 
     {#if store.error}
-      <p role="alert" class="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-body text-destructive">
+      <p role="alert" class="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
         {store.error}
       </p>
     {/if}
 
     {#if store.scan && findings.length === 0}
-      <section class="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <section class="flex items-start gap-3 rounded-2xl border border-border bg-background p-4 sm:p-5">
         <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
           <ShieldCheck class="size-5" />
         </span>
         <div class="flex flex-col gap-0.5">
-          <h2 class="text-body-lg font-medium text-foreground">Nothing hidden found</h2>
-          <p class="text-body text-muted-foreground">
+          <h2 class="text-base font-medium text-foreground">Nothing hidden found</h2>
+          <p class="text-sm text-muted-foreground">
             No document details, attached files, scripts, comments, form fields or links. What you see on the pages is what you share.
           </p>
         </div>
       </section>
     {:else if store.scan}
-      <p class="text-body text-muted-foreground">
+      <p class="text-sm text-muted-foreground">
         Found in this file, most serious first. Text and images on the pages are never changed.
       </p>
       <ul class="flex flex-col gap-2">
@@ -119,10 +119,10 @@
           <li class="flex flex-col gap-2 rounded-xl border border-border bg-card p-4">
             <div class="flex flex-wrap items-start justify-between gap-2">
               <div class="flex min-w-0 flex-col gap-0.5">
-                <h3 class="text-body font-medium text-foreground">{finding.title}</h3>
-                <p class="text-body text-muted-foreground">{finding.detail}</p>
+                <h3 class="text-sm font-medium text-foreground">{finding.title}</h3>
+                <p class="text-sm text-muted-foreground">{finding.detail}</p>
               </div>
-              <span class={cn("inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-caption font-medium", level.tone)}>
+              <span class={cn("inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium", level.tone)}>
                 <level.icon class="size-3.5" />
                 {level.label}
               </span>
@@ -130,14 +130,14 @@
             {#if finding.items.length > 0}
               <ul class="flex flex-wrap gap-1.5">
                 {#each finding.items.slice(0, MAX_ITEMS) as item, i (i)}
-                  <li class="max-w-full truncate rounded-md bg-muted px-2 py-0.5 text-caption text-foreground" title={item}>{item}</li>
+                  <li class="max-w-full truncate rounded-md bg-muted px-2 py-0.5 text-xs text-foreground" title={item}>{item}</li>
                 {/each}
                 {#if finding.items.length > MAX_ITEMS}
-                  <li class="px-1 py-0.5 text-caption text-muted-foreground">and {finding.items.length - MAX_ITEMS} more</li>
+                  <li class="px-1 py-0.5 text-xs text-muted-foreground">and {finding.items.length - MAX_ITEMS} more</li>
                 {/if}
               </ul>
             {/if}
-            <p class={cn("text-caption", willRemove(finding) ? "text-primary" : "text-muted-foreground")}>{handlingLabel(finding)}</p>
+            <p class={cn("text-xs", willRemove(finding) ? "text-primary" : "text-muted-foreground")}>{handlingLabel(finding)}</p>
           </li>
         {/each}
       </ul>
@@ -151,7 +151,7 @@
           label="Always removed"
           description="Document details, hidden metadata, attached files, scripts and actions that run on their own, private app data and earlier saved versions."
         >
-          <p class="text-caption text-muted-foreground">
+          <p class="text-xs text-muted-foreground">
             Form fields and links are kept so the document still works. Text and images on the pages are not checked, so read them yourself.
           </p>
         </OptionGroup>
@@ -181,7 +181,7 @@
         </span>
       {/snippet}
 
-      <Button variant="primary" onclick={() => store.clean()} disabled={store.isProcessing || removable.length === 0}>
+      <Button variant="default" onclick={() => store.clean()} disabled={store.isProcessing || removable.length === 0}>
         {store.isProcessing ? "Cleaning…" : "Clean and download"}
       </Button>
     </ToolFooter>

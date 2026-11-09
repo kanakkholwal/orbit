@@ -14,7 +14,7 @@
     IconFileImport as FileImport,
     IconLoader2 as Loader,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import BookmarkItem from "./BookmarkItem.svelte";
   import { BookmarkPdfState } from "./helper.svelte";
   import Viewer from "./Viewer.svelte";
@@ -56,12 +56,12 @@
     onFilesSelected={(files) => store.loadFile(files[0])}
   >
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">
+      <h3 class="text-2xl font-medium text-foreground">
         {store.state.isProcessing ? "Opening your PDF" : "Drop a PDF to add bookmarks"}
       </h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Add a clickable table of contents so readers can jump straight to each section.
       </p>
     {/snippet}
@@ -108,7 +108,7 @@
           >
             <ChevronLeft />
           </Button>
-          <span class="min-w-24 px-1 text-center text-body tabular-nums text-foreground" aria-live="polite">
+          <span class="min-w-24 px-1 text-center text-sm tabular-nums text-foreground" aria-live="polite">
             Page {current} of {store.state.pageCount}
           </span>
           <Button
@@ -138,7 +138,7 @@
             bind:value={newTitle}
             placeholder="For example, Chapter 1"
             onkeydown={(e) => e.key === "Enter" && addRoot()}
-            class="h-10 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+            class="h-10 min-w-0 flex-1 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
           />
           <Button variant="outline" onclick={addRoot} disabled={!newTitle.trim()}>Add</Button>
         </div>
@@ -146,7 +146,7 @@
 
       <section class="flex flex-col gap-2.5" aria-labelledby={`${uid}-list`}>
         <div class="flex items-center justify-between gap-2">
-          <h3 id={`${uid}-list`} class="text-body font-medium text-foreground">
+          <h3 id={`${uid}-list`} class="text-sm font-medium text-foreground">
             Your bookmarks
             <span class="font-normal tabular-nums text-muted-foreground">{total}</span>
           </h3>
@@ -161,11 +161,11 @@
         </div>
 
         {#if store.state.bookmarks.length === 0}
-          <p class="rounded-xl border border-dashed border-border px-3 py-4 text-center text-body text-muted-foreground">
+          <p class="rounded-xl border border-dashed border-border px-3 py-4 text-center text-sm text-muted-foreground">
             No bookmarks yet. Add one above, or bring in the ones this PDF already has.
           </p>
         {:else}
-          <p class="text-caption text-muted-foreground">Select a bookmark to rename, nest or remove it.</p>
+          <p class="text-xs text-muted-foreground">Select a bookmark to rename, nest or remove it.</p>
           <ul class="-mx-1 flex flex-col">
             {#each store.state.bookmarks as node (node.id)}
               <BookmarkItem
@@ -202,7 +202,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.save()} disabled={store.state.isProcessing || total === 0}>
+    <Button variant="default" onclick={() => store.save()} disabled={store.state.isProcessing || total === 0}>
       {store.state.isProcessing ? "Saving…" : "Save bookmarked PDF"}
     </Button>
   </ToolFooter>

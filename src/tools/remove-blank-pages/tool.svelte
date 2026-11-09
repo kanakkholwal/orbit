@@ -11,7 +11,7 @@
     IconLoader2 as Loader,
     IconRefresh as Refresh,
     IconSearch as Search,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { RemoveBlankPagesState, type BlankStrictness } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 
@@ -39,10 +39,10 @@
 {#if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={open}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to remove blank pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to remove blank pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         We find the empty pages for you. Check the list, then save a copy without them.
       </p>
     {/snippet}
@@ -94,32 +94,32 @@
     </ToolBar>
 
     {#if detecting}
-      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-12 text-muted-foreground">
+      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-background px-6 py-12 text-muted-foreground">
         <Loader class="size-5 animate-spin text-primary" />
-        <p class="text-body">Looking for blank pages</p>
+        <p class="text-sm">Looking for blank pages</p>
       </div>
     {:else if !checked}
-      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-background px-6 py-12 text-center">
         <span class="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
           <Search class="size-5" />
         </span>
-        <h2 class="text-body-lg font-medium text-foreground">Find the blank pages</h2>
-        <p class="max-w-sm text-body text-muted-foreground">
+        <h2 class="text-base font-medium text-foreground">Find the blank pages</h2>
+        <p class="max-w-sm text-sm text-muted-foreground">
           We look at all {pageLabel(store.state.pageCount)} and show you the ones that look empty.
         </p>
       </div>
     {:else if found === 0}
-      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-background px-6 py-12 text-center">
         <span class="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
           <FileCheck class="size-5" />
         </span>
-        <h2 class="text-body-lg font-medium text-foreground">No blank pages found</h2>
-        <p class="max-w-sm text-body text-muted-foreground">
+        <h2 class="text-base font-medium text-foreground">No blank pages found</h2>
+        <p class="max-w-sm text-sm text-muted-foreground">
           If you can see empty pages, choose Scanned pages in the settings and check again.
         </p>
       </div>
     {:else}
-      <p class="text-body text-muted-foreground">
+      <p class="text-sm text-muted-foreground">
         These pages look blank. Tap a page to keep it in the file.
       </p>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
@@ -168,11 +168,11 @@
     {/snippet}
 
     {#if !checked}
-      <Button variant="primary" onclick={() => store.detectBlankPages()} disabled={busy}>
+      <Button variant="default" onclick={() => store.detectBlankPages()} disabled={busy}>
         {detecting ? "Checking…" : "Find blank pages"}
       </Button>
     {:else}
-      <Button variant="primary" onclick={() => store.process()} disabled={busy || selected === 0 || selected >= store.state.pageCount}>
+      <Button variant="default" onclick={() => store.process()} disabled={busy || selected === 0 || selected >= store.state.pageCount}>
         {store.isProcessing
           ? "Removing…"
           : selected > 0

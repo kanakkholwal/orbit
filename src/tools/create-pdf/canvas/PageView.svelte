@@ -1,7 +1,7 @@
 <script lang="ts">
   import { sortableList } from "$lib/actions/sortable-list";
   import { cn } from "$lib/utils";
-  import { IconGripVertical as Grip, IconPlus as Plus } from "@tabler/icons-svelte";
+  import { IconGripVertical as Grip, IconPlus as Plus } from "$lib/icons";
   import { Popover } from "bits-ui";
   import { fill } from "../model/fields";
   import { CSS_FONTS, getTheme, MARGIN_POINTS, pageBox } from "../model/themes";

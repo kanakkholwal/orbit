@@ -16,7 +16,7 @@
     IconLayoutSidebar as PanelIcon,
     IconSearch as Search,
     IconBrandGithub,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import RailLink from "./RailLink.svelte";
 
   let { wide, class: className }: { wide: boolean; class?: string } = $props();
@@ -32,12 +32,12 @@
 
 <nav
   aria-label="Workspace"
-  class={cn("no-scrollbar flex w-14 shrink-0 flex-col items-center gap-1 overflow-y-auto py-2", className)}
+  class={cn("no-scrollbar flex w-12 shrink-0 flex-col items-center gap-0.5 overflow-y-auto py-2", className)}
 >
   <a
     href="/"
     aria-label={`${config.appName} home`}
-    class="mb-2 grid size-10 place-items-center rounded-lg text-foreground transition-opacity hover:opacity-80"
+    class="mb-1.5 grid size-9 place-items-center rounded-lg text-foreground transition-opacity hover:opacity-80"
   >
     <Logo markOnly size="xs" class="h-6 text-foreground" />
   </a>
@@ -52,7 +52,7 @@
   />
 
   {#if recent.length > 0}
-    <div class="my-2 h-px w-6 bg-border" role="separator"></div>
+    <div class="my-1.5 h-px w-5 bg-border" role="separator"></div>
     <span class="sr-only">Recent tools</span>
     {#each recent as tool (tool.slug)}
       <RailLink
@@ -70,5 +70,5 @@
   {#if !appState.isTauri}
     <RailLink label="Get the desktop app" icon={Download} href="/download" />
   {/if}
-  <ThemeToggle class="size-10 shrink-0 rounded-lg hover:bg-muted/60 focus-visible:ring-inset" />
+  <ThemeToggle class="size-9 shrink-0 rounded-lg hover:bg-foreground/[0.04] focus-visible:ring-inset" />
 </nav>

@@ -8,7 +8,7 @@
     IconLoader2 as Loader,
     IconRefresh as Refresh,
     IconSparkles as Sparkles,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { MdToPdfState } from "./helper.svelte";
 
   const store = new MdToPdfState();
@@ -62,7 +62,7 @@
     bind:value={store.markdown}
     spellcheck="false"
     placeholder={"# Start writing\n\nType or paste Markdown here, or open a .md file."}
-    class="scrollbar-subtle min-h-[max(24rem,calc(100svh-17rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-body leading-relaxed text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+    class="scrollbar-subtle min-h-[max(24rem,calc(100svh-17rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
   ></textarea>
 
   <input
@@ -92,7 +92,7 @@
     {/if}
   {/snippet}
 
-  <Button variant="primary" onclick={() => store.convert()} disabled={store.isProcessing || store.isEmpty}>
+  <Button variant="default" onclick={() => store.convert()} disabled={store.isProcessing || store.isEmpty}>
     {store.isProcessing ? "Creating PDF…" : "Create PDF"}
   </Button>
 </ToolFooter>

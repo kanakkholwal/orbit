@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
-  import { IconBrandGithub as GithubIcon } from "@tabler/icons-svelte";
-  import { IconHeart as HeartIcon } from "@tabler/icons-svelte";
-  import { IconX as XIcon } from "@tabler/icons-svelte";
+  import { IconBrandGithub as GithubIcon } from "$lib/icons";
+  import { IconHeart as HeartIcon } from "$lib/icons";
+  import { IconX as XIcon } from "$lib/icons";
   import { onMount } from "svelte";
 
   const STORAGE_KEY = "orbit:feedback-prompt:dismissed";
@@ -53,7 +53,7 @@
     class={[
       "fixed bottom-4 right-4 z-50 w-[min(92vw,22rem)]",
       "rounded-xl border bg-background/95 backdrop-blur shadow-xl",
-      "p-4 transition-all duration-300 ease-out",
+      "p-4 transition-all duration-(--duration-slow) ease-out",
       mounted
         ? "opacity-100 translate-y-0"
         : "opacity-0 translate-y-3 pointer-events-none",

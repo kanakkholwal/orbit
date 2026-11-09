@@ -31,9 +31,9 @@
 >
   <div class="flex max-w-2xl flex-col gap-2">
     {#if eyebrow}
-      <span class="label-eyebrow text-primary">{eyebrow}</span>
+      <span class="text-xs font-medium text-primary">{eyebrow}</span>
     {/if}
-    <h2 class="text-balance text-foreground text-heading-lg font-medium">
+    <h2 class="text-balance text-foreground text-4xl font-medium">
       {title}{#if accent}&nbsp;<span class="text-primary">{accent}</span>{/if}
     </h2>
   </div>
@@ -42,7 +42,7 @@
     {@render action()}
   {:else if index}
     <span
-      class="hidden shrink-0 tabular-nums text-caption text-muted-foreground sm:inline"
+      class="hidden shrink-0 tabular-nums text-xs text-muted-foreground sm:inline"
       aria-hidden="true"
     >
       {index}

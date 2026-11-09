@@ -2,7 +2,7 @@
   import { config } from "$constants/app";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { IconCopy as Copy, IconMinus as Minus, IconSquare as Square, IconX as X } from "@tabler/icons-svelte";
+  import { IconCopy as Copy, IconMinus as Minus, IconSquare as Square, IconX as X } from "$lib/icons";
   import { onMount } from "svelte";
 
   // Custom window chrome for the frameless Tauri window (decorations: false).
@@ -40,13 +40,13 @@
   });
 
   const ctrl =
-    "inline-flex h-8 w-12 items-center justify-center text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground focus-visible:outline-none";
+    "inline-flex h-8 w-12 items-center justify-center text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none";
 </script>
 
 {#if appState.isTauri}
   <header
     data-tauri-drag-region
-    class="flex h-8 shrink-0 select-none items-center justify-between border-b border-border bg-background-inset/80 pl-3 backdrop-blur-xl"
+    class="flex h-8 shrink-0 select-none items-center justify-between border-b border-border bg-muted/80 pl-3 backdrop-blur-xl"
   >
     <!-- <div data-tauri-drag-region class="flex items-center gap-2">
       <Logo size="sm" />
@@ -54,7 +54,7 @@
 
     <span
       data-tauri-drag-region
-      class="pointer-events-none absolute left-1/2 -translate-x-1/2 label-eyebrow text-muted-foreground"
+      class="pointer-events-none absolute left-1/2 -translate-x-1/2 text-xs font-medium text-muted-foreground"
     >
       {config.appName}
     </span>

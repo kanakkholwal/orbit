@@ -13,7 +13,7 @@
     IconFileUpload as FileUp,
     IconRefresh as Refresh,
     IconRosetteDiscountCheck as BadgeCheck,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { SignPdfState, type CertMode } from "./helper.svelte";
 
@@ -24,7 +24,7 @@
   let showPassphrase = $state(false);
 
   const inputClass =
-    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const modes: { value: CertMode; label: string }[] = [
     { value: "upload", label: "Use my certificate" },
@@ -74,10 +74,10 @@
 {#if !store.hasPdf}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(f) => store.loadFile(f[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to sign</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to sign</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Add a digital signature that proves who signed and shows if anything changes later. The file never leaves this device.
       </p>
     {/snippet}
@@ -100,7 +100,7 @@
           </Button>
         {/snippet}
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <p class="text-body text-muted-foreground">Want proof it worked? Open the signed copy in the checker.</p>
+          <p class="text-sm text-muted-foreground">Want proof it worked? Open the signed copy in the checker.</p>
           <Button variant="outline" onclick={() => openFilesInTool(store.resultFiles, "validate-signature-pdf")}>
             <BadgeCheck />
             Check the signature
@@ -115,10 +115,10 @@
       onRemove={store.isProcessing ? undefined : startOver}
     />
 
-    <section class="flex flex-col gap-5 rounded-2xl border border-border bg-card p-4 sm:p-5" oninput={clearResult}>
+    <section class="flex flex-col gap-5 rounded-2xl border border-border bg-background p-4 sm:p-5" oninput={clearResult}>
       <div class="flex flex-col gap-0.5">
-        <h2 class="text-body-lg font-medium text-foreground">Your certificate</h2>
-        <p class="text-body text-muted-foreground">
+        <h2 class="text-base font-medium text-foreground">Your certificate</h2>
+        <p class="text-sm text-muted-foreground">
           A certificate is a small file that proves the signature is yours. Use one you have, or create one now.
         </p>
       </div>
@@ -153,22 +153,22 @@
               Choose certificate file
             </Button>
           {/if}
-          <p class="text-caption text-muted-foreground">
+          <p class="text-xs text-muted-foreground">
             A .p12 or .pfx file, usually from your company or a certificate provider.
           </p>
         </div>
       {:else}
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div class="flex flex-col gap-2">
-            <label for="{uid}-gen-name" class="text-body font-medium text-foreground">Your name</label>
+            <label for="{uid}-gen-name" class="text-sm font-medium text-foreground">Your name</label>
             <input id="{uid}-gen-name" type="text" bind:value={store.genName} placeholder="Jane Doe" class={inputClass} />
           </div>
           <div class="flex flex-col gap-2">
-            <label for="{uid}-gen-org" class="text-body font-medium text-foreground">Organisation</label>
+            <label for="{uid}-gen-org" class="text-sm font-medium text-foreground">Organisation</label>
             <input id="{uid}-gen-org" type="text" bind:value={store.genOrg} placeholder="Optional" class={inputClass} />
           </div>
           <div class="flex flex-col gap-2">
-            <label for="{uid}-gen-country" class="text-body font-medium text-foreground">Country code</label>
+            <label for="{uid}-gen-country" class="text-sm font-medium text-foreground">Country code</label>
             <input
               id="{uid}-gen-country"
               type="text"
@@ -182,7 +182,7 @@
       {/if}
 
       <div class="flex flex-col gap-2">
-        <label for="{uid}-passphrase" class="text-body font-medium text-foreground">Certificate password</label>
+        <label for="{uid}-passphrase" class="text-sm font-medium text-foreground">Certificate password</label>
         <div class="relative">
           <input
             id="{uid}-passphrase"
@@ -202,7 +202,7 @@
             {#if showPassphrase}<EyeOff class="size-4" />{:else}<Eye class="size-4" />{/if}
           </button>
         </div>
-        <p id="{uid}-passphrase-hint" class="text-caption text-muted-foreground">
+        <p id="{uid}-passphrase-hint" class="text-xs text-muted-foreground">
           {generating
             ? "Choose a password of at least 4 characters to protect the new certificate."
             : "The password that came with your certificate file."}
@@ -230,7 +230,7 @@
               </Button>
             {/if}
           </div>
-          <p class="text-caption text-muted-foreground">
+          <p class="text-xs text-muted-foreground">
             {#if generateBlocker}
               {generateBlocker}
             {:else if store.hasCert}
@@ -242,7 +242,7 @@
       {/if}
     </section>
 
-    <p class="px-1 text-caption text-muted-foreground">
+    <p class="px-1 text-xs text-muted-foreground">
       Signing happens on this device, and your PDF and certificate are never uploaded. Only optional trusted timestamps
       go online, and they send a fingerprint of the file, never the file itself.
       <a
@@ -262,7 +262,7 @@
         <div class="flex flex-col gap-3">
           {#each detailFields as field (field.key)}
             <div class="flex flex-col gap-1.5">
-              <label for="{uid}-{field.key}" class="text-caption text-muted-foreground">{field.label}</label>
+              <label for="{uid}-{field.key}" class="text-xs text-muted-foreground">{field.label}</label>
               <input
                 id="{uid}-{field.key}"
                 type="text"
@@ -292,7 +292,7 @@
       </span>
     {/snippet}
 
-    <Button variant="primary" onclick={sign} disabled={!store.canSign}>
+    <Button variant="default" onclick={sign} disabled={!store.canSign}>
       {store.isProcessing ? "Signing…" : "Sign PDF"}
     </Button>
   </ToolFooter>

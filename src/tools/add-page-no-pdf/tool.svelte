@@ -6,7 +6,7 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { PageNumberState, type NumberFormat, type Position } from "./helper.svelte";
 
   const store = new PageNumberState();
@@ -15,7 +15,7 @@
   const PAGE_W = 595.28;
   const PAGE_H = 841.89;
   const field =
-    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body tabular-nums text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-sm tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const positions: { value: Position; label: string }[] = [
     { value: "top-left", label: "Top left" },
@@ -55,10 +55,10 @@
 {#if !s.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to number its pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to number its pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Add page numbers in the corner or centre of every page, so printed copies stay in order.
       </p>
     {/snippet}
@@ -115,7 +115,7 @@
           {sample}
         </span>
       </div>
-      <p class="text-center text-caption text-muted-foreground">
+      <p class="text-center text-xs text-muted-foreground">
         Preview of page {blocker ? 1 : start} on a standard page.
       </p>
     </section>
@@ -182,7 +182,7 @@
             ></button>
           {/each}
           <label
-            class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-body text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
+            class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-sm text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
           >
             <span class="size-5 rounded-full border border-border" style:background-color={s.color}></span>
             <span class="uppercase tabular-nums">{s.color}</span>
@@ -194,16 +194,16 @@
 
       <div class="flex flex-col gap-1">
         <div class="flex items-baseline justify-between gap-3">
-          <label for="{uid}-size" class="text-body font-medium text-foreground">Size</label>
-          <span class="text-body tabular-nums text-muted-foreground">{s.fontSize} pt</span>
+          <label for="{uid}-size" class="text-sm font-medium text-foreground">Size</label>
+          <span class="text-sm tabular-nums text-muted-foreground">{s.fontSize} pt</span>
         </div>
         <input id="{uid}-size" type="range" min="6" max="72" step="1" bind:value={store.state.fontSize} class="h-10 w-full cursor-pointer accent-primary" />
       </div>
 
       <div class="flex flex-col gap-1">
         <div class="flex items-baseline justify-between gap-3">
-          <label for="{uid}-margin" class="text-body font-medium text-foreground">Distance from edge</label>
-          <span class="text-body tabular-nums text-muted-foreground">{s.margin} pt</span>
+          <label for="{uid}-margin" class="text-sm font-medium text-foreground">Distance from edge</label>
+          <span class="text-sm tabular-nums text-muted-foreground">{s.margin} pt</span>
         </div>
         <input id="{uid}-margin" type="range" min="0" max="100" step="2" bind:value={store.state.margin} class="h-10 w-full cursor-pointer accent-primary" />
       </div>
@@ -224,7 +224,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
       {store.isProcessing ? "Numbering…" : `Number ${pageLabel(numbered)}`}
     </Button>
   </ToolFooter>

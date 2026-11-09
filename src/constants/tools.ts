@@ -5,7 +5,7 @@ import {
   IconRotateClockwise as RotateCw,
   IconShield as Shield,
   type Icon
-} from "@tabler/icons-svelte";
+} from "$lib/icons";
 
 
 interface ToolCategory {

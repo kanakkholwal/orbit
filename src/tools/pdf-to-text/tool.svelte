@@ -10,7 +10,7 @@
     IconEye as Eye,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { toast } from "svelte-sonner";
   import { PdfToTextState } from "./helper.svelte";
 
@@ -42,10 +42,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to pull out the text</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to pull out the text</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Save the words in each PDF as a plain text file you can copy, search or edit.
       </p>
     {/snippet}
@@ -85,7 +85,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Works on PDFs made on a computer. For scanned pages, use
       <a href="/tools/ocr-pdf" class="font-medium text-primary underline-offset-4 hover:underline">OCR PDF</a>
       instead.
@@ -139,11 +139,11 @@
     </ul>
 
     {#if preview?.text !== undefined}
-      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4" aria-label="Text preview">
+      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4" aria-label="Text preview">
         <div class="flex items-center justify-between gap-3">
           <div class="flex min-w-0 flex-col gap-0.5">
-            <h2 class="text-body font-medium text-foreground">Preview</h2>
-            <p class="truncate text-caption text-muted-foreground" title={preview.file.name}>{preview.file.name}</p>
+            <h2 class="text-sm font-medium text-foreground">Preview</h2>
+            <p class="truncate text-xs text-muted-foreground" title={preview.file.name}>{preview.file.name}</p>
           </div>
           <Button variant="outline" size="sm" disabled={!preview.text.trim()} onclick={copyText}>
             {#if copied}<Check />{:else}<Copy />{/if}
@@ -152,12 +152,12 @@
         </div>
         {#if preview.text.trim()}
           <pre
-            class="scrollbar-subtle max-h-96 overflow-auto whitespace-pre-wrap wrap-break-word rounded-xl bg-muted p-3 font-sans text-body text-foreground">{preview.text.slice(0, PREVIEW_LIMIT)}</pre>
+            class="scrollbar-subtle max-h-96 overflow-auto whitespace-pre-wrap wrap-break-word rounded-xl bg-muted p-3 font-sans text-sm text-foreground">{preview.text.slice(0, PREVIEW_LIMIT)}</pre>
           {#if preview.text.length > PREVIEW_LIMIT}
-            <p class="text-caption text-muted-foreground">Showing the start of the text. Copy or download it to see everything.</p>
+            <p class="text-xs text-muted-foreground">Showing the start of the text. Copy or download it to see everything.</p>
           {/if}
         {:else}
-          <p class="rounded-xl bg-muted p-3 text-body text-muted-foreground">
+          <p class="rounded-xl bg-muted p-3 text-sm text-muted-foreground">
             This PDF has no text to read. It may be a scan; try OCR PDF.
           </p>
         {/if}
@@ -189,7 +189,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Saving text…" : pendingCount > 0 ? `Save text from ${plural(pendingCount)}` : "Save text"}
     </Button>
   </ToolFooter>

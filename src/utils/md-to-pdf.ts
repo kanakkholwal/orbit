@@ -1,5 +1,8 @@
 import { Lexer, marked, type Token, type Tokens } from 'marked';
-import { PDFDocument, type PDFFont, type PDFPage, StandardFonts, rgb } from 'pdf-lib';
+import fontkit from '@pdf-lib/fontkit';
+import { getFontForLanguage } from '$utils/font-loader';
+import { htmlToMarkdown } from '$utils/html-to-md';
+import { PDFDocument, type PDFFont, type PDFImage, type PDFPage, PDFString, StandardFonts, rgb } from 'pdf-lib';
 
 export interface MdToPdfOptions {
     /** Page size in points. Default A4. */
@@ -17,6 +20,7 @@ interface Run {
     mono?: boolean;
     strike?: boolean;
     link?: boolean;
+    href?: string;
 }
 
 type Word = {
@@ -26,6 +30,7 @@ type Word = {
     hardBreak?: boolean;
     strike?: boolean;
     link?: boolean;
+    href?: string;
 };
 
 const HEADING_SIZE = [24, 24, 19, 16, 14, 12, 11]; // index by depth (1..6)
@@ -41,19 +46,50 @@ const ALERT_COLORS = {
 
 // pdf-lib StandardFonts only encode WinAnsi (Latin-1). Replace the common
 // typographic characters Markdown/source tends to contain so they don't throw.
+let keepUnicode = false;
+
+const SHORTCODES: Record<string, string> = {
+    smile: ':)', grinning: ':D', wink: ';)', heart: '<3', warning: '(!)', white_check_mark: '[x]', heavy_check_mark: '[x]',
+    x: '[ ]', no_entry: '(no)', information_source: '(i)', bulb: '(idea)', memo: '', rocket: '', tada: '', sparkles: '',
+    star: '*', '+1': '(+1)', '-1': '(-1)', fire: '', zap: '', lock: '', book: '', link: ''
+};
+
+const EMOJI = /[\u{1F000}-\u{1FAFF}\u{2300}-\u{23FF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}\u{20E3}]/gu;
+
 function sanitize(text: string): string {
-    return text
-        .replace(/[‘’‚‛]/g, "'")
-        .replace(/[“”„‟]/g, '"')
-        .replace(/[–—]/g, '-')
-        .replace(/…/g, '...')
-        .replace(/•/g, '-')
-        .replace(/ /g, ' ')
-        .replace(/[→]/g, '->')
-        .replace(/[✓✔]/g, 'v')
-        .replace(/[✗✘×]/g, 'x')
-        .replace(/[^\x00-\xFF]/g, ''); // drop anything still outside Latin-1
+    const out = text
+        .replace(/:([a-z0-9_+-]+):/g, (m, name) => (name in SHORTCODES ? SHORTCODES[name] : m))
+        .replace(/[\u2018\u2019\u201A\u201B]/g, "'")
+        .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+        .replace(/[\u2013\u2014]/g, '-')
+        .replace(/\u2026/g, '...')
+        .replace(/\u2022/g, '-')
+        .replace(/\u00A0/g, ' ')
+        .replace(/\u2192/g, '->')
+        .replace(/[\u2713\u2714]/g, 'v')
+        .replace(/[\u2717\u2718]/g, 'x')
+        .replace(EMOJI, '');
+    return keepUnicode ? out : out.replace(/[^\x00-\xFF]/g, '');
 }
+
+/** Tesseract-style language codes of the scripts in the text that Helvetica cannot draw. */
+function scriptsIn(text: string): string[] {
+    const found = new Set<string>();
+    if (/[\u0100-\u024F\u0370-\u03FF\u0400-\u04FF]/.test(text)) found.add('eng');
+    if (/[\u0900-\u097F]/.test(text)) found.add('hin');
+    if (/[\u3040-\u30FF]/.test(text)) found.add('jpn');
+    if (/[\u4E00-\u9FFF]/.test(text)) found.add('chi_sim');
+    if (/[\uAC00-\uD7AF]/.test(text)) found.add('kor');
+    return [...found];
+}
+
+const scriptOf = (ch: string): string => {
+    if (/[\u0900-\u097F]/.test(ch)) return 'hin';
+    if (/[\u3040-\u30FF]/.test(ch)) return 'jpn';
+    if (/[\u4E00-\u9FFF]/.test(ch)) return 'chi_sim';
+    if (/[\uAC00-\uD7AF]/.test(ch)) return 'kor';
+    return 'eng';
+};
 
 function flattenInline(tokens: Token[] | undefined, ctx: Omit<Run, 'text'> = {}): Run[] {
     if (!tokens) return [];
@@ -73,7 +109,7 @@ function flattenInline(tokens: Token[] | undefined, ctx: Omit<Run, 'text'> = {})
                 runs.push({ text: sanitize(t.text), ...ctx, mono: true });
                 break;
             case 'link':
-                runs.push(...flattenInline(t.tokens, { ...ctx, link: true }));
+                runs.push(...flattenInline(t.tokens, { ...ctx, link: true, href: typeof t.href === 'string' ? t.href : undefined }));
                 break;
             case 'image':
                 runs.push({
@@ -285,6 +321,27 @@ export async function markdownToPdf(
         monoBold: await doc.embedFont(StandardFonts.CourierBold)
     };
 
+    const fallback = new Map<string, PDFFont>();
+    keepUnicode = false;
+    const needed = scriptsIn(markdown);
+    if (needed.length > 0) {
+        doc.registerFontkit(fontkit);
+        for (const code of needed) {
+            try {
+                fallback.set(code, await doc.embedFont(await getFontForLanguage(code), { subset: true }));
+            } catch {
+                /* offline or blocked: those characters are dropped */
+            }
+        }
+        keepUnicode = fallback.size > 0;
+    }
+    const fontForWord = (word: string, base: PDFFont): PDFFont => {
+        if (!keepUnicode) return base;
+        const ch = [...word].find((c) => c.charCodeAt(0) > 0xff);
+        if (!ch) return base;
+        return fallback.get(scriptOf(ch)) ?? fallback.get('eng') ?? base;
+    };
+
     const pickFont = (r: Omit<Run, 'text'>): PDFFont => {
         if (r.mono) return r.bold ? fonts.monoBold : fonts.mono;
         if (r.bold && r.italic) return fonts.boldItalic;
@@ -312,6 +369,14 @@ export async function markdownToPdf(
         if (y - h < margin) newPage();
     };
 
+    const safeWidth = (f: PDFFont, text: string, size: number) => {
+        try {
+            return f.widthOfTextAtSize(text, size);
+        } catch {
+            return text.length * size * 0.5;
+        }
+    };
+
     const wordsFromRuns = (runs: Run[], size: number): Word[] => {
         const words: Word[] = [];
         for (const run of runs) {
@@ -327,15 +392,18 @@ export async function markdownToPdf(
                             font,
                             width: font.widthOfTextAtSize(' ', size),
                             strike: run.strike,
-                            link: run.link
+                            link: run.link,
+                            href: run.href
                         });
                     } else {
+                        const wf = fontForWord(w, font);
                         words.push({
                             text: w,
-                            font,
-                            width: font.widthOfTextAtSize(w, size),
+                            font: wf,
+                            width: safeWidth(wf, w, size),
                             strike: run.strike,
-                            link: run.link
+                            link: run.link,
+                            href: run.href
                         });
                     }
                 }
@@ -376,9 +444,30 @@ export async function markdownToPdf(
 
     const lineWidthOf = (line: Word[]) => line.reduce((sum, w) => sum + w.width, 0);
 
+    /** Makes the box a clickable link. Only web, mail and phone addresses are allowed. */
+    const addLink = (x1: number, y1: number, x2: number, y2: number, uri: string) => {
+        if (!/^(https?:|mailto:|tel:)/i.test(uri)) return;
+        const ctx = doc.context;
+        const annot = ctx.obj({
+            Type: 'Annot',
+            Subtype: 'Link',
+            Rect: [x1, y1, x2, y2],
+            Border: [0, 0, 0],
+            A: { Type: 'Action', S: 'URI', URI: PDFString.of(uri) }
+        });
+        page.node.addAnnot(ctx.register(annot));
+    };
+
     const paintLine = (line: Word[], x: number, baseline: number, size: number, color = ink) => {
         let cx = x;
+        let open: { href: string; x: number } | null = null;
+        const close = (endX: number) => {
+            if (open) addLink(open.x, baseline - size * 0.25, endX, baseline + size * 0.85, open.href);
+            open = null;
+        };
         for (const w of line) {
+            if (open && open.href !== w.href) close(cx);
+            if (w.href && !open) open = { href: w.href, x: cx };
             if (w.text) {
                 const wordColor = w.link ? linkColor : color;
                 page.drawText(w.text, { x: cx, y: baseline, size, font: w.font, color: wordColor });
@@ -394,6 +483,7 @@ export async function markdownToPdf(
             }
             cx += w.width;
         }
+        close(cx);
     };
 
     const drawRuns = (
@@ -563,6 +653,11 @@ export async function markdownToPdf(
     };
 
     const renderHtml = (html: string, indent: number) => {
+        const converted = htmlTokens.get(html);
+        if (converted) {
+            renderBlocks(converted, indent);
+            return;
+        }
         const tables = tablesFromHtml(html);
         for (const table of tables) drawTable(table, indent);
         const leftover = html
@@ -573,6 +668,80 @@ export async function markdownToPdf(
             drawRuns([{ text: plain }], margin + indent, baseFontSize);
             gap(baseFontSize * 0.4);
         }
+    };
+
+    const images = new Map<string, PDFImage>();
+    const htmlTokens = new Map<string, Token[]>();
+
+    const rasterize = async (blob: Blob): Promise<Uint8Array | null> => {
+        const url = URL.createObjectURL(blob);
+        try {
+            const img = new Image();
+            img.src = url;
+            await img.decode();
+            const w = Math.min(img.naturalWidth || 200, 1200);
+            const h = Math.round((img.naturalHeight || 100) * (w / (img.naturalWidth || 200)));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, w * 2);
+            canvas.height = Math.max(1, h * 2);
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return null;
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const png = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+            canvas.width = canvas.height = 0;
+            return png ? new Uint8Array(await png.arrayBuffer()) : null;
+        } catch {
+            return null;
+        } finally {
+            URL.revokeObjectURL(url);
+        }
+    };
+
+    const loadImage = async (href: string): Promise<PDFImage | null> => {
+        try {
+            let blob: Blob;
+            if (href.startsWith('data:')) blob = await (await fetch(href)).blob();
+            else if (/^https?:/i.test(href)) {
+                const res = await fetch(href, { signal: AbortSignal.timeout(6000) });
+                if (!res.ok) return null;
+                blob = await res.blob();
+            } else return null;
+            const bytes = new Uint8Array(await blob.arrayBuffer());
+            if (bytes[0] === 0x89 && bytes[1] === 0x50) return await doc.embedPng(bytes);
+            if (bytes[0] === 0xff && bytes[1] === 0xd8) return await doc.embedJpg(bytes);
+            const png = await rasterize(blob);
+            return png ? await doc.embedPng(png) : null;
+        } catch {
+            return null;
+        }
+    };
+
+    /** Embeds every picture up front, since drawing is synchronous. Unreachable ones fall back to alt text. */
+    const embedImages = async (tokens: Token[]) => {
+        const hrefs = new Set<string>();
+        const walk = (list: Token[] | undefined) => {
+            for (const t of (list ?? []) as Tokens.Generic[]) {
+                if (t.type === 'image' && typeof t.href === 'string') hrefs.add(t.href);
+                if (t.type === 'html') {
+                    const raw = String(t.text ?? t.raw ?? '');
+                    if (!htmlTokens.has(raw) && typeof DOMParser !== 'undefined') {
+                        htmlTokens.set(raw, new Lexer(MARKED_OPTS).lex(htmlToMarkdown(raw)));
+                    }
+                    walk(htmlTokens.get(raw));
+                }
+                walk(t.tokens as Token[] | undefined);
+                if (t.items) for (const item of t.items) walk(item.tokens);
+                if (t.rows) for (const row of t.rows) for (const cell of row) walk(cell.tokens);
+            }
+        };
+        walk(tokens);
+        const list = [...hrefs].slice(0, 40);
+        await Promise.all(
+            list.map(async (href) => {
+                const image = await loadImage(href);
+                if (image) images.set(href, image);
+            })
+        );
     };
 
     const renderBlocks = (tokens: Token[], indent = 0) => {
@@ -589,7 +758,32 @@ export async function markdownToPdf(
                     break;
                 }
                 case 'paragraph': {
-                    drawRuns(flattenInline(token.tokens), x, baseFontSize);
+                    const inline = ((token.tokens ?? []) as Tokens.Generic[]).flatMap((t) => {
+                        const converted = t.type === 'html' ? htmlTokens.get(String(t.text ?? t.raw ?? '')) : undefined;
+                        return converted ? (converted as Tokens.Generic[]).flatMap((b) => (b.tokens as Tokens.Generic[]) ?? [b]) : [t];
+                    });
+                    const pictures = inline.filter((t) => t.type === 'image' && images.has(t.href));
+                    const rest = inline.filter((t) => !pictures.includes(t));
+                    if (rest.some((t) => (t.text ?? t.raw ?? '').trim())) drawRuns(flattenInline(rest as Token[]), x, baseFontSize);
+                    const room = Math.min(pageWidth - margin - x, contentWidth);
+                    let cursor = 0;
+                    let rowH = 0;
+                    for (const picture of pictures) {
+                        const image = images.get(picture.href)!;
+                        const scale = Math.min(0.75, room / image.width, (pageHeight - margin * 2) / image.height);
+                        const w = image.width * scale;
+                        const h = image.height * scale;
+                        if (cursor > 0 && cursor + w > room) {
+                            y -= rowH + 4;
+                            cursor = 0;
+                            rowH = 0;
+                        }
+                        ensure(h);
+                        page.drawImage(image, { x: x + cursor, y: y - h, width: w, height: h });
+                        cursor += w + 4;
+                        rowH = Math.max(rowH, h);
+                    }
+                    if (rowH > 0) y -= rowH + baseFontSize * 0.6;
                     gap(baseFontSize * 0.7);
                     break;
                 }
@@ -746,6 +940,7 @@ export async function markdownToPdf(
     };
 
     const tokens = marked.lexer(markdown, MARKED_OPTS);
+    await embedImages(tokens);
     renderBlocks(tokens);
 
     return doc.save();

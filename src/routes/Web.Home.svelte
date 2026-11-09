@@ -7,7 +7,7 @@
   import { FaqList, RailFrame, RailRow } from "$components/site";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
-  import { IconMail as Mail } from "@tabler/icons-svelte";
+  import { IconMail as Mail } from "$lib/icons";
 
   const faqs = [
     {
@@ -72,11 +72,11 @@
 />
 
 <RailFrame>
-  <RailRow id="home" divider={false} label="Introduction" class="px-3 pt-32 pb-4 sm:px-6 sm:pt-36 sm:pb-6">
+  <RailRow id="home" divider={false} label="Introduction" class="pt-12 pb-4 md:pt-16 md:pb-6">
     <HeroSection />
   </RailRow>
 
-  <RailRow id="tools" label="Find a tool" class="px-3 py-10 sm:px-6 sm:py-14">
+  <RailRow id="tools" label="Find a tool" class="py-10 md:py-12">
     <ToolFinder />
   </RailRow>
 
@@ -84,15 +84,15 @@
     <FeatureBento />
   </RailRow>
 
-  <RailRow id="faq" label="Frequently asked questions" class="justify-center lg:min-h-[calc(100svh-6.5rem)]">
-    <div class="relative w-full overflow-hidden px-4 py-6 sm:px-10 sm:py-8 lg:px-16 lg:py-10">
+  <RailRow id="faq" label="Frequently asked questions" class="">
+    <div class="relative w-full">
       <div class="flex flex-col gap-10 lg:flex-row lg:gap-20">
-        <div class="flex shrink-0 flex-col gap-2 lg:w-110">
-          <h2 class="text-heading-lg font-medium text-foreground">
+        <div class="flex shrink-0 flex-col gap-2 lg:w-80">
+          <h2 class="text-4xl font-medium text-foreground">
             Frequently asked <br />
             <span class="text-primary">questions</span>
           </h2>
-          <p class="text-body text-muted-foreground">
+          <p class="text-sm text-muted-foreground">
             Can't find the answer you're looking for? <br /> We're here to help.
           </p>
           <Button href={`mailto:${config.supportEmail}`} class="mt-6 w-fit">

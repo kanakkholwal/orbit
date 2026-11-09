@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { TableOfContents } from "$components/ui/table-of-contents";
   import { BrandPanel, FaqList, PageHero, RailFrame, RailRow } from "$components/site";
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
@@ -11,7 +12,7 @@
     IconInfinity as InfinityIcon,
     IconShield as Shield,
     IconWifiOff as WifiOff,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
 
   const sections = [
     { id: "getting-started", label: "Getting started" },
@@ -65,56 +66,46 @@
   </RailRow>
 
   <RailRow label="Guide">
-    <div class="flex flex-col gap-10 px-1 py-6 sm:px-4 sm:py-8 lg:flex-row lg:gap-20 lg:px-16 lg:py-10">
+    <div class="flex flex-col gap-10 lg:flex-row lg:gap-16">
       <aside class="shrink-0 lg:w-56">
-        <nav class="panel-card flex flex-col p-2 lg:sticky lg:top-28" aria-label="On this page">
-          {#each sections as s, i (s.id)}
-            <a
-              href={`#${s.id}`}
-              class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-body text-muted-foreground transition-colors duration-200 hover:bg-muted hover:text-foreground"
-            >
-              {s.label}
-              <span class="text-caption tabular-nums text-muted-foreground">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-            </a>
-          {/each}
-        </nav>
+        <div class="lg:sticky lg:top-24">
+          <TableOfContents items={sections.map((x) => ({ id: x.id, label: x.label, depth: 2 as const }))} scrollOffset={72} />
+        </div>
       </aside>
 
       <div class="flex min-w-0 flex-1 flex-col gap-16">
         <section id="getting-started" class="scroll-mt-28">
-          <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">Getting started</h2>
-          <p class="mt-3 max-w-2xl text-body leading-relaxed text-muted-foreground">
+          <h2 class="text-2xl font-medium text-foreground sm:text-3xl">Getting started</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             {config.appName} is a private PDF toolkit. Open a tool, drop a file, save the result.
           </p>
           <ul class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {#each guarantees as g (g.title)}
-              <li class="panel-card flex flex-col gap-3 p-6">
+              <li class="rounded-2xl border border-border bg-background flex flex-col gap-3 p-6">
                 <span class="grid size-10 place-items-center rounded-lg border border-border">
                   <g.icon class="size-5 text-primary" />
                 </span>
-                <h3 class="text-body-lg font-medium text-foreground">{g.title}</h3>
-                <p class="text-body leading-relaxed text-muted-foreground">{g.body}</p>
+                <h3 class="text-base font-medium text-foreground">{g.title}</h3>
+                <p class="text-sm leading-relaxed text-muted-foreground">{g.body}</p>
               </li>
             {/each}
           </ul>
         </section>
 
         <section id="installation" class="scroll-mt-28">
-          <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">Installation</h2>
+          <h2 class="text-2xl font-medium text-foreground sm:text-3xl">Installation</h2>
           <ol class="mt-6 flex flex-col gap-3">
             {#each installSteps as step, i (step.title)}
-              <li class="panel-card flex gap-4 px-6 py-5">
-                <span class="text-body font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
+              <li class="rounded-2xl border border-border bg-background flex gap-4 px-6 py-5">
+                <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
                 <div>
-                  <h3 class="text-body-lg font-medium text-foreground">{step.title}</h3>
-                  <p class="mt-1 text-body leading-relaxed text-muted-foreground">{step.body}</p>
+                  <h3 class="text-base font-medium text-foreground">{step.title}</h3>
+                  <p class="mt-1 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
                 </div>
               </li>
             {/each}
           </ol>
-          <p class="mt-4 rounded-xl border border-warning/30 bg-warning/5 px-5 py-4 text-body leading-relaxed text-foreground">
+          <p class="mt-4 rounded-xl border border-warning/30 bg-warning/5 px-5 py-4 text-sm leading-relaxed text-foreground">
             The desktop installers are self-signed, so Windows SmartScreen or macOS Gatekeeper may warn on first
             launch. That is expected for independent open-source apps.
           </p>
@@ -122,23 +113,23 @@
 
         <section id="tools" class="scroll-mt-28">
           <div class="flex flex-wrap items-end justify-between gap-4">
-            <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">Tools</h2>
+            <h2 class="text-2xl font-medium text-foreground sm:text-3xl">Tools</h2>
             <Button href="/explore" variant="outline" size="sm">
               All {toolList.length} tools
               <ArrowUpRight />
             </Button>
           </div>
-          <ul class="panel-card mt-6 divide-y divide-border">
+          <ul class="rounded-2xl border border-border bg-background mt-6 divide-y divide-border">
             {#each toolList.slice(0, 8) as tool (tool.slug)}
               <li>
                 <a
                   href={`/tools/${tool.slug}`}
-                  class="group flex items-start gap-4 px-6 py-4 transition-colors duration-200 hover:bg-muted"
+                  class="group flex items-start gap-4 px-6 py-4 transition-colors duration-(--duration-base) hover:bg-muted"
                 >
                   <tool.icon class="mt-0.5 size-5 shrink-0 text-primary" />
                   <span class="min-w-0 flex-1">
-                    <span class="block text-body font-medium text-foreground">{tool.title}</span>
-                    <span class="mt-0.5 block line-clamp-1 text-body text-muted-foreground">
+                    <span class="block text-sm font-medium text-foreground">{tool.title}</span>
+                    <span class="mt-0.5 block line-clamp-1 text-sm text-muted-foreground">
                       {tool.description.split(". ")[0]}
                     </span>
                   </span>
@@ -150,19 +141,19 @@
         </section>
 
         <section id="how-it-works" class="scroll-mt-28">
-          <h2 class="text-heading-sm font-medium text-foreground sm:text-heading">How it works</h2>
-          <p class="mt-3 max-w-2xl text-body leading-relaxed text-muted-foreground">
+          <h2 class="text-2xl font-medium text-foreground sm:text-3xl">How it works</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
             The page loads the tool once. Your document is read into the tab's memory, processed by the engines
             below, and written back to your disk. There is no upload endpoint to send it to.
           </p>
-          <ul class="panel-card mt-6 divide-y divide-border">
+          <ul class="rounded-2xl border border-border bg-background mt-6 divide-y divide-border">
             {#each engines as engine (engine.name)}
               <li class="flex flex-col gap-1 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
                 <span>
-                  <span class="block text-body font-medium text-foreground">{engine.name}</span>
-                  <span class="block text-body text-muted-foreground">{engine.role}</span>
+                  <span class="block text-sm font-medium text-foreground">{engine.name}</span>
+                  <span class="block text-sm text-muted-foreground">{engine.role}</span>
                 </span>
-                <span class="w-fit rounded-full bg-muted px-2.5 py-0.5 text-caption font-medium text-foreground">
+                <span class="w-fit rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-foreground">
                   {engine.runtime}
                 </span>
               </li>
@@ -171,7 +162,7 @@
         </section>
 
         <section id="faq" class="scroll-mt-28">
-          <h2 class="mb-6 text-heading-sm font-medium text-foreground sm:text-heading">FAQ</h2>
+          <h2 class="mb-6 text-2xl font-medium text-foreground sm:text-3xl">FAQ</h2>
           <FaqList items={faqItems} variant="cards" />
         </section>
       </div>

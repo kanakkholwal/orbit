@@ -1,6 +1,6 @@
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import JSZip from 'jszip';
-import { PDFDocument } from 'pdf-lib';
+import { assemblePdf, assemblePdfs } from '$lib/pdf/assemble';
 import type * as PDFJS from 'pdfjs-dist';
 
 export const SPLIT_STATE_KEY = Symbol('SPLIT_STATE');
@@ -21,7 +21,6 @@ export class SplitState extends PdfEngine {
   file = $state<File | null>(null);
   fileName = $state('');
   pageCount = $state(0);
-  pdfDoc: PDFDocument | null = null;
 
   mode = $state<SplitMode>('visual');
 
@@ -70,12 +69,10 @@ export class SplitState extends PdfEngine {
     await this.handleProcess(async () => {
       const arrayBuffer = await newFile.arrayBuffer();
 
-      this.pdfDoc = await PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
-      this.pageCount = this.pdfDoc.getPageCount();
-
       const pdfjs = await this.getPdfJs();
-      const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer.slice(0)));
+      const loadingTask = pdfjs.getDocument(new Uint8Array(arrayBuffer));
       this.pdfJsDoc = await loadingTask.promise;
+      this.pageCount = this.pdfJsDoc.numPages;
 
       this.file = newFile;
       this.fileName = newFile.name;
@@ -130,7 +127,7 @@ export class SplitState extends PdfEngine {
   }
 
   async processSplit() {
-    if (!this.pdfDoc || !this.file) return;
+    if (!this.file) return;
     this.result = null;
 
     await this.handleProcess(async () => {
@@ -168,20 +165,15 @@ export class SplitState extends PdfEngine {
 
     this.progress = { text: 'Making files', current: 0, total: numChunks };
 
-    for (let i = 0; i < numChunks; i++) {
+    const plans = Array.from({ length: numChunks }, (_, i) => {
       const start = i * n;
       const end = Math.min(start + n, total);
-
-      const newPdf = await PDFDocument.create();
-      const indices = Array.from({ length: end - start }, (_, k) => start + k);
-      const copiedPages = await newPdf.copyPages(this.pdfDoc!, indices);
-      for (const p of copiedPages) newPdf.addPage(p);
-
-      const pdfBytes = await newPdf.save();
-      zip.file(`part_${i + 1}.pdf`, pdfBytes);
-
-      this.progress = { text: 'Making files', current: i + 1, total: numChunks };
-    }
+      return Array.from({ length: end - start }, (_, k) => ({ src: 'file', page: start + k }));
+    });
+    const outputs = await assemblePdfs({ file: this.file! }, plans, (done, all) => {
+      this.progress = { text: 'Making files', current: Math.ceil((done / all) * numChunks), total: numChunks };
+    });
+    outputs.forEach((bytes, i) => zip.file(`part_${i + 1}.pdf`, bytes));
 
     const content = await zip.generateAsync({ type: 'blob' });
     const name = `split_every_${n}_pages.zip`;
@@ -190,11 +182,7 @@ export class SplitState extends PdfEngine {
   }
 
   private async extractPages(indices: number[], filename: string) {
-    const newPdf = await PDFDocument.create();
-    const copiedPages = await newPdf.copyPages(this.pdfDoc!, indices);
-    for (const p of copiedPages) newPdf.addPage(p);
-
-    const pdfBytes = await newPdf.save();
+    const pdfBytes = await assemblePdf({ file: this.file! }, indices.map((page) => ({ src: 'file', page })));
     const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
     this.result = { blob, name: filename, kind: 'pdf', pages: indices.length, parts: 1 };
     this.downloadBlob(blob, filename);
@@ -206,7 +194,6 @@ export class SplitState extends PdfEngine {
 
   reset() {
     this.file = null;
-    this.pdfDoc = null;
     this.pdfJsDoc = null;
     this.rangeInput = '';
     this.selectedPages = new Set();

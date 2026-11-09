@@ -4,7 +4,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
   import { ReversePagesState } from "./helper.svelte";
 
   const store = new ReversePagesState();
@@ -19,10 +19,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to flip the page order</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to flip the page order</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         The last page becomes the first. Handy for scans that came out of the feeder backwards.
       </p>
     {/snippet}
@@ -125,7 +125,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Reversing…" : pendingCount > 0 ? `Reverse ${plural(pendingCount)}` : "Reverse"}
     </Button>
   </ToolFooter>

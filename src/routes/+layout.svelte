@@ -1,7 +1,6 @@
 <script lang="ts">
   import "@fontsource-variable/inter";
-  import "@fontsource-variable/google-sans";
-  import "@fontsource-variable/source-code-pro";
+  import "@fontsource-variable/jetbrains-mono";
 
   import "../app.css";
 

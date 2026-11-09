@@ -9,7 +9,7 @@
     IconEye as Eye,
     IconEyeOff as EyeOff,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { DecryptPdfState } from "./helper.svelte";
 
   const store = new DecryptPdfState();
@@ -28,10 +28,10 @@
 {#if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.setFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to unlock</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to unlock</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Enter its password once and save a copy that opens without it. The file never leaves this device.
       </p>
     {/snippet}
@@ -64,19 +64,19 @@
     />
 
     <form
-      class="flex flex-col gap-5 rounded-2xl border border-border bg-card p-4 sm:p-5"
+      class="flex flex-col gap-5 rounded-2xl border border-border bg-background p-4 sm:p-5"
       onsubmit={(e) => {
         e.preventDefault();
         if (store.state.password && !store.isProcessing) store.decrypt();
       }}
     >
       <div class="flex flex-col gap-0.5">
-        <h2 class="text-body-lg font-medium text-foreground">Enter the password</h2>
-        <p class="text-body text-muted-foreground">Use the password you type to open this file.</p>
+        <h2 class="text-base font-medium text-foreground">Enter the password</h2>
+        <p class="text-sm text-muted-foreground">Use the password you type to open this file.</p>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="{uid}-password" class="text-body font-medium text-foreground">Password</label>
+        <label for="{uid}-password" class="text-sm font-medium text-foreground">Password</label>
         <div class="relative">
           <input
             id="{uid}-password"
@@ -89,7 +89,7 @@
             }}
             aria-invalid={store.error !== ""}
             aria-describedby="{uid}-password-hint"
-            class="h-10 w-full rounded-lg border border-border bg-background px-3 pr-11 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring aria-invalid:border-destructive"
+            class="h-10 w-full rounded-lg border border-border bg-background px-3 pr-11 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring aria-invalid:border-destructive"
           />
           <button
             type="button"
@@ -103,14 +103,14 @@
         </div>
         <p
           id="{uid}-password-hint"
-          class="text-caption {store.error ? 'text-destructive' : 'text-muted-foreground'}"
+          class="text-xs {store.error ? 'text-destructive' : 'text-muted-foreground'}"
           aria-live="polite"
         >
           {store.error || "The copy you save will open without asking for it."}
         </p>
       </div>
 
-      <p class="border-t border-border pt-4 text-caption text-muted-foreground">
+      <p class="border-t border-border pt-4 text-xs text-muted-foreground">
         Unlocking happens on this device. Your file and password are never sent anywhere.
       </p>
     </form>
@@ -134,7 +134,7 @@
     {/snippet}
 
     <Button
-      variant="primary"
+      variant="default"
       onclick={() => store.decrypt()}
       disabled={store.isProcessing || !store.state.password}
     >

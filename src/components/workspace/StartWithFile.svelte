@@ -3,7 +3,7 @@
   import { registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { IconCloudUpload as Upload } from "@tabler/icons-svelte";
+  import { IconCloudUpload as Upload } from "$lib/icons";
   import { onMount } from "svelte";
   import FileSuggestions from "./FileSuggestions.svelte";
 
@@ -22,7 +22,7 @@
 
 <section
   aria-label="Start with a file"
-  class={cn("panel-card flex flex-col gap-4 p-4 sm:p-5", className)}
+  class={cn("flex flex-col rounded-2xl border border-border bg-background p-1", className)}
   ondragenter={(e) => {
     if (!e.dataTransfer?.types.includes("Files")) return;
     e.preventDefault();
@@ -42,23 +42,24 @@
     if (dropped.length > 0) files = dropped;
   }}
 >
-  <h2 class="text-body-lg font-medium text-foreground">Start with a file</h2>
+  <div class="flex flex-1 flex-col gap-4 rounded-[11px] bg-card p-4 sm:p-5">
+  <h2 class="text-base font-medium text-foreground">Start with a file</h2>
 
   {#if files.length > 0}
     <FileSuggestions {files} onclear={() => (files = [])} />
   {:else}
     <div
       class={cn(
-        "flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors duration-150",
-        dragging ? "border-primary bg-primary/5" : "border-border bg-background"
+        "flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors duration-(--duration-fast)",
+        dragging ? "border-primary bg-primary/5" : "border-border-strong bg-background"
       )}
     >
       <span class="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
         <Upload class="size-5" />
       </span>
       <div>
-        <p class="text-body-lg font-medium text-foreground">{dragging ? "Drop it here" : "Drop a PDF or image"}</p>
-        <p class="mt-1 text-body text-muted-foreground">We'll show the tools that can open it. Nothing is uploaded.</p>
+        <p class="text-base font-medium text-foreground">{dragging ? "Drop it here" : "Drop a PDF or image"}</p>
+        <p class="mt-1 text-sm text-muted-foreground">We'll show the tools that can open it. Nothing is uploaded.</p>
       </div>
       <Button variant="outline" size="sm" onclick={() => fileInput?.click()}>Choose a file</Button>
       <input
@@ -74,4 +75,5 @@
       />
     </div>
   {/if}
+</div>
 </section>

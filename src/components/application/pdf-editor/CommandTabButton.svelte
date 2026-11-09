@@ -33,12 +33,12 @@
     use:registerAnchor
     type="button"
     class={cn(
-      "flex h-full items-center justify-center rounded-md text-body outline-none transition-[background-color,color,box-shadow] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+      "flex h-full items-center justify-center rounded-md text-sm outline-none transition-[background-color,color,box-shadow] duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
       variant === "icon" ? "w-8" : "px-3",
       cmd.active
         ? "bg-background font-medium text-foreground shadow-sm"
         : "cursor-pointer text-muted-foreground hover:text-foreground",
-      cmd.disabled && "cursor-not-allowed text-placeholder hover:text-placeholder"
+      cmd.disabled && "cursor-not-allowed text-muted-foreground hover:text-muted-foreground"
     )}
     onclick={() => {
       if (!cmd.disabled) cmd.execute();

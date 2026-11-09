@@ -10,14 +10,14 @@
     IconPlus as Plus,
     IconRefresh as Refresh,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { EditMetadataState } from "./helper.svelte";
 
   const store = new EditMetadataState();
   const uid = $props.id();
 
   const inputClass =
-    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const mainFields = [
     { key: "title", label: "Title", placeholder: "Quarterly report", hint: "" },
@@ -42,10 +42,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to edit its details</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to edit its details</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Change the title, author and other hidden details that apps show about a file.
       </p>
     {/snippet}
@@ -74,10 +74,10 @@
       onRemove={store.isProcessing ? undefined : () => store.reset()}
     />
 
-    <section class="flex flex-col gap-5 rounded-2xl border border-border bg-card p-4 sm:p-5" oninput={clearResult}>
+    <section class="flex flex-col gap-5 rounded-2xl border border-border bg-background p-4 sm:p-5" oninput={clearResult}>
       <div class="flex flex-col gap-0.5">
-        <h2 class="text-body-lg font-medium text-foreground">Document details</h2>
-        <p class="text-body text-muted-foreground">
+        <h2 class="text-base font-medium text-foreground">Document details</h2>
+        <p class="text-sm text-muted-foreground">
           Apps and search tools show these instead of the file name. Leave a box empty to clear it.
         </p>
       </div>
@@ -85,7 +85,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         {#each mainFields as field (field.key)}
           <div class="flex flex-col gap-2">
-            <label for="{uid}-{field.key}" class="text-body font-medium text-foreground">{field.label}</label>
+            <label for="{uid}-{field.key}" class="text-sm font-medium text-foreground">{field.label}</label>
             <input
               id="{uid}-{field.key}"
               type="text"
@@ -95,19 +95,19 @@
               class={inputClass}
             />
             {#if field.hint}
-              <p id="{uid}-{field.key}-hint" class="text-caption text-muted-foreground">{field.hint}</p>
+              <p id="{uid}-{field.key}-hint" class="text-xs text-muted-foreground">{field.hint}</p>
             {/if}
           </div>
         {/each}
 
         <div class="flex flex-col gap-2">
-          <label for="{uid}-created" class="text-body font-medium text-foreground">Created</label>
+          <label for="{uid}-created" class="text-sm font-medium text-foreground">Created</label>
           <input id="{uid}-created" type="datetime-local" bind:value={store.creationDate} class="{inputClass} tabular-nums" />
         </div>
         <div class="flex flex-col gap-2">
-          <label for="{uid}-modified" class="text-body font-medium text-foreground">Last changed</label>
+          <label for="{uid}-modified" class="text-sm font-medium text-foreground">Last changed</label>
           <input id="{uid}-modified" type="datetime-local" bind:value={store.modDate} class="{inputClass} tabular-nums" />
-          <p class="text-caption text-muted-foreground">Leave empty to use the time you save</p>
+          <p class="text-xs text-muted-foreground">Leave empty to use the time you save</p>
         </div>
       </div>
     </section>
@@ -119,7 +119,7 @@
         <div class="flex flex-col gap-3">
           {#each appFields as field (field.key)}
             <div class="flex flex-col gap-1.5">
-              <label for="{uid}-{field.key}" class="text-caption text-muted-foreground">{field.label}</label>
+              <label for="{uid}-{field.key}" class="text-xs text-muted-foreground">{field.label}</label>
               <input
                 id="{uid}-{field.key}"
                 type="text"
@@ -201,7 +201,7 @@
       </span>
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.save()} disabled={store.isProcessing}>
+    <Button variant="default" onclick={() => store.save()} disabled={store.isProcessing}>
       {store.isProcessing ? "Saving…" : "Save details"}
     </Button>
   </ToolFooter>

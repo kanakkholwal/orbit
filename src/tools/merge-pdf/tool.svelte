@@ -11,7 +11,7 @@
     IconLoader2 as Loader,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { setContext } from "svelte";
   import FileModeItem from "./FileModeItem.svelte";
   import { MERGE_STATE_KEY, MergeState } from "./helper.svelte";
@@ -50,10 +50,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to merge</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to merge</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Add two or more files, put them in order, then save them as one PDF.
       </p>
     {/snippet}
@@ -97,7 +97,7 @@
     </ToolBar>
 
     {#if store.mode === "file"}
-      <p class="text-body text-muted-foreground">
+      <p class="text-sm text-muted-foreground">
         Files are joined top to bottom. Drag a row or use the arrows to reorder.
       </p>
       <div class="flex flex-col gap-2" use:sortableList={fileListSort}>
@@ -108,10 +108,10 @@
     {:else if store.allPages.length === 0}
       <div class="flex flex-col items-center gap-2 py-16 text-muted-foreground">
         <Loader class="size-5 animate-spin text-primary" />
-        <p class="text-body">Loading pages</p>
+        <p class="text-sm">Loading pages</p>
       </div>
     {:else}
-      <p class="text-body text-muted-foreground">
+      <p class="text-sm text-muted-foreground">
         Drag pages into the order you want. Removed pages are left out of the merged file.
       </p>
       <div
@@ -147,21 +147,21 @@
           type="text"
           bind:value={store.outputName}
           placeholder="merged.pdf"
-          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
         />
       </OptionGroup>
 
       <OptionGroup label="Result">
         <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Files</dt>
             <dd class="font-medium tabular-nums text-foreground">{store.files.length}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages</dt>
             <dd class="font-medium tabular-nums text-foreground">{store.resultPageCount}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Order</dt>
             <dd class="font-medium text-foreground">{store.mode === "file" ? "By file" : "Custom pages"}</dd>
           </div>
@@ -188,7 +188,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.mergeAndDownload()} disabled={!store.canMerge}>
+    <Button variant="default" onclick={() => store.mergeAndDownload()} disabled={!store.canMerge}>
       {store.isProcessing ? "Merging…" : `Merge ${store.files.length} ${store.files.length === 1 ? "file" : "files"}`}
     </Button>
   </ToolFooter>

@@ -1,0 +1,277 @@
+import {
+  IconCode,
+  IconFileSpreadsheet,
+  IconFileText,
+  IconEraser,
+  IconSparkles,
+  IconTypography,
+  IconPhoto,
+  IconPresentation,
+  IconTable,
+  type Icon,
+} from "$lib/icons";
+import type { ToolConfig } from "./list";
+
+type Def = Omit<ToolConfig, "component" | "color"> & { color?: string; load: ToolConfig["component"] };
+
+const make = ({ load, color = "text-primary", ...rest }: Def): ToolConfig => ({ ...rest, color, component: load });
+
+const entries: Def[] = [
+  {
+    slug: "word-to-pdf",
+    title: "Word to PDF",
+    seoTitle: "Convert Word (DOCX) to PDF Online Without Uploading",
+    description: "Word to PDF converts a .docx file into a PDF in your browser. Headings, paragraphs, lists and tables are kept. Free, no account, and the file never leaves your device.",
+    category: "conversion",
+    layout: "form",
+    icon: IconFileText,
+    load: () => import("./word-to-pdf/tool.svelte"),
+    color: "text-blue-600",
+    keywords: ["word to pdf", "docx to pdf", "convert word to pdf", "doc to pdf", "word document to pdf", "convert docx to pdf free", "word to pdf offline", "word to pdf no upload", "microsoft word to pdf"],
+  },
+  {
+    slug: "pptx-to-pdf",
+    title: "PowerPoint to PDF",
+    seoTitle: "Convert PowerPoint (PPTX) to PDF Online Without Uploading",
+    description: "PowerPoint to PDF turns each slide of a .pptx file into a PDF page, placing text boxes and pictures where they are on the slide. Free, private, and it runs in your browser.",
+    category: "conversion",
+    layout: "form",
+    icon: IconPresentation,
+    load: () => import("./pptx-to-pdf/tool.svelte"),
+    color: "text-orange-600",
+    keywords: ["powerpoint to pdf", "pptx to pdf", "ppt to pdf", "convert powerpoint to pdf", "slides to pdf", "presentation to pdf", "pptx to pdf free", "powerpoint to pdf offline", "pptx to pdf no upload"],
+  },
+  {
+    slug: "html-to-pdf",
+    title: "HTML to PDF",
+    seoTitle: "Convert HTML Files to PDF Online Without Uploading",
+    description: "HTML to PDF converts an .html file into a PDF in your browser. Headings, paragraphs, lists, links, code and tables are kept. Free, with no upload and no account.",
+    category: "conversion",
+    layout: "form",
+    icon: IconCode,
+    load: () => import("./html-to-pdf/tool.svelte"),
+    color: "text-rose-500",
+    keywords: ["html to pdf", "convert html to pdf", "html file to pdf", "webpage to pdf", "save html as pdf", "html to pdf free", "html to pdf offline", "html to pdf no upload"],
+  },
+  {
+    slug: "pdf-to-html",
+    title: "PDF to HTML",
+    seoTitle: "Convert PDF to HTML Online Without Uploading",
+    description: "PDF to HTML extracts the text of a PDF and rebuilds it as a clean web page with headings, paragraphs and lists. Free, private, and it runs in your browser.",
+    category: "conversion",
+    layout: "form",
+    icon: IconCode,
+    load: () => import("./pdf-to-html/tool.svelte"),
+    color: "text-rose-500",
+    keywords: ["pdf to html", "convert pdf to html", "pdf to web page", "pdf to html free", "extract html from pdf", "pdf to html offline", "pdf to html no upload"],
+  },
+  {
+    slug: "pdf-to-csv",
+    title: "PDF to CSV",
+    seoTitle: "Extract Tables from PDF to CSV Online Without Uploading",
+    description: "PDF to CSV finds tables in a PDF and saves them as CSV files you can open in Excel or Google Sheets. Free, private, and it runs in your browser.",
+    category: "conversion",
+    layout: "form",
+    icon: IconTable,
+    load: () => import("./pdf-to-csv/tool.svelte"),
+    color: "text-green-600",
+    keywords: ["pdf to csv", "extract tables from pdf", "pdf table to csv", "convert pdf to csv", "pdf to spreadsheet", "pdf table extractor", "pdf to csv free", "pdf to csv no upload"],
+  },
+  {
+    slug: "redact-pdf",
+    title: "Redact PDF",
+    seoTitle: "Redact a PDF Online: Black Out Text Permanently, No Upload",
+    description: "Redact PDF permanently blacks out text and areas in a PDF, so the hidden content is removed from the file. Free, private, and it runs in your browser.",
+    category: "security",
+    layout: "immersive",
+    icon: IconEraser,
+    load: () => import("./redact-pdf/tool.svelte"),
+    color: "text-red-500",
+    keywords: ["redact pdf", "redact pdf online", "black out pdf text", "remove sensitive info from pdf", "permanently redact pdf", "censor pdf", "hide text in pdf", "redact pdf free", "redact pdf no upload"],
+  },
+  {
+    slug: "summarize-pdf",
+    title: "Summarize PDF (experimental)",
+    seoTitle: "Summarize a PDF with Chrome's Built-in AI, Privately",
+    description: "Summarize PDF writes the key points of a long PDF using the AI model built into Chrome. Experimental, off by default, and your text never leaves your device.",
+    category: "pdf-management",
+    layout: "form",
+    icon: IconSparkles,
+    load: () => import("./summarize-pdf/tool.svelte"),
+    color: "text-violet-500",
+    keywords: ["summarize pdf", "pdf summarizer", "ai pdf summary", "summarize pdf with ai", "chrome built-in ai pdf", "private pdf summarizer", "offline pdf summary", "pdf key points"],
+  },
+  {
+    slug: "translate-pdf",
+    title: "Translate PDF (experimental)",
+    seoTitle: "Translate PDF Text with Chrome's Built-in Translator, Privately",
+    description: "Translate PDF translates the text of a PDF with the translation model built into Chrome. Experimental, off by default, and your text never leaves your device.",
+    category: "pdf-management",
+    layout: "form",
+    icon: IconTypography,
+    load: () => import("./translate-pdf/tool.svelte"),
+    color: "text-violet-500",
+    keywords: ["translate pdf", "pdf translator", "translate pdf text", "pdf translation offline", "chrome translator api pdf", "private pdf translation", "translate pdf free"],
+  },
+];
+
+interface Alias {
+  slug: string;
+  base: string;
+  title: string;
+  seoTitle: string;
+  description: string;
+  icon: Icon;
+  keywords: string[];
+  load: ToolConfig["component"];
+  layout?: ToolConfig["layout"];
+  color?: string;
+}
+
+const aliases: Alias[] = [
+  {
+    slug: "jpg-to-pdf",
+    base: "img-to-pdf",
+    title: "JPG to PDF",
+    seoTitle: "Convert JPG to PDF Online Without Uploading",
+    description: "JPG to PDF puts one or more JPG or JPEG photos into a single PDF, one image per page. Reorder, choose a page size, and save. Free, private, and it runs in your browser.",
+    icon: IconPhoto,
+    keywords: ["jpg to pdf", "jpeg to pdf", "convert jpg to pdf", "photo to pdf", "jpg to pdf free", "multiple jpg to one pdf", "jpg to pdf no upload", "combine jpg into pdf"],
+    load: () => import("./img-to-pdf/tool.svelte"),
+  },
+  {
+    slug: "png-to-pdf",
+    base: "img-to-pdf",
+    title: "PNG to PDF",
+    seoTitle: "Convert PNG to PDF Online Without Uploading",
+    description: "PNG to PDF puts one or more PNG images into a single PDF, one image per page, with transparency kept on white. Free, private, and it runs in your browser.",
+    icon: IconPhoto,
+    keywords: ["png to pdf", "convert png to pdf", "png image to pdf", "png to pdf free", "multiple png to one pdf", "png to pdf no upload", "screenshot to pdf"],
+    load: () => import("./img-to-pdf/tool.svelte"),
+  },
+  {
+    slug: "heic-to-pdf",
+    base: "img-to-pdf",
+    title: "HEIC to PDF",
+    seoTitle: "Convert iPhone HEIC Photos to PDF Online Without Uploading",
+    description: "HEIC to PDF turns iPhone and iPad HEIC or HEIF photos into a PDF in your browser, one photo per page. Free, private, and nothing is uploaded.",
+    icon: IconPhoto,
+    keywords: ["heic to pdf", "heif to pdf", "iphone photo to pdf", "convert heic to pdf", "heic to pdf free", "heic to pdf no upload"],
+    load: () => import("./img-to-pdf/tool.svelte"),
+  },
+  {
+    slug: "svg-to-pdf",
+    base: "img-to-pdf",
+    title: "SVG to PDF",
+    seoTitle: "Convert SVG to PDF Online Without Uploading",
+    description: "SVG to PDF draws an SVG graphic onto a PDF page at twice its size in your browser. Free and private. The result is an image, not editable vector paths.",
+    icon: IconPhoto,
+    keywords: ["svg to pdf", "convert svg to pdf", "svg image to pdf", "svg to pdf free", "vector to pdf", "svg to pdf no upload"],
+    load: () => import("./img-to-pdf/tool.svelte"),
+  },
+  {
+    slug: "csv-to-pdf",
+    base: "excel-to-pdf",
+    title: "CSV to PDF",
+    seoTitle: "Convert CSV to PDF Online Without Uploading",
+    description: "CSV to PDF turns a CSV or TSV file into a clean, printable PDF table with the header repeated on every page. Free, private, and it runs in your browser.",
+    icon: IconFileSpreadsheet,
+    keywords: ["csv to pdf", "convert csv to pdf", "csv file to pdf", "tsv to pdf", "csv to pdf free", "csv table to pdf", "csv to pdf no upload"],
+    load: () => import("./excel-to-pdf/tool.svelte"),
+    color: "text-green-600",
+  },
+  {
+    slug: "docx-to-pdf",
+    base: "word-to-pdf",
+    title: "DOCX to PDF",
+    seoTitle: "Convert DOCX to PDF Online Without Uploading",
+    description: "DOCX to PDF converts a Word .docx file into a PDF in your browser. Headings, lists and tables are kept. Free, private, and nothing is uploaded.",
+    icon: IconFileText,
+    keywords: ["docx to pdf", "convert docx to pdf", "docx to pdf free", "docx to pdf offline", "docx to pdf no upload"],
+    load: () => import("./word-to-pdf/tool.svelte"),
+    color: "text-blue-600",
+  },
+  {
+    slug: "ppt-to-pdf",
+    base: "pptx-to-pdf",
+    title: "PPT to PDF",
+    seoTitle: "Convert PPT and PPTX to PDF Online Without Uploading",
+    description: "PPT to PDF converts a PowerPoint .pptx file into a PDF, one page per slide, in your browser. Free, private, and nothing is uploaded.",
+    icon: IconPresentation,
+    keywords: ["ppt to pdf", "ppt to pdf free", "convert ppt to pdf", "pptx to pdf online", "ppt to pdf no upload"],
+    load: () => import("./pptx-to-pdf/tool.svelte"),
+    color: "text-orange-600",
+  },
+  {
+    slug: "pdf-to-jpg",
+    base: "pdf-to-img",
+    title: "PDF to JPG",
+    seoTitle: "Convert PDF to JPG Online Without Uploading",
+    description: "PDF to JPG saves every page of a PDF as a JPG image and bundles them in one ZIP. Choose the quality. Free, private, and it runs in your browser.",
+    icon: IconPhoto,
+    keywords: ["pdf to jpg", "pdf to jpeg", "convert pdf to jpg", "pdf pages to images", "pdf to jpg free", "pdf to jpg no upload", "pdf to photo"],
+    load: () => import("./pdf-to-img/tool.svelte"),
+  },
+  {
+    slug: "pdf-to-png",
+    base: "pdf-to-img",
+    title: "PDF to PNG",
+    seoTitle: "Convert PDF to PNG Online Without Uploading",
+    description: "PDF to PNG saves every page of a PDF as a sharp PNG image and bundles them in one ZIP. Free, private, and it runs in your browser.",
+    icon: IconPhoto,
+    keywords: ["pdf to png", "convert pdf to png", "pdf page to png", "pdf to png free", "pdf to png no upload", "pdf to png high quality"],
+    load: () => import("./pdf-to-img/tool.svelte"),
+  },
+];
+
+/** Each tool and the one that does the reverse conversion. */
+export const PAIRS: Record<string, string> = {
+  "pdf-to-img": "img-to-pdf",
+  "img-to-pdf": "pdf-to-img",
+  "pdf-to-jpg": "jpg-to-pdf",
+  "jpg-to-pdf": "pdf-to-jpg",
+  "pdf-to-png": "png-to-pdf",
+  "png-to-pdf": "pdf-to-png",
+  "heic-to-pdf": "pdf-to-jpg",
+  "svg-to-pdf": "pdf-to-png",
+  "pdf-to-docx": "word-to-pdf",
+  "word-to-pdf": "pdf-to-docx",
+  "docx-to-pdf": "pdf-to-docx",
+  "pdf-to-excel": "excel-to-pdf",
+  "excel-to-pdf": "pdf-to-excel",
+  "pdf-to-csv": "csv-to-pdf",
+  "csv-to-pdf": "pdf-to-csv",
+  "pdf-to-pptx": "pptx-to-pdf",
+  "pptx-to-pdf": "pdf-to-pptx",
+  "ppt-to-pdf": "pdf-to-pptx",
+  "pdf-to-text": "txt-to-pdf",
+  "txt-to-pdf": "pdf-to-text",
+  "pdf-to-md": "md-to-pdf",
+  "md-to-pdf": "pdf-to-md",
+  "pdf-to-html": "html-to-pdf",
+  "html-to-pdf": "pdf-to-html",
+};
+
+/** Alias tools reuse the written guide of the tool they point at. */
+export const ALIAS_BASE: Record<string, string> = Object.fromEntries(aliases.map((a) => [a.slug, a.base]));
+
+export function buildExtraTools(base: Record<string, ToolConfig>): Record<string, ToolConfig> {
+  const out: Record<string, ToolConfig> = {};
+  for (const def of entries) out[def.slug] = make(def);
+  for (const alias of aliases) {
+    const parent = base[alias.base] ?? out[alias.base];
+    out[alias.slug] = make({
+      slug: alias.slug,
+      title: alias.title,
+      seoTitle: alias.seoTitle,
+      description: alias.description,
+      category: parent?.category ?? "conversion",
+      layout: alias.layout ?? parent?.layout,
+      icon: alias.icon,
+      load: alias.load,
+      color: alias.color ?? parent?.color,
+      keywords: alias.keywords,
+    });
+  }
+  return out;
+}

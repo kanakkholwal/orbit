@@ -46,7 +46,7 @@
     ></ins>
   </aside>
 {:else if dev}
-  <div class={cn("grid min-h-24 place-items-center rounded-2xl border border-dashed border-border text-caption text-muted-foreground", className)}>
+  <div class={cn("grid min-h-24 place-items-center rounded-2xl border border-dashed border-border text-xs text-muted-foreground", className)}>
     Ad slot: {adSlot}
   </div>
 {/if}

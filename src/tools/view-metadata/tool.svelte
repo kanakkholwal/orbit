@@ -8,7 +8,7 @@
     IconChevronDown as ChevronDown,
     IconCopy as Copy,
     IconLoader2 as Loader,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { toast } from "svelte-sonner";
   import { ViewMetadataState } from "./helper.svelte";
 
@@ -76,10 +76,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to see its details</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to see its details</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         See who made it, when it was created and changed, and any hidden details stored inside.
       </p>
     {/snippet}
@@ -93,19 +93,19 @@
     />
 
     {#if store.isProcessing}
-      <p class="flex items-center gap-2 text-body text-muted-foreground" aria-live="polite">
+      <p class="flex items-center gap-2 text-sm text-muted-foreground" aria-live="polite">
         <Loader class="size-4 animate-spin text-primary" />
         Reading details
       </p>
     {:else if failed}
       <div class="flex flex-col gap-1 rounded-xl border border-border bg-card p-4">
-        <p class="text-body font-medium text-foreground">We couldn't read this file's details</p>
-        <p class="text-body text-muted-foreground">It may be damaged or locked with a password. Try another PDF.</p>
+        <p class="text-sm font-medium text-foreground">We couldn't read this file's details</p>
+        <p class="text-sm text-muted-foreground">It may be damaged or locked with a password. Try another PDF.</p>
       </div>
     {:else}
       <section class="flex flex-col gap-3" aria-labelledby="view-metadata-document">
         <div class="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="view-metadata-document" class="text-body-lg font-medium text-foreground">Document details</h2>
+          <h2 id="view-metadata-document" class="text-base font-medium text-foreground">Document details</h2>
           <Button
             variant="outline"
             size="sm"
@@ -123,17 +123,17 @@
         </div>
 
         {#if infoCount === 0}
-          <p class="rounded-xl border border-border bg-card px-4 py-3 text-body text-muted-foreground">
+          <p class="rounded-xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
             This file doesn't store any document details.
           </p>
         {:else}
           <dl class="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
             {#each store.infoDictionary?.items ?? [] as item (item.key)}
               <div class="group grid grid-cols-1 items-center gap-x-4 pl-4 pr-1.5 pt-2 sm:grid-cols-[12rem_1fr] sm:pt-0">
-                <dt class="text-body text-muted-foreground">{labelFor(item.key)}</dt>
+                <dt class="text-sm text-muted-foreground">{labelFor(item.key)}</dt>
                 <dd class="flex min-h-11 items-center justify-between gap-2">
                   <span
-                    class="min-w-0 wrap-break-word text-body tabular-nums {isUnset(item.value)
+                    class="min-w-0 wrap-break-word text-sm tabular-nums {isUnset(item.value)
                       ? 'text-muted-foreground'
                       : 'text-foreground'}"
                   >
@@ -151,16 +151,16 @@
 
       {#if store.formFields && store.formFields.items.length > 0}
         <section class="flex flex-col gap-3" aria-labelledby="view-metadata-fields">
-          <h2 id="view-metadata-fields" class="text-body-lg font-medium text-foreground">
+          <h2 id="view-metadata-fields" class="text-base font-medium text-foreground">
             Form fields
-            <span class="text-body font-normal tabular-nums text-muted-foreground">{store.formFields.items.length}</span>
+            <span class="text-sm font-normal tabular-nums text-muted-foreground">{store.formFields.items.length}</span>
           </h2>
           <dl class="flex flex-col divide-y divide-border rounded-xl border border-border bg-card">
             {#each store.formFields.items as item (item.key)}
               <div class="grid grid-cols-1 gap-x-4 gap-y-0.5 px-4 py-2.5 sm:grid-cols-[12rem_1fr]">
-                <dt class="min-w-0 wrap-break-word text-body text-muted-foreground">{item.key}</dt>
+                <dt class="min-w-0 wrap-break-word text-sm text-muted-foreground">{item.key}</dt>
                 <dd
-                  class="min-w-0 wrap-break-word text-body tabular-nums {isUnset(item.value)
+                  class="min-w-0 wrap-break-word text-sm tabular-nums {isUnset(item.value)
                     ? 'text-muted-foreground'
                     : 'text-foreground'}"
                 >
@@ -178,8 +178,8 @@
             class="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-2.5 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring [&::-webkit-details-marker]:hidden"
           >
             <span class="flex flex-col">
-              <span class="text-body font-medium text-foreground">Extra details (XMP)</span>
-              <span class="text-caption text-muted-foreground">Extended information some apps save inside the file</span>
+              <span class="text-sm font-medium text-foreground">Extra details (XMP)</span>
+              <span class="text-xs text-muted-foreground">Extended information some apps save inside the file</span>
             </span>
             <ChevronDown class="size-4 shrink-0 text-muted-foreground transition-transform group-open/xmp:rotate-180" />
           </summary>
@@ -187,9 +187,9 @@
           <div class="border-t border-border">
             {#if store.xmpMetadata.items.length === 0}
               <div class="flex flex-col gap-2 p-4">
-                <p class="text-body text-muted-foreground">We couldn't organise these details, so here they are as stored.</p>
+                <p class="text-sm text-muted-foreground">We couldn't organise these details, so here they are as stored.</p>
                 <pre
-                  class="scrollbar-subtle max-h-96 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-muted p-3 font-mono text-caption text-foreground">{store.xmpMetadata.rawString}</pre>
+                  class="scrollbar-subtle max-h-96 overflow-auto whitespace-pre-wrap break-all rounded-lg bg-muted p-3 font-mono text-xs text-foreground">{store.xmpMetadata.rawString}</pre>
               </div>
             {:else}
               <dl class="flex flex-col divide-y divide-border">
@@ -199,10 +199,10 @@
                     style:padding-left={`${1 + item.indentLevel * 1.25}rem`}
                   >
                     {#if item.value === ""}
-                      <dt class="col-span-full text-body font-medium text-foreground">{item.key}</dt>
+                      <dt class="col-span-full text-sm font-medium text-foreground">{item.key}</dt>
                     {:else}
-                      <dt class="min-w-0 wrap-break-word text-body text-muted-foreground">{item.key}</dt>
-                      <dd class="min-w-0 wrap-break-word text-body tabular-nums text-foreground">{item.value}</dd>
+                      <dt class="min-w-0 wrap-break-word text-sm text-muted-foreground">{item.key}</dt>
+                      <dd class="min-w-0 wrap-break-word text-sm tabular-nums text-foreground">{item.value}</dd>
                     {/if}
                   </div>
                 {/each}
@@ -244,7 +244,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" disabled={store.isProcessing} onclick={() => pickInput?.click()}>
+    <Button variant="default" disabled={store.isProcessing} onclick={() => pickInput?.click()}>
       Check another file
     </Button>
   </ToolFooter>

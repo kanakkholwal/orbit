@@ -1,23 +1,52 @@
 <script lang="ts">
-	import { cn, type WithElementRef, type WithoutChildren } from "$lib/utils.js";
-	import type { HTMLTextareaAttributes } from "svelte/elements";
+import type { HTMLTextareaAttributes } from "svelte/elements";
+import { cn } from "$lib/cn.js";
+import { type TextareaSize, type TextareaVariant, textarea } from "./variants";
 
-	let {
-		ref = $bindable(null),
-		value = $bindable(),
-		class: className,
-		"data-slot": dataSlot = "textarea",
-		...restProps
-	}: WithoutChildren<WithElementRef<HTMLTextareaAttributes>> = $props();
+type Props = {
+	value?: string;
+	class?: string;
+	rows?: number;
+	size?: TextareaSize;
+	variant?: TextareaVariant;
+	autoGrow?: boolean;
+	maxRows?: number;
+	invalid?: boolean;
+	/** Bindable: the `<textarea>` element. */
+	ref?: HTMLTextAreaElement | null;
+} & Omit<HTMLTextareaAttributes, "rows" | "value" | "class">;
+
+let {
+	value = $bindable(""),
+	ref = $bindable(null),
+	class: classProp,
+	rows = 3,
+	size = "default",
+	variant = "outline",
+	autoGrow = false,
+	maxRows = 10,
+	invalid = false,
+	...rest
+}: Props = $props();
+
+// Height follows content, never eases: easing lags behind the character just typed.
+$effect(() => {
+	void value;
+	const el = ref;
+	if (!autoGrow || !el) return;
+	const line = Number.parseFloat(getComputedStyle(el).lineHeight) || 20;
+	el.style.height = "auto";
+	el.style.height = `${Math.min(el.scrollHeight, line * maxRows)}px`;
+});
 </script>
 
+<!-- A bare textarea, so it can replace a shadcn one; label it with Field, FieldLabel and FieldDescription. -->
 <textarea
+	data-slot="textarea"
+	{...rest}
 	bind:this={ref}
-	data-slot={dataSlot}
-	class={cn(
-		"placeholder:text-placeholder focus-visible:border-ring aria-invalid:border-destructive flex field-sizing-content min-h-20 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-base leading-relaxed text-foreground outline-none transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 md:text-body",
-		className
-	)}
 	bind:value
-	{...restProps}
+	{rows}
+	aria-invalid={invalid || rest["aria-invalid"] || undefined}
+	class={cn(textarea({ size, variant, autoGrow }), classProp)}
 ></textarea>

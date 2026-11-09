@@ -15,7 +15,7 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { cellsInReadingOrder } from "./divide";
   import { DividePagesState, type DivideMode, type PageScope, type ReadingOrder } from "./helper.svelte";
 
@@ -37,7 +37,7 @@
   ];
   const presets = [2, 3, 4];
   const field =
-    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring disabled:opacity-50";
+    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring disabled:opacity-50";
 
   let canvas = $state<HTMLCanvasElement | null>(null);
   let rendering = $state(false);
@@ -68,10 +68,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to divide its pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to divide its pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Cut scanned book spreads into single pages, or split a poster into a grid of sheets.
       </p>
     {/snippet}
@@ -102,7 +102,7 @@
 
     <section aria-label="Preview" class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-muted px-4 py-6 sm:py-8">
       {#if targets.length === 0}
-        <p class="py-12 text-center text-body text-muted-foreground">
+        <p class="py-12 text-center text-sm text-muted-foreground">
           {store.rangeIssue ?? "No pages left to divide. Turn off a skip option or pick other pages."}
         </p>
       {:else}
@@ -130,14 +130,14 @@
                   row < store.rows - 1 && "border-b-2"
                 )}
               >
-                <span class="grid size-7 place-items-center rounded-full bg-primary text-caption font-medium text-primary-foreground shadow-sm">
+                <span class="grid size-7 place-items-center rounded-full bg-primary text-xs font-medium text-primary-foreground shadow-sm">
                   {order + 1}
                 </span>
               </div>
             {/each}
           </div>
         </div>
-        <p class="text-center text-caption text-muted-foreground">
+        <p class="text-center text-xs text-muted-foreground">
           Page {previewIndex + 1} of {store.pageCount}. Numbers show the order of the new pages.
         </p>
       {/if}
@@ -155,7 +155,7 @@
           <div class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
             <label for="{uid}-cols" class="sr-only">Columns</label>
             <input id="{uid}-cols" type="number" min="1" max="8" bind:value={store.gridColumns} class={field} />
-            <span class="text-body text-muted-foreground" aria-hidden="true">×</span>
+            <span class="text-sm text-muted-foreground" aria-hidden="true">×</span>
             <label for="{uid}-rows" class="sr-only">Rows</label>
             <input id="{uid}-rows" type="number" min="1" max="8" bind:value={store.gridRows} class={field} />
           </div>
@@ -223,7 +223,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={!store.canRun}>
+    <Button variant="default" onclick={() => store.process()} disabled={!store.canRun}>
       {store.isProcessing ? "Dividing…" : `Divide ${pageLabel(targets.length)}`}
     </Button>
   </ToolFooter>

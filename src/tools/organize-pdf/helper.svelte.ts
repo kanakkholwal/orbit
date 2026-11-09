@@ -1,7 +1,7 @@
 import { LockedPdf } from '$lib/pdf/locked-pdf.svelte';
 import { isPdfPasswordException, removeOwnerLock } from '$lib/pdf/unlock';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
-import { PDFDocument } from 'pdf-lib';
+import { assemblePdf } from '$lib/pdf/assemble';
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { toast } from 'svelte-sonner';
 
@@ -28,7 +28,6 @@ export class OrganizePdfState extends PdfEngine {
 
     readonly locked = new LockedPdf();
 
-    private pdfLibDoc: PDFDocument | null = null;
     private pdfJsDoc: PDFDocumentProxy | null = null;
 
     get sourcePageCount() {
@@ -67,8 +66,6 @@ export class OrganizePdfState extends PdfEngine {
             const loadingTask = pdfjs.getDocument(bytes.slice());
             this.pdfJsDoc = await loadingTask.promise;
 
-            this.pdfLibDoc = await PDFDocument.load(bytes, { ignoreEncryption: true });
-
             this.locked.clear();
             this.state.file = bytes === original ? file : new File([bytes as BlobPart], file.name, { type: 'application/pdf' });
             this.state.pages = this.originalPages();
@@ -94,7 +91,6 @@ export class OrganizePdfState extends PdfEngine {
         this.locked.clear();
         this.state.file = null;
         this.state.pages = [];
-        this.pdfLibDoc = null;
         this.pdfJsDoc = null;
         this.result = null;
     }
@@ -178,19 +174,15 @@ export class OrganizePdfState extends PdfEngine {
     }
 
     async save() {
-        if (!this.state.file || !this.pdfLibDoc) return;
+        if (!this.state.file) return;
 
         await this.handleProcess(async () => {
-            const newPdf = await PDFDocument.create();
-            const indicesToCopy = this.state.pages.map(p => p.originalIndex);
-            const copiedPages = await newPdf.copyPages(this.pdfLibDoc!, indicesToCopy);
-            for (const page of copiedPages) newPdf.addPage(page);
-
-            const pdfBytes = await newPdf.save();
+            const plan = this.state.pages.map(p => ({ src: 'file', page: p.originalIndex }));
+            const pdfBytes = await assemblePdf({ file: this.state.file! }, plan);
             const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' });
 
             const name = `${this.state.file!.name.replace(/\.pdf$/i, '')}_organized.pdf`;
-            this.result = { blob, name, pages: newPdf.getPageCount() };
+            this.result = { blob, name, pages: plan.length };
             this.downloadBlob(blob, name);
         }, {
             loading: 'Saving PDF…',

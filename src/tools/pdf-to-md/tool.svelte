@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconCopy as Copy, IconDownload as Download, IconLoader2 as Loader } from "@tabler/icons-svelte";
+  import { IconCopy as Copy, IconDownload as Download, IconLoader2 as Loader } from "$lib/icons";
   import { PdfToMdState } from "./helper.svelte";
 
   const store = new PdfToMdState();
@@ -16,10 +16,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(f) => store.selectFile(f[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to turn into Markdown</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to turn into Markdown</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Get the text as editable Markdown with headings, lists and paragraphs. Works with PDFs that have selectable text.
       </p>
     {/snippet}
@@ -50,7 +50,7 @@
         id="{uid}-md"
         bind:value={store.markdown}
         spellcheck="false"
-        class="scrollbar-subtle min-h-[max(24rem,calc(100svh-18rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-body leading-relaxed text-foreground outline-none transition-colors focus:border-ring"
+        class="scrollbar-subtle min-h-[max(24rem,calc(100svh-18rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-sm leading-relaxed text-foreground outline-none transition-colors focus:border-ring"
       ></textarea>
     {:else}
       <ToolBar label="File" onReset={store.isProcessing ? undefined : () => store.reset()} resetLabel="Clear" />
@@ -67,10 +67,10 @@
       {#if store.isProcessing}
         <div class="flex min-h-64 flex-col items-center justify-center gap-2 rounded-xl border border-border bg-muted text-muted-foreground">
           <Loader class="size-5 animate-spin text-primary" />
-          <p class="text-body">Reading pages</p>
+          <p class="text-sm">Reading pages</p>
         </div>
       {:else}
-        <p class="text-body text-muted-foreground">
+        <p class="text-sm text-muted-foreground">
           Headings, lists and paragraphs are detected from the layout. You can edit the result before you save it.
           Scanned PDFs need their text made searchable first.
         </p>
@@ -95,9 +95,9 @@
     {/snippet}
 
     {#if store.converted}
-      <Button variant="primary" onclick={() => store.download()} disabled={!store.hasResult}>Download Markdown</Button>
+      <Button variant="default" onclick={() => store.download()} disabled={!store.hasResult}>Download Markdown</Button>
     {:else}
-      <Button variant="primary" onclick={() => store.convert()} disabled={store.isProcessing}>
+      <Button variant="default" onclick={() => store.convert()} disabled={store.isProcessing}>
         {store.isProcessing ? "Converting…" : "Convert to Markdown"}
       </Button>
     {/if}

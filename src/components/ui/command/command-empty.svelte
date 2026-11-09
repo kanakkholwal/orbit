@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { Command as CommandPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
+import { Command as CommandPrimitive } from "bits-ui";
+import { cn } from "$lib/cn.js";
+import { getCommand } from "./context";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: CommandPrimitive.EmptyProps = $props();
+let { children, class: classProp, ...rest }: CommandPrimitive.EmptyProps = $props();
+const command = getCommand();
 </script>
 
 <CommandPrimitive.Empty
-	bind:ref
 	data-slot="command-empty"
-	class={cn("py-6 text-center text-sm", className)}
-	{...restProps}
-/>
+	class={cn(command.styles.empty(), classProp)}
+	{...rest}
+>
+	{@render children?.()}
+</CommandPrimitive.Empty>

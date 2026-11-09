@@ -16,7 +16,7 @@
     IconShieldQuestion as ShieldQuestion,
     IconShieldX as ShieldX,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { toast } from "svelte-sonner";
   import { ValidateSignatureState, type SignatureValidationResult } from "./helper.svelte";
 
@@ -134,8 +134,8 @@
 
 {#snippet row(label: string, value: string, muted = false)}
   <div class="grid grid-cols-1 gap-x-4 gap-y-0.5 px-4 py-2.5 sm:grid-cols-[11rem_1fr]">
-    <dt class="text-body text-muted-foreground">{label}</dt>
-    <dd class={cn("min-w-0 wrap-break-word text-body tabular-nums", muted ? "text-muted-foreground" : "text-foreground")}>
+    <dt class="text-sm text-muted-foreground">{label}</dt>
+    <dd class={cn("min-w-0 wrap-break-word text-sm tabular-nums", muted ? "text-muted-foreground" : "text-foreground")}>
       {value}
     </dd>
   </div>
@@ -144,10 +144,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a signed PDF to check it</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a signed PDF to check it</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         See who signed it, when, and whether the signature covers the whole file.
       </p>
     {/snippet}
@@ -161,25 +161,25 @@
     />
 
     {#if store.isProcessing}
-      <p class="flex items-center gap-2 text-body text-muted-foreground" aria-live="polite">
+      <p class="flex items-center gap-2 text-sm text-muted-foreground" aria-live="polite">
         <Loader class="size-4 animate-spin text-primary" />
         Checking signatures
       </p>
     {:else if store.failed}
       <div class="flex flex-col gap-1 rounded-xl border border-border bg-card p-4">
-        <p class="text-body font-medium text-foreground">We couldn't check this file</p>
-        <p class="text-body text-muted-foreground">It may be damaged or locked with a password. Try another PDF.</p>
+        <p class="text-sm font-medium text-foreground">We couldn't check this file</p>
+        <p class="text-sm text-muted-foreground">It may be damaged or locked with a password. Try another PDF.</p>
       </div>
     {:else if store.checked}
-      <section aria-live="polite" class="flex items-start gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <section aria-live="polite" class="flex items-start gap-4 rounded-2xl border border-border bg-background p-4 sm:p-5">
         <span class={cn("grid size-12 shrink-0 place-items-center rounded-xl", tone[overall])}>
           {@render verdictGlyph(overall, "size-6")}
         </span>
         <div class="flex min-w-0 flex-col gap-1">
-          <h2 class="text-subheading font-medium text-foreground">{verdictCopy.title}</h2>
-          <p class="text-body text-muted-foreground">{verdictCopy.body}</p>
+          <h2 class="text-xl font-medium text-foreground">{verdictCopy.title}</h2>
+          <p class="text-sm text-muted-foreground">{verdictCopy.body}</p>
           {#if count > 1}
-            <p class="text-caption tabular-nums text-muted-foreground">{count} {signatureWord} in this file</p>
+            <p class="text-xs tabular-nums text-muted-foreground">{count} {signatureWord} in this file</p>
           {/if}
         </div>
       </section>
@@ -192,10 +192,10 @@
               {@render verdictGlyph(v, "size-5")}
             </span>
             <div class="flex min-w-0 flex-col gap-0.5">
-              <h3 class="text-body font-medium text-foreground">
+              <h3 class="text-sm font-medium text-foreground">
                 {count > 1 ? `Signature ${result.signatureIndex + 1}: ` : ""}{statusLabel(result)}
               </h3>
-              <p class="text-body text-muted-foreground">{statusDetail(result)}</p>
+              <p class="text-sm text-muted-foreground">{statusDetail(result)}</p>
             </div>
           </header>
 
@@ -214,8 +214,8 @@
             )}
             {@render row("Certificate valid from", formatDate(result.validFrom))}
             <div class="grid grid-cols-1 gap-x-4 gap-y-0.5 px-4 py-2.5 sm:grid-cols-[11rem_1fr]">
-              <dt class="text-body text-muted-foreground">Certificate valid until</dt>
-              <dd class="flex items-center gap-1.5 text-body tabular-nums text-foreground">
+              <dt class="text-sm text-muted-foreground">Certificate valid until</dt>
+              <dd class="flex items-center gap-1.5 text-sm tabular-nums text-foreground">
                 {formatDate(result.validTo)}
                 {#if result.isExpired}
                   <span class="inline-flex items-center gap-1 text-warning">
@@ -237,9 +237,9 @@
             {@render row("Method", `${result.algorithms.signature}, ${result.algorithms.digest}`)}
             {#if result.serialNumber}
               <div class="grid grid-cols-1 items-center gap-x-4 pl-4 pr-1.5 pt-2 sm:grid-cols-[11rem_1fr] sm:pt-0">
-                <dt class="text-body text-muted-foreground">Serial number</dt>
+                <dt class="text-sm text-muted-foreground">Serial number</dt>
                 <dd class="flex min-h-11 items-center justify-between gap-2">
-                  <span class="min-w-0 break-all font-mono text-body text-foreground">{result.serialNumber}</span>
+                  <span class="min-w-0 break-all font-mono text-sm text-foreground">{result.serialNumber}</span>
                   <Button
                     variant="ghost"
                     size="icon-sm"
@@ -284,7 +284,7 @@
           <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
             <Certificate class="size-5" />
           </span>
-          <span class="min-w-0 flex-1 truncate text-body font-medium text-foreground" title={store.certFile.name}>
+          <span class="min-w-0 flex-1 truncate text-sm font-medium text-foreground" title={store.certFile.name}>
             {store.certFile.name}
           </span>
           <Button
@@ -303,7 +303,7 @@
           <Plus class="size-4" />
           Add certificate
         </Button>
-        <p class="text-caption text-muted-foreground">.pem, .crt or .cer file</p>
+        <p class="text-xs text-muted-foreground">.pem, .crt or .cer file</p>
       {/if}
       <input
         bind:this={certInput}
@@ -330,7 +330,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" disabled={store.isProcessing} onclick={() => pickInput?.click()}>
+    <Button variant="default" disabled={store.isProcessing} onclick={() => pickInput?.click()}>
       Check another file
     </Button>
   </ToolFooter>

@@ -4,6 +4,7 @@
   import SearchTrigger from "$components/layout/SearchTrigger.svelte";
   import Logo from "$components/Logo.svelte";
   import ThemeToggle from "$components/ThemeToggle.svelte";
+  import { Badge } from "$components/ui/badge";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
@@ -16,8 +17,10 @@
     IconCompass as Compass,
     IconDownload as Download,
     IconHome as Home,
+    IconChevronRight as Chevron,
     IconShare as Share,
-  } from "@tabler/icons-svelte";
+    IconShieldCheck as Shield,
+  } from "$lib/icons";
   import { toast } from "svelte-sonner";
 
   let { tool, wide }: { tool: ToolConfig | null; wide: boolean } = $props();
@@ -37,7 +40,7 @@
 </script>
 
 <header
-  class="flex min-h-14 shrink-0 items-center gap-3 border-b border-border bg-background px-3 md:px-4"
+  class="flex min-h-12 shrink-0 items-center gap-3 border-b border-border bg-background px-3 md:px-4"
   style="padding-top: env(safe-area-inset-top);"
 >
   <a href="/" aria-label={`${config.appName} home`} class="grid size-9 shrink-0 place-items-center md:hidden">
@@ -46,18 +49,30 @@
 
   <div class="flex min-w-0 flex-1 items-center gap-2.5">
     {#if tool}
-      <span class="hidden size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary sm:grid">
-        <tool.icon class="size-4" />
-      </span>
-      <div class="min-w-0">
-        <h1 class="truncate text-body font-medium text-foreground">{tool.title}</h1>
+      <nav aria-label="Breadcrumb" class="flex min-w-0 items-center gap-1.5 text-sm">
+        <a href="/explore" class="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground sm:inline">Tools</a>
         {#if category}
-          <p class="hidden truncate text-caption text-muted-foreground sm:block">{category}</p>
+          <Chevron class="hidden size-3 shrink-0 text-muted-foreground sm:block" />
+          <a
+            href={`/explore?category=${tool.category}`}
+            class="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:inline"
+          >
+            {category}
+          </a>
+          <Chevron class="hidden size-3 shrink-0 text-muted-foreground md:block" />
         {/if}
-      </div>
+        <h1 class="flex min-w-0 items-center gap-2 truncate font-medium text-foreground">
+          <tool.icon class="size-4 shrink-0 text-primary" />
+          <span class="truncate">{tool.title}</span>
+        </h1>
+      </nav>
+      <Badge variant="secondary" class="ml-1 hidden shrink-0 lg:inline-flex">
+        <Shield class="size-3" />
+        On device
+      </Badge>
     {:else}
       <place.icon class="hidden size-4 text-muted-foreground sm:block" />
-      <span class="truncate text-body font-medium text-foreground">{place.title}</span>
+      <span class="truncate text-sm font-medium text-foreground">{place.title}</span>
     {/if}
   </div>
 

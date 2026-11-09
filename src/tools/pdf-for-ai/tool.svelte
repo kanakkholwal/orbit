@@ -10,7 +10,7 @@
     IconEye as Eye,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { toast } from "svelte-sonner";
   import { PdfForAiState } from "./helper.svelte";
 
@@ -42,10 +42,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to get them ready for AI</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to get them ready for AI</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Turn each PDF into a tidy data file that AI apps and chatbots can read page by page.
       </p>
     {/snippet}
@@ -85,7 +85,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Each PDF becomes a JSON file with the text of every page, its page number and headings, ready for tools like
       LlamaIndex.
     </p>
@@ -138,11 +138,11 @@
     </ul>
 
     {#if preview?.json !== undefined}
-      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4" aria-label="Data preview">
+      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4" aria-label="Data preview">
         <div class="flex items-center justify-between gap-3">
           <div class="flex min-w-0 flex-col gap-0.5">
-            <h2 class="text-body font-medium text-foreground">Preview</h2>
-            <p class="truncate text-caption text-muted-foreground" title={preview.file.name}>{preview.file.name}</p>
+            <h2 class="text-sm font-medium text-foreground">Preview</h2>
+            <p class="truncate text-xs text-muted-foreground" title={preview.file.name}>{preview.file.name}</p>
           </div>
           <Button variant="outline" size="sm" onclick={copyJson}>
             {#if copied}<Check />{:else}<Copy />{/if}
@@ -150,9 +150,9 @@
           </Button>
         </div>
         <pre
-          class="scrollbar-subtle max-h-96 overflow-auto whitespace-pre-wrap wrap-break-word rounded-xl bg-muted p-3 font-mono text-caption text-foreground">{preview.json.slice(0, PREVIEW_LIMIT)}</pre>
+          class="scrollbar-subtle max-h-96 overflow-auto whitespace-pre-wrap wrap-break-word rounded-xl bg-muted p-3 font-mono text-xs text-foreground">{preview.json.slice(0, PREVIEW_LIMIT)}</pre>
         {#if preview.json.length > PREVIEW_LIMIT}
-          <p class="text-caption text-muted-foreground">Showing the start of the file. Copy or download it to see everything.</p>
+          <p class="text-xs text-muted-foreground">Showing the start of the file. Copy or download it to see everything.</p>
         {/if}
       </section>
     {/if}
@@ -182,7 +182,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Preparing…" : pendingCount > 0 ? `Prepare ${plural(pendingCount)}` : "Prepare"}
     </Button>
   </ToolFooter>

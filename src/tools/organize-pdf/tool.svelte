@@ -10,7 +10,7 @@
     IconDownload as Download,
     IconLoader2 as Loader,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { OrganizePdfState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 
@@ -55,10 +55,10 @@
 {:else if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to rearrange its pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to rearrange its pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Drag pages into a new order, copy or delete pages, then save a new PDF.
       </p>
     {/snippet}
@@ -105,14 +105,14 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Drag pages into the order you want, or use the arrows under each page.
     </p>
 
     {#if pageCount === 0}
       <div class="flex flex-col items-center gap-2 py-16 text-muted-foreground">
         <Loader class="size-5 animate-spin text-primary" />
-        <p class="text-body">Loading pages</p>
+        <p class="text-sm">Loading pages</p>
       </div>
     {:else}
       <div
@@ -142,12 +142,12 @@
             placeholder="3, 1, 2, 4-6"
             aria-invalid={orderIssue ? "true" : undefined}
             aria-describedby={orderIssue ? `${uid}-order-issue` : undefined}
-            class="h-10 w-full rounded-lg border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring {orderIssue
+            class="h-10 w-full rounded-lg border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring {orderIssue
               ? 'border-destructive'
               : 'border-border'}"
           />
           {#if orderIssue}
-            <span id={`${uid}-order-issue`} class="text-caption text-destructive">{orderIssue}</span>
+            <span id={`${uid}-order-issue`} class="text-xs text-destructive">{orderIssue}</span>
           {/if}
           <Button type="submit" variant="outline" disabled={!orderInput.trim() || !!orderIssue}>Apply order</Button>
         </form>
@@ -155,15 +155,15 @@
 
       <OptionGroup label="New file">
         <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages</dt>
             <dd class="font-medium tabular-nums text-foreground">{pageCount}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Copied pages</dt>
             <dd class="font-medium tabular-nums text-foreground">{store.copyCount}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Left out</dt>
             <dd class="font-medium tabular-nums text-foreground">{store.removedCount}</dd>
           </div>
@@ -186,7 +186,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.save()} disabled={store.isProcessing || pageCount === 0}>
+    <Button variant="default" onclick={() => store.save()} disabled={store.isProcessing || pageCount === 0}>
       {store.isProcessing ? "Saving…" : "Save new PDF"}
     </Button>
   </ToolFooter>

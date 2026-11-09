@@ -6,7 +6,7 @@
     IconArrowUp as ArrowUp,
     IconGripVertical as GripVertical,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { MergeState, UploadedFile } from "./helper.svelte";
 
   type Props = {
@@ -24,7 +24,7 @@
 </script>
 
 <div
-  class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border bg-card py-2 pl-1 pr-2 transition-colors duration-150 sm:flex-nowrap {issue
+  class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border bg-card py-2 pl-1 pr-2 transition-colors duration-(--duration-fast) sm:flex-nowrap {issue
     ? 'border-destructive'
     : 'border-border'}"
 >
@@ -35,14 +35,14 @@
     >
       <GripVertical class="size-4" />
     </span>
-    <span class="grid size-8 place-items-center rounded-lg bg-muted text-body font-medium tabular-nums text-foreground">
+    <span class="grid size-8 place-items-center rounded-lg bg-muted text-sm font-medium tabular-nums text-foreground">
       {index + 1}
     </span>
   </div>
 
   <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-    <span class="truncate text-body font-medium text-foreground" title={file.name}>{file.name}</span>
-    <span class="text-caption tabular-nums text-muted-foreground">
+    <span class="truncate text-sm font-medium text-foreground" title={file.name}>{file.name}</span>
+    <span class="text-xs tabular-nums text-muted-foreground">
       {formatBytes(file.size)} · {file.pageRange.trim() && !issue
         ? `${pages} of ${file.pageCount} pages`
         : `${file.pageCount} ${file.pageCount === 1 ? "page" : "pages"}`}
@@ -59,12 +59,12 @@
       placeholder={`All ${file.pageCount} pages`}
       aria-invalid={issue ? "true" : undefined}
       aria-describedby={issue ? `${inputId}-issue` : undefined}
-      class="h-9 w-full rounded-lg border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring {issue
+      class="h-9 w-full rounded-lg border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring {issue
         ? 'border-destructive'
         : 'border-border'}"
     />
     {#if issue}
-      <span id={`${inputId}-issue`} class="text-caption text-destructive">{issue}</span>
+      <span id={`${inputId}-issue`} class="text-xs text-destructive">{issue}</span>
     {/if}
   </div>
 

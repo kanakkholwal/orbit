@@ -1,10 +1,11 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { Button, type ButtonProps } from "$components/ui/button";
+  import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "$components/ui/input-group";
   import ResponsiveDialog from "$components/ui/ResponsiveDialog.svelte";
   import { useShare } from "$lib/hooks/use-share.svelte";
   import { cn } from "$lib/utils";
-  import { IconCheck as Check, IconCopy as Copy, IconShare as Share2 } from "@tabler/icons-svelte";
+  import { IconCheck as Check, IconCopy as Copy, IconShare as Share2 } from "$lib/icons";
   import type { Snippet } from "svelte";
   import type { HTMLButtonAttributes } from "svelte/elements";
   import { toast } from "svelte-sonner";
@@ -75,78 +76,62 @@
       children: children || defaultTriggerLabel,
       disabled,
     }}
-    class="flex flex-col gap-6"
   >
-    <div class="grid grid-cols-4 gap-3 sm:grid-cols-5">
-      {#each socials as social}
-        <a
-          href={social.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          title={`Share on ${social.name}`}
-          class="group flex flex-col items-center gap-2 outline-none"
-        >
-          <span
-            class="flex size-12 items-center justify-center rounded-2xl bg-muted text-foreground transition-all duration-200 ease-snappy group-hover:bg-primary/10 group-hover:text-primary group-active:scale-95"
-          >
-            <social.icon class="size-5" />
-          </span>
-          <span class="truncate text-caption text-muted-foreground transition-colors group-hover:text-foreground">
-            {social.name}
-          </span>
-          <span class="sr-only">Share on {social.name}</span>
-        </a>
-      {/each}
+    <div class="flex flex-col gap-5">
+      <p class="text-sm text-muted-foreground">Anyone with the link can open this page.</p>
 
-      {#if isNativeShareSupported}
-        <button
-          type="button"
-          onclick={() => share()}
-          title="Share via system"
-          class="group flex flex-col items-center gap-2 outline-none"
-        >
-          <span
-            class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-200 ease-snappy group-hover:bg-primary/15 group-active:scale-95"
-          >
-            <Share2 class="size-5" />
-          </span>
-          <span class="text-caption text-muted-foreground transition-colors group-hover:text-foreground">
-            More
-          </span>
-          <span class="sr-only">Native share</span>
-        </button>
-      {/if}
-    </div>
-
-    <div
-      class={cn(
-        "flex items-center gap-2 rounded-xl border py-1.5 pl-4 pr-1.5 transition-colors",
-        copied ? "border-success/40 bg-success/5" : "border-border bg-muted/40"
-      )}
-    >
-      <p class="flex-1 truncate text-sm text-muted-foreground" title={shareUrl}>
-        {shareUrl}
-      </p>
-      <Button
-        variant="secondary"
-        size="sm"
-        class={cn("shrink-0 rounded-lg", copied && "text-success")}
-        onclick={handleCopy}
-      >
-        {#if copied}
-          <Check class="size-3.5" />
-          Copied
-        {:else}
-          <Copy class="size-3.5" />
-          Copy
+      <ul class="grid grid-cols-3 gap-2 sm:grid-cols-4">
+        {#each socials as social (social.name)}
+          <li>
+            <a
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group flex flex-col items-center gap-2 rounded-xl border border-border bg-background px-2 py-3 outline-none transition-[border-color,transform] duration-(--duration-base) ease-(--ease-ui-out) hover:border-border-strong focus-visible:ring-2 focus-visible:ring-ring active:scale-(--press-scale-row)"
+            >
+              <social.icon class="size-5 text-foreground transition-colors group-hover:text-primary" />
+              <span class="text-xs capitalize text-muted-foreground transition-colors group-hover:text-foreground">
+                {social.name}
+              </span>
+              <span class="sr-only">Share on {social.name}</span>
+            </a>
+          </li>
+        {/each}
+        {#if isNativeShareSupported}
+          <li>
+            <button
+              type="button"
+              onclick={() => share()}
+              class="group flex w-full flex-col items-center gap-2 rounded-xl border border-border bg-background px-2 py-3 outline-none transition-[border-color,transform] duration-(--duration-base) ease-(--ease-ui-out) hover:border-border-strong focus-visible:ring-2 focus-visible:ring-ring active:scale-(--press-scale-row)"
+            >
+              <Share2 class="size-5 text-primary" />
+              <span class="text-xs text-muted-foreground group-hover:text-foreground">More</span>
+              <span class="sr-only">Share with another app</span>
+            </button>
+          </li>
         {/if}
-      </Button>
+      </ul>
+
+      <InputGroup>
+        <InputGroupInput readonly value={shareUrl} aria-label="Link" onfocus={(e) => e.currentTarget.select()} />
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton onclick={handleCopy} aria-label="Copy link">
+            {#if copied}
+              <Check />
+              Copied
+            {:else}
+              <Copy />
+              Copy
+            {/if}
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
     </div>
   </ResponsiveDialog>
 {/if}
 
 {#snippet shareTitle()}
-  <span class="text-base font-semibold tracking-tight text-foreground">
+  <span class="text-base font-medium text-foreground">
     {data.title ? `Share ${data.title}` : "Share this page"}
   </span>
 {/snippet}

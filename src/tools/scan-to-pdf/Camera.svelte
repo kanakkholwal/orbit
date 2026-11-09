@@ -6,7 +6,7 @@
     IconLoader2 as Loader,
     IconPhotoPlus as PhotoPlus,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { untrack } from "svelte";
 
   let {
@@ -121,7 +121,7 @@
   }}
 />
 
-<section class="flex flex-col overflow-hidden rounded-2xl border border-border bg-card" aria-label="Camera">
+<section class="flex flex-col overflow-hidden rounded-2xl border border-border bg-background" aria-label="Camera">
   <div class="relative grid aspect-4/3 max-h-[62vh] w-full place-items-center bg-neutral-950 sm:aspect-video">
     <video
       bind:this={video}
@@ -132,7 +132,7 @@
     ></video>
 
     {#if status === "starting"}
-      <span class="absolute inset-0 grid place-items-center text-body text-white/80">
+      <span class="absolute inset-0 grid place-items-center text-sm text-white/80">
         <span class="flex items-center gap-2">
           <Loader class="size-5 animate-spin" />
           Starting camera
@@ -140,7 +140,7 @@
       </span>
     {:else if status === "error"}
       <div class="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
-        <p class="max-w-sm text-pretty text-body text-white/90">{error}</p>
+        <p class="max-w-sm text-pretty text-sm text-white/90">{error}</p>
         <Button variant="secondary" onclick={onChoosePhotos}>
           <PhotoPlus />
           Choose photos
@@ -150,11 +150,11 @@
 
     <span
       aria-hidden="true"
-      class={cn("pointer-events-none absolute inset-0 bg-white transition-opacity duration-150", flash ? "opacity-70" : "opacity-0")}
+      class={cn("pointer-events-none absolute inset-0 bg-white transition-opacity duration-(--duration-fast)", flash ? "opacity-70" : "opacity-0")}
     ></span>
 
     {#if captured > 0}
-      <span class="absolute left-3 top-3 rounded-md bg-black/60 px-2 py-1 text-caption font-medium tabular-nums text-white" aria-live="polite">
+      <span class="absolute left-3 top-3 rounded-md bg-black/60 px-2 py-1 text-xs font-medium tabular-nums text-white" aria-live="polite">
         {captured} {captured === 1 ? "page" : "pages"}
       </span>
     {/if}
@@ -174,7 +174,7 @@
       disabled={status !== "live" || busy}
       aria-label="Take photo"
       title="Take photo (Space)"
-      class="grid size-14 place-items-center rounded-full border-4 border-primary/25 bg-primary text-primary-foreground shadow-sm outline-none transition-transform duration-150 active:scale-95 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
+      class="grid size-14 place-items-center rounded-full border-4 border-primary/25 bg-primary text-primary-foreground shadow-sm outline-none transition-transform duration-(--duration-fast) active:scale-95 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50"
     >
       <span class="size-6 rounded-full bg-primary-foreground/90"></span>
     </button>
@@ -188,7 +188,7 @@
     </div>
   </div>
 
-  <p class="border-t border-border px-4 py-2.5 text-caption text-muted-foreground">
+  <p class="border-t border-border px-4 py-2.5 text-xs text-muted-foreground">
     Lay the page flat in good light and fill the frame. Pages aren't straightened or cropped automatically.
   </p>
 </section>

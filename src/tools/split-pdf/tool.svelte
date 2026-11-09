@@ -4,7 +4,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { SplitState, type SplitMode } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 
@@ -38,10 +38,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to split</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to split</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Pull out the pages you need, or cut the file into smaller files of equal length.
       </p>
     {/snippet}
@@ -100,7 +100,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       {picking
         ? "Tap the pages you want in the new PDF. Tap again to leave a page out."
         : `Each new file gets ${pageLabel(store.chunkSize)}. The label under a page shows which file it goes in.`}
@@ -141,12 +141,12 @@
             placeholder="1-5, 8"
             aria-invalid={rangeIssue ? "true" : undefined}
             aria-describedby={rangeIssue ? `${uid}-range-issue` : undefined}
-            class="h-10 w-full rounded-lg border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring {rangeIssue
+            class="h-10 w-full rounded-lg border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring {rangeIssue
               ? 'border-destructive'
               : 'border-border'}"
           />
           {#if rangeIssue}
-            <span id={`${uid}-range-issue`} class="text-caption text-destructive">{rangeIssue}</span>
+            <span id={`${uid}-range-issue`} class="text-xs text-destructive">{rangeIssue}</span>
           {/if}
         </OptionGroup>
       {:else}
@@ -161,29 +161,29 @@
             bind:value={store.nTimesValue}
             aria-invalid={nIssue ? "true" : undefined}
             aria-describedby={nIssue ? `${uid}-chunk-issue` : undefined}
-            class="h-10 w-full rounded-lg border bg-background px-3 text-body tabular-nums text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring {nIssue
+            class="h-10 w-full rounded-lg border bg-background px-3 text-sm tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring {nIssue
               ? 'border-destructive'
               : 'border-border'}"
           />
           {#if nIssue}
-            <span id={`${uid}-chunk-issue`} class="text-caption text-destructive">{nIssue}</span>
+            <span id={`${uid}-chunk-issue`} class="text-xs text-destructive">{nIssue}</span>
           {/if}
         </OptionGroup>
       {/if}
 
       <OptionGroup label="Result">
         <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages now</dt>
             <dd class="font-medium tabular-nums text-foreground">{total}</dd>
           </div>
           {#if picking}
-            <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <div class="flex items-center justify-between px-3 py-2.5 text-sm">
               <dt class="text-muted-foreground">In the new PDF</dt>
               <dd class="font-medium tabular-nums text-foreground">{selected}</dd>
             </div>
           {:else}
-            <div class="flex items-center justify-between px-3 py-2.5 text-body">
+            <div class="flex items-center justify-between px-3 py-2.5 text-sm">
               <dt class="text-muted-foreground">New files</dt>
               <dd class="font-medium tabular-nums text-foreground">{nIssue ? "None" : store.partCount}</dd>
             </div>
@@ -222,7 +222,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.processSplit()} disabled={!canSplit}>
+    <Button variant="default" onclick={() => store.processSplit()} disabled={!canSplit}>
       {#if store.isProcessing}
         Splitting…
       {:else if picking}

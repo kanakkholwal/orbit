@@ -1,0 +1,14 @@
+export { default as Avatar } from "./avatar.svelte";
+export { default as AvatarBadge } from "./avatar-badge.svelte";
+export { default as AvatarFallback } from "./avatar-fallback.svelte";
+export { default as AvatarGroupCount } from "./avatar-group-count.svelte";
+export { default as AvatarGroup } from "./avatar-group.svelte";
+export { default as AvatarImage } from "./avatar-image.svelte";
+export { type AvatarContext } from "./context";
+export { avatar, avatarGroup, type AvatarSize, type AvatarShape } from "./variants";
+export { default as Root } from "./avatar.svelte";
+export { default as Badge } from "./avatar-badge.svelte";
+export { default as Fallback } from "./avatar-fallback.svelte";
+export { default as GroupCount } from "./avatar-group-count.svelte";
+export { default as Group } from "./avatar-group.svelte";
+export { default as Image } from "./avatar-image.svelte";

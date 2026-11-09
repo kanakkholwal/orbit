@@ -2,7 +2,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 
 /** The one 36px control every button in the editor chrome is built from. */
 export const chromeButton = tv({
-  base: "inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg text-body outline-none transition-colors duration-150 select-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+  base: "inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg text-sm outline-none transition-colors duration-(--duration-fast) select-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
   variants: {
     shape: {
       icon: "w-9",
@@ -12,7 +12,7 @@ export const chromeButton = tv({
     state: {
       idle: "cursor-pointer text-muted-foreground hover:bg-muted/60 hover:text-foreground",
       active: "cursor-pointer bg-muted font-medium text-primary",
-      disabled: "cursor-not-allowed text-placeholder",
+      disabled: "cursor-not-allowed text-muted-foreground",
     },
   },
   defaultVariants: { shape: "icon", state: "idle" },

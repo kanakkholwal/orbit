@@ -22,7 +22,7 @@
     IconDownload as Download,
     IconRefresh as Refresh,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { OcrPdfState } from "./helper.svelte";
 
   const store = new OcrPdfState();
@@ -75,10 +75,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a scanned PDF</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a scanned PDF</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Turn scanned pages into text you can search, select and copy. Everything runs on this device.
       </p>
     {/snippet}
@@ -128,10 +128,10 @@
 
     {#if store.progressLog.length > 0 && (store.isProcessing || !done)}
       <section class="flex flex-col gap-2" aria-labelledby="{uid}-log">
-        <h2 id="{uid}-log" class="text-body font-medium text-foreground">Progress</h2>
+        <h2 id="{uid}-log" class="text-sm font-medium text-foreground">Progress</h2>
         <div
           bind:this={logEl}
-          class="scrollbar-subtle max-h-64 overflow-y-auto rounded-xl border border-border bg-muted p-3 font-mono text-caption text-muted-foreground"
+          class="scrollbar-subtle max-h-64 overflow-y-auto rounded-xl border border-border bg-muted p-3 font-mono text-xs text-muted-foreground"
           role="log"
           aria-live="polite"
         >
@@ -161,7 +161,7 @@
         id="{uid}-text"
         readonly
         value={store.extractedText}
-        class="scrollbar-subtle min-h-96 w-full resize-y rounded-xl border border-border bg-background p-4 text-body leading-relaxed text-foreground outline-none transition-colors focus:border-ring"
+        class="scrollbar-subtle min-h-96 w-full resize-y rounded-xl border border-border bg-background p-4 text-sm leading-relaxed text-foreground outline-none transition-colors focus:border-ring"
       ></textarea>
     {/if}
   </div>
@@ -180,7 +180,7 @@
                   type="button"
                   onclick={() => store.toggleLanguage(code)}
                   aria-label={`Remove ${tesseractLanguages[code]}`}
-                  class="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary/10 pl-3 pr-2 text-body text-primary outline-none transition-colors hover:bg-primary/20 focus-visible:ring-2 focus-visible:ring-ring"
+                  class="inline-flex h-9 items-center gap-1.5 rounded-full bg-primary/10 pl-3 pr-2 text-sm text-primary outline-none transition-colors hover:bg-primary/20 focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {tesseractLanguages[code]}
                   <X class="size-4" />
@@ -195,12 +195,12 @@
           type="search"
           bind:value={langSearch}
           placeholder="Search languages"
-          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
         />
         <div class="scrollbar-subtle flex max-h-60 flex-col overflow-y-auto rounded-xl border border-border p-1">
           {#each filteredLangs as [code, name] (code)}
             <label
-              class="flex min-h-9 cursor-pointer items-center gap-3 rounded-lg px-2.5 text-body text-foreground transition-colors hover:bg-muted has-focus-visible:ring-2 has-focus-visible:ring-inset has-focus-visible:ring-ring"
+              class="flex min-h-9 cursor-pointer items-center gap-3 rounded-lg px-2.5 text-sm text-foreground transition-colors hover:bg-muted has-focus-visible:ring-2 has-focus-visible:ring-inset has-focus-visible:ring-ring"
             >
               <input
                 type="checkbox"
@@ -211,7 +211,7 @@
               <span class="truncate">{name}</span>
             </label>
           {:else}
-            <p class="px-2.5 py-2 text-body text-muted-foreground">No language matches "{langSearch}".</p>
+            <p class="px-2.5 py-2 text-sm text-muted-foreground">No language matches "{langSearch}".</p>
           {/each}
         </div>
       </OptionGroup>
@@ -239,20 +239,20 @@
           id="{uid}-preset"
           value={store.whitelistPreset}
           onchange={(e) => store.handlePresetChange(e.currentTarget.value)}
-          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors focus:border-ring"
+          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors focus:border-ring"
         >
           {#each presets as preset (preset.value)}
             <option value={preset.value}>{preset.label}</option>
           {/each}
         </select>
-        <label for="{uid}-whitelist" class="text-caption text-muted-foreground">Only these characters</label>
+        <label for="{uid}-whitelist" class="text-xs text-muted-foreground">Only these characters</label>
         <input
           id="{uid}-whitelist"
           type="text"
           bind:value={store.customWhitelist}
           disabled={store.whitelistPreset !== "custom" && store.whitelistPreset !== "none"}
           placeholder="For example abc123$.,-"
-          class="h-10 w-full rounded-lg border border-border bg-background px-3 font-mono text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring disabled:opacity-50"
+          class="h-10 w-full rounded-lg border border-border bg-background px-3 font-mono text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring disabled:opacity-50"
         />
       </OptionGroup>
     </div>
@@ -278,7 +278,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || langCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || langCount === 0}>
       {store.isProcessing ? "Reading text…" : done ? "Scan again" : "Make text searchable"}
     </Button>
   </ToolFooter>

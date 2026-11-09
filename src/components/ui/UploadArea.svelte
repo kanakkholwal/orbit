@@ -1,12 +1,15 @@
 <script lang="ts">
   import { page } from "$app/state";
   import { trackFileUpload } from "$lib/analytics-tracker";
+  import { LARGE_FILE_BYTES } from "$lib/device-limits";
   import { warmEnginesForPath } from "$lib/engine-warmup";
   import { fileDropState, registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { takePendingFiles } from "$lib/runtime/pending-files.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { IconCloudUpload as UploadCloud } from "@tabler/icons-svelte";
+  import { getTool } from "$tools/list";
+  import { Badge } from "./badge";
+  import { IconCloudUpload as UploadCloud } from "$lib/icons";
   import { onMount, type Snippet } from "svelte";
   import { toast } from "svelte-sonner";
   import { buttonVariants } from "./button";
@@ -41,6 +44,7 @@
     hint,
   }: Props = $props();
 
+  const tool = $derived(getTool(page.url.pathname.split("/")[2] ?? "") ?? null);
   let isDragging = $state(false);
   let fileInput: HTMLInputElement;
 
@@ -121,6 +125,8 @@
       return true;
     });
     if (validFiles.length > 0) {
+      if (validFiles.some((f) => f.size > LARGE_FILE_BYTES))
+        toast.warning("This file is large for this device. If the page slows down or reloads, try a smaller file.");
       files = [...files, ...validFiles];
       validFiles.forEach((file) => {
         trackFileUpload(file.name, file.size, file.type || "unknown");
@@ -150,11 +156,27 @@
   });
 </script>
 
-<button
+<div class="mx-auto flex w-full max-w-3xl flex-col gap-8 py-4 sm:py-10">
+  {#if tool}
+    <header class="rise flex flex-col items-center gap-4 text-center">
+      <span class="grid size-14 place-items-center rounded-2xl border border-border bg-background p-1 shadow-(--surface-shadow)">
+        <span class="grid size-full place-items-center rounded-xl bg-card text-primary">
+          <tool.icon class="size-6" />
+        </span>
+      </span>
+      <div class="flex flex-col gap-2">
+        <h1 class="text-balance text-3xl font-medium text-foreground sm:text-4xl">{tool.title}</h1>
+        <p class="mx-auto max-w-xl text-pretty text-sm text-muted-foreground sm:text-base">{tool.description}</p>
+      </div>
+    </header>
+  {/if}
+
+  <div class="rise" style="--i:1">
+    <button
   type="button"
   class={cn(
-    "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-    dragActive ? "border-primary bg-primary/5" : "border-border bg-card hover:border-border-strong",
+    "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-background p-1 outline-none transition-colors duration-(--duration-base) focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+    dragActive ? "border-primary" : "hover:border-border-strong",
     disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
     className
   )}
@@ -165,32 +187,37 @@
   onclick={click}
   {disabled}
 >
-  <div class="flex flex-col items-center gap-5 px-6 py-12 text-center sm:py-16">
+  <div
+    class={cn(
+      "flex w-full flex-col items-center gap-5 rounded-[11px] border-2 border-dashed px-6 py-12 text-center transition-colors duration-(--duration-base) sm:py-16",
+      dragActive ? "border-primary bg-primary/5" : "border-border-strong bg-card"
+    )}
+  >
     <span
       class={cn(
-        "grid size-14 place-items-center rounded-2xl transition-[background-color,color,transform] duration-200 ease-craft",
+        "grid size-14 place-items-center rounded-2xl transition-[background-color,color,transform] duration-(--duration-base) ease-(--ease-ui-out)",
         dragActive ? "scale-105 bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
       )}
     >
       {#if icon}
         {@render icon()}
       {:else}
-        <UploadCloud class="size-6" stroke={1.75} />
+        <UploadCloud class="size-6" />
       {/if}
     </span>
 
     <div class="flex flex-col items-center gap-1.5">
       {#if dragActive}
-        <h3 class="text-heading-sm font-medium text-foreground">Drop to add</h3>
+        <h3 class="text-2xl font-medium text-foreground">Drop to add</h3>
       {:else if title}
         {@render title()}
       {:else}
-        <h3 class="text-heading-sm font-medium text-foreground">Drop files here</h3>
+        <h3 class="text-2xl font-medium text-foreground">Drop files here</h3>
       {/if}
       {#if description}
         {@render description()}
       {:else}
-        <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        <p class="max-w-sm text-pretty text-sm text-muted-foreground">
           Or choose them from your device. Files are opened here and never uploaded.
         </p>
       {/if}
@@ -200,14 +227,14 @@
       {#if action}
         {@render action()}
       {:else}
-        <span class={buttonVariants({ variant: "primary", size: "default" })}>
+        <span class={buttonVariants({ variant: "default", size: "default" })}>
           Choose {multiple ? "files" : "a file"}
         </span>
       {/if}
       {#if hint}
         {@render hint()}
       {:else}
-        <p class="text-caption text-muted-foreground">
+        <p class="text-xs text-muted-foreground">
           {acceptLabel}{maxSize !== Infinity ? ` · up to ${(maxSize / (1024 * 1024)).toFixed(0)} MB each` : ""} · stays on this device
         </p>
       {/if}
@@ -216,3 +243,14 @@
 
   <input bind:this={fileInput} type="file" {accept} {multiple} class="hidden" onchange={handleInputChange} />
 </button>
+  </div>
+
+  <ul class="rise flex flex-wrap items-center justify-center gap-2" style="--i:2">
+    <li><Badge variant="secondary">{acceptLabel}</Badge></li>
+    <li><Badge variant="secondary">Stays on this device</Badge></li>
+    <li><Badge variant="secondary">No account</Badge></li>
+    {#if maxSize !== Infinity}
+      <li><Badge variant="secondary">Up to {(maxSize / (1024 * 1024)).toFixed(0)} MB each</Badge></li>
+    {/if}
+  </ul>
+</div>

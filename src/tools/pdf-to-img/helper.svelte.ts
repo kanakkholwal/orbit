@@ -1,3 +1,4 @@
+import { releaseCanvas, safeScale, yieldToMain } from '$lib/device-limits';
 import { LockedPdf } from '$lib/pdf/locked-pdf.svelte';
 import { isPdfPasswordException } from '$lib/pdf/unlock';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
@@ -114,12 +115,13 @@ export class PdfToJpgState extends PdfEngine {
                 this.step = { current: i, total: totalPages };
                 
                 const page = await pdf.getPage(i);
-                const viewport = page.getViewport({ scale: 2.0 });
+                const base = page.getViewport({ scale: 1 });
+                const viewport = page.getViewport({ scale: safeScale(base.width, base.height, 2.0) });
                 
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
+                canvas.height = Math.floor(viewport.height);
+                canvas.width = Math.floor(viewport.width);
 
                 if (context) {
                     await page.render({ 
@@ -137,6 +139,9 @@ export class PdfToJpgState extends PdfEngine {
                         zip.file(`page_${i}.${ext}`, blob);
                     }
                 }
+                releaseCanvas(canvas);
+                page.cleanup();
+                await yieldToMain();
             }
 
             this.state.progress = 'Zipping files...';

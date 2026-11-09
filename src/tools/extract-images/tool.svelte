@@ -9,7 +9,7 @@
     IconPhotoOff as PhotoOff,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { ExtractImagesState } from "./helper.svelte";
 
   const store = new ExtractImagesState();
@@ -26,10 +26,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to pull out their images</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to pull out their images</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Save every photo and picture inside your PDFs at its original quality.
       </p>
     {/snippet}
@@ -86,19 +86,19 @@
         {/each}
       </ul>
     {:else if imageCount === 0}
-      <div class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+      <div class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-background px-6 py-12 text-center">
         <span class="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
           <PhotoOff class="size-5" />
         </span>
-        <h2 class="text-body-lg font-medium text-foreground">No images found</h2>
-        <p class="max-w-sm text-body text-muted-foreground">
+        <h2 class="text-base font-medium text-foreground">No images found</h2>
+        <p class="max-w-sm text-sm text-muted-foreground">
           These files have no pictures saved inside them. Scanned pages count as whole pages, so try PDF to Image instead.
         </p>
       </div>
     {:else}
       <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {#each store.extractedImages as image (image.id)}
-          <li class="group flex flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-150 hover:border-border-strong hover:shadow-sm">
+          <li class="group flex flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-border-strong hover:shadow-sm">
             <div class="relative grid aspect-square place-items-center overflow-hidden rounded-lg bg-muted p-2">
               <img src={image.url} alt={image.name} loading="lazy" class="max-h-full max-w-full object-contain" />
               <button
@@ -110,7 +110,7 @@
                 <Download class="size-4" />
               </button>
             </div>
-            <div class="flex items-center justify-between gap-2 px-0.5 text-caption tabular-nums text-muted-foreground">
+            <div class="flex items-center justify-between gap-2 px-0.5 text-xs tabular-nums text-muted-foreground">
               <span class="truncate" title={image.name}>{image.name}</span>
               <span class="shrink-0">{formatBytes(image.data.byteLength)}</span>
             </div>
@@ -154,11 +154,11 @@
     {/snippet}
 
     {#if store.extractionDone}
-      <Button variant="primary" onclick={() => store.downloadAll()} disabled={store.isProcessing || imageCount === 0}>
+      <Button variant="default" onclick={() => store.downloadAll()} disabled={store.isProcessing || imageCount === 0}>
         {store.isProcessing ? "Packing…" : "Download all as ZIP"}
       </Button>
     {:else}
-      <Button variant="primary" onclick={() => store.extract()} disabled={store.isProcessing}>
+      <Button variant="default" onclick={() => store.extract()} disabled={store.isProcessing}>
         {store.isProcessing ? "Finding images…" : `Find images in ${fileLabel(store.files.length)}`}
       </Button>
     {/if}

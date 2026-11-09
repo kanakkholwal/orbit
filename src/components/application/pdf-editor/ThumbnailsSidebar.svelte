@@ -28,7 +28,7 @@
       >
         <span
           class={cn(
-            "block overflow-hidden rounded-md bg-white shadow-xs ring-offset-2 ring-offset-background transition-shadow duration-150 group-focus-visible:ring-2 group-focus-visible:ring-ring",
+            "block overflow-hidden rounded-md bg-white shadow-xs ring-offset-2 ring-offset-background transition-shadow duration-(--duration-fast) group-focus-visible:ring-2 group-focus-visible:ring-ring",
             current ? "ring-2 ring-primary" : "ring-1 ring-border group-hover:ring-border-strong"
           )}
           style:width="{meta.width}px"
@@ -37,7 +37,7 @@
           <ThumbImg {meta} {documentId} style="width: 100%; height: 100%; display: block;" />
         </span>
         <span
-          class={cn("text-caption tabular-nums", current ? "font-medium text-foreground" : "text-muted-foreground")}
+          class={cn("text-xs tabular-nums", current ? "font-medium text-foreground" : "text-muted-foreground")}
           style:height="{meta.labelHeight}px"
         >
           {meta.pageIndex + 1}

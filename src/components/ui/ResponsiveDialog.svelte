@@ -47,14 +47,14 @@
 {/snippet}
 
 {#if isDesktop.value}
-	<Dialog.Root bind:open>
+	<Dialog.Root bind:open variant="framed" motion="slide-up">
 		<Dialog.Trigger>
 			{#snippet child({ props })}
 				<Button {...props} {...btnProps} />
 			{/snippet}
 		</Dialog.Trigger>
 		<Dialog.Content class={cn('sm:max-w-106.25', className)}>
-			<Dialog.Header class={cn(hideHeader ? 'hidden' : 'text-left')}>
+			<Dialog.Header class={cn(hideHeader ? 'hidden' : 'mb-4 text-left')}>
 				<Dialog.Title>
 					{@render ContentRender(title)}
 				</Dialog.Title>

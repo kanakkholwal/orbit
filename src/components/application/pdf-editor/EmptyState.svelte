@@ -15,14 +15,14 @@
   }
 </script>
 
-<div class="flex min-h-0 flex-1 items-center justify-center overflow-y-auto bg-canvas p-6 md:p-10">
+<div class="flex min-h-0 flex-1 items-center justify-center overflow-y-auto bg-background p-6 md:p-10">
   <div class="w-full max-w-3xl">
     <UploadArea accept=".pdf,application/pdf" onFilesSelected={openFiles}>
       {#snippet title()}
-        <h3 class="text-heading-sm font-medium text-foreground">All documents closed</h3>
+        <h3 class="text-2xl font-medium text-foreground">All documents closed</h3>
       {/snippet}
       {#snippet description()}
-        <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        <p class="max-w-sm text-pretty text-sm text-muted-foreground">
           Drop a PDF to open it again. Each file opens in its own tab.
         </p>
       {/snippet}

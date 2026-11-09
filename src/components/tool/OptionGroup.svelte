@@ -16,9 +16,9 @@
 
 <div role="group" aria-labelledby={id} class={cn("flex flex-col gap-2.5", className)}>
   <div class="flex flex-col gap-0.5">
-    <p {id} class="text-body font-medium text-foreground">{label}</p>
+    <p {id} class="text-sm font-medium text-foreground">{label}</p>
     {#if description}
-      <p class="text-caption text-muted-foreground">{description}</p>
+      <p class="text-xs text-muted-foreground">{description}</p>
     {/if}
   </div>
   {@render children()}

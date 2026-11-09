@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { IconCircleCheck as CircleCheckIcon } from "@tabler/icons-svelte";
-	import { IconInfoCircle as InfoIcon } from "@tabler/icons-svelte";
-	import { IconLoader2 as Loader2Icon } from "@tabler/icons-svelte";
-	import { IconAlertOctagon as OctagonXIcon } from "@tabler/icons-svelte";
-	import { IconAlertTriangle as TriangleAlertIcon } from "@tabler/icons-svelte";
+	import { IconCircleCheck as CircleCheckIcon } from "$lib/icons";
+	import { IconInfoCircle as InfoIcon } from "$lib/icons";
+	import { IconLoader2 as Loader2Icon } from "$lib/icons";
+	import { IconAlertOctagon as OctagonXIcon } from "$lib/icons";
+	import { IconAlertTriangle as TriangleAlertIcon } from "$lib/icons";
 
 	import { Toaster as Sonner, type ToasterProps as SonnerProps } from "svelte-sonner";
 	import { mode } from "mode-watcher";

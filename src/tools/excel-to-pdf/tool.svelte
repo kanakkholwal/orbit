@@ -23,7 +23,7 @@
     IconPlus as Plus,
     IconRefresh as Refresh,
     IconTable as TableIcon,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { columnLetter, WIDE_SHEET_COLUMNS } from "./build";
   import {
     ACCEPTED_FORMATS,
@@ -92,13 +92,13 @@
 {#if store.files.length === 0}
   <UploadArea accept={ACCEPTED_FORMATS} onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet icon()}
-      <TableIcon class="size-6" stroke={1.75} />
+      <TableIcon class="size-6" />
     {/snippet}
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop spreadsheets to turn into PDF</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop spreadsheets to turn into PDF</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Excel, CSV and OpenDocument sheets become clean, printable tables. They never leave this device.
       </p>
     {/snippet}
@@ -180,8 +180,8 @@
                   <li class="flex h-9 items-center gap-3 rounded-lg pl-1">
                     <Checkbox {id} bind:checked={sheet.selected} disabled={store.isProcessing} />
                     <label for={id} class="flex min-w-0 flex-1 cursor-pointer items-baseline gap-2">
-                      <span class="truncate text-body text-foreground">{sheet.name}</span>
-                      <span class="shrink-0 text-caption tabular-nums text-muted-foreground">
+                      <span class="truncate text-sm text-foreground">{sheet.name}</span>
+                      <span class="shrink-0 text-xs tabular-nums text-muted-foreground">
                         {plural(sheet.rowCount, "row")} · {plural(sheet.columns, "column")}
                       </span>
                     </label>
@@ -208,22 +208,22 @@
     {#if current}
       <section class="flex flex-col gap-2.5 pt-2" aria-labelledby="{uid}-preview">
         <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-          <h2 id="{uid}-preview" class="truncate text-body font-medium text-foreground">
+          <h2 id="{uid}-preview" class="truncate text-sm font-medium text-foreground">
             Preview · {current.sheet.name}
           </h2>
-          <span class="text-caption tabular-nums text-muted-foreground">
+          <span class="text-xs tabular-nums text-muted-foreground">
             First {Math.min(previewRows.length, dataRows).toLocaleString()} of {plural(Math.max(dataRows, 0), "row")}
           </span>
         </div>
 
         {#if current.sheet.columns > WIDE_SHEET_COLUMNS}
-          <p class="text-body text-muted-foreground">
+          <p class="text-sm text-muted-foreground">
             This sheet has {current.sheet.columns} columns. Landscape and small text help them fit across the page.
           </p>
         {/if}
 
         <div class="overflow-x-auto rounded-xl border border-border bg-card">
-          <table class="w-full border-collapse text-left text-caption">
+          <table class="w-full border-collapse text-left text-xs">
             <thead>
               <tr class="border-b border-foreground/70">
                 {#each previewHeader as heading, c (c)}
@@ -320,7 +320,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || reading || ready.length === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || reading || ready.length === 0}>
       {runLabel}
     </Button>
   </ToolFooter>

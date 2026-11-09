@@ -18,7 +18,7 @@
     IconDownload as Download,
     IconMaximize as Maximize,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import CropperCanvas from "./CropperCanvas.svelte";
   import { CropPdfState, type CropData } from "./helper.svelte";
 
@@ -84,10 +84,10 @@
     onFilesSelected={(files) => store.loadFile(files[0])}
   >
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to crop</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to crop</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Trim white margins or cut pages down to just the part you need.
       </p>
     {/snippet}
@@ -130,7 +130,7 @@
           >
             <ChevronLeft />
           </Button>
-          <span class="min-w-24 px-1 text-center text-body tabular-nums text-foreground" aria-live="polite">
+          <span class="min-w-24 px-1 text-center text-sm tabular-nums text-foreground" aria-live="polite">
             Page {current} of {store.state.pageCount}
           </span>
           <Button
@@ -146,7 +146,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Drag the edges of the box to choose what to keep. Everything outside it is cut away.
     </p>
 
@@ -159,7 +159,7 @@
         <div class="grid grid-cols-2 gap-3">
           {#each edges as edge (edge.key)}
             <div class="flex flex-col gap-1.5">
-              <label for={`${uid}-${edge.key}`} class="text-caption text-muted-foreground">{edge.label}</label>
+              <label for={`${uid}-${edge.key}`} class="text-xs text-muted-foreground">{edge.label}</label>
               <div class="relative">
                 <input
                   id={`${uid}-${edge.key}`}
@@ -170,9 +170,9 @@
                   step="1"
                   value={toPercent(margins[edge.key])}
                   onchange={(e) => setMargin(edge.key, e.currentTarget.valueAsNumber)}
-                  class="h-10 w-full rounded-lg border border-border bg-background pl-3 pr-8 text-body tabular-nums text-foreground outline-none transition-colors focus:border-ring"
+                  class="h-10 w-full rounded-lg border border-border bg-background pl-3 pr-8 text-sm tabular-nums text-foreground outline-none transition-colors focus:border-ring"
                 />
-                <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-body text-muted-foreground">%</span>
+                <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-muted-foreground">%</span>
               </div>
             </div>
           {/each}
@@ -225,7 +225,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.crop()} disabled={store.isProcessing || croppedCount === 0}>
+    <Button variant="default" onclick={() => store.crop()} disabled={store.isProcessing || croppedCount === 0}>
       {runLabel}
     </Button>
   </ToolFooter>

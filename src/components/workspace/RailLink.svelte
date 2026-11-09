@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as Tooltip from "$components/ui/tooltip";
   import { cn } from "$lib/utils";
-  import type { Icon } from "@tabler/icons-svelte";
+  import type { Icon } from "$lib/icons";
 
   type Props = {
     label: string;
@@ -14,7 +14,7 @@
   let { label, icon: Glyph, href, active = false, onclick }: Props = $props();
 
   const base =
-    "grid size-10 place-items-center rounded-lg outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
+    "grid size-9 place-items-center rounded-lg outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
 </script>
 
 <Tooltip.Root>
@@ -29,11 +29,11 @@
           class={cn(
             base,
             active
-              ? "bg-muted text-primary"
-              : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+              ? "bg-foreground/[0.06] text-primary"
+              : "text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground"
           )}
         >
-          <Glyph class="size-5" stroke={1.75} />
+          <Glyph class="size-[18px]" />
         </a>
       {:else}
         <button
@@ -41,9 +41,9 @@
           type="button"
           aria-label={label}
           {onclick}
-          class={cn(base, "text-muted-foreground hover:bg-muted/60 hover:text-foreground")}
+          class={cn(base, "text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground")}
         >
-          <Glyph class="size-5" stroke={1.75} />
+          <Glyph class="size-[18px]" />
         </button>
       {/if}
     {/snippet}

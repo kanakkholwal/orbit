@@ -8,7 +8,7 @@
     IconRotateClockwise as RotateRight,
     IconScissors as Scissors,
     IconTrash as Trash,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { getContext } from "svelte";
   import { PDF_STATE_KEY, type PageData, type PdfEditorState } from "./helper.svelte";
 
@@ -48,7 +48,7 @@
 <div class="group relative" data-id={page.id} use:lazyLoad>
   <div
     class={cn(
-      "flex flex-col overflow-hidden rounded-xl border bg-card transition-[border-color,box-shadow] duration-150",
+      "flex flex-col overflow-hidden rounded-xl border bg-card transition-[border-color,box-shadow] duration-(--duration-fast)",
       isSelected ? "border-primary ring-1 ring-primary" : "border-border hover:border-border-strong hover:shadow-sm"
     )}
   >
@@ -60,14 +60,14 @@
       class="relative m-1.5 grid aspect-3/4 cursor-grab place-items-center overflow-hidden rounded-lg bg-muted outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing"
     >
       {#if isBlank}
-        <span class="absolute inset-3 rounded-sm bg-fixed-light shadow-xs"></span>
+        <span class="absolute inset-3 rounded-sm bg-white shadow-xs"></span>
       {:else if !isRendered}
         <Loader class="absolute size-5 animate-spin text-muted-foreground" />
       {/if}
       <canvas
         bind:this={canvasEl}
         class={cn(
-          "h-full w-full object-contain transition-[opacity,transform] duration-300 ease-craft",
+          "h-full w-full object-contain transition-[opacity,transform] duration-(--duration-slow) ease-(--ease-ui-out)",
           isRendered ? "opacity-100" : "opacity-0",
           isBlank && "hidden"
         )}
@@ -88,7 +88,7 @@
     </button>
 
     <div class="flex items-center justify-between gap-1 px-2 pb-1.5">
-      <span class="min-w-0 truncate text-caption tabular-nums text-muted-foreground">
+      <span class="min-w-0 truncate text-xs tabular-nums text-muted-foreground">
         <span class="font-medium text-foreground">{index + 1}</span>
         · {isBlank ? "Blank page" : page.fileName}
       </span>
@@ -132,7 +132,7 @@
 
   {#if splitsHere}
     <span
-      class="absolute -right-2 top-1/3 z-10 flex -translate-y-1/2 items-center gap-1 rounded-full bg-primary px-2 py-1 text-caption font-medium text-primary-foreground shadow-md"
+      class="absolute -right-2 top-1/3 z-10 flex -translate-y-1/2 items-center gap-1 rounded-full bg-primary px-2 py-1 text-xs font-medium text-primary-foreground shadow-md"
     >
       <Scissors class="size-3.5" />
       <span class="sr-only">New document starts after {label}</span>

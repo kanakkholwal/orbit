@@ -46,7 +46,7 @@ import {
   IconTypography,
   IconUserCircle,
   type Icon,
-} from "@tabler/icons-svelte";
+} from "$lib/icons";
 import type { BlockType } from "./model/types";
 
 export const BLOCK_ICONS: Record<BlockType, Icon> = {

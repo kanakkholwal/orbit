@@ -5,7 +5,7 @@
   import * as Select from "$components/ui/select";
   import { Switch } from "$components/ui/switch";
   import { Textarea } from "$components/ui/textarea";
-  import { IconArrowDown as Down, IconArrowUp as Up, IconCopy as Copy, IconTrash as Trash } from "@tabler/icons-svelte";
+  import { IconArrowDown as Down, IconArrowUp as Up, IconCopy as Copy, IconTrash as Trash } from "$lib/icons";
   import { BLOCK_ICONS } from "../icons";
   import { type Field, getBlockDefinition } from "../model/blocks";
   import type { Block } from "../model/types";
@@ -36,8 +36,8 @@
       <Icon class="size-4.5" />
     </span>
     <div class="min-w-0 flex-1">
-      <h2 class="truncate text-body font-medium text-foreground">{definition.label}</h2>
-      <p class="truncate text-caption text-muted-foreground">{definition.description}</p>
+      <h2 class="truncate text-sm font-medium text-foreground">{definition.label}</h2>
+      <p class="truncate text-xs text-muted-foreground">{definition.description}</p>
     </div>
   </div>
 
@@ -54,30 +54,30 @@
 
   <div class="flex flex-col gap-6 p-4">
     {#if definition.fields.length === 0}
-      <p class="text-body text-muted-foreground">Nothing to set. Everything after this block starts on a new page.</p>
+      <p class="text-sm text-muted-foreground">Nothing to set. Everything after this block starts on a new page.</p>
     {/if}
     {#each definition.fields as field (field.key)}
       {#if field.kind === "switch"}
         <div class="flex items-start justify-between gap-4">
           <label for={id(field)} class="flex min-w-0 cursor-pointer flex-col gap-0.5">
-            <span class="text-body font-medium text-foreground">{field.label}</span>
-            {#if field.hint}<span class="text-caption text-muted-foreground">{field.hint}</span>{/if}
+            <span class="text-sm font-medium text-foreground">{field.label}</span>
+            {#if field.hint}<span class="text-xs text-muted-foreground">{field.hint}</span>{/if}
           </label>
           <Switch id={id(field)} checked={Boolean(values[field.key])} onCheckedChange={(v) => set(field.key, v)} class="mt-0.5" />
         </div>
       {:else}
         <div class="flex flex-col gap-2">
           {#if field.kind === "text" || field.kind === "textarea" || field.kind === "number" || field.kind === "select"}
-            <label for={id(field)} class="text-body font-medium text-foreground">{field.label}</label>
+            <label for={id(field)} class="text-sm font-medium text-foreground">{field.label}</label>
           {:else}
-            <span class="text-body font-medium text-foreground">{field.label}</span>
+            <span class="text-sm font-medium text-foreground">{field.label}</span>
           {/if}
 
           {#if field.kind === "text"}
             <Input id={id(field)} value={values[field.key] as string} placeholder={field.placeholder} oninput={(e) => set(field.key, e.currentTarget.value)} />
           {:else if field.kind === "textarea"}
             <Textarea id={id(field)} value={values[field.key] as string} rows={3} placeholder={field.placeholder} oninput={(e) => set(field.key, e.currentTarget.value)} />
-            {#if field.hint}<p class="text-caption text-muted-foreground">{field.hint}</p>{/if}
+            {#if field.hint}<p class="text-xs text-muted-foreground">{field.hint}</p>{/if}
           {:else if field.kind === "number"}
             <div class="flex items-center gap-3">
               <input
@@ -90,7 +90,7 @@
                 oninput={(e) => set(field.key, Number(e.currentTarget.value))}
                 class="h-9 min-w-0 flex-1 accent-primary"
               />
-              <span class="w-14 text-right text-body tabular-nums text-muted-foreground">{values[field.key]} {field.unit ?? ""}</span>
+              <span class="w-14 text-right text-sm tabular-nums text-muted-foreground">{values[field.key]} {field.unit ?? ""}</span>
             </div>
           {:else if field.kind === "segmented"}
             <SegmentedControl

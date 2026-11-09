@@ -8,7 +8,7 @@
     IconRosetteDiscountCheck as Verified,
     IconUserOff as UserOff,
     IconWifiOff as WifiOff,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { Snippet } from "svelte";
 
   const half = Math.ceil(toolList.length / 2);
@@ -17,14 +17,14 @@
 
 {#snippet card(title: string, body: string, visual: Snippet, className = "")}
   <article
-    class="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-transparent text-card-foreground transition-shadow duration-150 hover:shadow-lg md:rounded-3xl {className}"
+    class="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-transparent text-card-foreground transition-shadow duration-(--duration-fast) hover:shadow-lg md:rounded-3xl {className}"
   >
     <div class="relative z-0 flex min-h-0 flex-1 items-center justify-center overflow-hidden p-3 md:p-6">
       {@render visual()}
     </div>
     <div class="relative z-10 p-4 md:px-8 md:pb-6">
-      <h3 class="mb-1 text-body font-medium text-foreground md:text-body-lg">{title}</h3>
-      <p class="text-body text-muted-foreground md:text-body-lg">{body}</p>
+      <h3 class="mb-1 text-sm font-medium text-foreground md:text-base">{title}</h3>
+      <p class="text-sm text-muted-foreground md:text-base">{body}</p>
     </div>
   </article>
 {/snippet}
@@ -36,14 +36,14 @@
         <FilePdf class="size-5 text-foreground" />
       </span>
       <span class="min-w-0 flex-1">
-        <span class="block truncate text-body font-medium text-foreground">Tax return 2026.pdf</span>
-        <span class="block text-caption text-muted-foreground">Opened on this computer</span>
+        <span class="block truncate text-sm font-medium text-foreground">Tax return 2026.pdf</span>
+        <span class="block text-xs text-muted-foreground">Opened on this computer</span>
       </span>
       <Lock class="size-4 shrink-0 text-primary" />
     </div>
     <span aria-hidden="true" class="h-8 border-l-2 border-dashed border-border"></span>
     <span
-      class="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-caption font-medium text-muted-foreground"
+      class="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground"
     >
       <CloudOff class="size-4" />
       Never sent to a server
@@ -55,15 +55,15 @@
   <div
     class="flex w-full max-w-xs items-center justify-between gap-4 rounded-xl border border-border bg-card p-3 pl-4 shadow-sm"
   >
-    <span class="flex items-center gap-2.5 text-body font-medium text-foreground">
+    <span class="flex items-center gap-2.5 text-sm font-medium text-foreground">
       <Plane class="size-4 text-primary" />
       Airplane mode
     </span>
     <span aria-hidden="true" class="relative h-6 w-10 rounded-full bg-primary">
-      <span class="absolute right-0.5 top-0.5 size-5 rounded-full bg-fixed-light shadow-sm"></span>
+      <span class="absolute right-0.5 top-0.5 size-5 rounded-full bg-white shadow-sm"></span>
     </span>
   </div>
-  <span class="absolute right-5 top-5 flex items-center gap-1.5 text-caption font-medium text-muted-foreground">
+  <span class="absolute right-5 top-5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
     <WifiOff class="size-3.5" />
     No internet
   </span>
@@ -90,10 +90,10 @@
           stroke-linejoin="round"
         />
       </svg>
-      <span class="block border-t border-border pt-1.5 text-caption text-muted-foreground">Signature</span>
+      <span class="block border-t border-border pt-1.5 text-xs text-muted-foreground">Signature</span>
     </div>
     <span
-      class="absolute -right-3 top-8 flex rotate-6 items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-caption font-semibold text-primary shadow-sm"
+      class="absolute -right-3 top-8 flex rotate-6 items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-xs font-semibold text-primary shadow-sm"
     >
       <Verified class="size-3.5" />
       Signed
@@ -107,7 +107,7 @@
       <div class="flex w-max gap-2 {r === 0 ? 'marquee' : 'marquee marquee-reverse'}">
         {#each [...row, ...row] as tool, i (`${tool.slug}-${i}`)}
           <span
-            class="flex shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-body text-foreground"
+            class="flex shrink-0 items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground"
             aria-hidden={i >= row.length ? "true" : undefined}
           >
             <tool.icon class="size-4 text-primary" />
@@ -121,22 +121,22 @@
 
 {#snippet noAccount()}
   <div class="relative w-full max-w-sm pb-6">
-    <div class="relative z-20 flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+    <div class="relative z-20 flex items-center gap-4 rounded-2xl border border-border bg-background p-5 shadow-sm">
       <span class="grid size-12 shrink-0 place-items-center rounded-xl border border-border">
         <UserOff class="size-6 text-foreground" />
       </span>
       <span class="min-w-0">
-        <span class="block text-body-lg font-medium text-foreground">No account needed</span>
-        <span class="block text-body text-muted-foreground">Open a tool and drop your file.</span>
+        <span class="block text-base font-medium text-foreground">No account needed</span>
+        <span class="block text-sm text-muted-foreground">Open a tool and drop your file.</span>
       </span>
     </div>
-    <div aria-hidden="true" class="absolute inset-x-3 bottom-3 z-10 h-12 rounded-2xl border border-border bg-card"></div>
-    <div aria-hidden="true" class="absolute inset-x-6 bottom-0 h-12 rounded-2xl border border-border bg-card"></div>
+    <div aria-hidden="true" class="absolute inset-x-3 bottom-3 z-10 h-12 rounded-2xl border border-border bg-background"></div>
+    <div aria-hidden="true" class="absolute inset-x-6 bottom-0 h-12 rounded-2xl border border-border bg-background"></div>
   </div>
 {/snippet}
 
 <div
-  class="mx-auto grid min-h-[60vh] w-full grid-cols-1 gap-2 md:gap-4 lg:h-[calc(100svh-6.5rem)] lg:grid-cols-12"
+  class="mx-auto grid min-h-[60vh] w-full grid-cols-1 gap-2 md:gap-4 lg:h-[36rem] lg:grid-cols-12"
 >
   <div class="grid min-h-0 grid-cols-1 gap-2 md:gap-4 lg:col-span-4 lg:grid-rows-[6fr_4fr]">
     {@render card(

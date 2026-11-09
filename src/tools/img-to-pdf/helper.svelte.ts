@@ -1,3 +1,4 @@
+import { releaseCanvas, safeScale } from '$lib/device-limits';
 import { PdfEngine } from '$lib/pdf-engine.svelte';
 import type { PDFDocument, PDFImage } from 'pdf-lib';
 import { toast } from 'svelte-sonner';
@@ -25,8 +26,8 @@ const PX_TO_PT = 72 / 96;
 
 export const ACCEPTED_FORMATS = [
     'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/bmp', 'image/avif',
-    'image/x-icon', 'image/heic', 'image/heif',
-    '.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.avif', '.ico', '.heic', '.heif'
+    'image/x-icon', 'image/heic', 'image/heif', 'image/svg+xml',
+    '.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.avif', '.ico', '.heic', '.heif', '.svg'
 ];
 
 export class JpgToPdfState extends PdfEngine {
@@ -147,7 +148,8 @@ export class JpgToPdfState extends PdfEngine {
             return pdf.embedPng(new Uint8Array(await file.arrayBuffer()));
         }
 
-        const bitmap = await createImageBitmap(file);
+        const isSvg = type === 'image/svg+xml' || name.endsWith('.svg');
+        const bitmap = isSvg ? await svgToBitmap(file) : await createImageBitmap(file);
         try {
             const canvas = document.createElement('canvas');
             canvas.width = bitmap.width;
@@ -207,4 +209,29 @@ export class JpgToPdfState extends PdfEngine {
     }
 
 
+}
+/** createImageBitmap cannot decode SVG blobs, so draw it through an <img> at twice its size. */
+async function svgToBitmap(file: File): Promise<ImageBitmap> {
+    const url = URL.createObjectURL(file);
+    try {
+        const img = new Image();
+        img.src = url;
+        await img.decode();
+        const w = img.naturalWidth || 800;
+        const h = img.naturalHeight || 600;
+        const scale = safeScale(w, h, 2);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.floor(w * scale));
+        canvas.height = Math.max(1, Math.floor(h * scale));
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error('Canvas is not available');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const bitmap = await createImageBitmap(canvas);
+        releaseCanvas(canvas);
+        return bitmap;
+    } finally {
+        URL.revokeObjectURL(url);
+    }
 }

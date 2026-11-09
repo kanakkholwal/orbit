@@ -1,6 +1,6 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
-  import { IconLoader2 as Loader } from "@tabler/icons-svelte";
+  import { IconLoader2 as Loader } from "$lib/icons";
   import { untrack } from "svelte";
   import type { BookmarkPdfState } from "./helper.svelte";
 
@@ -48,12 +48,12 @@
   {#if rendering}
     <div class="absolute inset-0 z-10 flex items-center justify-center gap-2 bg-muted" aria-live="polite">
       <Loader class="size-4 animate-spin text-primary" />
-      <span class="text-body text-muted-foreground">Loading page {page}</span>
+      <span class="text-sm text-muted-foreground">Loading page {page}</span>
     </div>
   {/if}
   <canvas
     bind:this={canvasEl}
-    class="block h-auto bg-fixed-light shadow-sm"
+    class="block h-auto bg-white shadow-sm"
     style:width={`${stageWidth}px`}
     aria-label={`Page ${page} of ${store.state.file?.name ?? "the PDF"}`}
   ></canvas>

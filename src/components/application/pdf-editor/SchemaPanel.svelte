@@ -9,7 +9,7 @@
     useUICapability,
     useUIState,
   } from "@embedpdf/plugin-ui/svelte";
-  import { IconX as X } from "@tabler/icons-svelte";
+  import { IconX as X } from "$lib/icons";
   import { chromeButton } from "./chrome";
 
   let { schema, documentId, isOpen, onClose }: SidebarRendererProps = $props();
@@ -84,7 +84,7 @@
             aria-selected={active}
             onclick={() => selectTab(tab.id)}
             class={cn(
-              "truncate rounded-md px-2 text-body outline-none transition-[background-color,color,box-shadow] duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+              "truncate rounded-md px-2 text-sm outline-none transition-[background-color,color,box-shadow] duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
               active ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
             )}
           >
@@ -93,7 +93,7 @@
         {/each}
       </div>
     {:else}
-      <h2 class="min-w-0 flex-1 truncate px-2 text-body font-medium text-foreground">{title}</h2>
+      <h2 class="min-w-0 flex-1 truncate px-2 text-sm font-medium text-foreground">{title}</h2>
     {/if}
     <button type="button" onclick={() => onClose?.()} aria-label="Close panel" class={chromeButton({ shape: "icon" })}>
       <X class="size-4" />

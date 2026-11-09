@@ -1,3 +1,4 @@
+import { safeScale } from '$lib/device-limits';
 import { getFontForLanguage } from '$utils/font-loader';
 import { getPDFDocument } from '$utils/helper';
 import { calculateSpaceTransform, calculateWordTransform, parseHocrDocument } from '$utils/hocr-transform';
@@ -195,11 +196,12 @@ export async function performOcr(
       progress(`Processing page ${i} of ${pdf.numPages}`, (i - 1) / pdf.numPages);
 
       const page = await pdf.getPage(i);
-      const viewport = page.getViewport({ scale: resolution });
+      const base = page.getViewport({ scale: 1 });
+      const viewport = page.getViewport({ scale: safeScale(base.width, base.height, resolution) });
 
       const canvas = document.createElement('canvas');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+      canvas.width = Math.floor(viewport.width);
+      canvas.height = Math.floor(viewport.height);
       const context = canvas.getContext('2d');
       if (!context) throw new Error('Failed to create canvas context');
 

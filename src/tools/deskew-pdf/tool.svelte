@@ -21,7 +21,7 @@
     IconListDetails as ListDetails,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { DeskewPdfState } from "./helper.svelte";
 
   const store = new DeskewPdfState();
@@ -53,10 +53,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop scanned PDFs to straighten</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop scanned PDFs to straighten</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Find pages that were scanned at a slant and turn them back so the lines run straight.
       </p>
     {/snippet}
@@ -147,26 +147,26 @@
     </ul>
 
     {#if detail?.result}
-      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4" aria-label="Page details">
+      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4" aria-label="Page details">
         <div class="flex min-w-0 flex-col gap-0.5">
-          <h2 class="text-body font-medium text-foreground">Page by page</h2>
-          <p class="truncate text-caption text-muted-foreground" title={detail.file.name}>{detail.file.name}</p>
+          <h2 class="text-sm font-medium text-foreground">Page by page</h2>
+          <p class="truncate text-xs text-muted-foreground" title={detail.file.name}>{detail.file.name}</p>
         </div>
         <ul class="scrollbar-subtle flex max-h-72 flex-col divide-y divide-border overflow-y-auto rounded-xl border border-border">
           {#each detail.result.angles as angle, idx (idx)}
-            <li class="flex items-center justify-between gap-3 px-3 py-2 text-body">
+            <li class="flex items-center justify-between gap-3 px-3 py-2 text-sm">
               <span class="text-foreground">Page {idx + 1}</span>
               <span class="flex items-center gap-3">
-                <span class="text-caption tabular-nums text-muted-foreground">
+                <span class="text-xs tabular-nums text-muted-foreground">
                   Tilted {angle > 0 ? "+" : ""}{angle.toFixed(2)}°
                 </span>
                 {#if detail.result.corrected[idx]}
-                  <span class="inline-flex items-center gap-1 text-caption font-medium text-success">
+                  <span class="inline-flex items-center gap-1 text-xs font-medium text-success">
                     <CircleCheck class="size-3.5" />
                     Straightened
                   </span>
                 {:else}
-                  <span class="text-caption text-muted-foreground">Left as is</span>
+                  <span class="text-xs text-muted-foreground">Left as is</span>
                 {/if}
               </span>
             </li>
@@ -214,7 +214,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Straightening…" : pendingCount > 0 ? `Straighten ${plural(pendingCount)}` : "Straighten"}
     </Button>
   </ToolFooter>

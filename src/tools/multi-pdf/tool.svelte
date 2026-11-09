@@ -16,7 +16,7 @@
     IconRotate2 as RotateLeft,
     IconRotateClockwise as RotateRight,
     IconTrash as Trash,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { setContext } from "svelte";
   import { PDF_STATE_KEY, PdfEditorState } from "./helper.svelte";
   import PdfPage from "./PdfPage.svelte";
@@ -78,10 +78,10 @@
   {:else}
     <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => pdfState.loadPdfs(files)}>
       {#snippet title()}
-        <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to rearrange</h3>
+        <h3 class="text-2xl font-medium text-foreground">Drop PDFs to rearrange</h3>
       {/snippet}
       {#snippet description()}
-        <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        <p class="max-w-sm text-pretty text-sm text-muted-foreground">
           Reorder, rotate, duplicate and delete pages from one or more files, then save them as one PDF or several.
         </p>
       {/snippet}
@@ -152,7 +152,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Tap a page to select it. Drag pages to reorder, and use the scissors to start a new document after a page.
     </p>
 
@@ -189,15 +189,15 @@
     <div class="flex flex-col gap-6">
       <OptionGroup label="Result">
         <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages</dt>
             <dd class="font-medium tabular-nums text-foreground">{pdfState.pages.length}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Documents</dt>
             <dd class="font-medium tabular-nums text-foreground">{docs}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Saved as</dt>
             <dd class="font-medium text-foreground">{docs > 1 ? "ZIP of PDFs" : "One PDF"}</dd>
           </div>
@@ -207,9 +207,9 @@
       <OptionGroup label="Keyboard shortcuts">
         <ul class="flex flex-col gap-2">
           {#each shortcuts as s (s.label)}
-            <li class="flex items-center justify-between gap-3 text-body">
+            <li class="flex items-center justify-between gap-3 text-sm">
               <span class="text-muted-foreground">{s.label}</span>
-              <kbd class="shrink-0 rounded-md border border-border bg-muted px-1.5 py-0.5 font-sans text-caption font-medium text-foreground">{s.keys}</kbd>
+              <kbd class="shrink-0 rounded-md border border-border bg-muted px-1.5 py-0.5 font-sans text-xs font-medium text-foreground">{s.keys}</kbd>
             </li>
           {/each}
         </ul>
@@ -229,7 +229,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" disabled={busy} onclick={() => pdfState.download()}>
+    <Button variant="default" disabled={busy} onclick={() => pdfState.download()}>
       {busy ? "Saving…" : docs > 1 ? `Save ${docs} PDFs` : "Save PDF"}
     </Button>
   </ToolFooter>

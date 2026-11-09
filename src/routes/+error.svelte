@@ -9,7 +9,7 @@
 
 <RailFrame>
   <RailRow divider={false} label={`Error ${page.status}`} class="flex-1">
-    <div class="px-1 pb-14 pt-28 sm:px-4 sm:pb-20 sm:pt-32 lg:px-16">
+    <div class="px-5 pb-14 pt-16 sm:pb-20 sm:pt-24 md:px-8">
       <ErrorState status={page.status} message={page.error?.message} class="max-w-2xl" />
     </div>
   </RailRow>

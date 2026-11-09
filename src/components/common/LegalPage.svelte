@@ -30,37 +30,37 @@
   </RailRow>
 
   <RailRow label="Contents">
-    <div class="flex flex-col gap-10 px-1 py-6 sm:px-4 sm:py-8 lg:flex-row lg:gap-20 lg:px-16 lg:py-10">
+    <div class="flex flex-col gap-10 lg:flex-row lg:gap-16">
       <aside class="shrink-0 lg:w-64">
-        <nav class="panel-card flex flex-col p-2 lg:sticky lg:top-28" aria-label="On this page">
+        <nav class="rounded-2xl border border-border bg-background flex flex-col p-2 lg:sticky lg:top-28" aria-label="On this page">
           {#each sections as section, i (section.heading)}
             <a
               href={`#${slug(section.heading)}`}
-              class="flex items-baseline gap-3 rounded-lg px-3 py-2 text-body text-muted-foreground transition-colors duration-200 hover:bg-muted hover:text-foreground"
+              class="flex items-baseline gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors duration-(--duration-base) hover:bg-muted hover:text-foreground"
             >
-              <span class="text-caption tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+              <span class="text-xs tabular-nums">{String(i + 1).padStart(2, "0")}</span>
               {section.heading}
             </a>
           {/each}
         </nav>
       </aside>
 
-      <article class="panel-card min-w-0 flex-1 divide-y divide-border">
+      <article class="rounded-2xl border border-border bg-background min-w-0 flex-1 divide-y divide-border">
         {#each sections as section, i (section.heading)}
           <section id={slug(section.heading)} class="flex scroll-mt-28 flex-col gap-3 px-6 py-8 sm:px-10">
-            <h2 class="flex items-baseline gap-3 text-subheading font-medium text-foreground">
-              <span class="text-body font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
+            <h2 class="flex items-baseline gap-3 text-xl font-medium text-foreground">
+              <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
               {section.heading}
             </h2>
             {#if section.paragraphs}
               {#each section.paragraphs as p (p)}
-                <p class="max-w-2xl text-body leading-relaxed text-muted-foreground">{p}</p>
+                <p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">{p}</p>
               {/each}
             {/if}
             {#if section.list}
               <ul class="flex max-w-2xl flex-col gap-2.5">
                 {#each section.list as item (item)}
-                  <li class="flex gap-3 text-body leading-relaxed text-muted-foreground">
+                  <li class="flex gap-3 text-sm leading-relaxed text-muted-foreground">
                     <span class="mt-2 size-1.5 shrink-0 rounded-full bg-primary"></span>
                     <span>{item}</span>
                   </li>

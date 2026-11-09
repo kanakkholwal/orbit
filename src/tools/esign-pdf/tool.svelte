@@ -14,7 +14,7 @@
     IconPhoto as Photo,
     IconRefresh as Refresh,
     IconSignature as SignatureIcon,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { untrack } from "svelte";
   import { EsignPdfState } from "./helper.svelte";
 
@@ -198,10 +198,10 @@
 {#if !store.hasPdf}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(f) => store.loadFile(f[0]).catch(() => {})}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to sign</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to sign</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Draw, type or add a picture of your signature, then place it on the page.
       </p>
     {/snippet}
@@ -244,7 +244,7 @@
           >
             <ChevronLeft />
           </Button>
-          <span class="min-w-24 px-1 text-center text-body tabular-nums text-foreground" aria-live="polite">
+          <span class="min-w-24 px-1 text-center text-sm tabular-nums text-foreground" aria-live="polite">
             Page {page + 1} of {store.pageCount}
           </span>
           <Button
@@ -262,14 +262,14 @@
 
     {#if !store.signature}
       <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3">
-        <p class="text-body text-muted-foreground">Create your signature, then drag it into place on the page.</p>
+        <p class="text-sm text-muted-foreground">Create your signature, then drag it into place on the page.</p>
         <Button variant="outline" size="sm" class="xl:hidden" onclick={() => (workspace.inspectorDrawerOpen = true)}>
           <SignatureIcon />
           Create signature
         </Button>
       </div>
     {:else}
-      <p class="text-body text-muted-foreground">
+      <p class="text-sm text-muted-foreground">
         Drag your signature where it belongs, or select it and use the arrow keys.
       </p>
     {/if}
@@ -282,13 +282,13 @@
       {#if rendering}
         <div class="absolute inset-0 z-10 flex items-center justify-center gap-2 bg-muted" aria-live="polite">
           <Loader class="size-4 animate-spin text-primary" />
-          <span class="text-body text-muted-foreground">Loading page {page + 1}</span>
+          <span class="text-sm text-muted-foreground">Loading page {page + 1}</span>
         </div>
       {/if}
       <div bind:this={stage} class="relative shadow-sm" style:width={`${stageWidth}px`}>
         <canvas
           bind:this={previewCanvas}
-          class="block h-auto w-full bg-fixed-light"
+          class="block h-auto w-full bg-white"
           aria-label={`Page ${page + 1} of ${store.fileName}.pdf`}
         ></canvas>
         {#if store.signature}
@@ -327,10 +327,10 @@
             onpointerup={endDraw}
             onpointercancel={endDraw}
             aria-label="Drawing area. Sign with your mouse, finger or pen."
-            class="h-40 w-full touch-none rounded-xl border border-border bg-fixed-light"
+            class="h-40 w-full touch-none rounded-xl border border-border bg-white"
           ></canvas>
           <div class="flex items-center justify-between gap-2">
-            <p class="text-caption text-muted-foreground">Sign with your mouse, finger or pen.</p>
+            <p class="text-xs text-muted-foreground">Sign with your mouse, finger or pen.</p>
             <Button variant="ghost" onclick={clearPad} disabled={!hasInk && !store.signature}>
               <Eraser />
               Clear
@@ -345,11 +345,11 @@
             bind:value={typedName}
             oninput={() => applyTyped(typedName)}
             placeholder="Type your name"
-            class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+            class="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
           />
           {#if typedName.trim()}
-            <div class="flex h-24 items-center overflow-hidden rounded-xl border border-border bg-fixed-light px-4">
-              <span class="truncate text-heading-sm text-fixed-dark" style:font-family={SCRIPT_FONT} style:font-style="italic">
+            <div class="flex h-24 items-center overflow-hidden rounded-xl border border-border bg-white px-4">
+              <span class="truncate text-2xl text-neutral-950" style:font-family={SCRIPT_FONT} style:font-style="italic">
                 {typedName}
               </span>
             </div>
@@ -359,7 +359,7 @@
             <Photo />
             {uploadedName ? "Choose a different image" : "Choose an image"}
           </Button>
-          <p class="truncate text-caption text-muted-foreground" title={uploadedName ?? undefined}>
+          <p class="truncate text-xs text-muted-foreground" title={uploadedName ?? undefined}>
             {uploadedName ?? "A PNG with a clear background looks best."}
           </p>
           <input bind:this={uploadInput} type="file" accept="image/png,image/jpeg,image/webp" class="hidden" onchange={onUpload} />
@@ -397,7 +397,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.apply().catch(() => {})} disabled={!store.ready || store.isProcessing}>
+    <Button variant="default" onclick={() => store.apply().catch(() => {})} disabled={!store.ready || store.isProcessing}>
       {store.isProcessing ? "Saving…" : "Save signed PDF"}
     </Button>
   </ToolFooter>

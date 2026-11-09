@@ -1,3 +1,4 @@
+import { outputRatio, renderLimit, safeScale } from '$lib/device-limits';
 import type * as PDFJS from 'pdfjs-dist';
 import { BaseEngine } from './base-engine.svelte';
 import { loadPdfJs } from './pdf/pdfjs';
@@ -42,7 +43,15 @@ export class PdfEngine extends BaseEngine {
         targetWidth: number = 200
     ) {
         if (!pdfDocProxy) return;
+        return renderLimit(() => this.drawPage(canvas, pdfDocProxy, pageIndex, targetWidth));
+    }
 
+    private async drawPage(
+        canvas: HTMLCanvasElement,
+        pdfDocProxy: PDFJS.PDFDocumentProxy,
+        pageIndex: number,
+        targetWidth: number
+    ) {
         const page = await pdfDocProxy.getPage(pageIndex + 1);
 
         const viewport = page.getViewport({ scale: 1 });
@@ -50,7 +59,7 @@ export class PdfEngine extends BaseEngine {
         // Calculate scale to hit targetWidth
         const scale = targetWidth / viewport.width;
         const scaledViewport = page.getViewport({ scale });
-        const outputScale = window.devicePixelRatio || 1;
+        const outputScale = Math.min(outputRatio(), safeScale(scaledViewport.width, scaledViewport.height, 8) );
 
         canvas.width = Math.floor(scaledViewport.width * outputScale);
         canvas.height = Math.floor(scaledViewport.height * outputScale);
@@ -66,6 +75,7 @@ export class PdfEngine extends BaseEngine {
                 canvas
             }).promise;
         }
+        page.cleanup();
     }
 
 

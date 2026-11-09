@@ -6,7 +6,7 @@
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { InsertBlankPagesState } from "./helper.svelte";
   import type { BlankSize, InsertPosition } from "./plan";
   import StripThumb from "./StripThumb.svelte";
@@ -52,10 +52,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to add blank pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to add blank pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Add empty pages for notes, signatures or double-sided printing, exactly where you need them.
       </p>
     {/snippet}
@@ -87,10 +87,10 @@
       onRemove={busy ? undefined : () => store.reset()}
     />
 
-    <section aria-labelledby="{uid}-order" class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <section aria-labelledby="{uid}-order" class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4 sm:p-5">
       <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h2 id="{uid}-order" class="text-body font-medium text-foreground">New page order</h2>
-        <span class="text-caption tabular-nums text-muted-foreground">
+        <h2 id="{uid}-order" class="text-sm font-medium text-foreground">New page order</h2>
+        <span class="text-xs tabular-nums text-muted-foreground">
           {pageLabel(store.pageCount)} + {added} blank = {plan.length}
         </span>
       </div>
@@ -103,11 +103,11 @@
             {:else}
               <figure class="flex w-16 flex-col items-center gap-1">
                 <div
-                  class="grid aspect-[1/1.414] w-full place-items-center rounded-md border border-dashed border-primary/60 bg-primary/5 text-caption text-primary"
+                  class="grid aspect-[1/1.414] w-full place-items-center rounded-md border border-dashed border-primary/60 bg-primary/5 text-xs text-primary"
                 >
                   Blank
                 </div>
-                <figcaption class="text-caption tabular-nums text-muted-foreground">{i + 1}</figcaption>
+                <figcaption class="text-xs tabular-nums text-muted-foreground">{i + 1}</figcaption>
               </figure>
             {/if}
           </li>
@@ -115,7 +115,7 @@
       </ol>
 
       {#if plan.length > PREVIEW_LIMIT}
-        <p class="text-caption text-muted-foreground">+ {plan.length - PREVIEW_LIMIT} more</p>
+        <p class="text-xs text-muted-foreground">+ {plan.length - PREVIEW_LIMIT} more</p>
       {/if}
     </section>
   </div>
@@ -137,7 +137,8 @@
           min="1"
           max={store.pageCount}
           inputmode="numeric"
-          bind:value={store.every}
+          value={String(store.every)}
+          oninput={(e) => (store.every = e.currentTarget.valueAsNumber)}
           disabled={store.position !== "every"}
           aria-invalid={store.position === "every" && !everyValid}
         />
@@ -166,7 +167,8 @@
           min="1"
           max="100"
           inputmode="numeric"
-          bind:value={store.count}
+          value={String(store.count)}
+          oninput={(e) => (store.count = e.currentTarget.valueAsNumber)}
           aria-invalid={!countValid}
         />
       </OptionGroup>
@@ -194,7 +196,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={busy || blocker !== null}>
+    <Button variant="default" onclick={() => store.process()} disabled={busy || blocker !== null}>
       {busy ? "Adding…" : `Add ${added} blank ${added === 1 ? "page" : "pages"}`}
     </Button>
   </ToolFooter>

@@ -2,7 +2,7 @@
   import { cn } from "$lib/utils";
   import type { DocumentState } from "@embedpdf/core";
   import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/svelte";
-  import { IconFileTypePdf as FileIcon, IconPlus as Plus, IconX as X } from "@tabler/icons-svelte";
+  import { IconFileTypePdf as FileIcon, IconPlus as Plus, IconX as X } from "$lib/icons";
   import { chromeButton } from "./chrome";
 
   interface TabBarProps {
@@ -66,7 +66,7 @@
       {@const active = doc.id === activeDocumentId}
       <div
         class={cn(
-          "group relative flex h-9 w-44 shrink-0 items-center rounded-lg transition-colors duration-150",
+          "group relative flex h-9 w-44 shrink-0 items-center rounded-lg transition-colors duration-(--duration-fast)",
           active ? "bg-muted" : "hover:bg-muted/60"
         )}
       >
@@ -80,7 +80,7 @@
           onclick={() => documentManager.provides?.setActiveDocument(doc.id)}
           onkeydown={(e) => moveFocus(e, index)}
           class={cn(
-            "flex h-full min-w-0 flex-1 items-center gap-2 rounded-lg pl-2.5 pr-9 text-left text-body outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+            "flex h-full min-w-0 flex-1 items-center gap-2 rounded-lg pl-2.5 pr-9 text-left text-sm outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
             active ? "font-medium text-foreground" : "text-muted-foreground group-hover:text-foreground"
           )}
         >
@@ -92,7 +92,7 @@
           onclick={() => documentManager.provides?.closeDocument(doc.id)}
           aria-label={`Close ${nameOf(doc)}`}
           title="Close"
-          class="absolute right-1 grid size-7 place-items-center rounded-md text-muted-foreground outline-none transition-colors duration-150 hover:bg-background hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:focus-visible:opacity-100 pointer-fine:group-has-aria-selected:opacity-100"
+          class="absolute right-1 grid size-7 place-items-center rounded-md text-muted-foreground outline-none transition-colors duration-(--duration-fast) hover:bg-background hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:focus-visible:opacity-100 pointer-fine:group-has-aria-selected:opacity-100"
         >
           <X class="size-3.5" />
         </button>

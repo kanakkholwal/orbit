@@ -3,7 +3,7 @@ import {
   IconBrandLinkedin as Linkedin,
   IconMail as Mail,
   IconBrandTwitter as Twitter,
-} from '@tabler/icons-svelte';
+} from "$lib/icons";
 
 type ShareData = {
   title?: string;

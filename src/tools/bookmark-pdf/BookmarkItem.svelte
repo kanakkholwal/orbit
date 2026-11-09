@@ -7,7 +7,7 @@
     IconPencil as Pencil,
     IconPlus as Plus,
     IconTrash as Trash,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import BookmarkItem from "./BookmarkItem.svelte";
   import type { BookmarkNode, BookmarkPdfState } from "./helper.svelte";
 
@@ -94,7 +94,7 @@
           if (e.key === "Enter") commit();
           if (e.key === "Escape") onedit(null);
         }}
-        class="my-0.5 h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-2.5 text-body text-foreground outline-none transition-colors focus:border-ring"
+        class="my-0.5 h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-2.5 text-sm text-foreground outline-none transition-colors focus:border-ring"
       />
     {:else}
       <button
@@ -109,14 +109,14 @@
       >
         <span
           class={cn(
-            "truncate text-body text-foreground",
+            "truncate text-sm text-foreground",
             node.style?.includes("bold") && "font-medium",
             node.style?.includes("italic") && "italic"
           )}
         >
           {node.title}
         </span>
-        <span class={cn("text-caption tabular-nums", onCurrentPage ? "text-primary" : "text-muted-foreground")}>
+        <span class={cn("text-xs tabular-nums", onCurrentPage ? "text-primary" : "text-muted-foreground")}>
           Page {node.page}
         </span>
       </button>

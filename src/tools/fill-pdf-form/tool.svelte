@@ -20,7 +20,7 @@
     IconLoader2 as Loader,
     IconLock as Lock,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { FormFieldInfo } from "./form";
   import { FillFormState, type SaveMode } from "./helper.svelte";
 
@@ -99,13 +99,13 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet icon()}
-      <Forms class="size-6" stroke={1.75} />
+      <Forms class="size-6" />
     {/snippet}
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF form to fill</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF form to fill</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Type into the form's own boxes, tick the checkboxes, then download a filled copy.
       </p>
     {/snippet}
@@ -138,7 +138,7 @@
     />
 
     {#if store.loading}
-      <div class="flex items-center gap-2 rounded-2xl border border-border bg-card p-5 text-body text-muted-foreground">
+      <div class="flex items-center gap-2 rounded-2xl border border-border bg-background p-5 text-sm text-muted-foreground">
         <Loader class="size-4 animate-spin text-primary" />
         Reading the form…
       </div>
@@ -160,7 +160,7 @@
       )}
     {:else}
       {#if store.summary?.hasXfa}
-        <p class="text-body text-muted-foreground">
+        <p class="text-sm text-muted-foreground">
           This form also has an XFA version for Adobe apps. The filled copy keeps the standard fields only, so it looks the same in every viewer.
         </p>
       {/if}
@@ -168,12 +168,12 @@
       <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div class="flex min-w-0 flex-col gap-4">
           {#each groups as group (group.page)}
-            <section class="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-labelledby="{uid}-page-{group.page}">
+            <section class="flex flex-col gap-4 rounded-2xl border border-border bg-background p-4 sm:p-5" aria-labelledby="{uid}-page-{group.page}">
               <div class="flex items-baseline justify-between gap-2">
-                <h2 id="{uid}-page-{group.page}" class="text-body-lg font-medium text-foreground">
+                <h2 id="{uid}-page-{group.page}" class="text-base font-medium text-foreground">
                   {group.page >= 0 ? `Page ${group.page + 1}` : "Not placed on a page"}
                 </h2>
-                <span class="text-caption tabular-nums text-muted-foreground">
+                <span class="text-xs tabular-nums text-muted-foreground">
                   {group.items.length} {group.items.length === 1 ? "field" : "fields"}
                 </span>
               </div>
@@ -187,14 +187,14 @@
                   onfocusin={() => store.focusField(field.name)}
                 >
                   <div class="flex items-baseline justify-between gap-2">
-                    <label id="{inputId(index)}-label" for={inputId(index)} class="min-w-0 truncate text-body font-medium text-foreground" title={field.name}>
+                    <label id="{inputId(index)}-label" for={inputId(index)} class="min-w-0 truncate text-sm font-medium text-foreground" title={field.name}>
                       {field.label}
                       {#if field.required}<span class="text-destructive" aria-label="required">*</span>{/if}
                     </label>
                     {#if field.readOnly}
-                      <span class="shrink-0 text-caption text-muted-foreground">Locked</span>
+                      <span class="shrink-0 text-xs text-muted-foreground">Locked</span>
                     {:else if store.isChanged(field.name)}
-                      <span class="shrink-0 text-caption text-primary">Changed</span>
+                      <span class="shrink-0 text-xs text-primary">Changed</span>
                     {/if}
                   </div>
 
@@ -224,7 +224,7 @@
                         onCheckedChange={(v) => store.setValue(field.name, v)}
                         disabled={field.readOnly}
                       />
-                      <span class="text-body text-muted-foreground">{store.values[field.name] === true ? "Ticked" : "Not ticked"}</span>
+                      <span class="text-sm text-muted-foreground">{store.values[field.name] === true ? "Ticked" : "Not ticked"}</span>
                     </div>
                   {:else if field.kind === "radio"}
                     <RadioGroup.Root
@@ -235,7 +235,7 @@
                       aria-labelledby="{inputId(index)}-label"
                     >
                       {#each field.options as option, o (option)}
-                        <label class="flex cursor-pointer items-center gap-2 text-body text-foreground">
+                        <label class="flex cursor-pointer items-center gap-2 text-sm text-foreground">
                           <RadioGroup.Item id={o === 0 ? inputId(index) : inputId(index, o)} value={option} />
                           {option}
                         </label>
@@ -262,7 +262,7 @@
                       disabled={field.readOnly}
                     >
                       <Select.Trigger id={inputId(index)} class="w-full">
-                        <span class={cn("truncate", !asString(field.name) && "text-placeholder")}>{asString(field.name) || "No choice"}</span>
+                        <span class={cn("truncate", !asString(field.name) && "text-muted-foreground")}>{asString(field.name) || "No choice"}</span>
                       </Select.Trigger>
                       <Select.Content>
                         <Select.Item value={NONE} label="No choice" />
@@ -274,7 +274,7 @@
                   {:else if field.multiSelect}
                     <div class="flex flex-col gap-2 rounded-lg border border-border p-3">
                       {#each field.options as option, o (option)}
-                        <label class="flex cursor-pointer items-center gap-2.5 text-body text-foreground">
+                        <label class="flex cursor-pointer items-center gap-2.5 text-sm text-foreground">
                           <Checkbox
                             id={o === 0 ? inputId(index) : inputId(index, o)}
                             checked={asList(field.name).includes(option)}
@@ -294,7 +294,7 @@
                       aria-labelledby="{inputId(index)}-label"
                     >
                       {#each field.options as option, o (option)}
-                        <label class="flex cursor-pointer items-center gap-2.5 text-body text-foreground">
+                        <label class="flex cursor-pointer items-center gap-2.5 text-sm text-foreground">
                           <RadioGroup.Item id={o === 0 ? inputId(index) : inputId(index, o)} value={option} />
                           {option}
                         </label>
@@ -303,7 +303,7 @@
                   {/if}
 
                   {#if bad.length > 0}
-                    <p class="text-caption text-destructive">
+                    <p class="text-xs text-destructive">
                       The PDF can't show {bad.slice(0, 6).join(" ")}. Use plain Latin letters here.
                     </p>
                   {/if}
@@ -313,11 +313,11 @@
           {/each}
 
           {#if skippedNote}
-            <p class="text-caption text-muted-foreground">{skippedNote}</p>
+            <p class="text-xs text-muted-foreground">{skippedNote}</p>
           {/if}
         </div>
 
-        <section class="flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-card p-3 lg:sticky lg:top-4" aria-label="Page preview">
+        <section class="flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-background p-3 lg:sticky lg:top-4" aria-label="Page preview">
           <div class="flex items-center justify-between gap-2">
             <Button
               variant="outline"
@@ -329,8 +329,8 @@
               <ChevronLeft class="size-4" />
             </Button>
             <div class="flex flex-col items-center">
-              <span class="text-body font-medium tabular-nums text-foreground">Page {store.previewPage + 1} of {store.pageCount}</span>
-              <span class="text-caption tabular-nums text-muted-foreground">
+              <span class="text-sm font-medium tabular-nums text-foreground">Page {store.previewPage + 1} of {store.pageCount}</span>
+              <span class="text-xs tabular-nums text-muted-foreground">
                 {pageFieldCount === 0 ? "No fields on this page" : `${pageFieldCount} ${pageFieldCount === 1 ? "field" : "fields"} · click a box to jump to it`}
               </span>
             </div>
@@ -346,7 +346,7 @@
           </div>
 
           <div class="relative overflow-hidden rounded-lg border border-border bg-white" bind:clientWidth={previewWidth}>
-            <canvas bind:this={canvas} class={cn("block h-auto w-full transition-opacity duration-200", store.previewReady ? "opacity-100" : "opacity-0")}></canvas>
+            <canvas bind:this={canvas} class={cn("block h-auto w-full transition-opacity duration-(--duration-base)", store.previewReady ? "opacity-100" : "opacity-0")}></canvas>
             {#if !store.previewReady}
               <div class="absolute inset-0 grid min-h-64 place-items-center">
                 <Loader class="size-5 animate-spin text-muted-foreground" />
@@ -357,7 +357,7 @@
                 <button
                   type="button"
                   class={cn(
-                    "absolute rounded-[3px] border outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring",
+                    "absolute rounded-[3px] border outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-ring",
                     active ? "border-primary bg-primary/30" : "border-primary/70 bg-primary/10 hover:bg-primary/20"
                   )}
                   style:left="{box.left}%"
@@ -370,7 +370,7 @@
               {/each}
             {/if}
           </div>
-          <p class="text-caption text-muted-foreground">Boxes show where each field sits. Your answers appear in the downloaded file.</p>
+          <p class="text-xs text-muted-foreground">Boxes show where each field sits. Your answers appear in the downloaded file.</p>
         </section>
       </div>
     {/if}
@@ -405,7 +405,7 @@
           {/if}
         </span>
       {/snippet}
-      <Button variant="primary" onclick={() => store.save()} disabled={store.isProcessing || store.problems.length > 0}>
+      <Button variant="default" onclick={() => store.save()} disabled={store.isProcessing || store.problems.length > 0}>
         {store.isProcessing ? "Saving…" : "Download filled PDF"}
       </Button>
     </ToolFooter>
@@ -413,14 +413,14 @@
 {/if}
 
 {#snippet notice(Icon: typeof Forms, title: string, body: string, href?: string, action?: string)}
-  <section class="flex flex-col items-start gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row">
+  <section class="flex flex-col items-start gap-4 rounded-2xl border border-border bg-background p-5 sm:flex-row">
     <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-muted-foreground">
-      <Icon class="size-5" stroke={1.75} />
+      <Icon class="size-5" />
     </span>
     <div class="flex min-w-0 flex-1 flex-col gap-3">
       <div class="flex flex-col gap-1">
-        <h2 class="text-body-lg font-medium text-foreground">{title}</h2>
-        <p class="max-w-prose text-body text-muted-foreground">{body}</p>
+        <h2 class="text-base font-medium text-foreground">{title}</h2>
+        <p class="max-w-prose text-sm text-muted-foreground">{body}</p>
       </div>
       {#if href && action}
         <div><Button variant="outline" {href}>{action}</Button></div>

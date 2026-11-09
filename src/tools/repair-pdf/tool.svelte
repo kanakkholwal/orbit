@@ -4,7 +4,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
   import { RepairPdfState } from "./helper.svelte";
 
   const store = new RepairPdfState();
@@ -51,10 +51,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs that will not open</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs that will not open</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Rebuild damaged or half-downloaded files from the parts that can still be read. Files never leave this device.
       </p>
     {/snippet}
@@ -153,7 +153,7 @@
       }}
     />
 
-    <p class="text-caption text-muted-foreground">
+    <p class="text-xs text-muted-foreground">
       Repair rebuilds the file's structure. If part of a file was cut off or overwritten, that part cannot be brought back, so a
       page may come back blank.
     </p>
@@ -170,7 +170,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Repairing…" : pendingCount > 0 ? `Repair ${plural(pendingCount, "file")}` : "Repair"}
     </Button>
   </ToolFooter>

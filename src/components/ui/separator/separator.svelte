@@ -1,21 +1,27 @@
 <script lang="ts">
-	import { Separator as SeparatorPrimitive } from "bits-ui";
-	import { cn } from "$lib/utils.js";
+import { Separator as SeparatorPrimitive } from "bits-ui";
+import { cn } from "$lib/cn.js";
+import { type SeparatorVariant, separator } from "./variants";
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		"data-slot": dataSlot = "separator",
-		...restProps
-	}: SeparatorPrimitive.RootProps = $props();
+let {
+	ref = $bindable(null),
+	class: classProp,
+	orientation = "horizontal",
+	decorative = false,
+	variant = "solid",
+	...rest
+}: SeparatorPrimitive.RootProps & {
+	/** Purely visual: hidden from assistive tech. */
+	decorative?: boolean;
+	variant?: SeparatorVariant;
+} = $props();
 </script>
 
 <SeparatorPrimitive.Root
 	bind:ref
-	data-slot={dataSlot}
-	class={cn(
-		"bg-border shrink-0 data-[orientation=horizontal]:h-px data-[orientation=horizontal]:w-full data-[orientation=vertical]:min-h-full data-[orientation=vertical]:w-px",
-		className
-	)}
-	{...restProps}
+	data-slot="separator"
+	{orientation}
+	{decorative}
+	class={cn(separator({ variant }), classProp)}
+	{...rest}
 />

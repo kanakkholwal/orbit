@@ -8,7 +8,7 @@
     IconDownload as Download,
     IconLoader2 as Loader,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { DeletePagesState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 
@@ -25,10 +25,10 @@
 {#if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to delete pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to delete pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Pick the pages you don't need and save a copy without them.
       </p>
     {/snippet}
@@ -80,7 +80,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">Tap the pages you want to delete. Tap again to keep a page.</p>
+    <p class="text-sm text-muted-foreground">Tap the pages you want to delete. Tap again to keep a page.</p>
 
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {#each { length: total } as _, i (i)}
@@ -105,26 +105,26 @@
           placeholder="1, 3-5, 8"
           aria-invalid={issue ? "true" : undefined}
           aria-describedby={issue ? `${uid}-pages-issue` : undefined}
-          class="h-10 w-full rounded-lg border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring {issue
+          class="h-10 w-full rounded-lg border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring {issue
             ? 'border-destructive'
             : 'border-border'}"
         />
         {#if issue}
-          <span id={`${uid}-pages-issue`} class="text-caption text-destructive">{issue}</span>
+          <span id={`${uid}-pages-issue`} class="text-xs text-destructive">{issue}</span>
         {/if}
       </OptionGroup>
 
       <OptionGroup label="Result">
         <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages now</dt>
             <dd class="font-medium tabular-nums text-foreground">{total}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">To delete</dt>
             <dd class="font-medium tabular-nums text-foreground">{selected}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages left</dt>
             <dd class="font-medium tabular-nums text-foreground">{remaining}</dd>
           </div>
@@ -151,7 +151,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={!store.canDelete}>
+    <Button variant="default" onclick={() => store.process()} disabled={!store.canDelete}>
       {store.isProcessing ? "Deleting…" : selected > 0 ? `Delete ${pageLabel(selected)}` : "Delete pages"}
     </Button>
   </ToolFooter>

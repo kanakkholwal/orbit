@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
-  import { prefersReducedMotion } from "$lib/motion";
+  import { prefersReducedMotion } from "$lib/reduced-motion";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
@@ -14,7 +14,7 @@
     IconFileSearch as FileSearch,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { DiffPart } from "./diff";
   import { CompareState, type PageResult, type Side } from "./helper.svelte";
 
@@ -79,10 +79,10 @@
 {#if !store.original && !store.changed}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop two PDFs to compare</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop two PDFs to compare</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         See every word that was added or removed between two versions. The first file is treated as the original.
       </p>
     {/snippet}
@@ -91,9 +91,9 @@
   <div class="flex flex-col gap-4">
     {#if showDiff}
       {#if !store.hasText}
-        <section class="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-live="polite">
-          <h2 class="text-body-lg font-medium text-foreground">No text to compare</h2>
-          <p class="text-body text-muted-foreground">
+        <section class="flex flex-col gap-1 rounded-2xl border border-border bg-background p-4 sm:p-5" aria-live="polite">
+          <h2 class="text-base font-medium text-foreground">No text to compare</h2>
+          <p class="text-sm text-muted-foreground">
             These PDFs look like scans or images, so there are no words to read. Run
             <a href="/tools/ocr-pdf" class="font-medium text-primary underline-offset-4 hover:underline">OCR PDF</a>
             on both files first, then compare them again.
@@ -133,7 +133,7 @@
       {#each slots as slot (slot.side)}
         {@const entry = store[slot.side]}
         <div class="flex min-w-0 flex-col gap-1.5">
-          <span class="text-caption font-medium text-muted-foreground">{slot.label}</span>
+          <span class="text-xs font-medium text-muted-foreground">{slot.label}</span>
           {#if entry}
             <FileRow
               name={entry.file.name}
@@ -144,7 +144,7 @@
             <button
               type="button"
               onclick={() => choose(slot.side)}
-              class="flex h-14 items-center gap-3 rounded-xl border border-dashed border-border-strong px-2 text-left text-body text-muted-foreground outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              class="flex h-14 items-center gap-3 rounded-xl border border-dashed border-border-strong px-2 text-left text-sm text-muted-foreground outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-muted"><Plus class="size-5" /></span>
               {slot.empty}
@@ -157,19 +157,19 @@
     {#if showDiff && store.hasText}
       <div bind:this={diffView} class="flex flex-col gap-3">
         {#if visiblePages.length === 0}
-          <p class="py-10 text-center text-body text-muted-foreground">Every page matches. Turn off "Hide unchanged pages" to read them.</p>
+          <p class="py-10 text-center text-sm text-muted-foreground">Every page matches. Turn off "Hide unchanged pages" to read them.</p>
         {/if}
         {#each visiblePages as page (`${page.before}-${page.after}`)}
           {@const label = pageLabel(page)}
           <section
             aria-label={label ?? `Original page ${page.before}, changed page ${page.after}`}
-            class="overflow-hidden rounded-2xl border border-border bg-card"
+            class="overflow-hidden rounded-2xl border border-border bg-background"
           >
             <details open={page.status !== "same"} class="group">
               <summary
                 class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring [&::-webkit-details-marker]:hidden"
               >
-                <span class="flex items-center gap-1.5 text-body font-medium tabular-nums text-foreground">
+                <span class="flex items-center gap-1.5 text-sm font-medium tabular-nums text-foreground">
                   {#if label}
                     {label}
                   {:else}
@@ -181,7 +181,7 @@
                 <span class="flex items-center gap-2">
                   <span
                     class={cn(
-                      "rounded-full px-2 py-0.5 text-caption font-medium tabular-nums",
+                      "rounded-full px-2 py-0.5 text-xs font-medium tabular-nums",
                       page.status === "same" && "bg-muted text-muted-foreground",
                       page.status === "changed" && "bg-primary/10 text-primary",
                       page.status === "added" && "bg-primary/10 text-primary",
@@ -190,19 +190,19 @@
                   >
                     {statusLabel(page)}
                   </span>
-                  <ChevronDown class="size-4 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
+                  <ChevronDown class="size-4 text-muted-foreground transition-transform duration-(--duration-base) group-open:rotate-180" />
                 </span>
               </summary>
               <div class="border-t border-border px-4 py-4">
                 {#if page.rough}
-                  <p class="mb-3 text-caption text-muted-foreground">
+                  <p class="mb-3 text-xs text-muted-foreground">
                     These pages are too different to match word by word, so the whole text is shown as replaced.
                   </p>
                 {/if}
                 {#if page.parts.length === 0}
-                  <p class="text-body text-muted-foreground">This page has no text.</p>
+                  <p class="text-sm text-muted-foreground">This page has no text.</p>
                 {:else}
-                  <p class="whitespace-pre-line break-words text-body leading-relaxed text-foreground">
+                  <p class="whitespace-pre-line break-words text-sm leading-relaxed text-foreground">
                     {#each page.parts as part, i (i)}
                       {#if part.kind === "same"}
                         <span>{partText(part)}</span>
@@ -232,8 +232,8 @@
       </div>
     {:else if !store.isProcessing && store.ready}
       <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-muted px-4 py-12 text-center">
-        <FileSearch class="size-6 text-muted-foreground" stroke={1.75} />
-        <p class="max-w-sm text-body text-muted-foreground">
+        <FileSearch class="size-6 text-muted-foreground" />
+        <p class="max-w-sm text-sm text-muted-foreground">
           Compare reads the text of both files on this device and marks what changed, page by page.
         </p>
       </div>
@@ -270,7 +270,7 @@
       </OptionGroup>
 
       <OptionGroup label="Key" description="Only text is compared. Images, layout and colours are not.">
-        <ul class="flex flex-col gap-2 text-body text-foreground">
+        <ul class="flex flex-col gap-2 text-sm text-foreground">
           <li class="flex items-center gap-2">
             <span class="rounded-sm bg-primary/15 px-1 underline decoration-primary decoration-1 underline-offset-2">added</span>
             <span class="text-muted-foreground">in the changed file</span>
@@ -312,12 +312,12 @@
         <ChevronUp />
         Previous
       </Button>
-      <Button variant="primary" onclick={() => goTo(store.current + 1)} aria-keyshortcuts="N">
+      <Button variant="default" onclick={() => goTo(store.current + 1)} aria-keyshortcuts="N">
         <ChevronDown />
         Next change
       </Button>
     {:else if !showDiff}
-      <Button variant="primary" onclick={() => store.compare()} disabled={store.isProcessing || !store.ready}>
+      <Button variant="default" onclick={() => store.compare()} disabled={store.isProcessing || !store.ready}>
         {store.isProcessing ? "Comparing…" : "Compare"}
       </Button>
     {/if}

@@ -19,7 +19,7 @@
     IconEyeOff as EyeOff,
     IconLayersSubtract as Layers,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { ImageKind } from "../pdf-color-filters/raster";
   import { RasterizeState, type Resolution } from "./helper.svelte";
 
@@ -51,10 +51,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to rasterize</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to rasterize</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Flatten every page into an image so text can't be copied and stubborn print problems go away.
       </p>
     {/snippet}
@@ -86,17 +86,17 @@
       onRemove={busy ? undefined : () => store.reset()}
     />
 
-    <section aria-labelledby="{uid}-effects" class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
-      <h2 id="{uid}-effects" class="text-body font-medium text-foreground">What happens to each page</h2>
+    <section aria-labelledby="{uid}-effects" class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4 sm:p-5">
+      <h2 id="{uid}-effects" class="text-sm font-medium text-foreground">What happens to each page</h2>
       <ul class="flex flex-col gap-2.5">
         {#each effects as effect (effect.text)}
-          <li class="flex items-start gap-3 text-body text-muted-foreground">
+          <li class="flex items-start gap-3 text-sm text-muted-foreground">
             <effect.icon class="mt-0.5 size-4 shrink-0 text-primary" />
             <span>{effect.text}</span>
           </li>
         {/each}
       </ul>
-      <p class="border-t border-border pt-3 text-caption text-muted-foreground">
+      <p class="border-t border-border pt-3 text-xs text-muted-foreground">
         Need the text searchable again later? Run
         <a href="/tools/ocr-pdf" class="font-medium text-primary underline-offset-4 hover:underline">OCR PDF</a>
         on the result.
@@ -120,8 +120,8 @@
       <OptionGroup label="File size" description={lossless ? "Only for JPG. PNG keeps full quality." : "Lower quality makes a smaller file."}>
         <div class="flex flex-col gap-1">
           <div class="flex items-baseline justify-between gap-3">
-            <label for="{uid}-quality" class="text-body text-foreground">Image quality</label>
-            <span class="text-body tabular-nums text-muted-foreground">
+            <label for="{uid}-quality" class="text-sm text-foreground">Image quality</label>
+            <span class="text-sm tabular-nums text-muted-foreground">
               {lossless ? "Full" : `${Math.round(store.quality * 100)}%`}
             </span>
           </div>
@@ -162,7 +162,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={busy}>
+    <Button variant="default" onclick={() => store.process()} disabled={busy}>
       {busy ? "Rasterizing…" : `Rasterize ${pageLabel(store.pageCount)}`}
     </Button>
   </ToolFooter>
