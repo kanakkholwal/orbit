@@ -1,19 +1,26 @@
 <script lang="ts">
 import { Tabs as TabsPrimitive } from "bits-ui";
 import { cn } from "$lib/cn.js";
-import { setTabs, type TabsSize, type TabsVariant } from "./context";
+import {
+	setTabs,
+	type TabsOrientation,
+	type TabsSize,
+	type TabsVariant,
+} from "./context";
 
 let {
 	children,
 	value = $bindable(""),
 	variant = "pill",
-	size = "md",
+	size = "default",
+	orientation = "horizontal",
 	class: classProp,
 	...rest
 }: Omit<TabsPrimitive.RootProps, "value"> & {
 	value?: string;
 	variant?: TabsVariant;
 	size?: TabsSize;
+	orientation?: TabsOrientation;
 } = $props();
 
 setTabs({
@@ -26,9 +33,16 @@ setTabs({
 	get size() {
 		return size;
 	},
+	get orientation() {
+		return orientation;
+	},
 });
 </script>
 
-<TabsPrimitive.Root bind:value data-slot="tabs" class={cn("flex flex-col", classProp)} {...rest}>
+<TabsPrimitive.Root bind:value {orientation} data-slot="tabs" class={cn(
+		"flex",
+		orientation === "vertical" ? "flex-row items-start gap-4" : "flex-col",
+		classProp,
+	)} {...rest}>
 	{@render children?.()}
 </TabsPrimitive.Root>

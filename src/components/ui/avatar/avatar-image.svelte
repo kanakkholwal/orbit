@@ -14,7 +14,7 @@ const avatar = getAvatar();
 		{alt}
 		data-slot="avatar-image"
 		class={cn(
-			"absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-(--duration-base) ease-[var(--ease-out)] data-[status=loaded]:opacity-100 motion-reduce:transition-none",
+			"absolute inset-0 size-full rounded-[inherit] object-cover opacity-0 transition-opacity duration-(--duration-base) ease-[var(--ease-ui-out)] data-[status=loaded]:opacity-100 motion-reduce:transition-none",
 			classProp,
 		)}
 		{...rest}

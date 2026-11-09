@@ -34,7 +34,7 @@
 </script>
 
 <Tooltip.Provider delayDuration={400}>
-  <div class={cn("flex min-h-0 w-full overflow-clip bg-canvas", appState.isTauri ? "h-full" : "fixed inset-0")}>
+  <div class={cn("flex min-h-0 w-full overflow-clip bg-background", appState.isTauri ? "h-full" : "fixed inset-0")}>
     <ShellRail wide={inlinePanel} class="hidden md:flex" />
 
     {#if wide}
@@ -42,7 +42,7 @@
         aria-label="Tools"
         inert={!panelOpen}
         class={cn(
-          "shrink-0 overflow-hidden transition-[width,opacity] duration-300 ease-craft",
+          "shrink-0 overflow-hidden transition-[width,opacity] duration-(--duration-slow) ease-(--ease-ui-out)",
           panelOpen ? "w-64 opacity-100" : "w-0 opacity-0"
         )}
       >
@@ -64,13 +64,13 @@
       >
         <span
           aria-hidden="true"
-          class="absolute inset-y-4 left-1/2 w-0.5 -translate-x-1/2 rounded-full bg-transparent transition-colors duration-150 group-hover:bg-border-strong group-focus-visible:bg-ring"
+          class="absolute inset-y-4 left-1/2 w-0.5 -translate-x-1/2 rounded-full bg-transparent transition-colors duration-(--duration-fast) group-hover:bg-border-strong group-focus-visible:bg-ring"
         ></span>
       </button>
     {/if}
 
     <div
-      class="workspace-surface flex min-h-0 min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
+      class="bg-background flex min-h-0 min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
     >
       <ContextBar {tool} {wide} />
 
@@ -84,7 +84,7 @@
             aria-label={workspace.inspector.title}
             class="scrollbar-subtle flex w-80 shrink-0 flex-col overflow-y-auto overscroll-contain border-l border-border"
           >
-            <h2 class="px-4 pb-2 pt-4 text-body font-medium text-foreground">{workspace.inspector.title}</h2>
+            <h2 class="px-4 pb-2 pt-4 text-sm font-medium text-foreground">{workspace.inspector.title}</h2>
             <div class="px-4 pb-4">{@render workspace.inspector.content()}</div>
           </aside>
         {/if}
@@ -112,7 +112,7 @@
     direction={isMobile.current ? "bottom" : "left"}
     shouldScaleBackground={false}
   >
-    <Drawer.Content class={cn(isMobile.current ? "h-[85dvh] max-h-[85dvh] rounded-t-3xl" : "w-80 max-w-80 bg-canvas")}>
+    <Drawer.Content class={cn(isMobile.current ? "h-[85dvh] max-h-[85dvh] rounded-t-3xl" : "w-80 max-w-80 bg-background")}>
       <Drawer.Title class="sr-only">Tools</Drawer.Title>
       <ToolsPanel class="min-h-0 flex-1" onnavigate={() => (workspace.panelDrawerOpen = false)} />
     </Drawer.Content>
@@ -128,7 +128,7 @@
       shouldScaleBackground={false}
     >
       <Drawer.Content class={cn(isMobile.current ? "max-h-[85dvh] rounded-t-3xl" : "w-96 max-w-96")}>
-        <Drawer.Title class="px-4 pb-2 pt-4 text-body font-medium text-foreground">{workspace.inspector.title}</Drawer.Title>
+        <Drawer.Title class="px-4 pb-2 pt-4 text-sm font-medium text-foreground">{workspace.inspector.title}</Drawer.Title>
         <div class="min-h-0 flex-1 overflow-y-auto px-4 pb-[max(env(safe-area-inset-bottom),1rem)]">
           {@render workspace.inspector.content()}
         </div>

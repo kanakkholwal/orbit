@@ -1,17 +1,24 @@
 <script lang="ts">
 import { Dialog as DialogPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
-import { type DialogSize, type DialogVariant, setDialog } from "./context";
+import {
+	type DialogMotion,
+	type DialogSize,
+	type DialogVariant,
+	setDialog,
+} from "./context";
 
 let {
 	children,
 	open = $bindable(false),
-	size = "md",
+	motion = "zoom",
+	size = "default",
 	variant = "default",
 	dismissOnBackdrop = true,
 }: {
 	children?: Snippet;
 	open?: boolean;
+	motion?: DialogMotion;
 	size?: DialogSize;
 	variant?: DialogVariant;
 	dismissOnBackdrop?: boolean;
@@ -20,6 +27,9 @@ let {
 let footer = $state<{ children?: Snippet; class?: string }>();
 
 setDialog({
+	get motion() {
+		return motion;
+	},
 	get size() {
 		return size;
 	},

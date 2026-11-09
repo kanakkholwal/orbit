@@ -6,4 +6,8 @@ let { class: classProp, ...rest }: { class?: string } & HTMLAttributes<HTMLHREle
 	$props();
 </script>
 
-<hr {...rest} data-slot="dropdown-menu-separator" class={cn("-mx-1 my-1 border-border", classProp)} />
+<hr
+	{...rest}
+	data-slot="dropdown-menu-separator"
+	class={cn("-mx-1 my-1 h-px border-0 bg-border", classProp)}
+/>

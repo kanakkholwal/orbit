@@ -22,7 +22,7 @@ const frame = $derived(drawerFrame({ variant }));
 </script>
 
 <Drawer.Portal>
-	<Drawer.Overlay data-slot="drawer-overlay" class={frame.overlay()} />
+	<Drawer.Overlay data-slot="drawer-overlay" aria-hidden="true" class={frame.overlay()} />
 	<!-- The frame is the rim (`framed`) or the surface itself (`default`). -->
 	<Drawer.Content
 		data-slot="drawer-content"

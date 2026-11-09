@@ -11,7 +11,7 @@
     IconLoader2 as Loader,
     IconSearch as SearchIcon,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { tick } from "svelte";
   import { chromeButton } from "./chrome";
 
@@ -84,7 +84,7 @@
 <div class="flex h-full flex-col">
   <div class="flex flex-col gap-3 border-b border-border p-3">
     <label
-      class="flex h-9 items-center gap-2 rounded-lg border border-border bg-background pl-2.5 pr-1 transition-colors duration-150 focus-within:border-ring"
+      class="flex h-9 items-center gap-2 rounded-lg border border-border bg-background pl-2.5 pr-1 transition-colors duration-(--duration-fast) focus-within:border-ring"
     >
       <SearchIcon class="size-4 shrink-0 text-muted-foreground" />
       <span class="sr-only">Search in document</span>
@@ -99,7 +99,7 @@
           if (e.shiftKey) search.provides?.previousResult();
           else search.provides?.nextResult();
         }}
-        class="h-full min-w-0 flex-1 bg-transparent text-body text-foreground placeholder:text-placeholder focus:outline-none [&::-webkit-search-cancel-button]:hidden"
+        class="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none [&::-webkit-search-cancel-button]:hidden"
       />
       {#if inputValue}
         <button
@@ -124,14 +124,14 @@
             checked={option.checked}
             onCheckedChange={(checked) => setFlag(option.flag, checked === true)}
           />
-          <label for={`${uid}-${option.flag}`} class="cursor-pointer text-body text-foreground">{option.label}</label>
+          <label for={`${uid}-${option.flag}`} class="cursor-pointer text-sm text-foreground">{option.label}</label>
         </div>
       {/each}
     </div>
 
     {#if search.state.active && !search.state.loading}
       <div class="-mb-1 flex h-9 items-center justify-between">
-        <span class="text-body text-muted-foreground" aria-live="polite">
+        <span class="text-sm text-muted-foreground" aria-live="polite">
           {#if search.state.total === 0}
             No matches
           {:else}
@@ -166,17 +166,17 @@
 
   <div class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto p-3">
     {#if search.state.loading}
-      <div class="flex h-32 items-center justify-center gap-2 text-body text-muted-foreground">
+      <div class="flex h-32 items-center justify-center gap-2 text-sm text-muted-foreground">
         <Loader class="size-4 animate-spin" />
         Searching
       </div>
     {:else if !search.state.active}
-      <p class="px-1 py-6 text-center text-body text-muted-foreground">Type a word or phrase to find it on every page.</p>
+      <p class="px-1 py-6 text-center text-sm text-muted-foreground">Type a word or phrase to find it on every page.</p>
     {:else}
       <div class="flex flex-col gap-4">
         {#each grouped as [page, hits] (page)}
           <section class="flex flex-col gap-1">
-            <h3 class="px-1 pb-0.5 text-caption font-medium text-muted-foreground">Page {Number(page) + 1}</h3>
+            <h3 class="px-1 pb-0.5 text-xs font-medium text-muted-foreground">Page {Number(page) + 1}</h3>
             {#each hits as { hit, index } (index)}
               {@const active = index === search.state.activeResultIndex}
               <button
@@ -184,7 +184,7 @@
                 onclick={() => search.provides?.goToResult(index)}
                 aria-current={active ? "true" : undefined}
                 class={cn(
-                  "w-full rounded-lg px-2.5 py-2 text-left text-body leading-relaxed text-muted-foreground outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+                  "w-full rounded-lg px-2.5 py-2 text-left text-sm leading-relaxed text-muted-foreground outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                   active ? "bg-muted text-foreground" : "hover:bg-muted/60"
                 )}
               >

@@ -99,7 +99,7 @@
     ZoomPluginPackage,
   } from "@embedpdf/plugin-zoom/svelte";
   import { Button } from "$components/ui/button";
-  import { IconAlertCircle as CircleAlert } from "@tabler/icons-svelte";
+  import { IconAlertCircle as CircleAlert } from "$lib/icons";
   import { untrack } from "svelte";
   import LoadingSpinner from "./LoadingSpinner.svelte";
   import SchemaMenu from "./SchemaMenu.svelte";
@@ -217,16 +217,16 @@
 </script>
 
 {#if pdfEngine.error}
-  <div class="flex h-full items-center justify-center bg-canvas p-6">
-    <div class="panel-card flex max-w-sm flex-col items-center gap-3 bg-background p-6 text-center" role="alert">
+  <div class="flex h-full items-center justify-center bg-background p-6">
+    <div class="rounded-2xl border border-border bg-card flex max-w-sm flex-col items-center gap-3 bg-background p-6 text-center" role="alert">
       <CircleAlert class="size-5 text-destructive" />
-      <p class="text-body font-medium text-foreground">The PDF viewer didn't start</p>
-      <p class="text-body text-muted-foreground">{pdfEngine.error.message}</p>
+      <p class="text-sm font-medium text-foreground">The PDF viewer didn't start</p>
+      <p class="text-sm text-muted-foreground">{pdfEngine.error.message}</p>
       <Button variant="outline" onclick={() => window.location.reload()}>Reload</Button>
     </div>
   </div>
 {:else if pdfEngine.isLoading || !pdfEngine.engine}
-  <div class="flex h-full items-center justify-center bg-canvas">
+  <div class="flex h-full items-center justify-center bg-background">
     <LoadingSpinner message="Starting the viewer" />
   </div>
 {:else}
@@ -257,7 +257,7 @@
             {/if}
           </div>
         {:else}
-          <div class="flex h-full items-center justify-center bg-canvas">
+          <div class="flex h-full items-center justify-center bg-background">
             <LoadingSpinner message="Starting the viewer" />
           </div>
         {/if}
@@ -315,7 +315,7 @@
       />
     {/if}
 
-    <div class="min-w-0 flex-1 overflow-clip bg-canvas">
+    <div class="min-w-0 flex-1 overflow-clip bg-background">
       <DocumentContent {documentId}>
         {#snippet children({ documentState, isLoading, isError, isLoaded })}
           {#if isLoading}
@@ -329,7 +329,7 @@
           {#if isLoaded}
             <div class="relative h-full w-full">
               <GlobalPointerProvider {documentId}>
-                <Viewport class="scrollbar-subtle bg-canvas" {documentId}>
+                <Viewport class="scrollbar-subtle bg-background" {documentId}>
                   <ZoomGestureWrapper {documentId}>
                     <Scroller {documentId}>
                       {#snippet renderPage(page)}

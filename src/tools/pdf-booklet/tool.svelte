@@ -14,7 +14,7 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconRefresh as Refresh } from "$lib/icons";
   import type { Binding, BlankPlacement, SheetSide, SheetSize } from "./booklet";
   import { BookletState } from "./helper.svelte";
 
@@ -46,7 +46,7 @@
 {#snippet half(index: number | null)}
   <span
     class={cn(
-      "grid place-items-center text-caption font-medium tabular-nums",
+      "grid place-items-center text-xs font-medium tabular-nums",
       index === null ? "bg-muted text-muted-foreground" : "bg-card text-foreground"
     )}
   >
@@ -56,7 +56,7 @@
 
 {#snippet side(label: string, value: SheetSide)}
   <div class="flex flex-col gap-1">
-    <span class="text-caption text-muted-foreground">{label}</span>
+    <span class="text-xs text-muted-foreground">{label}</span>
     <div
       class="grid aspect-[1.414/1] grid-cols-2 divide-x divide-dashed divide-border overflow-hidden rounded-md border border-border"
       role="img"
@@ -71,10 +71,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to make a booklet</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to make a booklet</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Pages are arranged two to a sheet, so you can print, fold in half and staple.
       </p>
     {/snippet}
@@ -106,21 +106,21 @@
       onRemove={store.isProcessing ? undefined : () => store.reset()}
     />
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Print double-sided and flip on the short edge. Keep the sheets in order, fold the stack in half and staple along the fold.
     </p>
 
     <section aria-labelledby="{uid}-sheets" class="flex flex-col gap-3 rounded-2xl border border-border bg-muted px-4 py-4">
       <div class="flex items-baseline justify-between gap-3">
-        <h3 id="{uid}-sheets" class="text-body font-medium text-foreground">Sheet order</h3>
-        <span class="text-caption tabular-nums text-muted-foreground">
+        <h3 id="{uid}-sheets" class="text-sm font-medium text-foreground">Sheet order</h3>
+        <span class="text-xs tabular-nums text-muted-foreground">
           {sheetLabel(sheets.length)}{store.blankCount > 0 ? ` · ${store.blankCount} blank ${store.blankCount === 1 ? "page" : "pages"} added` : ""}
         </span>
       </div>
       <ol class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {#each sheets.slice(0, PREVIEW_SHEETS) as sheet, i (i)}
           <li class="flex flex-col gap-2 rounded-xl border border-border bg-background p-3">
-            <span class="text-body font-medium text-foreground">Sheet {i + 1}</span>
+            <span class="text-sm font-medium text-foreground">Sheet {i + 1}</span>
             <div class="grid grid-cols-2 gap-3">
               {@render side("Front", sheet.front)}
               {@render side("Back", sheet.back)}
@@ -129,7 +129,7 @@
         {/each}
       </ol>
       {#if sheets.length > PREVIEW_SHEETS}
-        <p class="text-caption text-muted-foreground">and {sheetLabel(sheets.length - PREVIEW_SHEETS)} more in the same pattern.</p>
+        <p class="text-xs text-muted-foreground">and {sheetLabel(sheets.length - PREVIEW_SHEETS)} more in the same pattern.</p>
       {/if}
     </section>
   </div>
@@ -171,7 +171,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={!store.canRun}>
+    <Button variant="default" onclick={() => store.process()} disabled={!store.canRun}>
       {store.isProcessing ? "Making booklet…" : "Make booklet"}
     </Button>
   </ToolFooter>

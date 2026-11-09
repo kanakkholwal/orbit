@@ -28,8 +28,8 @@
     <canvas
       bind:this={canvas}
       aria-label={`Page ${pageIndex + 1}`}
-      class="h-auto! w-full! transition-opacity duration-300 {rendered ? 'opacity-100' : 'opacity-0'}"
+      class="h-auto! w-full! transition-opacity duration-(--duration-slow) {rendered ? 'opacity-100' : 'opacity-0'}"
     ></canvas>
   </div>
-  <figcaption class="text-caption tabular-nums text-muted-foreground">{position}</figcaption>
+  <figcaption class="text-xs tabular-nums text-muted-foreground">{position}</figcaption>
 </figure>

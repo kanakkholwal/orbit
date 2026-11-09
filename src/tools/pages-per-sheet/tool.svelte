@@ -15,7 +15,7 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconRefresh as Refresh } from "$lib/icons";
   import { PagesPerSheetState } from "./helper.svelte";
   import { MM, type Orientation, type Order, type PerSheet, placeInCell, type SheetSize } from "./layout";
 
@@ -63,10 +63,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to fit more pages on each sheet</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to fit more pages on each sheet</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Put 2, 4, 6, 8 or 9 pages side by side on every sheet to print handouts and save paper.
       </p>
     {/snippet}
@@ -135,7 +135,7 @@
           {/each}
         </svg>
       </div>
-      <p class="text-center text-caption text-muted-foreground">
+      <p class="text-center text-xs text-muted-foreground">
         {store.settings.perSheet} pages on each {sizeName} {landscape ? "landscape" : "portrait"} sheet · {plural(store.pageCount, "page")} become {plural(store.sheetCount, "sheet")}
       </p>
     </section>
@@ -149,7 +149,7 @@
             {@const active = store.settings.perSheet === count.value}
             <label
               class={cn(
-                "flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border px-1 py-2 transition-colors duration-150 has-focus-visible:ring-2 has-focus-visible:ring-ring",
+                "flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border px-1 py-2 transition-colors duration-(--duration-fast) has-focus-visible:ring-2 has-focus-visible:ring-ring",
                 active ? "border-primary bg-primary/5" : "border-border hover:border-border-strong"
               )}
             >
@@ -164,7 +164,7 @@
                   <span class={cn("rounded-[1px]", active ? "bg-primary" : "bg-placeholder")}></span>
                 {/each}
               </span>
-              <span class="text-body font-medium tabular-nums text-foreground">{count.value}</span>
+              <span class="text-sm font-medium tabular-nums text-foreground">{count.value}</span>
             </label>
           {/each}
         </div>
@@ -193,14 +193,14 @@
       <OptionGroup label="Spacing" description="Pages keep their shape and are centred in their space.">
         <div class="flex flex-col gap-3">
           <div class="flex flex-col gap-1">
-            <div class="flex items-baseline justify-between text-caption">
+            <div class="flex items-baseline justify-between text-xs">
               <label for="{uid}-margin" class="text-muted-foreground">Margin around the sheet</label>
               <span class="tabular-nums text-foreground">{store.settings.marginMm} mm</span>
             </div>
             <input id="{uid}-margin" type="range" min="0" max="25" step="1" bind:value={store.settings.marginMm} class="h-10 w-full cursor-pointer accent-primary" />
           </div>
           <div class="flex flex-col gap-1">
-            <div class="flex items-baseline justify-between text-caption">
+            <div class="flex items-baseline justify-between text-xs">
               <label for="{uid}-gap" class="text-muted-foreground">Gap between pages</label>
               <span class="tabular-nums text-foreground">{store.settings.gapMm} mm</span>
             </div>
@@ -230,7 +230,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || tooTight}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || tooTight}>
       {store.isProcessing ? "Creating…" : `Create ${plural(store.sheetCount, "sheet")}`}
     </Button>
   </ToolFooter>

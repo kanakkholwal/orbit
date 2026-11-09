@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconPhotoPlus as PhotoPlus, IconQrcode as Qr } from "@tabler/icons-svelte";
+  import { IconPhotoPlus as PhotoPlus, IconQrcode as Qr } from "$lib/icons";
   import { fill } from "../model/fields";
   import { type CreatorTheme, tint, toneColor } from "../model/themes";
   import type { Block, BlockPropsMap, BlockType } from "../model/types";
@@ -419,7 +419,7 @@
       <img src={p.src} alt={p.alt} style:width={`${width}px`} style:border-radius={`${theme.radius}px`} style="display:block;height:auto" />
     {:else}
       <div class="cp-placeholder" style:width={`${width}px`}>
-        <PhotoPlus size={22} stroke={1.5} />
+        <PhotoPlus size={22} />
         <span>Choose an image in the panel</span>
       </div>
     {/if}
@@ -429,7 +429,7 @@
   {@const p = block.props}
   <div class="cp-col" style:align-items={p.align === "center" ? "center" : p.align === "right" ? "flex-end" : "flex-start"}>
     <div class="cp-qr" style:width={`${p.size}px`} style:height={`${p.size}px`} title={p.data}>
-      <Qr size={p.size * 0.9} stroke={1.25} />
+      <Qr size={p.size * 0.9} />
     </div>
     {#if p.caption}<div class="cp-tiny cp-muted" style="margin-top:4px">{p.caption}</div>{/if}
   </div>

@@ -2,19 +2,20 @@
 import { Dialog as DialogPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import { cn } from "$lib/cn.js";
-import { getDialog } from "./context";
 import { dialogFrame, dialogWidth } from "./variants";
+import { getDialog } from "./context";
 
 let { children, class: classProp }: { children?: Snippet; class?: string } = $props();
 
 const dialog = getDialog();
-const styles = $derived(dialogFrame({ variant: dialog.variant }));
+const styles = $derived(dialogFrame({ motion: dialog.motion, variant: dialog.variant }));
 </script>
 
 <DialogPrimitive.Portal>
-	<DialogPrimitive.Overlay data-slot="dialog-backdrop" class={styles.backdrop()} />
+	<DialogPrimitive.Overlay data-slot="dialog-backdrop" aria-hidden="true" class={styles.backdrop()} />
 	<DialogPrimitive.Content
 		data-slot="dialog-content"
+		data-motion={dialog.motion}
 		data-variant={dialog.variant}
 		onInteractOutside={(event) => {
 			if (!dialog.dismissOnBackdrop) event.preventDefault();

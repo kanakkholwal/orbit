@@ -1,6 +1,6 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
-  import { IconLoader2 as Loader } from "@tabler/icons-svelte";
+  import { IconLoader2 as Loader } from "$lib/icons";
   import Cropper from "cropperjs";
   import "cropperjs/dist/cropper.css";
   import { onDestroy, untrack } from "svelte";
@@ -127,7 +127,7 @@
   {#if isLoading}
     <div class="absolute inset-0 z-20 flex items-center justify-center gap-2 bg-muted" aria-live="polite">
       <Loader class="size-4 animate-spin text-primary" />
-      <span class="text-body text-muted-foreground">Loading page {store.state.currentPage}</span>
+      <span class="text-sm text-muted-foreground">Loading page {store.state.currentPage}</span>
     </div>
   {/if}
 

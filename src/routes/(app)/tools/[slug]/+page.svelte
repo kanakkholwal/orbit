@@ -9,7 +9,7 @@
   import { recordRecentTool } from "$lib/runtime/recent-tools.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { IconAlertCircle as CircleAlert, IconLoader2 as Loader } from "@tabler/icons-svelte";
+  import { IconAlertCircle as CircleAlert, IconLoader2 as Loader } from "$lib/icons";
   import { untrack } from "svelte";
   import { fade } from "svelte/transition";
   import type { PageProps } from "./$types";
@@ -72,15 +72,15 @@
     {#await toolModule}
       <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3" in:fade={{ duration: 150 }}>
         <Loader class="size-5 animate-spin text-primary" />
-        <p class="text-body text-muted-foreground">Opening {tool.title}</p>
+        <p class="text-sm text-muted-foreground">Opening {tool.title}</p>
       </div>
     {:then mod}
       <mod.default />
     {:catch}
       <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3 px-6 text-center" in:fade={{ duration: 150 }}>
         <CircleAlert class="size-5 text-destructive" />
-        <p class="text-body font-medium text-foreground">{tool.title} didn't load</p>
-        <p class="max-w-sm text-body text-muted-foreground">Check your connection, then try again.</p>
+        <p class="text-sm font-medium text-foreground">{tool.title} didn't load</p>
+        <p class="max-w-sm text-sm text-muted-foreground">Check your connection, then try again.</p>
         <div class="mt-2 flex gap-2">
           <Button variant="outline" size="sm" onclick={() => window.location.reload()}>Try again</Button>
           <Button variant="ghost" size="sm" href="/explore">Browse tools</Button>
@@ -107,20 +107,20 @@
     </section>
 
     {#if showGuide}
-      <div class="border-t border-border bg-canvas">
+      <div class="border-t border-border bg-background">
         <div class="mx-auto flex w-full max-w-5xl flex-col gap-14 px-3 py-12 sm:px-6">
           <section class="flex flex-col gap-3">
-            <h2 class="text-heading-sm font-medium text-foreground">About {tool.title}</h2>
-            <p class="max-w-3xl text-body leading-relaxed text-muted-foreground md:text-body-lg">{toolContent.intro}</p>
+            <h2 class="text-2xl font-medium text-foreground">About {tool.title}</h2>
+            <p class="max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">{toolContent.intro}</p>
           </section>
 
           <section class="flex flex-col gap-5">
-            <h2 class="text-heading-sm font-medium text-foreground">How it works</h2>
+            <h2 class="text-2xl font-medium text-foreground">How it works</h2>
             <ol class="flex flex-col gap-3">
               {#each toolContent.howItWorks as step, i (i)}
-                <li class="panel-card flex gap-4 px-5 py-4">
-                  <span class="text-body font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
-                  <p class="text-body leading-relaxed text-muted-foreground">{step}</p>
+                <li class="rounded-2xl border border-border bg-card flex gap-4 px-5 py-4">
+                  <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
+                  <p class="text-sm leading-relaxed text-muted-foreground">{step}</p>
                 </li>
               {/each}
             </ol>
@@ -131,25 +131,25 @@
           {/key}
 
           <section class="flex flex-col gap-5">
-            <h2 class="text-heading-sm font-medium text-foreground">What it's good for</h2>
+            <h2 class="text-2xl font-medium text-foreground">What it's good for</h2>
             <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {#each toolContent.useCases as uc (uc.title)}
-                <li class="panel-card flex flex-col gap-2 p-5">
-                  <h3 class="text-body-lg font-medium text-foreground">{uc.title}</h3>
-                  <p class="text-body leading-relaxed text-muted-foreground">{uc.body}</p>
+                <li class="rounded-2xl border border-border bg-card flex flex-col gap-2 p-5">
+                  <h3 class="text-base font-medium text-foreground">{uc.title}</h3>
+                  <p class="text-sm leading-relaxed text-muted-foreground">{uc.body}</p>
                 </li>
               {/each}
             </ul>
           </section>
 
           <section class="flex flex-col gap-5">
-            <h2 class="text-heading-sm font-medium text-foreground">Questions</h2>
+            <h2 class="text-2xl font-medium text-foreground">Questions</h2>
             <FaqList items={toolContent.faqs} variant="cards" />
           </section>
 
           {#if data.recommended.length > 0}
             <section class="flex flex-col gap-5">
-              <h2 class="text-heading-sm font-medium text-foreground">Related tools</h2>
+              <h2 class="text-2xl font-medium text-foreground">Related tools</h2>
               <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {#each data.recommended as rec, i (rec.slug)}
                   <li class="contents">

@@ -11,7 +11,7 @@ export const slider = tv({
 		control:
 			"relative flex touch-none select-none items-center data-[orientation=horizontal]:w-full data-[orientation=vertical]:min-h-0 data-[orientation=vertical]:flex-1 data-[orientation=vertical]:flex-col data-disabled:opacity-50",
 		track:
-			"relative overflow-hidden rounded-full bg-input transition-[height,width] duration-(--duration-press) ease-(--ease-out) data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full motion-reduce:transition-none",
+			"relative overflow-hidden rounded-full bg-(--track) transition-[height,width] duration-(--duration-press) ease-(--ease-ui-out) data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full motion-reduce:transition-none",
 		range:
 			"slider-glide rounded-full bg-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full",
 		thumb:
@@ -55,7 +55,7 @@ export const slider = tv({
 					"group-data-[orientation=horizontal]/slider:h-full group-data-[orientation=horizontal]/slider:w-5 group-data-[orientation=vertical]/slider:h-5 group-data-[orientation=vertical]/slider:w-full",
 					"before:absolute before:top-1/2 before:left-1/2 before:-translate-1/2 before:rounded-full before:bg-foreground",
 					"group-data-[orientation=horizontal]/slider:before:h-6 group-data-[orientation=horizontal]/slider:before:w-1 group-data-[orientation=vertical]/slider:before:h-1 group-data-[orientation=vertical]/slider:before:w-6",
-					"before:transition-[scale] before:duration-(--duration-press) before:ease-(--ease-out) motion-reduce:before:transition-none",
+					"before:transition-[scale] before:duration-(--duration-press) before:ease-(--ease-ui-out) motion-reduce:before:transition-none",
 					"group-data-[orientation=horizontal]/slider:data-[active]:before:scale-y-[1.35] group-data-[orientation=horizontal]/slider:data-[dragging]:before:scale-y-[1.35] group-data-[orientation=vertical]/slider:data-[active]:before:scale-x-[1.35] group-data-[orientation=vertical]/slider:data-[dragging]:before:scale-x-[1.35]",
 				],
 			},
@@ -75,7 +75,7 @@ export const slider = tv({
 					"h-full w-5 cursor-grab border-0 bg-transparent shadow-none hover:scale-100 focus-visible:shadow-none active:scale-100 data-[active]:scale-100 data-[dragging]:scale-100 active:cursor-grabbing",
 					"before:absolute before:top-1/2 before:left-1/2 before:h-6 before:w-1 before:-translate-1/2 before:rounded-full before:bg-foreground before:opacity-[calc(1-var(--slider-split,0))]",
 					"after:absolute after:top-1/2 after:left-1/2 after:h-[calc(1.5rem+var(--slider-split,0)*0.5rem)] after:w-1 after:-translate-1/2 after:[background:radial-gradient(circle_at_50%_2px,var(--foreground)_2px,transparent_2.5px),radial-gradient(circle_at_50%_calc(100%-2px),var(--foreground)_2px,transparent_2.5px)]",
-					"before:transition-[opacity,scale] after:transition-[height] before:duration-(--duration-press) after:duration-(--duration-press) before:ease-(--ease-out) after:ease-(--ease-out) data-[active]:before:scale-y-[1.35] data-[dragging]:before:scale-y-[1.35] motion-reduce:before:transition-none motion-reduce:after:transition-none",
+					"before:transition-[opacity,scale] after:transition-[height] before:duration-(--duration-press) after:duration-(--duration-press) before:ease-(--ease-ui-out) after:ease-(--ease-ui-out) data-[active]:before:scale-y-[1.35] data-[dragging]:before:scale-y-[1.35] motion-reduce:before:transition-none motion-reduce:after:transition-none",
 				],
 			},
 			// A value bubble pops out of the thumb while it is dragged: above it, or right of it when vertical.
@@ -88,7 +88,7 @@ export const slider = tv({
 				bubble: [
 					"pointer-events-none absolute bottom-full left-1/2 mb-2.5 block origin-bottom -translate-x-1/2 whitespace-nowrap rounded-xl bg-foreground px-2.5 py-1 font-medium text-background text-sm tabular-nums shadow-md",
 					"after:absolute after:top-full after:left-1/2 after:size-2.5 after:-translate-x-1/2 after:-translate-y-1.5 after:rotate-45 after:rounded-[3px] after:bg-foreground",
-					"translate-y-2.5 scale-[0.4] opacity-0 transition-[opacity,scale,translate] duration-(--duration-exit) ease-(--ease-out)",
+					"translate-y-2.5 scale-[0.4] opacity-0 transition-[opacity,scale,translate] duration-(--duration-exit) ease-(--ease-ui-out)",
 					"group-data-[active]/thumb:translate-y-0 group-data-[active]/thumb:scale-80 group-data-[active]/thumb:opacity-100 group-data-[active]/thumb:duration-(--duration-dropdown)",
 					"group-data-[dragging]/thumb:translate-y-0 group-data-[dragging]/thumb:scale-80 group-data-[dragging]/thumb:opacity-100 group-data-[dragging]/thumb:duration-(--duration-dropdown)",
 					"motion-reduce:translate-y-0 motion-reduce:scale-80 motion-reduce:transition-opacity",
@@ -101,7 +101,7 @@ export const slider = tv({
 			// Thumbless: the whole pill is the control; a second copy of its text rides in the fill.
 			fluid: {
 				control:
-					"@container overflow-hidden rounded-full bg-muted transition-[scale] duration-(--duration-press) ease-(--ease-out) has-focus-visible:ring-4 has-focus-visible:ring-foreground/40 has-focus-visible:ring-inset has-data-[active]:scale-[1.03] has-data-[dragging]:scale-[1.03] motion-reduce:transition-none",
+					"@container overflow-hidden rounded-full bg-muted transition-[scale] duration-(--duration-press) ease-(--ease-ui-out) has-focus-visible:ring-4 has-focus-visible:ring-foreground/40 has-focus-visible:ring-inset has-data-[active]:scale-[1.03] has-data-[dragging]:scale-[1.03] motion-reduce:transition-none",
 				track: "absolute inset-0 h-full rounded-none bg-transparent",
 				range: "overflow-hidden rounded-none rounded-r-full bg-foreground",
 				thumb:
@@ -144,7 +144,7 @@ export const slider = tv({
 		},
 		size: {
 			sm: {},
-			md: {},
+			default: {},
 			lg: {},
 		},
 	},
@@ -161,14 +161,14 @@ export const slider = tv({
 		},
 		{
 			variant: "default",
-			size: "md",
+			size: "default",
 			class: {
 				control: "data-[orientation=horizontal]:h-11 data-[orientation=vertical]:w-11",
 				track:
 					"data-[orientation=horizontal]:h-1 data-[orientation=vertical]:w-1 group-hover/slider:data-[orientation=horizontal]:h-1.5 group-hover/slider:data-[orientation=vertical]:w-1.5",
 			},
 		},
-		{ variant: "default", size: "md", class: { thumb: "size-4 border-2" } },
+		{ variant: "default", size: "default", class: { thumb: "size-4 border-2" } },
 		{
 			variant: "default",
 			size: "lg",
@@ -189,7 +189,7 @@ export const slider = tv({
 		},
 		{
 			variant: "bubble",
-			size: "md",
+			size: "default",
 			class: {
 				control: "data-[orientation=horizontal]:h-11 data-[orientation=vertical]:w-11",
 				track: "data-[orientation=horizontal]:h-2 data-[orientation=vertical]:w-2",
@@ -212,7 +212,7 @@ export const slider = tv({
 		},
 		{
 			variant: "track",
-			size: "md",
+			size: "default",
 			class: {
 				control: "data-[orientation=horizontal]:h-10 data-[orientation=vertical]:w-10",
 			},
@@ -225,13 +225,13 @@ export const slider = tv({
 			},
 		},
 		{ variant: "inline", size: "sm", class: { control: "h-8" } },
-		{ variant: "inline", size: "md", class: { control: "h-10" } },
+		{ variant: "inline", size: "default", class: { control: "h-10" } },
 		{ variant: "inline", size: "lg", class: { control: "h-12" } },
 		{ variant: "fluid", size: "sm", class: { control: "h-10" } },
-		{ variant: "fluid", size: "md", class: { control: "h-12" } },
+		{ variant: "fluid", size: "default", class: { control: "h-12" } },
 		{ variant: "fluid", size: "lg", class: { control: "h-14" } },
 	],
-	defaultVariants: { variant: "default", size: "md" },
+	defaultVariants: { variant: "default", size: "default" },
 });
 
 export type SliderSize = NonNullable<VariantProps<typeof slider>["size"]>;

@@ -1,0 +1,7 @@
+<script lang="ts">
+import type { IconProps } from "../types";
+
+let { size = 24, ...rest }: IconProps = $props();
+</script>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width={size} height={size} aria-hidden={rest["aria-label"] === undefined ? "true" : undefined} {...rest}><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><path d="M12 8V12L14.5 14.5" opacity=".5"/><path d="M4.33776 6.87058L5.60414 5.6042C9.10115 2.10719 14.7996 2.13583 18.3319 5.66816C21.8642 9.2005 21.8929 14.8989 18.3959 18.3959C14.8988 21.8929 9.20044 21.8643 5.6681 18.332C3.57589 16.2397 2.71285 13.3876 3.08355 10.6831M4.32497 4.32503L4.33776 6.87058L6.88331 6.88337"/></g></svg>

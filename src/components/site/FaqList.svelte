@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { prefersReducedMotion } from "$lib/motion";
+  import { prefersReducedMotion } from "$lib/reduced-motion";
   import { cn } from "$lib/utils";
-  import { IconChevronDown as ChevronDown, IconPlus as Plus } from "@tabler/icons-svelte";
+  import { IconChevronDown as ChevronDown, IconPlus as Plus } from "$lib/icons";
   import { slide } from "svelte/transition";
 
   type Item = { q: string; a: string };
@@ -43,20 +43,20 @@
         >
           <span class="flex items-center gap-4">
             {#if cards}
-              <span class="text-body font-semibold tabular-nums text-primary">
+              <span class="text-sm font-semibold tabular-nums text-primary">
                 {String(i + 1).padStart(2, "0")}
               </span>
             {/if}
-            <span class={cn("font-medium text-foreground", cards ? "text-body-lg" : "text-body")}>{item.q}</span>
+            <span class={cn("font-medium text-foreground", cards ? "text-base" : "text-sm")}>{item.q}</span>
           </span>
           {#if cards}
             <ChevronDown
-              class="size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-craft"
+              class="size-4 shrink-0 text-muted-foreground transition-transform duration-(--duration-base) ease-(--ease-ui-out)"
               style={open === i ? "transform: rotate(180deg)" : ""}
             />
           {:else}
             <Plus
-              class="size-4 shrink-0 text-muted-foreground transition-transform duration-200 ease-craft group-hover:text-foreground"
+              class="size-4 shrink-0 text-muted-foreground transition-transform duration-(--duration-base) ease-(--ease-ui-out) group-hover:text-foreground"
               style={open === i ? "transform: rotate(45deg)" : ""}
             />
           {/if}
@@ -72,7 +72,7 @@
         >
           <p
             class={cn(
-              "max-w-2xl text-pretty pb-5 text-body leading-relaxed text-muted-foreground",
+              "max-w-2xl text-pretty pb-5 text-sm leading-relaxed text-muted-foreground",
               cards && "pl-10"
             )}
           >

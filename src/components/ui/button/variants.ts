@@ -3,7 +3,7 @@ import { tv, type VariantProps } from "tailwind-variants";
 export const button = tv({
 	base: [
 		"relative inline-flex shrink-0 select-none items-center justify-center gap-2",
-		"whitespace-nowrap rounded-lg border border-transparent font-medium text-sm",
+		"whitespace-nowrap border border-transparent font-medium text-sm",
 		// Colour answers at once; the squish settles slower so it reads soft, not twitchy.
 		"transition-[transform,scale,translate,background-color,border-color,color,box-shadow]",
 		"[transition-duration:var(--duration-slow),var(--duration-slow),var(--duration-slow),var(--duration-instant),var(--duration-instant),var(--duration-instant),var(--duration-instant)] ease-[var(--ease-smooth)]",
@@ -19,9 +19,8 @@ export const button = tv({
 			default: "bg-primary text-primary-foreground hover:bg-(--primary-hover)",
 			default_soft: "border-primary/10 bg-primary/8 text-primary hover:bg-primary/15",
 			secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-			outline:
-				"border-input bg-background hover:bg-foreground/[0.06] hover:text-foreground",
-			ghost: "hover:bg-foreground/[0.06] hover:text-foreground",
+			outline: "border-input bg-background hover:bg-accent hover:text-accent-foreground",
+			ghost: "hover:bg-accent hover:text-accent-foreground",
 			link: "text-primary underline-offset-4 hover:underline active:scale-100",
 			destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
 			destructive_soft:
@@ -52,17 +51,21 @@ export const button = tv({
 			raw: "h-auto rounded-none border-0 p-0 active:scale-100",
 		},
 		size: {
-			xs: "h-6 gap-1.5 rounded-md px-2 text-xs active:scale-[var(--press-scale-sm)] [&_svg]:size-3",
-			sm: "h-8 gap-1.5 px-3 text-xs active:scale-[var(--press-scale-sm)] [&_svg]:size-3.5",
-			md: "h-9 px-4 [&_svg]:size-4",
-			lg: "h-10 px-5 active:scale-[var(--press-scale-lg)] [&_svg]:size-4",
-			xl: "h-12 px-7 text-base active:scale-[var(--press-scale-lg)] [&_svg]:size-5",
+			// The control ladder (DESIGN.md): radius rides the size, about a quarter of the height.
+			xs: "h-6 gap-1 rounded-sm px-2 text-xs active:scale-[var(--press-scale-sm)] [&_svg]:size-3",
+			sm: "h-8 gap-1.5 rounded-md px-3 text-xs active:scale-[var(--press-scale-sm)] [&_svg]:size-3.5",
+			default: "h-9 gap-2 rounded-lg px-4 [&_svg]:size-4",
+			lg: "h-10 gap-2 rounded-lg px-5 active:scale-[var(--press-scale-lg)] [&_svg]:size-4.5",
+			xl: "h-12 gap-2.5 rounded-xl px-6 text-base active:scale-[var(--press-scale-lg)] [&_svg]:size-5",
 			"icon-xs":
-				"size-6 rounded-md p-0 active:scale-[var(--press-scale-icon)] [&_svg]:size-3",
-			"icon-sm": "size-8 p-0 active:scale-[var(--press-scale-icon)] [&_svg]:size-3.5",
-			icon: "size-9 p-0 [&_svg]:size-4",
-			"icon-lg": "size-10 p-0 active:scale-[var(--press-scale-lg)] [&_svg]:size-4",
-			"icon-xl": "size-12 p-0 active:scale-[var(--press-scale-lg)] [&_svg]:size-5",
+				"size-6 rounded-sm p-0 active:scale-[var(--press-scale-icon)] [&_svg]:size-3",
+			"icon-sm":
+				"size-8 rounded-md p-0 active:scale-[var(--press-scale-icon)] [&_svg]:size-3.5",
+			icon: "size-9 rounded-lg p-0 [&_svg]:size-4",
+			"icon-lg":
+				"size-10 rounded-lg p-0 active:scale-[var(--press-scale-lg)] [&_svg]:size-4.5",
+			"icon-xl":
+				"size-12 rounded-xl p-0 active:scale-[var(--press-scale-lg)] [&_svg]:size-5",
 		},
 	},
 	compoundVariants: [
@@ -94,8 +97,23 @@ export const button = tv({
 			class:
 				"transition-[transform,scale,translate,background-color,border-color,color,box-shadow,filter]",
 		},
+		// Size classes merge after variant ones, so `raw` re-strips the box here.
+		{ variant: "raw", class: "h-auto rounded-none p-0" },
 	],
-	defaultVariants: { variant: "default", size: "md" },
+	defaultVariants: { variant: "default", size: "default" },
+});
+
+/** Faces fill the button and inherit its justify, direction and gap. The hidden face leaves the
+ * flow and is clipped across, so only what the button shows sizes it or adds scroll width. */
+export const buttonFace = tv({
+	slots: {
+		wrap: "relative grid w-full min-w-0 grid-cols-[minmax(0,1fr)] overflow-x-clip gap-[inherit] [align-items:inherit] [flex-direction:inherit] [justify-content:inherit]",
+		face: [
+			"col-start-1 row-start-1 flex gap-[inherit] whitespace-nowrap [align-items:inherit] [flex-direction:inherit] [justify-content:inherit]",
+			"transition-[opacity,transform,scale,translate,filter] duration-(--duration-base) ease-[var(--ease-ui-out)] motion-reduce:transition-none",
+			"data-[on=false]:pointer-events-none data-[on=false]:absolute data-[on=false]:inset-0 data-[on=false]:translate-y-[3px] data-[on=false]:opacity-0 data-[on=false]:blur-[3px]",
+		],
+	},
 });
 
 export type ButtonVariant = NonNullable<VariantProps<typeof button>["variant"]>;

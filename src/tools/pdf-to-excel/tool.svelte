@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
   import { PdfToExcelState } from "./helper.svelte";
 
   const store = new PdfToExcelState();
@@ -19,10 +19,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to copy tables into Excel</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to copy tables into Excel</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Find the tables in each PDF and save them as a spreadsheet, one sheet per table.
       </p>
     {/snippet}
@@ -64,7 +64,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Works best on tables with clear rows and columns in PDFs made on a computer.
     </p>
 
@@ -128,7 +128,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Converting…" : pendingCount > 0 ? `Convert ${plural(pendingCount)}` : "Convert"}
     </Button>
   </ToolFooter>

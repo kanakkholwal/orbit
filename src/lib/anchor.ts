@@ -72,7 +72,7 @@ export const UNFOLD = tv({
 /** Rows inside an `UNFOLD` surface settle in one after another; `stagger()` numbers them. */
 export const UNFOLD_ITEM = tv({
 	base: [
-		"transition-[color,background-color,opacity,translate,scale] duration-[var(--duration-tooltip)] ease-[var(--ease-out)]",
+		"transition-[color,background-color,opacity,translate,scale] duration-[var(--duration-tooltip)] ease-[var(--ease-ui-out)]",
 		// Only the first three rows stagger, so a long menu still settles in 240ms.
 		"[--stagger:calc(min(var(--i,0),2)*var(--stagger-step))] [transition-delay:0s,0s,var(--stagger),var(--stagger),0s]",
 		"active:scale-[var(--press-scale-row)]",

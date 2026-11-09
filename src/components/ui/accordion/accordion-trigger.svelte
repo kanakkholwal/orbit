@@ -2,16 +2,21 @@
 import { Accordion as AccordionPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import { cn } from "$lib/cn.js";
+import { accordionItem } from "./context";
 
 let {
 	children,
 	class: classProp,
 	...rest
 }: { children?: Snippet; class?: string } = $props();
+
+const ids = accordionItem();
 </script>
 
 <AccordionPrimitive.Header level={3} data-slot="accordion-header" class="flex">
 	<AccordionPrimitive.Trigger
+		id={ids?.trigger}
+		aria-controls={ids?.content}
 		{...rest}
 		data-slot="accordion-trigger"
 		class={cn(
@@ -26,7 +31,7 @@ let {
 			fill="none"
 			aria-hidden="true"
 			data-slot="accordion-icon"
-			class="size-4 shrink-0 text-muted-foreground transition-[rotate] duration-(--duration-exit) ease-(--ease-out) group-data-[state=open]/accordion-trigger:rotate-180 group-data-[state=open]/accordion-trigger:duration-(--duration-overlay) motion-reduce:transition-none"
+			class="size-4 shrink-0 text-muted-foreground transition-[rotate] duration-(--accordion-duration) ease-(--accordion-ease) group-data-[state=open]/accordion-trigger:rotate-180 group-data-[state=open]/accordion-trigger:duration-(--accordion-open-duration) group-data-[state=open]/accordion-trigger:ease-(--accordion-open-ease) motion-reduce:transition-none"
 		>
 			<path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
 		</svg>

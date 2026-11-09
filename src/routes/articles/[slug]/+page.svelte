@@ -3,7 +3,7 @@
   import { RailFrame, RailRow } from "$components/site";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
-  import { IconArrowLeft as ArrowLeft, IconArrowRight as ArrowRight } from "@tabler/icons-svelte";
+  import { IconArrowLeft as ArrowLeft, IconArrowRight as ArrowRight } from "$lib/icons";
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
@@ -37,16 +37,16 @@
 />
 
 <RailFrame>
-  <RailRow divider={false} label="Article" class="px-3 pb-10 pt-28 sm:px-6 sm:pt-32">
+  <RailRow divider={false} label="Article" class="pb-10 pt-12 md:pt-16">
     <div class="mx-auto flex w-full max-w-6xl flex-col gap-10 px-1 sm:px-4 lg:px-10">
       <header class="flex max-w-3xl flex-col gap-4">
-        <a href="/articles" class="flex w-fit items-center gap-1.5 rounded-md text-body text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+        <a href="/articles" class="flex w-fit items-center gap-1.5 rounded-md text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
           <ArrowLeft class="size-4" />
           All articles
         </a>
-        <h1 class="text-balance text-heading-lg font-medium text-foreground md:text-display">{article.title}</h1>
-        <p class="text-pretty text-body-lg text-muted-foreground">{article.description}</p>
-        <p class="text-body text-muted-foreground">
+        <h1 class="text-balance text-4xl font-medium text-foreground md:text-5xl">{article.title}</h1>
+        <p class="text-pretty text-base text-muted-foreground">{article.description}</p>
+        <p class="text-sm text-muted-foreground">
           By <a href="/about" class="font-medium text-foreground underline-offset-4 hover:underline">the Orbit team</a>
           · {article.updated ? "Updated" : "Published"} <time datetime={article.updated ?? article.published}>{formatDate(article.updated ?? article.published)}</time>
           · {article.readingMinutes} min read
@@ -60,13 +60,13 @@
 
         <aside class="flex flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
           {#if primary}
-            <div class="panel-card flex flex-col gap-3 p-5">
+            <div class="rounded-2xl border border-border bg-card flex flex-col gap-3 p-5">
               <span class="grid size-10 place-items-center rounded-lg border border-border bg-background text-primary">
                 <primary.icon class="size-5" />
               </span>
-              <p class="text-body-lg font-medium text-foreground">{primary.title}</p>
-              <p class="text-body text-muted-foreground">Free, no upload, no account. Your file stays on your device.</p>
-              <Button href={`/tools/${primary.slug}`} variant="primary" class="w-full">
+              <p class="text-base font-medium text-foreground">{primary.title}</p>
+              <p class="text-sm text-muted-foreground">Free, no upload, no account. Your file stays on your device.</p>
+              <Button href={`/tools/${primary.slug}`} variant="default" class="w-full">
                 Open {primary.title}
                 <ArrowRight />
               </Button>
@@ -74,9 +74,9 @@
           {/if}
           {#if data.toc.length > 1}
             <nav aria-label="On this page" class="hidden flex-col gap-1 lg:flex">
-              <p class="pb-1 text-caption font-medium text-muted-foreground">On this page</p>
+              <p class="pb-1 text-xs font-medium text-muted-foreground">On this page</p>
               {#each data.toc as item (item.id)}
-                <a href={`#${item.id}`} class="rounded-md py-1 text-body text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">{item.text}</a>
+                <a href={`#${item.id}`} class="rounded-md py-1 text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">{item.text}</a>
               {/each}
             </nav>
           {/if}
@@ -88,16 +88,16 @@
   {#if data.related.length > 0}
     <RailRow label="Keep reading" class="px-3 py-12 sm:px-6">
       <div class="mx-auto flex w-full max-w-6xl flex-col gap-5 px-1 sm:px-4 lg:px-10">
-        <h2 class="text-heading-sm font-medium text-foreground">Keep reading</h2>
+        <h2 class="text-2xl font-medium text-foreground">Keep reading</h2>
         <ul class="grid grid-cols-1 gap-3 md:grid-cols-3">
           {#each data.related as item (item.slug)}
             <li>
               <a
                 href={`/articles/${item.slug}`}
-                class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-5 outline-none transition-[border-color,box-shadow] duration-200 hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
+                class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-5 outline-none transition-[border-color,box-shadow] duration-(--duration-base) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <span class="text-body-lg font-medium text-foreground">{item.title}</span>
-                <span class="line-clamp-2 text-body text-muted-foreground">{item.description}</span>
+                <span class="text-base font-medium text-foreground">{item.title}</span>
+                <span class="line-clamp-2 text-sm text-muted-foreground">{item.description}</span>
               </a>
             </li>
           {/each}

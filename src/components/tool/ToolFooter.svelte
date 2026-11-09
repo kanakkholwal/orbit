@@ -14,7 +14,7 @@
 
 <WorkspaceActionBar>
   <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-    <div class="min-w-0 flex-1 text-body text-muted-foreground">
+    <div class="min-w-0 flex-1 text-sm text-muted-foreground">
       {#if typeof hint === "string"}
         <span class="block truncate">{hint}</span>
       {:else if hint}

@@ -9,7 +9,7 @@
     IconEye as Eye,
     IconEyeOff as EyeOff,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { EncryptPdfState } from "./helper.svelte";
 
   const store = new EncryptPdfState();
@@ -21,7 +21,7 @@
   let showOwnerPassword = $state(false);
 
   const inputClass =
-    "h-10 w-full rounded-lg border border-border bg-background px-3 pr-11 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring disabled:cursor-not-allowed disabled:opacity-50";
+    "h-10 w-full rounded-lg border border-border bg-background px-3 pr-11 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring disabled:cursor-not-allowed disabled:opacity-50";
   const eyeClass =
     "absolute right-0.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
 
@@ -63,10 +63,10 @@
 {#if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.setFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to protect</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to protect</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Add a password so only people you trust can open it. The file never leaves this device.
       </p>
     {/snippet}
@@ -102,12 +102,12 @@
       oninput={clearResult}
     >
       <div class="flex flex-col gap-0.5">
-        <h2 class="text-body-lg font-medium text-foreground">Choose a password</h2>
-        <p class="text-body text-muted-foreground">Anyone who opens the file will need to type it.</p>
+        <h2 class="text-base font-medium text-foreground">Choose a password</h2>
+        <p class="text-sm text-muted-foreground">Anyone who opens the file will need to type it.</p>
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="{uid}-password" class="text-body font-medium text-foreground">Password</label>
+        <label for="{uid}-password" class="text-sm font-medium text-foreground">Password</label>
         <div class="relative">
           <input
             id="{uid}-password"
@@ -129,7 +129,7 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="{uid}-confirm" class="text-body font-medium text-foreground">Type it again</label>
+        <label for="{uid}-confirm" class="text-sm font-medium text-foreground">Type it again</label>
         <input
           id="{uid}-confirm"
           type={showPassword ? "text" : "password"}
@@ -139,12 +139,12 @@
           aria-describedby="{uid}-confirm-hint"
           class="{inputClass} pr-3 aria-invalid:border-destructive"
         />
-        <p id="{uid}-confirm-hint" class="text-caption {mismatch ? 'text-destructive' : 'text-muted-foreground'}">
+        <p id="{uid}-confirm-hint" class="text-xs {mismatch ? 'text-destructive' : 'text-muted-foreground'}">
           {mismatch ? "The passwords do not match yet." : "Orbit cannot recover a forgotten password."}
         </p>
       </div>
 
-      <p class="border-t border-border pt-4 text-caption text-muted-foreground">
+      <p class="border-t border-border pt-4 text-xs text-muted-foreground">
         Protected with 256-bit AES encryption, right here on this device. Nothing is uploaded.
       </p>
     </section>
@@ -209,7 +209,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={protect} disabled={store.isProcessing || blocker !== ""}>
+    <Button variant="default" onclick={protect} disabled={store.isProcessing || blocker !== ""}>
       {store.isProcessing ? "Protecting…" : "Protect PDF"}
     </Button>
   </ToolFooter>

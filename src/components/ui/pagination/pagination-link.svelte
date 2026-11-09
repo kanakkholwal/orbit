@@ -7,7 +7,7 @@ import { type PaginationSize, pagination } from "./variants";
 let {
 	children,
 	active = false,
-	size = "md",
+	size = "default",
 	class: classProp,
 	...rest
 }: {

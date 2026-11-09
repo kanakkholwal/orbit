@@ -15,7 +15,7 @@
     IconPlus as Plus,
     IconRefresh as Refresh,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { AlternateMixState } from "./helper.svelte";
   import type { RunOutMode } from "./mix";
   import { sourceLetter } from "./mix";
@@ -43,10 +43,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to mix their pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to mix their pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Add two or more files. Pages are taken from each in turn, like shuffling front and back scans together.
       </p>
     {/snippet}
@@ -84,7 +84,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Pages are taken from each file in turn, top to bottom. Drag a row or use the arrows to change who goes first.
     </p>
 
@@ -98,31 +98,31 @@
             >
               <GripVertical class="size-4" />
             </span>
-            <span class="grid size-8 place-items-center rounded-lg text-body font-medium {tones[i % 2]}">
+            <span class="grid size-8 place-items-center rounded-lg text-sm font-medium {tones[i % 2]}">
               {sourceLetter(i)}
             </span>
           </div>
 
           <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-            <span class="truncate text-body font-medium text-foreground" title={file.file.name}>{file.file.name}</span>
-            <span class="text-caption tabular-nums text-muted-foreground">
+            <span class="truncate text-sm font-medium text-foreground" title={file.file.name}>{file.file.name}</span>
+            <span class="text-xs tabular-nums text-muted-foreground">
               {pageLabel(file.pageCount)} · {formatBytes(file.size)}{file.reversed ? " · last page first" : ""}
             </span>
           </div>
 
           <div class="order-last flex w-full items-center gap-4 pl-10 sm:order-0 sm:w-auto sm:pl-0">
-            <label class="flex items-center gap-2 text-body text-muted-foreground">
+            <label class="flex items-center gap-2 text-sm text-muted-foreground">
               <Switch bind:checked={file.reversed} aria-label={`Reverse the order of ${file.file.name}`} />
               Reverse
             </label>
-            <label class="flex items-center gap-2 text-body text-muted-foreground">
+            <label class="flex items-center gap-2 text-sm text-muted-foreground">
               <input
                 type="number"
                 min="1"
                 max={Math.max(1, file.pageCount)}
                 bind:value={file.perTurn}
                 aria-label={`Pages per turn from ${file.file.name}`}
-                class="h-9 w-16 rounded-lg border border-border bg-background px-2 text-body tabular-nums text-foreground outline-none transition-colors focus:border-ring"
+                class="h-9 w-16 rounded-lg border border-border bg-background px-2 text-sm tabular-nums text-foreground outline-none transition-colors focus:border-ring"
               />
               per turn
             </label>
@@ -166,24 +166,24 @@
 
     <section aria-labelledby="{uid}-order" class="flex flex-col gap-3 rounded-2xl border border-border bg-muted px-4 py-4">
       <div class="flex items-baseline justify-between gap-3">
-        <h3 id="{uid}-order" class="text-body font-medium text-foreground">Page order</h3>
-        <span class="text-caption tabular-nums text-muted-foreground">{pageLabel(order.length)} in the result</span>
+        <h3 id="{uid}-order" class="text-sm font-medium text-foreground">Page order</h3>
+        <span class="text-xs tabular-nums text-muted-foreground">{pageLabel(order.length)} in the result</span>
       </div>
       {#if store.files.length < 2}
-        <p class="text-body text-muted-foreground">Add another file to see how the pages will be mixed.</p>
+        <p class="text-sm text-muted-foreground">Add another file to see how the pages will be mixed.</p>
       {:else}
         <ol class="flex flex-wrap gap-1.5" aria-label="First pages of the result">
           {#each preview as slot, i (i)}
-            <li class="rounded-md px-2 py-1 text-caption font-medium tabular-nums {tones[slot.source % 2]}">
+            <li class="rounded-md px-2 py-1 text-xs font-medium tabular-nums {tones[slot.source % 2]}">
               <span class="sr-only">Page {i + 1}: file</span>
               {store.label(slot)}
             </li>
           {/each}
           {#if order.length > PREVIEW_COUNT}
-            <li class="px-1 py-1 text-caption text-muted-foreground">and {order.length - PREVIEW_COUNT} more</li>
+            <li class="px-1 py-1 text-xs text-muted-foreground">and {order.length - PREVIEW_COUNT} more</li>
           {/if}
         </ol>
-        <p class="text-caption text-muted-foreground">A2 means page 2 of file A.</p>
+        <p class="text-xs text-muted-foreground">A2 means page 2 of file A.</p>
       {/if}
     </section>
 
@@ -211,7 +211,7 @@
           Collate double-sided scans
         </Button>
         {#if store.files.length !== 2}
-          <p class="text-caption text-muted-foreground">Needs exactly two files: fronts first, backs second.</p>
+          <p class="text-xs text-muted-foreground">Needs exactly two files: fronts first, backs second.</p>
         {/if}
       </OptionGroup>
 
@@ -226,7 +226,7 @@
           type="text"
           bind:value={store.outputName}
           placeholder="mixed.pdf"
-          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
         />
       </OptionGroup>
     </div>
@@ -243,7 +243,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={!store.canRun}>
+    <Button variant="default" onclick={() => store.process()} disabled={!store.canRun}>
       {store.isProcessing ? "Mixing…" : `Mix ${pageLabel(order.length)}`}
     </Button>
   </ToolFooter>

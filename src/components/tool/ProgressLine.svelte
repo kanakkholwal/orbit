@@ -12,10 +12,10 @@
 </script>
 
 <div class={cn("flex min-w-0 flex-col gap-1.5", className)}>
-  <div class="flex items-baseline justify-between gap-3 text-body">
+  <div class="flex items-baseline justify-between gap-3 text-sm">
     <span class="truncate text-foreground">{label}</span>
     {#if total > 0}
-      <span class="shrink-0 text-caption tabular-nums text-muted-foreground">{current} of {total}</span>
+      <span class="shrink-0 text-xs tabular-nums text-muted-foreground">{current} of {total}</span>
     {/if}
   </div>
   <div
@@ -26,6 +26,6 @@
     aria-valuemax={100}
     aria-valuenow={percent}
   >
-    <div class="h-full rounded-full bg-primary transition-[width] duration-300 ease-craft" style:width={`${percent}%`}></div>
+    <div class="h-full rounded-full bg-primary transition-[width] duration-(--duration-slow) ease-(--ease-ui-out)" style:width={`${percent}%`}></div>
   </div>
 </div>

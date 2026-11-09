@@ -2,8 +2,8 @@
 import { RadioGroup as RadioGroupPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import { cn } from "$lib/cn.js";
-import { getRadioGroupItemContext } from "./context";
 import { radioGroup } from "./variants";
+import { getRadioGroupItemContext } from "./context";
 
 let {
 	children,

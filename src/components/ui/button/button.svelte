@@ -20,7 +20,9 @@ export type ButtonProps = {
 
 <script lang="ts">
 import { cn } from "$lib/cn.js";
-import { button, isIconSize } from "./variants";
+import { button, buttonFace, isIconSize } from "./variants";
+
+const faceStyles = buttonFace();
 
 let {
 	ref = $bindable(null),
@@ -35,10 +37,6 @@ let {
 	...rest
 }: ButtonProps = $props();
 
-// The hidden face leaves the flow, so the button is sized by what it shows, not by "Loading…".
-const FACE =
-	"col-start-1 row-start-1 flex items-center justify-center gap-2 whitespace-nowrap transition-[opacity,transform,scale,translate,filter] duration-(--duration-base) ease-[var(--ease-out)] motion-reduce:transition-none data-[on=false]:pointer-events-none data-[on=false]:absolute data-[on=false]:inset-0 data-[on=false]:translate-y-[3px] data-[on=false]:opacity-0 data-[on=false]:blur-[3px]";
-
 const classes = $derived(cn(button({ variant, size }), classProp));
 const iconOnly = $derived(isIconSize(size));
 
@@ -52,11 +50,11 @@ function activate(event: MouseEvent) {
 </script>
 
 {#snippet faces()}
-	<span class="relative grid place-items-center">
-		<span class={FACE} data-on={!loading} aria-hidden={loading}>
+	<span class={faceStyles.wrap()}>
+		<span class={faceStyles.face()} data-on={!loading} aria-hidden={loading}>
 			{@render children?.()}
 		</span>
-		<span class={FACE} data-on={loading} aria-hidden={!loading}>
+		<span class={faceStyles.face()} data-on={loading} aria-hidden={!loading}>
 			<svg
 				viewBox="0 0 12 12"
 				fill="none"

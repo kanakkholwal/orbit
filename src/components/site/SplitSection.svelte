@@ -21,7 +21,7 @@
   <div class="flex flex-col gap-10 lg:flex-row lg:gap-20">
     <div class="flex shrink-0 flex-col gap-2 lg:w-110">
       <div class={cn("flex flex-col gap-2", sticky && "lg:sticky lg:top-28")}>
-        <h2 class="text-balance text-heading-lg font-medium text-foreground">
+        <h2 class="text-balance text-4xl font-medium text-foreground">
           {title}
           {#if accent}
             <br />
@@ -29,7 +29,7 @@
           {/if}
         </h2>
         {#if description}
-          <p class="max-w-sm text-pretty text-body text-muted-foreground">{description}</p>
+          <p class="max-w-sm text-pretty text-sm text-muted-foreground">{description}</p>
         {/if}
         {#if aside}
           <div class="mt-6">{@render aside()}</div>

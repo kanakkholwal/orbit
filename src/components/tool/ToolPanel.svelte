@@ -20,15 +20,15 @@
     <div class="flex items-end justify-between gap-3">
       <div class="flex min-w-0 flex-col gap-0.5">
         {#if title}
-          <h3 class="flex items-baseline gap-2 text-body font-medium text-foreground">
+          <h3 class="flex items-baseline gap-2 text-sm font-medium text-foreground">
             {title}
             {#if counter !== undefined}
-              <span class="text-caption font-normal tabular-nums text-muted-foreground">{counter}</span>
+              <span class="text-xs font-normal tabular-nums text-muted-foreground">{counter}</span>
             {/if}
           </h3>
         {/if}
         {#if description}
-          <p class="text-caption text-muted-foreground">{description}</p>
+          <p class="text-xs text-muted-foreground">{description}</p>
         {/if}
       </div>
       {#if actions}

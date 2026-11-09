@@ -5,7 +5,7 @@
   import { Button } from "$components/ui/button";
   import { REVIEWED } from "$constants/alternatives";
   import { config } from "$constants/app";
-  import { IconArrowRight as ArrowRight, IconCheck as Check, IconDownload as Download } from "@tabler/icons-svelte";
+  import { IconArrowRight as ArrowRight, IconCheck as Check, IconDownload as Download } from "$lib/icons";
   import type { PageProps } from "./$types";
 
   let { data }: PageProps = $props();
@@ -38,7 +38,7 @@
   <RailRow divider={false} label={`Orbit compared with ${alt.name}`}>
     <PageHero badge={`Compared with ${alt.name}`} title={alt.title} lede={alt.lede}>
       {#snippet actions()}
-        <Button href="/explore" variant="primary">
+        <Button href="/explore" variant="default">
           Try Orbit free
           <ArrowRight />
         </Button>
@@ -57,8 +57,8 @@
       description={`How Orbit and ${alt.name} handle the things people ask about most.`}
     >
       <div class="flex flex-col gap-3">
-        <div class="panel-card overflow-x-auto">
-          <table class="w-full min-w-[34rem] border-collapse text-left text-body">
+        <div class="rounded-2xl border border-border bg-card overflow-x-auto">
+          <table class="w-full min-w-[34rem] border-collapse text-left text-sm">
             <caption class="sr-only">Orbit compared with {alt.name}</caption>
             <thead>
               <tr class="border-b border-border">
@@ -80,7 +80,7 @@
             </tbody>
           </table>
         </div>
-        <p class="text-caption text-muted-foreground">
+        <p class="text-xs text-muted-foreground">
           Details about {alt.name} summarise its public website as of {reviewed} and can change. Check {alt.name}'s own site for current plans and limits.
         </p>
       </div>
@@ -91,9 +91,9 @@
     <SplitSection title="Why people" accent="choose Orbit" description="The reasons that come up again and again.">
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {#each alt.whySwitch as item (item.title)}
-          <li class="panel-card flex flex-col gap-2 p-6">
-            <h3 class="text-body-lg font-medium text-foreground">{item.title}</h3>
-            <p class="text-body leading-relaxed text-muted-foreground">{item.body}</p>
+          <li class="rounded-2xl border border-border bg-card flex flex-col gap-2 p-6">
+            <h3 class="text-base font-medium text-foreground">{item.title}</h3>
+            <p class="text-sm leading-relaxed text-muted-foreground">{item.body}</p>
           </li>
         {/each}
       </ul>
@@ -106,9 +106,9 @@
       accent="is the better pick"
       description="No tool is right for everyone. Here is where the other option does more."
     >
-      <ul class="panel-card flex flex-col divide-y divide-border px-6">
+      <ul class="rounded-2xl border border-border bg-card flex flex-col divide-y divide-border px-6">
         {#each alt.theyWin as item (item)}
-          <li class="py-4 text-body leading-relaxed text-foreground">{item}</li>
+          <li class="py-4 text-sm leading-relaxed text-foreground">{item}</li>
         {/each}
       </ul>
     </SplitSection>
@@ -139,10 +139,10 @@
           <li>
             <a
               href={`/compare/${other.slug}`}
-              class="group flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3.5 text-body text-foreground outline-none transition-[border-color,box-shadow] duration-200 hover:border-border-strong hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring"
+              class="group flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] duration-(--duration-base) hover:border-border-strong hover:shadow-sm focus-visible:ring-2 focus-visible:ring-ring"
             >
               Orbit vs {other.name}
-              <ArrowRight class="size-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight class="size-4 text-muted-foreground transition-transform duration-(--duration-base) group-hover:translate-x-0.5" />
             </a>
           </li>
         {/each}
@@ -153,7 +153,7 @@
   <RailRow label="Get started">
     <BrandPanel title="Your files, your device" body="Every Orbit tool is free, with no account, no uploads and no limits.">
       {#snippet actions()}
-        <Button href="/explore" variant="ink">Browse all tools <ArrowRight /></Button>
+        <Button href="/explore" variant="secondary">Browse all tools <ArrowRight /></Button>
         <Button href="/download" variant="light">Desktop app <Download /></Button>
       {/snippet}
     </BrandPanel>

@@ -32,3 +32,11 @@ export const ALERT_ICON: Record<AlertVariant, string> = {
 	warning: "M8 5.6v3.2M8 11.1h.01",
 	destructive: "M5.6 5.6l4.8 4.8M10.4 5.6l-4.8 4.8",
 };
+
+/** Wraps an alert that can close: hiding folds its row shut and fades it, so content below rises. */
+export const alertCollapse = tv({
+	slots: {
+		root: "grid grid-rows-[1fr] opacity-100 transition-[grid-template-rows,opacity] duration-(--duration-collapse) ease-(--ease-out-quad) data-[open=false]:grid-rows-[0fr] data-[open=false]:opacity-0 motion-reduce:transition-none",
+		inner: "min-h-0 overflow-hidden",
+	},
+});

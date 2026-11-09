@@ -7,7 +7,7 @@ export { default as DialogHeader } from "./dialog-header.svelte";
 export { default as DialogTitle } from "./dialog-title.svelte";
 export { default as DialogTrigger } from "./dialog-trigger.svelte";
 export { type DialogContext } from "./context";
-export { dialogFrame, type DialogVariant, dialogWidth, type DialogSize } from "./variants";
+export { dialogFrame, type DialogVariant, type DialogMotion, dialogWidth, type DialogSize } from "./variants";
 export { default as Root } from "./dialog.svelte";
 export { default as Close } from "./dialog-close.svelte";
 export { default as Content } from "./dialog-content.svelte";

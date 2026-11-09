@@ -11,7 +11,7 @@
     IconRefresh as Refresh,
     IconRotate2 as RotateLeft,
     IconRotateClockwise as RotateRight,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { RotatePdfState } from "./helper.svelte";
   import PageThumbnail from "./PageThumbnail.svelte";
 
@@ -32,10 +32,10 @@
 {:else if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to turn its pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to turn its pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Fix sideways or upside down pages, one at a time or all at once.
       </p>
     {/snippet}
@@ -69,7 +69,7 @@
       resetLabel="Close file"
     />
 
-    <p class="text-body text-muted-foreground">Use the arrows under a page to turn it a quarter turn.</p>
+    <p class="text-sm text-muted-foreground">Use the arrows under a page to turn it a quarter turn.</p>
 
     <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {#each store.state.pages as page (page.pageIndex)}
@@ -99,11 +99,11 @@
 
       <OptionGroup label="Result">
         <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages</dt>
             <dd class="font-medium tabular-nums text-foreground">{store.state.pageCount}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Turned</dt>
             <dd class="font-medium tabular-nums text-foreground">{turned}</dd>
           </div>
@@ -128,7 +128,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.save()} disabled={store.isProcessing || turned === 0}>
+    <Button variant="default" onclick={() => store.save()} disabled={store.isProcessing || turned === 0}>
       {store.isProcessing ? "Saving…" : turned > 0 ? `Turn ${pageLabel(turned)}` : "Turn pages"}
     </Button>
   </ToolFooter>

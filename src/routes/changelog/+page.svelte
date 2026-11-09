@@ -4,7 +4,7 @@
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { cn } from "$lib/utils";
-  import { IconBrandGithub as Github } from "@tabler/icons-svelte";
+  import { IconBrandGithub as Github } from "$lib/icons";
 
   type Tag = "New" | "Improved" | "Fixed" | "Heads up";
 
@@ -95,20 +95,20 @@
         <li class="flex flex-col gap-4 lg:flex-row lg:gap-20">
           <div class="shrink-0 lg:w-110">
             <div class="flex items-baseline gap-3 lg:sticky lg:top-28 lg:flex-col lg:gap-1">
-              <span class="text-heading-sm font-medium tabular-nums text-foreground">v{entry.version}</span>
-              <time datetime={entry.date} class="text-body text-muted-foreground">{formatDate(entry.date)}</time>
+              <span class="text-2xl font-medium tabular-nums text-foreground">v{entry.version}</span>
+              <time datetime={entry.date} class="text-sm text-muted-foreground">{formatDate(entry.date)}</time>
             </div>
           </div>
 
-          <article class="panel-card min-w-0 flex-1 p-6">
-            <h2 class="text-subheading font-medium text-foreground">{entry.title}</h2>
-            <p class="mt-2 text-body leading-relaxed text-muted-foreground">{entry.summary}</p>
+          <article class="rounded-2xl border border-border bg-card min-w-0 flex-1 p-6">
+            <h2 class="text-xl font-medium text-foreground">{entry.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{entry.summary}</p>
             <ul class="mt-5 flex flex-col gap-3 border-t border-border pt-5">
               {#each entry.items as item (item.text)}
-                <li class="flex items-start gap-3 text-body">
+                <li class="flex items-start gap-3 text-sm">
                   <span
                     class={cn(
-                      "mt-px inline-flex w-18 shrink-0 justify-center rounded-full px-2 py-0.5 text-caption font-medium",
+                      "mt-px inline-flex w-18 shrink-0 justify-center rounded-full px-2 py-0.5 text-xs font-medium",
                       tagStyles[item.tag]
                     )}
                   >

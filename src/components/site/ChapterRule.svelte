@@ -20,10 +20,10 @@
   )}
 >
   <div class="flex items-baseline gap-4">
-    <span class="text-heading-sm font-medium tabular-nums text-foreground">
+    <span class="text-2xl font-medium tabular-nums text-foreground">
       {index}
     </span>
-    <span class="label-eyebrow text-muted-foreground">{label}</span>
+    <span class="text-xs font-medium text-muted-foreground">{label}</span>
   </div>
   {#if action}
     {@render action()}

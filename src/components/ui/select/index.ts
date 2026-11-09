@@ -6,7 +6,7 @@ export { default as SelectLabel } from "./select-label.svelte";
 export { default as SelectSeparator } from "./select-separator.svelte";
 export { default as SelectTrigger } from "./select-trigger.svelte";
 export { default as SelectValue } from "./select-value.svelte";
-export { selectTrigger, selectContent, type SelectContentSize, type SelectTriggerVariant, type SelectTriggerSize } from "./variants";
+export { selectTrigger, type SelectTriggerVariant, type SelectTriggerSize, type SelectContentSize } from "./variants";
 export { default as Root } from "./select.svelte";
 export { default as Content } from "./select-content.svelte";
 export { default as Group } from "./select-group.svelte";

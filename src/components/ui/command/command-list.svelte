@@ -28,6 +28,7 @@ $effect(() => {
 <CommandPrimitive.List
 	bind:ref={el}
 	data-slot="command-list"
+	aria-label="Suggestions"
 	class={cn(command.styles.list(), classProp)}
 	onpointermove={() => (glide = true)}
 	{...rest}
@@ -40,5 +41,6 @@ $effect(() => {
 			style={pillCss(box)}
 		></span>
 	{/if}
-	{@render children?.()}
+	<!-- The viewport is what bits-ui measures into --bits-command-list-height. -->
+	<CommandPrimitive.Viewport>{@render children?.()}</CommandPrimitive.Viewport>
 </CommandPrimitive.List>

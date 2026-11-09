@@ -12,7 +12,7 @@
     getUIItemProps,
     useUISchema,
   } from "@embedpdf/plugin-ui/svelte";
-  import { IconCheck as Check, IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-svelte";
+  import { IconCheck as Check, IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "$lib/icons";
   import { tick } from "svelte";
   import { chromeFloating } from "./chrome";
 
@@ -121,7 +121,7 @@
   }
 
   const rowClass =
-    "flex w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-body outline-none transition-colors duration-150 focus-visible:bg-muted";
+    "flex w-full items-center gap-2.5 rounded-lg px-2.5 text-left text-sm outline-none transition-colors duration-(--duration-fast) focus-visible:bg-muted";
 </script>
 
 {#snippet contents(mobile: boolean)}
@@ -136,7 +136,7 @@
         Back
       </button>
       {#if current?.title}
-        <span class="ml-auto truncate pr-2.5 text-body font-medium text-foreground">{current.title}</span>
+        <span class="ml-auto truncate pr-2.5 text-sm font-medium text-foreground">{current.title}</span>
       {/if}
     </div>
   {/if}
@@ -176,7 +176,7 @@
   {:else if item.type === "section"}
     <div {...getUIItemProps(item)} role="group" class="flex flex-col gap-0.5 py-1">
       {#if item.labelKey || item.label}
-        <div class="px-2.5 pb-1 pt-1.5 text-caption font-medium text-muted-foreground">{labelOf(item)}</div>
+        <div class="px-2.5 pb-1 pt-1.5 text-xs font-medium text-muted-foreground">{labelOf(item)}</div>
       {/if}
       {#each item.items as subItem, index (`${subItem.type}-${index}`)}
         {@render menuItem(subItem, mobile)}
@@ -207,7 +207,7 @@
       class={cn(
         rowClass,
         mobile ? "h-11" : "h-9",
-        cmd.disabled ? "cursor-not-allowed text-placeholder" : "cursor-pointer text-foreground hover:bg-muted/60"
+        cmd.disabled ? "cursor-not-allowed text-muted-foreground" : "cursor-pointer text-foreground hover:bg-muted/60"
       )}
     >
       {#if cmd.icon}
@@ -220,7 +220,7 @@
       {/if}
       <span class={cn("min-w-0 flex-1 truncate", cmd.active && "font-medium")}>{cmd.label}</span>
       {#if cmd.shortcuts?.length && !mobile}
-        <kbd class="font-sans text-caption text-muted-foreground">{cmd.shortcuts[0]}</kbd>
+        <kbd class="font-sans text-xs text-muted-foreground">{cmd.shortcuts[0]}</kbd>
       {/if}
       {#if cmd.active}
         <Check class="size-4 shrink-0 text-primary" />
@@ -255,7 +255,7 @@
       onkeydown={onKeydown}
       class={cn(
         chromeFloating,
-        "scrollbar-subtle fixed z-50 max-h-[min(32rem,calc(100dvh-1rem))] min-w-56 max-w-80 overflow-y-auto transition-opacity duration-150",
+        "scrollbar-subtle fixed z-50 max-h-[min(32rem,calc(100dvh-1rem))] min-w-56 max-w-80 overflow-y-auto transition-opacity duration-(--duration-fast)",
         position ? "opacity-100" : "opacity-0"
       )}
       style:top={position ? `${position.top}px` : "0px"}

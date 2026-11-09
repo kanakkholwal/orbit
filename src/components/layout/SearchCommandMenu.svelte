@@ -17,7 +17,8 @@
     IconBrandGithub as Github,
     IconHome as HomeIcon,
     IconSearch as Search,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
+  import type { Icon } from "$lib/icons";
   import { onMount } from "svelte";
   import { cubicOut } from "svelte/easing";
   import { fade, scale } from "svelte/transition";
@@ -27,7 +28,7 @@
     title: string;
     description?: string;
     category: string;
-    icon: typeof FileText;
+    icon: Icon;
     keywords?: string[];
     action: () => void;
   };
@@ -202,7 +203,7 @@
       bind:value={query}
       type="search"
       placeholder={`Search ${toolList.length} tools and pages`}
-      class="h-12 w-full bg-transparent text-body-lg text-foreground placeholder:text-placeholder focus:outline-none"
+      class="h-12 w-full bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
     />
   </label>
 {/snippet}
@@ -211,13 +212,13 @@
   <div class={cn("overflow-y-auto overscroll-contain p-2", className)}>
     {#if results.length === 0}
       <div class="flex flex-col items-center gap-1 px-4 py-10 text-center">
-        <p class="text-body font-medium text-foreground">No matches</p>
-        <p class="text-body text-muted-foreground">Nothing matches “{query}”.</p>
+        <p class="text-sm font-medium text-foreground">No matches</p>
+        <p class="text-sm text-muted-foreground">Nothing matches “{query}”.</p>
       </div>
     {:else}
       {#each groupedResults as group (group.name)}
         <div class="flex flex-col pb-1">
-          <div class="px-3 pb-1 pt-2 text-caption font-medium text-muted-foreground">{group.name}</div>
+          <div class="px-3 pb-1 pt-2 text-xs font-medium text-muted-foreground">{group.name}</div>
           <ul class="flex flex-col gap-0.5">
             {#each group.items as { cmd, index } (cmd.id)}
               {@const isSelected = index === selectedIndex}
@@ -227,7 +228,7 @@
                   onclick={() => selectResult(cmd)}
                   onmouseenter={() => (selectedIndex = index)}
                   class={cn(
-                    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors duration-150",
+                    "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors duration-(--duration-fast)",
                     isSelected ? "bg-muted" : "hover:bg-muted"
                   )}
                 >
@@ -240,13 +241,13 @@
                     <cmd.icon class="size-4" />
                   </span>
                   <span class="flex min-w-0 flex-1 flex-col">
-                    <span class="truncate text-body font-medium text-foreground">
+                    <span class="truncate text-sm font-medium text-foreground">
                       {#each highlight(cmd.title, query) as part, i (i)}
                         {#if part.hit}<span class="text-primary">{part.text}</span>{:else}{part.text}{/if}
                       {/each}
                     </span>
                     {#if cmd.description}
-                      <span class="truncate text-caption text-muted-foreground">{cmd.description}</span>
+                      <span class="truncate text-xs text-muted-foreground">{cmd.description}</span>
                     {/if}
                   </span>
                   <ChevronRight
@@ -296,7 +297,7 @@
     >
       {@render searchField("border-b border-border")}
       {@render resultList("min-h-0 flex-1")}
-      <div class="flex items-center justify-between gap-2 border-t border-border bg-muted px-4 py-2 text-caption text-muted-foreground">
+      <div class="flex items-center justify-between gap-2 border-t border-border bg-muted px-4 py-2 text-xs text-muted-foreground">
         <span class="flex items-center gap-3">
           <span class="inline-flex items-center gap-1.5">
             <kbd class="inline-grid h-5 min-w-5 place-items-center rounded-sm border border-border bg-background px-1">

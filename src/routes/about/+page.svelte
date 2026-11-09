@@ -10,7 +10,7 @@
     IconLock as Lock,
     IconMail as Mail,
     IconSparkles as Sparkles,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
 
   const principles = [
     {
@@ -59,7 +59,7 @@
       lede={`${config.appName} began with a small frustration: PDF sites that are slow, cap how much you can do and are quick to ask for your file. So we built one that keeps your documents on your own device.`}
     >
       {#snippet actions()}
-        <Button href="/explore" variant="primary">Try the tools</Button>
+        <Button href="/explore" variant="default">Try the tools</Button>
         <Button href={config.github} target="_blank" rel="noopener noreferrer">
           Star on GitHub
           <Github />
@@ -76,12 +76,12 @@
     >
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {#each principles as p (p.title)}
-          <li class="panel-card flex flex-col gap-3 p-6">
+          <li class="rounded-2xl border border-border bg-card flex flex-col gap-3 p-6">
             <span class="grid size-10 place-items-center rounded-lg border border-border">
               <p.icon class="size-5 text-primary" />
             </span>
-            <h3 class="text-body-lg font-medium text-foreground">{p.title}</h3>
-            <p class="text-body leading-relaxed text-muted-foreground">{p.body}</p>
+            <h3 class="text-base font-medium text-foreground">{p.title}</h3>
+            <p class="text-sm leading-relaxed text-muted-foreground">{p.body}</p>
           </li>
         {/each}
       </ul>
@@ -90,11 +90,11 @@
 
   <RailRow label="At a glance">
     <SplitSection title="At a" accent="glance" description="The short answers to what people ask first.">
-      <dl class="panel-card divide-y divide-border px-6">
+      <dl class="rounded-2xl border border-border bg-card divide-y divide-border px-6">
         {#each facts as [label, value] (label)}
           <div class="flex items-center justify-between gap-4 py-5">
-            <dt class="text-body text-muted-foreground">{label}</dt>
-            <dd class="text-body-lg font-medium text-foreground">{value}</dd>
+            <dt class="text-sm text-muted-foreground">{label}</dt>
+            <dd class="text-base font-medium text-foreground">{value}</dd>
           </div>
         {/each}
       </dl>
@@ -119,7 +119,7 @@
       {#snippet actions()}
         <Button
           href={`mailto:${config.supportEmail}`}
-          variant="ink"
+          variant="secondary"
         >
           Contact us
           <Mail />

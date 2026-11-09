@@ -1,23 +1,21 @@
 import { tv, type VariantProps } from "tailwind-variants";
+import { controlSize, fieldFrame, fieldHalo, fieldText } from "$lib/control.js";
 
 export const input = tv({
-	base: [
-		"w-full rounded-lg border border-input bg-background text-foreground",
-		"placeholder:text-muted-foreground",
-		"transition-[box-shadow,border-color] duration-[var(--duration-press)] ease-[var(--ease-out)]",
-		"outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring",
-		"disabled:cursor-not-allowed disabled:opacity-50",
-		"aria-[invalid=true]:border-[var(--destructive)] aria-[invalid=true]:focus-visible:ring-[color-mix(in_oklch,var(--destructive)_40%,transparent)]",
-	],
+	base: [fieldFrame(), "w-full min-w-0 placeholder:text-muted-foreground"],
 	variants: {
 		size: {
-			sm: "h-8 px-2.5 text-xs",
-			md: "h-9 px-3 text-sm",
-			lg: "h-10 px-3.5 text-sm",
-			xl: "h-12 px-4 text-base",
+			xs: [controlSize({ size: "xs" }), fieldText({ size: "xs" }), "px-2"],
+			sm: [controlSize({ size: "sm" }), fieldText({ size: "sm" }), "px-2.5"],
+			default: [controlSize({ size: "default" }), fieldText({ size: "default" }), "px-3"],
+			lg: [controlSize({ size: "lg" }), fieldText({ size: "lg" }), "px-3.5"],
+			xl: [controlSize({ size: "xl" }), fieldText({ size: "xl" }), "px-4"],
 		},
+		/** `outline`: focus shows as the border alone; `ring`: adds a soft halo. */
+		variant: { outline: "", ring: fieldHalo() },
 	},
-	defaultVariants: { size: "md" },
+	defaultVariants: { size: "default", variant: "outline" },
 });
 
 export type InputSize = NonNullable<VariantProps<typeof input>["size"]>;
+export type InputVariant = NonNullable<VariantProps<typeof input>["variant"]>;

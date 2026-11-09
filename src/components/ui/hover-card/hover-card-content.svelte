@@ -1,7 +1,7 @@
 <script lang="ts">
 import { LinkPreview as HoverCardPrimitive } from "bits-ui";
-import { ANCHORED } from "$lib/anchor.js";
 import { cn } from "$lib/cn.js";
+import { ANCHORED } from "$lib/anchor.js";
 
 let {
 	class: classProp,

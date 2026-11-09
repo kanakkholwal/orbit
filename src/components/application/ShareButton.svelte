@@ -4,7 +4,7 @@
   import ResponsiveDialog from "$components/ui/ResponsiveDialog.svelte";
   import { useShare } from "$lib/hooks/use-share.svelte";
   import { cn } from "$lib/utils";
-  import { IconCheck as Check, IconCopy as Copy, IconShare as Share2 } from "@tabler/icons-svelte";
+  import { IconCheck as Check, IconCopy as Copy, IconShare as Share2 } from "$lib/icons";
   import type { Snippet } from "svelte";
   import type { HTMLButtonAttributes } from "svelte/elements";
   import { toast } from "svelte-sonner";
@@ -87,11 +87,11 @@
           class="group flex flex-col items-center gap-2 outline-none"
         >
           <span
-            class="flex size-12 items-center justify-center rounded-2xl bg-muted text-foreground transition-all duration-200 ease-snappy group-hover:bg-primary/10 group-hover:text-primary group-active:scale-95"
+            class="flex size-12 items-center justify-center rounded-2xl bg-muted text-foreground transition-all duration-(--duration-base) ease-(--ease-ui-out) group-hover:bg-primary/10 group-hover:text-primary group-active:scale-95"
           >
             <social.icon class="size-5" />
           </span>
-          <span class="truncate text-caption text-muted-foreground transition-colors group-hover:text-foreground">
+          <span class="truncate text-xs text-muted-foreground transition-colors group-hover:text-foreground">
             {social.name}
           </span>
           <span class="sr-only">Share on {social.name}</span>
@@ -106,11 +106,11 @@
           class="group flex flex-col items-center gap-2 outline-none"
         >
           <span
-            class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-200 ease-snappy group-hover:bg-primary/15 group-active:scale-95"
+            class="flex size-12 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-(--duration-base) ease-(--ease-ui-out) group-hover:bg-primary/15 group-active:scale-95"
           >
             <Share2 class="size-5" />
           </span>
-          <span class="text-caption text-muted-foreground transition-colors group-hover:text-foreground">
+          <span class="text-xs text-muted-foreground transition-colors group-hover:text-foreground">
             More
           </span>
           <span class="sr-only">Native share</span>

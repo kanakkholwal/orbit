@@ -16,7 +16,7 @@ const styles = $derived(sheet({ side, variant }));
 </script>
 
 <SheetPrimitive.Portal>
-	<SheetPrimitive.Overlay data-slot="sheet-backdrop" class={styles.backdrop()} />
+	<SheetPrimitive.Overlay data-slot="sheet-backdrop" aria-hidden="true" class={styles.backdrop()} />
 	<SheetPrimitive.Content
 		bind:ref
 		{...rest}

@@ -14,7 +14,7 @@
     IconLock as Lock,
     IconSearch as Search,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
 
   /** True when a web visitor previews the desktop home via `?mode=desktop`. */
   let { preview = false }: { preview?: boolean } = $props();
@@ -68,7 +68,7 @@
 
 <Seo title="Desktop" description={config.appDescription} keywords={config.appKeywords} />
 
-<div class={cn("flex w-full flex-col bg-canvas", preview ? "min-h-screen" : "h-full overflow-y-auto")}>
+<div class={cn("flex w-full flex-col bg-background", preview ? "min-h-screen" : "h-full overflow-y-auto")}>
   <header
     class="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-4 border-b border-border bg-background/80 px-4 backdrop-blur-xl"
   >
@@ -86,9 +86,9 @@
         bind:value={query}
         type="search"
         placeholder={`Search ${toolList.length} tools`}
-        class="h-full min-w-0 flex-1 bg-transparent text-body text-foreground outline-none"
+        class="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none"
       />
-      <kbd class="rounded-sm border border-border bg-muted px-1.5 font-mono text-caption text-muted-foreground">/</kbd>
+      <kbd class="rounded-sm border border-border bg-muted px-1.5 font-mono text-xs text-muted-foreground">/</kbd>
     </label>
 
     <div class="flex shrink-0 items-center gap-1.5">
@@ -105,15 +105,15 @@
   <div class="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-10 px-6 py-10">
     <section class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h1 class="text-heading-lg font-medium text-foreground">
+        <h1 class="text-4xl font-medium text-foreground">
           {greeting}
         </h1>
-        <p class="mt-2 text-body text-muted-foreground md:text-body-lg">
+        <p class="mt-2 text-sm text-muted-foreground md:text-base">
           Pick a tool to get started. Everything stays on this computer.
         </p>
       </div>
       <span
-        class="flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-caption font-medium text-muted-foreground"
+        class="flex w-fit items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground"
       >
         <Lock class="size-3.5 text-primary" />
         Private and offline
@@ -122,7 +122,7 @@
 
     {#if !query}
       <section aria-labelledby="quick-actions" class="flex flex-col gap-3">
-        <h2 id="quick-actions" class="text-body font-medium text-foreground">
+        <h2 id="quick-actions" class="text-sm font-medium text-foreground">
           {recent.length > 0 ? "Jump back in" : "Popular tools"}
         </h2>
         <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -130,17 +130,17 @@
             <li>
               <a
                 href={`/tools/${tool.slug}`}
-                class="panel-card group flex h-full flex-col gap-4 p-5 transition-[box-shadow,transform] duration-200 ease-craft hover:shadow-lg active:scale-[0.98]"
+                class="rounded-2xl border border-border bg-card group flex h-full flex-col gap-4 p-5 transition-[box-shadow,transform] duration-(--duration-base) ease-(--ease-ui-out) hover:shadow-lg active:scale-[0.98]"
               >
                 <span class="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
                   <tool.icon class="size-5" />
                 </span>
                 <span>
-                  <span class="flex items-center justify-between gap-2 text-body-lg font-medium text-foreground">
+                  <span class="flex items-center justify-between gap-2 text-base font-medium text-foreground">
                     {tool.title}
                     <ArrowUpRight class="size-4 text-muted-foreground transition-colors group-hover:text-foreground" />
                   </span>
-                  <span class="mt-1 line-clamp-2 block text-body text-muted-foreground">
+                  <span class="mt-1 line-clamp-2 block text-sm text-muted-foreground">
                     {tool.description.split(". ")[0]}
                   </span>
                 </span>
@@ -153,7 +153,7 @@
 
     <section aria-labelledby="all-tools" class="flex flex-col gap-6 lg:flex-row lg:gap-10">
       <nav class="shrink-0 lg:w-56" aria-label="Categories">
-        <h2 id="all-tools" class="mb-3 text-body font-medium text-foreground">Browse</h2>
+        <h2 id="all-tools" class="mb-3 text-sm font-medium text-foreground">Browse</h2>
         <ul class="flex gap-1 overflow-x-auto pb-1 lg:sticky lg:top-20 lg:flex-col lg:overflow-visible">
           {#each categories as c (c.id)}
             <li class="shrink-0">
@@ -162,7 +162,7 @@
                 aria-pressed={category === c.id}
                 onclick={() => (category = c.id)}
                 class={cn(
-                  "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-body transition-colors duration-200",
+                  "flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-(--duration-base)",
                   category === c.id
                     ? "bg-card font-medium text-foreground shadow-sm ring-1 ring-border"
                     : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -170,7 +170,7 @@
               >
                 <c.icon class={cn("size-4 shrink-0", category === c.id && "text-primary")} />
                 <span class="flex-1 whitespace-nowrap">{c.name}</span>
-                <span class="text-caption tabular-nums text-muted-foreground">{c.count}</span>
+                <span class="text-xs tabular-nums text-muted-foreground">{c.count}</span>
               </button>
             </li>
           {/each}
@@ -179,9 +179,9 @@
 
       <div class="min-w-0 flex-1">
         {#if filtered.length === 0}
-          <div class="panel-card flex flex-col items-center gap-3 px-6 py-16 text-center">
+          <div class="rounded-2xl border border-border bg-card flex flex-col items-center gap-3 px-6 py-16 text-center">
             <Search class="size-5 text-muted-foreground" />
-            <p class="text-body text-muted-foreground">No tools match “{query}”.</p>
+            <p class="text-sm text-muted-foreground">No tools match “{query}”.</p>
             <Button
               variant="outline"
               size="sm"
@@ -199,7 +199,7 @@
               <li>
                 <a
                   href={`/tools/${tool.slug}`}
-                  class="group flex items-center gap-3 rounded-xl border border-transparent p-3 transition-colors duration-200 hover:border-border hover:bg-card"
+                  class="group flex items-center gap-3 rounded-xl border border-transparent p-3 transition-colors duration-(--duration-base) hover:border-border hover:bg-card"
                 >
                   <span
                     class="grid size-9 shrink-0 place-items-center rounded-lg border border-border bg-card text-foreground transition-colors group-hover:text-primary"
@@ -207,8 +207,8 @@
                     <tool.icon class="size-4.5" />
                   </span>
                   <span class="min-w-0">
-                    <span class="block truncate text-body font-medium text-foreground">{tool.title}</span>
-                    <span class="block truncate text-caption text-muted-foreground">
+                    <span class="block truncate text-sm font-medium text-foreground">{tool.title}</span>
+                    <span class="block truncate text-xs text-muted-foreground">
                       {toolsCategories.find((c) => c.id === tool.category)?.name}
                     </span>
                   </span>

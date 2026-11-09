@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
   import { cn } from "$lib/utils";
-  import { IconTrash as Trash2 } from "@tabler/icons-svelte";
+  import { IconTrash as Trash2 } from "$lib/icons";
   import type { Snippet } from "svelte";
 
   interface Props {
@@ -25,12 +25,12 @@
   )}
 >
   <div class="flex min-w-0 items-baseline gap-2">
-    <h2 class="truncate text-body font-medium text-foreground">{label}</h2>
+    <h2 class="truncate text-sm font-medium text-foreground">{label}</h2>
     {#if count !== undefined}
-      <span class="text-caption tabular-nums text-muted-foreground">{count}</span>
+      <span class="text-xs tabular-nums text-muted-foreground">{count}</span>
     {/if}
     {#if meta}
-      <span class="hidden truncate text-caption tabular-nums text-muted-foreground sm:inline">· {meta}</span>
+      <span class="hidden truncate text-xs tabular-nums text-muted-foreground sm:inline">· {meta}</span>
     {/if}
   </div>
 

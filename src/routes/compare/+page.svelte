@@ -2,7 +2,7 @@
   import Seo from "$components/Seo.svelte";
   import { PageHero, RailFrame, RailRow } from "$components/site";
   import { ALTERNATIVES } from "$constants/alternatives";
-  import { IconArrowRight as ArrowRight } from "@tabler/icons-svelte";
+  import { IconArrowRight as ArrowRight } from "$lib/icons";
 
   const keywords = ALTERNATIVES.flatMap((a) => a.keywords.slice(0, 2)).concat(["best free pdf tools", "private pdf tools compared"]);
 </script>
@@ -30,14 +30,14 @@
         <li>
           <a
             href={`/compare/${alt.slug}`}
-            class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-5 outline-none transition-[border-color,box-shadow] duration-200 ease-craft hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
+            class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-5 outline-none transition-[border-color,box-shadow] duration-(--duration-base) ease-(--ease-ui-out) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <span class="text-caption font-medium text-muted-foreground">Orbit vs {alt.name}</span>
-            <span class="text-body-lg font-medium text-foreground">{alt.title}</span>
-            <span class="line-clamp-2 text-body text-muted-foreground">{alt.description}</span>
-            <span class="mt-auto flex items-center gap-1 pt-2 text-body font-medium text-primary">
+            <span class="text-xs font-medium text-muted-foreground">Orbit vs {alt.name}</span>
+            <span class="text-base font-medium text-foreground">{alt.title}</span>
+            <span class="line-clamp-2 text-sm text-muted-foreground">{alt.description}</span>
+            <span class="mt-auto flex items-center gap-1 pt-2 text-sm font-medium text-primary">
               Read comparison
-              <ArrowRight class="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+              <ArrowRight class="size-4 transition-transform duration-(--duration-base) group-hover:translate-x-0.5" />
             </span>
           </a>
         </li>

@@ -24,7 +24,7 @@
     IconPlus as Plus,
     IconRefresh as Refresh,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { StampPosition } from "./bates";
   import { BatesState } from "./helper.svelte";
 
@@ -45,7 +45,7 @@
     { value: "bottom-right", label: "Bottom right" },
   ];
   const field =
-    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const ranges = $derived(store.ranges);
   const sample = $derived(store.label(store.options.start));
@@ -61,10 +61,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to add Bates numbers</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to add Bates numbers</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Stamp every page with a unique number, like ABC000001, across one file or a whole set.
       </p>
     {/snippet}
@@ -107,7 +107,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">Numbers run top to bottom. Drag a row or use the arrows to change the order.</p>
+    <p class="text-sm text-muted-foreground">Numbers run top to bottom. Drag a row or use the arrows to change the order.</p>
 
     <div class="flex flex-col gap-2" use:sortableList={sort}>
       {#each store.files as file, i (file.id)}
@@ -119,14 +119,14 @@
             >
               <GripVertical class="size-4" />
             </span>
-            <span class="grid size-8 place-items-center rounded-lg bg-muted text-body font-medium tabular-nums text-foreground">
+            <span class="grid size-8 place-items-center rounded-lg bg-muted text-sm font-medium tabular-nums text-foreground">
               {i + 1}
             </span>
           </div>
 
           <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-            <span class="truncate text-body font-medium text-foreground" title={file.file.name}>{file.file.name}</span>
-            <span class="truncate text-caption tabular-nums text-muted-foreground">
+            <span class="truncate text-sm font-medium text-foreground" title={file.file.name}>{file.file.name}</span>
+            <span class="truncate text-xs tabular-nums text-muted-foreground">
               {plural(file.pageCount, "page")} ·
               {#if file.stamped}
                 <span class="font-medium text-foreground">{file.stamped}</span>
@@ -207,7 +207,7 @@
       <OptionGroup label="Number" description={store.textIssue ?? `First page reads ${sample}${store.options.date ? `  ${store.options.date}` : ""}`}>
         <div class="grid grid-cols-2 gap-2">
           <div class="flex flex-col gap-1">
-            <label for="{uid}-prefix" class="text-caption text-muted-foreground">Prefix</label>
+            <label for="{uid}-prefix" class="text-xs text-muted-foreground">Prefix</label>
             <input
               id="{uid}-prefix"
               type="text"
@@ -217,7 +217,7 @@
             />
           </div>
           <div class="flex flex-col gap-1">
-            <label for="{uid}-suffix" class="text-caption text-muted-foreground">Suffix</label>
+            <label for="{uid}-suffix" class="text-xs text-muted-foreground">Suffix</label>
             <input
               id="{uid}-suffix"
               type="text"
@@ -227,11 +227,11 @@
             />
           </div>
           <div class="flex flex-col gap-1">
-            <label for="{uid}-start" class="text-caption text-muted-foreground">Start at</label>
+            <label for="{uid}-start" class="text-xs text-muted-foreground">Start at</label>
             <input id="{uid}-start" type="number" min="0" bind:value={store.settings.start} class={field} />
           </div>
           <div class="flex flex-col gap-1">
-            <label for="{uid}-digits" class="text-caption text-muted-foreground">Digits</label>
+            <label for="{uid}-digits" class="text-xs text-muted-foreground">Digits</label>
             <input id="{uid}-digits" type="number" min="1" max="12" bind:value={store.settings.digits} class={field} />
           </div>
         </div>
@@ -278,7 +278,7 @@
             </label>
           {/each}
         </div>
-        <p class="text-center text-caption text-muted-foreground">
+        <p class="text-center text-xs text-muted-foreground">
           {positions.find((p) => p.value === store.settings.position)?.label}
         </p>
       </OptionGroup>
@@ -286,11 +286,11 @@
       <OptionGroup label="Size and spacing" description="In points. 72 points make an inch.">
         <div class="grid grid-cols-2 gap-2">
           <div class="flex flex-col gap-1">
-            <label for="{uid}-size" class="text-caption text-muted-foreground">Text size</label>
+            <label for="{uid}-size" class="text-xs text-muted-foreground">Text size</label>
             <input id="{uid}-size" type="number" min="6" max="36" bind:value={store.settings.fontSize} class={field} />
           </div>
           <div class="flex flex-col gap-1">
-            <label for="{uid}-margin" class="text-caption text-muted-foreground">Distance from edge</label>
+            <label for="{uid}-margin" class="text-xs text-muted-foreground">Distance from edge</label>
             <input id="{uid}-margin" type="number" min="0" max="144" bind:value={store.settings.margin} class={field} />
           </div>
         </div>
@@ -323,7 +323,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={!store.canRun}>
+    <Button variant="default" onclick={() => store.process()} disabled={!store.canRun}>
       {store.isProcessing ? "Stamping…" : `Stamp ${plural(store.files.length, "file")}`}
     </Button>
   </ToolFooter>

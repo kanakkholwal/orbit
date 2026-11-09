@@ -4,7 +4,7 @@
     IconAlertCircle as CircleAlert,
     IconCircleCheck as CircleCheck,
     IconLoader2 as LoaderCircle,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
 
   type Status = "idle" | "processing" | "done" | "error";
 
@@ -34,7 +34,7 @@
 
 <span
   class={cn(
-    "inline-flex max-w-48 items-center gap-1.5 rounded-full px-2 py-0.5 text-caption font-medium",
+    "inline-flex max-w-48 items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium",
     tone[status],
     className
   )}

@@ -4,7 +4,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
   import { LinearizePdfState } from "./helper.svelte";
 
   const store = new LinearizePdfState();
@@ -19,10 +19,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to open faster online</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to open faster online</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Rearrange each file so the first page shows right away when someone opens it on a website.
       </p>
     {/snippet}
@@ -65,7 +65,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Best for large PDFs you share through a link or put on a website. Also called Fast Web View.
     </p>
 
@@ -126,7 +126,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Optimizing…" : pendingCount > 0 ? `Optimize ${plural(pendingCount)}` : "Optimize"}
     </Button>
   </ToolFooter>

@@ -3,7 +3,7 @@
   import { Button } from "$components/ui/button";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
   import { PdfToWordState } from "./helper.svelte";
 
   const store = new PdfToWordState();
@@ -18,10 +18,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to turn into Word files</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to turn into Word files</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Get documents you can edit in Word, Pages or Google Docs, with the layout kept as close as possible.
       </p>
     {/snippet}
@@ -61,7 +61,7 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">Pages with busy layouts can take a little longer to convert.</p>
+    <p class="text-sm text-muted-foreground">Pages with busy layouts can take a little longer to convert.</p>
 
     <ul class="flex flex-col gap-2">
       {#each store.files as file (file.id)}
@@ -123,7 +123,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Converting…" : pendingCount > 0 ? `Convert ${plural(pendingCount)}` : "Convert"}
     </Button>
   </ToolFooter>

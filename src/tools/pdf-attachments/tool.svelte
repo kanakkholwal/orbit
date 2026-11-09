@@ -18,7 +18,7 @@
     IconPlus as Plus,
     IconRefresh as Refresh,
     IconTrash as Trash,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { AttachmentsState } from "./helper.svelte";
 
   const store = new AttachmentsState();
@@ -59,13 +59,13 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet icon()}
-      <Paperclip class="size-6" stroke={1.75} />
+      <Paperclip class="size-6" />
     {/snippet}
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to see its attachments</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to see its attachments</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Save the files tucked inside a PDF, remove the ones you don't want, or attach new ones.
       </p>
     {/snippet}
@@ -95,19 +95,19 @@
     />
 
     {#if store.loading}
-      <div class="flex items-center gap-2 rounded-2xl border border-border bg-card p-5 text-body text-muted-foreground">
+      <div class="flex items-center gap-2 rounded-2xl border border-border bg-card p-5 text-sm text-muted-foreground">
         <Loader class="size-4 animate-spin text-primary" />
         Looking for attachments…
       </div>
     {:else if store.locked}
       <section class="flex flex-col items-start gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row">
         <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-muted-foreground">
-          <Lock class="size-5" stroke={1.75} />
+          <Lock class="size-5" />
         </span>
         <div class="flex flex-col gap-3">
           <div class="flex flex-col gap-1">
-            <h2 class="text-body-lg font-medium text-foreground">This PDF is locked</h2>
-            <p class="max-w-prose text-body text-muted-foreground">
+            <h2 class="text-base font-medium text-foreground">This PDF is locked</h2>
+            <p class="max-w-prose text-sm text-muted-foreground">
               Attachments in a password-protected PDF can't be read. Unlock it first, then open the unlocked copy here.
             </p>
           </div>
@@ -143,11 +143,11 @@
       {#if store.attachments.length === 0 && store.pending.length === 0}
         <section class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-5 py-10 text-center">
           <span class="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
-            <Paperclip class="size-5" stroke={1.75} />
+            <Paperclip class="size-5" />
           </span>
           <div class="flex flex-col gap-1">
-            <h2 class="text-body-lg font-medium text-foreground">No attachments in this PDF</h2>
-            <p class="max-w-sm text-pretty text-body text-muted-foreground">
+            <h2 class="text-base font-medium text-foreground">No attachments in this PDF</h2>
+            <p class="max-w-sm text-pretty text-sm text-muted-foreground">
               Add spreadsheets, images or any other file to carry them inside the PDF.
             </p>
           </div>
@@ -158,7 +158,7 @@
         </section>
       {:else}
         {#if selectable.length > 1}
-          <label class="flex w-fit cursor-pointer items-center gap-2.5 px-3 text-body text-muted-foreground">
+          <label class="flex w-fit cursor-pointer items-center gap-2.5 px-3 text-sm text-muted-foreground">
             <Checkbox checked={allSelected} indeterminate={someSelected} onCheckedChange={(v) => store.selectAll(v)} />
             Select all
           </label>
@@ -177,13 +177,13 @@
                 aria-label={`Select ${attachment.name}`}
               />
               <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground">
-                <FileIcon class="size-5" stroke={1.75} />
+                <FileIcon class="size-5" />
               </span>
               <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-                <span class={cn("truncate text-body font-medium", removed ? "text-muted-foreground line-through" : "text-foreground")} title={attachment.name}>
+                <span class={cn("truncate text-sm font-medium", removed ? "text-muted-foreground line-through" : "text-foreground")} title={attachment.name}>
                   {attachment.name}
                 </span>
-                <span class="flex flex-wrap items-center gap-x-2 text-caption tabular-nums text-muted-foreground">
+                <span class="flex flex-wrap items-center gap-x-2 text-xs tabular-nums text-muted-foreground">
                   <span>{formatBytes(attachment.size)}</span>
                   <span>· {describeKind(attachment.mimeType, attachment.name)}</span>
                   {#if attachment.source === "page" && attachment.pageIndex !== undefined}
@@ -191,7 +191,7 @@
                   {/if}
                 </span>
                 {#if attachment.description}
-                  <span class="truncate text-caption text-muted-foreground" title={attachment.description}>{attachment.description}</span>
+                  <span class="truncate text-xs text-muted-foreground" title={attachment.description}>{attachment.description}</span>
                 {/if}
               </div>
               <div class="flex shrink-0 items-center gap-1">
@@ -224,11 +224,11 @@
             <li class="flex flex-col gap-2 rounded-xl border border-primary/40 bg-primary/5 p-2 pl-3 sm:flex-row sm:items-center sm:gap-3">
               <div class="flex min-w-0 flex-1 items-center gap-3">
                 <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
-                  <Plus class="size-5" stroke={1.75} />
+                  <Plus class="size-5" />
                 </span>
                 <div class="flex min-w-0 flex-1 flex-col gap-0.5">
-                  <span class="truncate text-body font-medium text-foreground" title={item.file.name}>{item.file.name}</span>
-                  <span class="text-caption tabular-nums text-muted-foreground">{formatBytes(item.file.size)} · Added when you save</span>
+                  <span class="truncate text-sm font-medium text-foreground" title={item.file.name}>{item.file.name}</span>
+                  <span class="text-xs tabular-nums text-muted-foreground">{formatBytes(item.file.size)} · Added when you save</span>
                 </div>
               </div>
               <div class="flex items-center gap-1">
@@ -279,7 +279,7 @@
           {/if}
         </span>
       {/snippet}
-      <Button variant="primary" onclick={() => store.save()} disabled={store.isProcessing || !store.hasChanges}>
+      <Button variant="default" onclick={() => store.save()} disabled={store.isProcessing || !store.hasChanges}>
         {store.isProcessing ? "Saving…" : "Save PDF"}
       </Button>
     </ToolFooter>

@@ -20,7 +20,7 @@ export const table = tv({
 				header: "bg-card [&_tr]:border-border [&_tr]:border-b",
 				body: "[&_tr:last-child]:border-0",
 				footer: "border-border border-t bg-card [&>tr]:last:border-b-0",
-				row: "border-border border-b hover:bg-foreground/[0.06] data-[state=selected]:bg-primary/[0.04]",
+				row: "border-border border-b hover:bg-accent data-[state=selected]:bg-primary/[0.04]",
 			},
 			// The header sits on a card rim around a rounded inset body, and
 			// hairlines split the columns. Separate borders, so cells can round the body corners.

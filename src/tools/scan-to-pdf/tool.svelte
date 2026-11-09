@@ -15,7 +15,7 @@
     IconRotateClockwise as RotateCw,
     IconScan as ScanIcon,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { onMount } from "svelte";
   import Camera from "./Camera.svelte";
   import { ACCEPTED_IMAGES, type PageSize, ScanToPdfState } from "./helper.svelte";
@@ -78,15 +78,15 @@
   <div class="flex flex-col gap-3">
     <UploadArea accept={ACCEPTED_IMAGES} onFilesSelected={(files) => store.addImages(files)}>
       {#snippet icon()}
-        <ScanIcon class="size-6" stroke={1.75} />
+        <ScanIcon class="size-6" />
       {/snippet}
       {#snippet title()}
-        <h3 class="text-heading-sm font-medium text-foreground">
+        <h3 class="text-2xl font-medium text-foreground">
           {store.adding > 0 ? "Reading photos…" : "Drop photos of your pages"}
         </h3>
       {/snippet}
       {#snippet description()}
-        <p class="max-w-sm text-pretty text-body text-muted-foreground">
+        <p class="max-w-sm text-pretty text-sm text-muted-foreground">
           Receipts, forms, notes and letters become one PDF. Photos stay on this device.
         </p>
       {/snippet}
@@ -97,7 +97,7 @@
         <CameraIcon />
         {useNativeCapture ? "Take a photo" : "Use your camera"}
       </Button>
-      <p class="text-caption text-muted-foreground">Take a picture of each page, one after another.</p>
+      <p class="text-xs text-muted-foreground">Take a picture of each page, one after another.</p>
     </div>
   </div>
 {:else if count > 0 || store.adding > 0}
@@ -152,19 +152,19 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">Pages follow this order. Drag a page or use the arrows to move it.</p>
+    <p class="text-sm text-muted-foreground">Pages follow this order. Drag a page or use the arrows to move it.</p>
 
     <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" use:sortableList={gridSort}>
       {#each store.pages as page, i (page.id)}
         <li
-          class="group flex cursor-grab flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-150 hover:border-border-strong hover:shadow-sm active:cursor-grabbing"
+          class="group flex cursor-grab flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-border-strong hover:shadow-sm active:cursor-grabbing"
           title={page.name}
         >
           <div class="relative grid aspect-3/4 place-items-center overflow-hidden rounded-lg bg-muted">
             {#if page.thumbUrl}
               <img src={page.thumbUrl} alt={`Page ${i + 1}`} class="h-full w-full object-contain" draggable="false" />
             {/if}
-            <span class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-caption font-medium tabular-nums text-foreground shadow-xs">
+            <span class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-xs font-medium tabular-nums text-foreground shadow-xs">
               {i + 1}
             </span>
             <button
@@ -245,7 +245,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.convert()} disabled={store.isProcessing || count === 0 || store.adding > 0}>
+    <Button variant="default" onclick={() => store.convert()} disabled={store.isProcessing || count === 0 || store.adding > 0}>
       {store.isProcessing ? "Creating PDF…" : `Create PDF from ${pageLabel(count)}`}
     </Button>
   </ToolFooter>

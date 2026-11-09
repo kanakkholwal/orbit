@@ -13,7 +13,7 @@
     IconLoader2 as Loader,
     IconRefresh as Refresh,
     IconStack2 as Stack,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { OverlayFit, OverlayPages, OverlayPosition } from "./overlay";
   import { OverlayState } from "./helper.svelte";
 
@@ -98,15 +98,15 @@
 {#if !store.main}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.setMain(files)}>
     {#snippet icon()}
-      <Stack class="size-6" stroke={1.75} />
+      <Stack class="size-6" />
     {/snippet}
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">
+      <h3 class="text-2xl font-medium text-foreground">
         {store.loading === "main" ? "Opening…" : "Drop the PDF to add an overlay to"}
       </h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Put a letterhead, stamp or template from another PDF on top of or behind its pages.
       </p>
     {/snippet}
@@ -134,7 +134,7 @@
 
     <div class="flex flex-col gap-2">
       <div class="flex items-center justify-between gap-2">
-        <h2 class="text-body font-medium text-foreground">Files</h2>
+        <h2 class="text-sm font-medium text-foreground">Files</h2>
         {#if store.overlay}
           <Button variant="ghost" size="sm" disabled={store.isProcessing} onclick={() => store.swap()}>
             <Swap />
@@ -157,12 +157,12 @@
     {#if !store.overlay}
       <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.setOverlay(files)}>
         {#snippet title()}
-          <h3 class="text-heading-sm font-medium text-foreground">
+          <h3 class="text-2xl font-medium text-foreground">
             {store.loading === "overlay" ? "Opening…" : "Now add the overlay PDF"}
           </h3>
         {/snippet}
         {#snippet description()}
-          <p class="max-w-sm text-pretty text-body text-muted-foreground">
+          <p class="max-w-sm text-pretty text-sm text-muted-foreground">
             The letterhead, stamp or template whose pages go on your document.
           </p>
         {/snippet}
@@ -170,14 +170,14 @@
     {:else}
       <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-labelledby="{uid}-preview">
         <div class="flex flex-col gap-0.5">
-          <h2 id="{uid}-preview" class="text-body-lg font-medium text-foreground">
+          <h2 id="{uid}-preview" class="text-base font-medium text-foreground">
             {preview ? `Preview of page ${preview.pageIndex + 1}` : "Preview"}
           </h2>
-          <p class="text-body text-muted-foreground">A rough look to check placement. The downloaded file is exact.</p>
+          <p class="text-sm text-muted-foreground">A rough look to check placement. The downloaded file is exact.</p>
         </div>
 
         {#if !preview}
-          <p class="text-body text-muted-foreground">Choose which pages to change to see a preview.</p>
+          <p class="text-sm text-muted-foreground">Choose which pages to change to see a preview.</p>
         {:else}
           <div class="mx-auto w-full max-w-sm">
             <div
@@ -188,7 +188,7 @@
               <canvas
                 bind:this={mainCanvas}
                 class={cn(
-                  "absolute inset-0 h-full w-full transition-opacity duration-200",
+                  "absolute inset-0 h-full w-full transition-opacity duration-(--duration-base)",
                   store.position === "under" ? "z-10 mix-blend-multiply" : "z-0",
                   mainReady ? "opacity-100" : "opacity-0"
                 )}
@@ -196,7 +196,7 @@
               {#if preview.rect}
                 <canvas
                   bind:this={overlayCanvas}
-                  class={cn("absolute mix-blend-multiply transition-opacity duration-200", store.position === "under" ? "z-0" : "z-10")}
+                  class={cn("absolute mix-blend-multiply transition-opacity duration-(--duration-base)", store.position === "under" ? "z-0" : "z-10")}
                   style:left="{preview.rect.left}%"
                   style:top="{preview.rect.top}%"
                   style:width="{preview.rect.width}%"
@@ -211,9 +211,9 @@
               {/if}
             </div>
             {#if preview.overlayIndex === null}
-              <p class="mt-2 text-caption text-muted-foreground">This page doesn't get an overlay with the current settings.</p>
+              <p class="mt-2 text-xs text-muted-foreground">This page doesn't get an overlay with the current settings.</p>
             {:else}
-              <p class="mt-2 text-caption text-muted-foreground">
+              <p class="mt-2 text-xs text-muted-foreground">
                 With overlay page {preview.overlayIndex + 1}{store.overlay.boxes.length > 1 ? ` of ${store.overlay.boxes.length}` : ""}
               </p>
             {/if}
@@ -251,7 +251,7 @@
               aria-invalid={!!store.rangeError && store.range.trim() !== ""}
               aria-describedby="{uid}-range-hint"
             />
-            <p id="{uid}-range-hint" class={cn("text-caption", store.rangeError && store.range.trim() ? "text-destructive" : "text-muted-foreground")}>
+            <p id="{uid}-range-hint" class={cn("text-xs", store.rangeError && store.range.trim() ? "text-destructive" : "text-muted-foreground")}>
               {store.rangeError ?? `${pageLabel(store.targets.length)} selected`}
             </p>
           </div>
@@ -262,7 +262,7 @@
         <div class="flex items-center gap-3">
           <label for="{uid}-opacity" class="sr-only">Opacity</label>
           <input id="{uid}-opacity" type="range" min="5" max="100" step="5" bind:value={store.opacity} class="h-10 w-full cursor-pointer accent-primary" />
-          <span class="w-11 shrink-0 text-right text-body tabular-nums text-foreground">{store.opacity}%</span>
+          <span class="w-11 shrink-0 text-right text-sm tabular-nums text-foreground">{store.opacity}%</span>
         </div>
       </OptionGroup>
 
@@ -291,7 +291,7 @@
         {/if}
       </span>
     {/snippet}
-    <Button variant="primary" onclick={() => store.apply()} disabled={store.isProcessing || !canApply}>
+    <Button variant="default" onclick={() => store.apply()} disabled={store.isProcessing || !canApply}>
       {store.isProcessing ? "Applying…" : "Apply overlay"}
     </Button>
   </ToolFooter>

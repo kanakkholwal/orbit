@@ -20,7 +20,7 @@
     IconLoader2 as Loader,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { TxtToPdfState } from "./helper.svelte";
 
   const store = new TxtToPdfState();
@@ -102,13 +102,13 @@
     {#if store.files.length === 0}
       <UploadArea accept=".txt,text/plain" onFilesSelected={(files) => store.addFiles(files)}>
         {#snippet icon()}
-          <FileText class="size-6" stroke={1.75} />
+          <FileText class="size-6" />
         {/snippet}
         {#snippet title()}
-          <h3 class="text-heading-sm font-medium text-foreground">Drop text files to turn into a PDF</h3>
+          <h3 class="text-2xl font-medium text-foreground">Drop text files to turn into a PDF</h3>
         {/snippet}
         {#snippet description()}
-          <p class="max-w-sm text-pretty text-body text-muted-foreground">
+          <p class="max-w-sm text-pretty text-sm text-muted-foreground">
             Add one or more .txt files. They are joined in order into a single PDF.
           </p>
         {/snippet}
@@ -150,7 +150,7 @@
       bind:value={store.textContent}
       dir={store.textDirection}
       placeholder="Type or paste text here."
-      class="scrollbar-subtle min-h-[max(24rem,calc(100svh-17rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-body leading-relaxed text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring"
+      class="scrollbar-subtle min-h-[max(24rem,calc(100svh-17rem))] w-full resize-y rounded-xl border border-border bg-background p-4 font-mono text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring"
     ></textarea>
   {/if}
 
@@ -188,9 +188,9 @@
             min="6"
             max="72"
             bind:value={store.settings.fontSize}
-            class="h-10 w-full rounded-lg border border-border bg-background pl-3 pr-9 text-body tabular-nums text-foreground outline-none transition-colors focus:border-ring"
+            class="h-10 w-full rounded-lg border border-border bg-background pl-3 pr-9 text-sm tabular-nums text-foreground outline-none transition-colors focus:border-ring"
           />
-          <span class="pointer-events-none absolute inset-y-0 right-3 grid place-items-center text-caption text-muted-foreground">pt</span>
+          <span class="pointer-events-none absolute inset-y-0 right-3 grid place-items-center text-xs text-muted-foreground">pt</span>
         </div>
       </OptionGroup>
 
@@ -203,7 +203,7 @@
             bind:value={store.settings.textColor}
             class="h-8 w-9 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-0"
           />
-          <span class="truncate font-mono text-caption tabular-nums text-muted-foreground">{store.settings.textColor}</span>
+          <span class="truncate font-mono text-xs tabular-nums text-muted-foreground">{store.settings.textColor}</span>
         </div>
       </OptionGroup>
     </div>
@@ -213,7 +213,7 @@
       <select
         id="{uid}-page"
         bind:value={store.settings.pageSize}
-        class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors focus:border-ring"
+        class="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors focus:border-ring"
       >
         {#each pageSizes as size (size)}
           <option value={size}>{size}</option>
@@ -243,7 +243,7 @@
     {/if}
   {/snippet}
 
-  <Button variant="primary" onclick={() => store.process()} disabled={!canConvert}>
+  <Button variant="default" onclick={() => store.process()} disabled={!canConvert}>
     {store.isProcessing ? "Creating PDF…" : "Create PDF"}
   </Button>
 </ToolFooter>

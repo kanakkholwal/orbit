@@ -1,9 +1,10 @@
 import { createContext, type Snippet } from "svelte";
-import type { DialogSize, DialogVariant } from "./variants";
+import type { DialogMotion, DialogSize, DialogVariant } from "./variants";
 
-export type { DialogSize, DialogVariant };
+export type { DialogMotion, DialogSize, DialogVariant };
 
 export type DialogContext = {
+	readonly motion: DialogMotion;
 	readonly size: DialogSize;
 	readonly variant: DialogVariant;
 	readonly dismissOnBackdrop: boolean;

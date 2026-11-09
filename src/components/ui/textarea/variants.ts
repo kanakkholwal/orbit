@@ -1,31 +1,29 @@
 import { tv, type VariantProps } from "tailwind-variants";
+import { fieldFrame, fieldHalo, fieldText } from "$lib/control.js";
 
 export const textarea = tv({
-	base: [
-		"min-h-16 w-full rounded-lg border text-foreground leading-relaxed",
-		"placeholder:text-muted-foreground",
-		"transition-[box-shadow,border-color] duration-[var(--duration-press)] ease-[var(--ease-out)]",
-		"outline-none focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring",
-		"disabled:cursor-not-allowed disabled:opacity-50",
-		"aria-[invalid=true]:border-[var(--destructive)] aria-[invalid=true]:focus-visible:ring-[color-mix(in_oklch,var(--destructive)_40%,transparent)]",
-	],
+	base: [fieldFrame(), "w-full leading-relaxed placeholder:text-muted-foreground"],
 	variants: {
+		// No fixed height: the ladder's radius and text, with a min height that grows with the size.
 		size: {
-			sm: "px-2.5 py-1.5 text-xs",
-			md: "px-3 py-2 text-sm",
-			lg: "px-3.5 py-2.5 text-sm",
-			xl: "px-4 py-3 text-base",
+			xs: [fieldText({ size: "xs" }), "min-h-12 rounded-sm px-2 py-1"],
+			sm: [fieldText({ size: "sm" }), "min-h-14 rounded-md px-2.5 py-1.5"],
+			default: [fieldText({ size: "default" }), "min-h-16 rounded-lg px-3 py-2"],
+			lg: [fieldText({ size: "lg" }), "min-h-20 rounded-lg px-3.5 py-2.5"],
+			xl: [fieldText({ size: "xl" }), "min-h-24 rounded-xl px-4 py-3"],
 		},
 		variant: {
-			outline: "border-input bg-background",
-			soft: "border-transparent bg-card",
+			outline: "",
+			soft: "border-transparent bg-card hover:border-transparent",
+			// The outline look plus a soft focus halo.
+			ring: fieldHalo(),
 		},
 		autoGrow: {
 			true: "resize-none overflow-y-hidden",
 			false: "resize-y",
 		},
 	},
-	defaultVariants: { size: "md", variant: "outline", autoGrow: false },
+	defaultVariants: { size: "default", variant: "outline", autoGrow: false },
 });
 
 export type TextareaSize = NonNullable<VariantProps<typeof textarea>["size"]>;

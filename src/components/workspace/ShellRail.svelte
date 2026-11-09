@@ -16,7 +16,7 @@
     IconLayoutSidebar as PanelIcon,
     IconSearch as Search,
     IconBrandGithub,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import RailLink from "./RailLink.svelte";
 
   let { wide, class: className }: { wide: boolean; class?: string } = $props();

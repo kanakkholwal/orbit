@@ -7,9 +7,8 @@
   import ToolLauncher from "$components/workspace/ToolLauncher.svelte";
   import { config } from "$constants/app";
   import { categories, toolsCategories } from "$constants/tools";
-  import { stagger } from "$lib/motion";
   import { toolList } from "$tools/list";
-  import { IconSearch as Search } from "@tabler/icons-svelte";
+  import { IconSearch as Search } from "$lib/icons";
   import { onMount } from "svelte";
 
   let searchQuery = $state("");
@@ -96,17 +95,17 @@
 
 <div id="library" class="mx-auto flex w-full max-w-6xl scroll-mt-4 flex-col gap-12 px-4 pb-16 pt-10 md:px-8">
   {#if normalizedQuery}
-    <p class="text-body text-muted-foreground" aria-live="polite">
+    <p class="text-sm text-muted-foreground" aria-live="polite">
       {matches.length}
       {matches.length === 1 ? "tool" : "tools"} match “{searchQuery}”
     </p>
   {/if}
 
   {#if sections.length === 0}
-    <div class="panel-card flex flex-col items-center gap-3 px-6 py-14 text-center">
+    <div class="rounded-2xl border border-border bg-card flex flex-col items-center gap-3 px-6 py-14 text-center">
       <Search class="size-5 text-muted-foreground" />
-      <p class="text-body-lg font-medium text-foreground">No tools found</p>
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="text-base font-medium text-foreground">No tools found</p>
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Nothing matches “{searchQuery}”. Try another word, or clear the filters to see all {toolList.length} tools.
       </p>
       <Button variant="outline" size="sm" class="mt-1" onclick={reset}>Clear filters</Button>
@@ -116,12 +115,12 @@
       <section class="flex flex-col gap-4" aria-labelledby={`cat-${section.id}`}>
         <div class="flex items-end justify-between gap-4">
           <div>
-            <h2 id={`cat-${section.id}`} class="text-subheading font-medium text-foreground">{section.name}</h2>
+            <h2 id={`cat-${section.id}`} class="text-xl font-medium text-foreground">{section.name}</h2>
             {#if section.description}
-              <p class="mt-0.5 text-body text-muted-foreground">{section.description}</p>
+              <p class="mt-0.5 text-sm text-muted-foreground">{section.description}</p>
             {/if}
           </div>
-          <span class="shrink-0 text-caption tabular-nums text-muted-foreground">
+          <span class="shrink-0 text-xs tabular-nums text-muted-foreground">
             {section.tools.length}
             {section.tools.length === 1 ? "tool" : "tools"}
           </span>
@@ -130,7 +129,7 @@
         <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {#each section.tools as tool, i (tool.slug)}
             <li class="contents">
-              <ToolCard {tool} delay={stagger(i, 30, 8)} />
+              <ToolCard {tool} delay={Math.min(i, 8) * 30} />
             </li>
           {/each}
         </ul>

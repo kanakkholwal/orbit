@@ -15,7 +15,7 @@ let {
 	min = 0,
 	max = 100,
 	indeterminate = false,
-	size = "md",
+	size = "default",
 	tone = "default",
 	variant = "linear",
 	label,

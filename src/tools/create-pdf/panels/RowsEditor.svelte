@@ -2,7 +2,7 @@
   import { Button } from "$components/ui/button";
   import { Checkbox } from "$components/ui/checkbox";
   import { cn } from "$lib/utils";
-  import { IconArrowDown as Down, IconArrowUp as Up, IconPlus as Plus, IconX as X } from "@tabler/icons-svelte";
+  import { IconArrowDown as Down, IconArrowUp as Up, IconPlus as Plus, IconX as X } from "$lib/icons";
   import type { RowColumn } from "../model/blocks";
 
   type Row = Record<string, string | number | boolean> | string;
@@ -39,7 +39,7 @@
   }
 
   const inputClass =
-    "h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-2.5 text-body text-foreground outline-none transition-colors duration-150 placeholder:text-placeholder focus:border-ring";
+    "h-9 min-w-0 flex-1 rounded-lg border border-border bg-background px-2.5 text-sm text-foreground outline-none transition-colors duration-(--duration-fast) placeholder:text-muted-foreground focus:border-ring";
 </script>
 
 <div class="flex flex-col gap-2">

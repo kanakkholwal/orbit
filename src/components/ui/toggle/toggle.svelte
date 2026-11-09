@@ -9,10 +9,14 @@ let {
 	pressed = $bindable(false),
 	disabled = false,
 	variant = "default",
-	size = "md",
+	size = "default",
 	label,
 	class: classProp,
-}: {
+	...rest
+}: Omit<
+	TogglePrimitive.RootProps,
+	"pressed" | "disabled" | "children" | "child" | "class"
+> & {
 	children?: Snippet;
 	pressed?: boolean;
 	disabled?: boolean;
@@ -30,6 +34,7 @@ let {
 	data-slot="toggle"
 	data-variant={variant}
 	class={cn(toggleButton({ variant, size }), classProp)}
+	{...rest}
 >
 	{@render children?.()}
 </TogglePrimitive.Root>

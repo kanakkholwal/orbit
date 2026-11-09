@@ -4,7 +4,7 @@ import { cn } from "$lib/cn.js";
 import { type PaginationSize, pagination } from "./variants";
 
 let {
-	size = "md",
+	size = "default",
 	class: classProp,
 	...rest
 }: { size?: PaginationSize; class?: string } & HTMLButtonAttributes = $props();

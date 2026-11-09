@@ -5,7 +5,7 @@
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconRefresh as Refresh } from "$lib/icons";
   import { TableOfContentsState } from "./helper.svelte";
 
   const store = new TableOfContentsState();
@@ -24,10 +24,10 @@
 {#if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to add a contents page</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to add a contents page</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Turn the bookmarks in your PDF into a clickable contents page at the start.
       </p>
     {/snippet}
@@ -57,13 +57,13 @@
     />
 
     <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
-      <h2 class="text-body-lg font-medium text-foreground">How the contents page is made</h2>
-      <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-body text-muted-foreground marker:text-muted-foreground">
+      <h2 class="text-base font-medium text-foreground">How the contents page is made</h2>
+      <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-muted-foreground marker:text-muted-foreground">
         <li>Orbit reads the bookmarks already saved in your PDF.</li>
         <li>It lists them on a new page at the very start, each one linking to its page.</li>
         <li>Everything else in the file stays the same.</li>
       </ol>
-      <p class="border-t border-border pt-3 text-caption text-muted-foreground">
+      <p class="border-t border-border pt-3 text-xs text-muted-foreground">
         No bookmarks yet? Add them first with
         <a href="/tools/bookmark-pdf" class="text-primary underline-offset-2 hover:underline">Bookmarks</a>,
         or the contents page will be empty.
@@ -75,8 +75,8 @@
     <div class="flex flex-col gap-6">
       <div class="flex flex-col gap-2.5">
         <div class="flex flex-col gap-0.5">
-          <label for="{uid}-title" class="text-body font-medium text-foreground">Heading</label>
-          <p id="{uid}-title-hint" class="text-caption text-muted-foreground">Shown at the top of the new page</p>
+          <label for="{uid}-title" class="text-sm font-medium text-foreground">Heading</label>
+          <p id="{uid}-title-hint" class="text-xs text-muted-foreground">Shown at the top of the new page</p>
         </div>
         <input
           id="{uid}-title"
@@ -85,7 +85,7 @@
           oninput={() => (store.result = null)}
           aria-describedby="{uid}-title-hint"
           aria-invalid={titleMissing}
-          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring aria-invalid:border-destructive"
+          class="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring aria-invalid:border-destructive"
         />
       </div>
 
@@ -120,7 +120,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.generateTOC()} disabled={store.isProcessing || titleMissing}>
+    <Button variant="default" onclick={() => store.generateTOC()} disabled={store.isProcessing || titleMissing}>
       {store.isProcessing ? "Adding…" : "Add contents page"}
     </Button>
   </ToolFooter>

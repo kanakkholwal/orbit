@@ -2,7 +2,7 @@
   import { cn } from "$lib/utils";
   import { useScroll } from "@embedpdf/plugin-scroll/svelte";
   import { useViewportCapability } from "@embedpdf/plugin-viewport/svelte";
-  import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "@tabler/icons-svelte";
+  import { IconChevronLeft as ChevronLeft, IconChevronRight as ChevronRight } from "$lib/icons";
   import { chromeButton, chromeFloating } from "./chrome";
 
   interface PageControlsProps {
@@ -57,7 +57,7 @@
   aria-label="Page navigation"
   tabindex="-1"
   class={cn(
-    "pointer-events-auto absolute bottom-4 left-1/2 z-40 -translate-x-1/2 transition-[opacity,translate] duration-200 ease-craft motion-reduce:transition-none",
+    "pointer-events-auto absolute bottom-4 left-1/2 z-40 -translate-x-1/2 transition-[opacity,translate] duration-(--duration-base) ease-(--ease-ui-out) motion-reduce:transition-none",
     isVisible || hasFocus ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-1 opacity-0"
   )}
   onpointerenter={() => {
@@ -100,9 +100,9 @@
         value={inputValue}
         oninput={(e) => (inputValue = e.currentTarget.value.replace(/[^0-9]/g, ""))}
         onblur={() => (inputValue = currentPage.toString())}
-        class="h-9 w-11 rounded-lg border border-border bg-background text-center text-body tabular-nums text-foreground outline-none transition-colors duration-150 focus:border-ring"
+        class="h-9 w-11 rounded-lg border border-border bg-background text-center text-sm tabular-nums text-foreground outline-none transition-colors duration-(--duration-fast) focus:border-ring"
       />
-      <span class="whitespace-nowrap pr-1 text-body tabular-nums text-muted-foreground">of {totalPages}</span>
+      <span class="whitespace-nowrap pr-1 text-sm tabular-nums text-muted-foreground">of {totalPages}</span>
     </form>
 
     <button

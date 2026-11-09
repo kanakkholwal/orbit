@@ -11,8 +11,8 @@ export const breadcrumb = tv({
 		separator: "text-muted-foreground [&>svg]:size-3.5",
 		// A DropdownMenuTrigger around it sets aria-expanded while its menu is open.
 		ellipsis: [
-			"grid size-7 place-items-center rounded-md text-muted-foreground transition-[color,background-color,scale] duration-(--duration-fast) ease-[var(--ease-out)]",
-			"hover:bg-foreground/[0.06] hover:text-foreground in-[[aria-expanded=true]]:bg-foreground/[0.06] in-[[aria-expanded=true]]:text-foreground",
+			"grid size-7 place-items-center rounded-md text-muted-foreground transition-[color,background-color,scale] duration-(--duration-fast) ease-[var(--ease-ui-out)]",
+			"hover:bg-accent hover:text-accent-foreground in-[[aria-expanded=true]]:bg-accent in-[[aria-expanded=true]]:text-foreground",
 			"in-[button:active]:scale-[var(--press-scale-icon)] motion-reduce:transition-none [&>svg]:size-4",
 		],
 	},
@@ -26,10 +26,10 @@ export const breadcrumb = tv({
 		},
 		size: {
 			sm: { root: "text-xs", ellipsis: "size-6 [&>svg]:size-3.5" },
-			md: { root: "text-sm" },
+			default: { root: "text-sm" },
 		},
 	},
-	defaultVariants: { variant: "default", size: "md" },
+	defaultVariants: { variant: "default", size: "default" },
 });
 
 export type BreadcrumbVariant = NonNullable<VariantProps<typeof breadcrumb>["variant"]>;

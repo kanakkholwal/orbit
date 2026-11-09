@@ -1,7 +1,12 @@
 <script lang="ts">
 import { Switch as SwitchPrimitive } from "bits-ui";
 import { cn } from "$lib/cn.js";
-import { type SwitchSize, switchThumb, switchTrack } from "./variants";
+import {
+	type SwitchSize,
+	type SwitchVariant,
+	switchThumb,
+	switchTrack,
+} from "./variants";
 
 type Props = Omit<
 	SwitchPrimitive.RootProps,
@@ -9,6 +14,8 @@ type Props = Omit<
 > & {
 	checked?: boolean;
 	disabled?: boolean;
+	/** `default` pill thumb, `round` thumb, or `marked`: round with on/off marks. */
+	variant?: SwitchVariant;
 	size?: SwitchSize;
 	label?: string;
 	"aria-label"?: string;
@@ -18,7 +25,8 @@ type Props = Omit<
 let {
 	checked = $bindable(false),
 	disabled = false,
-	size = "md",
+	variant = "default",
+	size = "default",
 	label,
 	"aria-label": ariaLabel,
 	class: classProp,
@@ -38,9 +46,10 @@ const id = $derived(idProp ?? autoId);
 		bind:checked
 		aria-label={label ? undefined : (ariaLabel ?? "Toggle")}
 		data-slot="switch"
-		class={cn(switchTrack({ size }), !label && classProp)}
+		data-variant={variant}
+		class={cn(switchTrack({ variant, size }), !label && classProp)}
 	>
-		<SwitchPrimitive.Thumb class={switchThumb({ size })} />
+		<SwitchPrimitive.Thumb class={switchThumb({ variant, size })} />
 	</SwitchPrimitive.Root>
 {/snippet}
 

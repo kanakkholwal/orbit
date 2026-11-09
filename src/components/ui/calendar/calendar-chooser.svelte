@@ -2,8 +2,8 @@
 import { DateFormatter, getLocalTimeZone, today } from "@internationalized/date";
 import { cn } from "$lib/cn.js";
 import { CHOICE_STEP, choiceDelay, yearPage } from "./chooser";
-import { getCalendarChooser } from "./chooser-state.svelte";
 import { calendar } from "./variants";
+import { getCalendarChooser } from "./chooser-state.svelte";
 
 let { class: classProp }: { class?: string } = $props();
 

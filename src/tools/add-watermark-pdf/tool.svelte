@@ -11,7 +11,7 @@
     IconLoader2 as Loader,
     IconPhoto as Photo,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { AddWatermarkState, type WatermarkType } from "./helper.svelte";
 
   const store = new AddWatermarkState();
@@ -20,7 +20,7 @@
   const PAGE_W = 595.28;
   const PAGE_H = 841.89;
   const field =
-    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const types: { value: WatermarkType; label: string }[] = [
     { value: "text", label: "Text" },
@@ -62,10 +62,10 @@
 {#if !s.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to watermark</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to watermark</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Stamp text or a logo across every page, like "Confidential" or "Draft".
       </p>
     {/snippet}
@@ -140,7 +140,7 @@
           />
         {/if}
       </div>
-      <p class="text-center text-caption text-muted-foreground">
+      <p class="text-center text-xs text-muted-foreground">
         Preview on a standard page. The same watermark goes on every page.
       </p>
     </section>
@@ -186,7 +186,7 @@
               ></button>
             {/each}
             <label
-              class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-body text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
+              class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-sm text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
             >
               <span class="size-5 rounded-full border border-border" style:background-color={s.color}></span>
               <span class="uppercase tabular-nums">{s.color}</span>
@@ -232,7 +232,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
       {store.isProcessing ? "Adding…" : "Add watermark"}
     </Button>
   </ToolFooter>
@@ -241,8 +241,8 @@
 {#snippet slider(key: "size" | "scale" | "opacity" | "rotation", label: string, min: number, max: number, step: number, readout: string)}
   <div class="flex flex-col gap-1">
     <div class="flex items-baseline justify-between gap-3">
-      <label for="{uid}-{key}" class="text-body font-medium text-foreground">{label}</label>
-      <span class="text-body tabular-nums text-muted-foreground">{readout}</span>
+      <label for="{uid}-{key}" class="text-sm font-medium text-foreground">{label}</label>
+      <span class="text-sm tabular-nums text-muted-foreground">{readout}</span>
     </div>
     {#if key === "size"}
       <input id="{uid}-{key}" type="range" {min} {max} {step} bind:value={store.state.fontSize} class="h-10 w-full cursor-pointer accent-primary" />

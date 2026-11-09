@@ -23,7 +23,7 @@
     IconRocket as Rocket,
     IconStack2 as Layers,
     IconWifiOff as WifiOff,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { toast } from "svelte-sonner";
 
   type Step = { title: string; body: string };
@@ -156,7 +156,7 @@
       lede="Phones, tablets and computers. Add Orbit straight from your browser, no app store and no account needed."
     >
       {#snippet actions()}
-        <Button variant="primary" onclick={onInstallClick} disabled={busy || !pwa.ready}>
+        <Button variant="default" onclick={onInstallClick} disabled={busy || !pwa.ready}>
           {#if pwa.installed}
             <ArrowUpRight />
           {:else}
@@ -173,7 +173,7 @@
     <SplitSection title="How to" accent="install" description={`Steps for ${activeGuide.title}.`} sticky>
       {#snippet aside()}
         <div class="flex flex-col gap-2">
-          <span class="text-caption font-medium text-muted-foreground">Using something else?</span>
+          <span class="text-xs font-medium text-muted-foreground">Using something else?</span>
           <div class="flex flex-wrap gap-2">
             {#each guides as g (g.id)}
               {#if g.id !== activeGuide.id}
@@ -189,11 +189,11 @@
 
       <ol class="flex flex-col gap-3">
         {#each activeGuide.steps as step, i (step.title)}
-          <li class="panel-card flex gap-4 px-6 py-5">
-            <span class="text-body font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
+          <li class="rounded-2xl border border-border bg-card flex gap-4 px-6 py-5">
+            <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
             <div>
-              <h3 class="text-body-lg font-medium text-foreground">{step.title}</h3>
-              <p class="mt-1 text-body leading-relaxed text-muted-foreground">{step.body}</p>
+              <h3 class="text-base font-medium text-foreground">{step.title}</h3>
+              <p class="mt-1 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
             </div>
           </li>
         {/each}
@@ -205,12 +205,12 @@
     <SplitSection title="Why" accent="install it" description="The same private tools, a little closer at hand.">
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {#each features as f (f.label)}
-          <li class="panel-card flex flex-col gap-3 p-6">
+          <li class="rounded-2xl border border-border bg-card flex flex-col gap-3 p-6">
             <span class="grid size-10 place-items-center rounded-lg border border-border">
               <f.icon class="size-5 text-primary" />
             </span>
-            <h3 class="text-body-lg font-medium text-foreground">{f.label}</h3>
-            <p class="text-body leading-relaxed text-muted-foreground">{f.body}</p>
+            <h3 class="text-base font-medium text-foreground">{f.label}</h3>
+            <p class="text-sm leading-relaxed text-muted-foreground">{f.body}</p>
           </li>
         {/each}
       </ul>

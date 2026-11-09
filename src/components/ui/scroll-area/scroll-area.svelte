@@ -2,10 +2,12 @@
 import { ScrollArea as ScrollAreaPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import { cn } from "$lib/cn.js";
+import { type ScrollAreaScrollbar, scrollArea } from "./variants";
 
 let {
 	children,
 	maxHeight = "16rem",
+	scrollbar = "auto",
 	class: classProp,
 	viewportRef = $bindable(null),
 	viewportProps,
@@ -13,6 +15,7 @@ let {
 }: ScrollAreaPrimitive.RootProps & {
 	children: Snippet;
 	maxHeight?: string;
+	scrollbar?: ScrollAreaScrollbar;
 	/** Exposes the actual scrollable element, for callers that need to drive its scroll
 	 * position themselves (e.g. Conversation's auto-follow). */
 	viewportRef?: HTMLDivElement | null;
@@ -20,6 +23,8 @@ let {
 	 * outer root (role, aria-*, tabindex, extra scroll/pointer listeners). */
 	viewportProps?: Omit<ScrollAreaPrimitive.ViewportProps, "children" | "ref">;
 } = $props();
+
+const styles = $derived(scrollArea({ scrollbar }));
 
 let atTop = $state(true);
 let atBottom = $state(true);
@@ -41,7 +46,12 @@ $effect(() => {
 });
 </script>
 
-<ScrollAreaPrimitive.Root data-slot="scroll-area" class={cn("relative", classProp)} {...rest}>
+<ScrollAreaPrimitive.Root
+	data-slot="scroll-area"
+	data-scrollbar={scrollbar}
+	class={cn(styles.root(), classProp)}
+	{...rest}
+>
 	<ScrollAreaPrimitive.Viewport
 		{...viewportProps}
 		bind:ref={viewportRef}
@@ -51,21 +61,23 @@ $effect(() => {
 		}}
 		data-slot="scroll-area-viewport"
 		style="max-height: {maxHeight}"
-		class={cn("size-full rounded-[inherit] outline-none", viewportProps?.class)}
+		class={cn(styles.viewport(), viewportProps?.class)}
 	>
 		{@render children()}
 	</ScrollAreaPrimitive.Viewport>
-	<ScrollAreaPrimitive.Scrollbar
-		data-slot="scroll-area-scrollbar"
-		orientation="vertical"
-		class="flex touch-none select-none p-0.5 transition-colors data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:flex-col data-[orientation=vertical]:w-2.5"
-	>
-		<ScrollAreaPrimitive.Thumb
-			data-slot="scroll-area-thumb"
-			class="relative flex-1 rounded-full bg-border"
-		/>
-	</ScrollAreaPrimitive.Scrollbar>
-	<ScrollAreaPrimitive.Corner />
+	{#if scrollbar === "auto"}
+		<ScrollAreaPrimitive.Scrollbar
+			data-slot="scroll-area-scrollbar"
+			orientation="vertical"
+			class="flex touch-none select-none p-0.5 transition-colors data-[orientation=horizontal]:h-2.5 data-[orientation=horizontal]:flex-col data-[orientation=vertical]:w-2.5"
+		>
+			<ScrollAreaPrimitive.Thumb
+				data-slot="scroll-area-thumb"
+				class="relative flex-1 rounded-full bg-border"
+			/>
+		</ScrollAreaPrimitive.Scrollbar>
+		<ScrollAreaPrimitive.Corner />
+	{/if}
 
 	<span
 		aria-hidden="true"

@@ -5,6 +5,7 @@ export { default as CardDescription } from "./card-description.svelte";
 export { default as CardFooter } from "./card-footer.svelte";
 export { default as CardHeader } from "./card-header.svelte";
 export { default as CardTitle } from "./card-title.svelte";
+export { type CardWellFooter, type CardWellContext, getCardWell, setCardWell } from "./context";
 export { cardFrame, type CardVariant } from "./variants";
 export { default as Root } from "./card.svelte";
 export { default as Action } from "./card-action.svelte";

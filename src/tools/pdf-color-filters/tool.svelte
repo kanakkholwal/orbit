@@ -18,7 +18,7 @@
     IconChevronRight as ChevronRight,
     IconDownload as Download,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { ColorFiltersState, type Resolution } from "./helper.svelte";
   import { filterCanvas, type FilterKind } from "./raster";
 
@@ -119,8 +119,8 @@
 )}
   <div class="flex flex-col gap-1">
     <div class="flex items-baseline justify-between gap-3">
-      <label for="{uid}-{key}" class="text-body text-foreground">{label}</label>
-      <span class="text-body tabular-nums text-muted-foreground">{readout}</span>
+      <label for="{uid}-{key}" class="text-sm text-foreground">{label}</label>
+      <span class="text-sm tabular-nums text-muted-foreground">{readout}</span>
     </div>
     <input
       id="{uid}-{key}"
@@ -139,10 +139,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to change its colours</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to change its colours</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Make pages grey, black and white, dark for night reading, or look scanned.
       </p>
     {/snippet}
@@ -176,7 +176,7 @@
 
     <section aria-label="Preview" class="flex flex-col gap-3 rounded-2xl border border-border bg-muted p-3 sm:p-4">
       <div class="flex items-center justify-between gap-3">
-        <h2 class="text-body font-medium text-foreground">Preview</h2>
+        <h2 class="text-sm font-medium text-foreground">Preview</h2>
         <div class="flex items-center gap-1">
           <Button
             variant="ghost"
@@ -187,7 +187,7 @@
           >
             <ChevronLeft />
           </Button>
-          <span class="min-w-20 text-center text-caption tabular-nums text-muted-foreground" aria-live="polite">
+          <span class="min-w-20 text-center text-xs tabular-nums text-muted-foreground" aria-live="polite">
             Page {store.previewPage} of {store.pageCount}
           </span>
           <Button
@@ -209,7 +209,7 @@
             aria-label="Page before the filter"
             class="h-auto w-full max-w-sm rounded-sm bg-background shadow-sm"
           ></canvas>
-          <figcaption class="text-caption text-muted-foreground">Before</figcaption>
+          <figcaption class="text-xs text-muted-foreground">Before</figcaption>
         </figure>
         <figure class="flex flex-col items-center gap-2">
           <canvas
@@ -217,12 +217,12 @@
             aria-label="Page after the filter"
             class="h-auto w-full max-w-sm rounded-sm bg-background shadow-sm"
           ></canvas>
-          <figcaption class="text-caption text-muted-foreground">After</figcaption>
+          <figcaption class="text-xs text-muted-foreground">After</figcaption>
         </figure>
       </div>
     </section>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Pages are saved as pictures, so their text can no longer be selected or searched. Run
       <a href="/tools/ocr-pdf" class="font-medium text-primary underline-offset-4 hover:underline">OCR PDF</a>
       afterwards to make it searchable again.
@@ -291,8 +291,8 @@
       <OptionGroup label="File size" description="Lower quality makes a smaller file.">
         <div class="flex flex-col gap-1">
           <div class="flex items-baseline justify-between gap-3">
-            <label for="{uid}-quality" class="text-body text-foreground">Image quality</label>
-            <span class="text-body tabular-nums text-muted-foreground">{Math.round(store.quality * 100)}%</span>
+            <label for="{uid}-quality" class="text-sm text-foreground">Image quality</label>
+            <span class="text-sm tabular-nums text-muted-foreground">{Math.round(store.quality * 100)}%</span>
           </div>
           <input
             id="{uid}-quality"
@@ -322,7 +322,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={busy}>
+    <Button variant="default" onclick={() => store.process()} disabled={busy}>
       {busy ? "Applying…" : `Apply to ${pageLabel(store.pageCount)}`}
     </Button>
   </ToolFooter>

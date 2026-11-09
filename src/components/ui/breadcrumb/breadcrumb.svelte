@@ -2,13 +2,13 @@
 import type { Snippet } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
 import { cn } from "$lib/cn.js";
-import { setBreadcrumbStyle } from "./context";
 import { type BreadcrumbSize, type BreadcrumbVariant, breadcrumb } from "./variants";
+import { setBreadcrumbStyle } from "./context";
 
 let {
 	children,
 	variant = "default",
-	size = "md",
+	size = "default",
 	class: classProp,
 	...rest
 }: {

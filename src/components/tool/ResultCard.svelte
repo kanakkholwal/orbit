@@ -1,6 +1,6 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
-  import { IconCircleCheck as CircleCheck } from "@tabler/icons-svelte";
+  import { IconCircleCheck as CircleCheck } from "$lib/icons";
   import type { Snippet } from "svelte";
 
   type Props = {
@@ -21,9 +21,9 @@
         <CircleCheck class="size-5" />
       </span>
       <div class="flex flex-col gap-0.5">
-        <h2 class="text-body-lg font-medium text-foreground">{title}</h2>
+        <h2 class="text-base font-medium text-foreground">{title}</h2>
         {#if description}
-          <p class="text-body text-muted-foreground">{description}</p>
+          <p class="text-sm text-muted-foreground">{description}</p>
         {/if}
       </div>
     </div>

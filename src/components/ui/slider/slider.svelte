@@ -10,6 +10,7 @@ import {
 	sliderThumbCenter,
 	sliderWaveBars,
 } from "./core";
+import { attachElastic } from "./elastic";
 import {
 	type SliderMark,
 	type SliderSize,
@@ -26,10 +27,11 @@ let {
 	orientation: orientationProp = "horizontal",
 	label,
 	variant: variantProp = "default",
-	size = "md",
+	size = "default",
 	showValue = false,
 	formatValue = (v: number) => String(v),
 	marks = [],
+	elastic = false,
 	onValueChange,
 	onValueCommit,
 	disabled,
@@ -63,6 +65,8 @@ let {
 	formatValue?: (value: number) => string;
 	/** Ticks under the track; clicking one jumps there. */
 	marks?: SliderMark[];
+	/** Dragging past either end stretches the track like elastic, then it springs back. */
+	elastic?: boolean;
 	onValueChange?: (value: number | number[]) => void;
 	/** Fires once a drag or key press settles. */
 	onValueCommit?: (value: number | number[]) => void;
@@ -115,6 +119,11 @@ $effect(() => {
 
 // Inline: the handle parts where it crosses the label or the value.
 let control = $state<HTMLElement>();
+$effect(() => {
+	const el = control;
+	if (!elastic || !el) return;
+	return attachElastic(el, () => el.dataset.orientation === "vertical");
+});
 let labelEl = $state<HTMLElement>();
 let valueEl = $state<HTMLElement>();
 let boxes = $state({ width: 0, label: [0, 0], value: [0, 0] });

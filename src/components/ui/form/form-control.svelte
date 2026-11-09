@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Snippet } from "svelte";
-import { getFormField } from "./context";
 import type { FormControlProps } from "./variants";
+import { getFormField } from "./context";
 
 let {
 	child,

@@ -12,13 +12,13 @@
   let { title, body, actions, class: className }: Props = $props();
 </script>
 
-<section class={cn("panel-brand relative w-full overflow-hidden rounded-3xl px-6 py-16 sm:py-20", className)}>
+<section class={cn("relative w-full overflow-hidden rounded-2xl bg-primary px-6 py-16 text-primary-foreground sm:py-20", className)}>
   <div class="relative mx-auto flex max-w-3xl flex-col items-center text-center">
-    <h2 class="text-balance text-heading font-medium text-white sm:text-heading-lg md:text-display">
+    <h2 class="text-balance text-3xl font-medium text-primary-foreground sm:text-4xl md:text-5xl">
       {title}
     </h2>
     {#if body}
-      <p class="mt-4 max-w-md text-pretty text-body text-white/80">{body}</p>
+      <p class="mt-4 max-w-md text-pretty text-sm text-primary-foreground/80">{body}</p>
     {/if}
     {#if actions}
       <div class="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">

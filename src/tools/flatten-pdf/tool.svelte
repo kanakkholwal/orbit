@@ -14,7 +14,7 @@
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
   import { FlattenPdfState } from "./helper.svelte";
 
   const store = new FlattenPdfState();
@@ -59,10 +59,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to flatten</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to flatten</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Lock filled-in forms and comments into the page so nobody can change them. Files never leave this device.
       </p>
     {/snippet}
@@ -189,7 +189,7 @@
         </div>
       </OptionGroup>
 
-      <p class="text-caption text-muted-foreground">
+      <p class="text-xs text-muted-foreground">
         Links stay clickable. A sticky note becomes its small icon; the note text is not kept on the page.
       </p>
     </div>
@@ -211,7 +211,7 @@
     {/snippet}
 
     <Button
-      variant="primary"
+      variant="default"
       onclick={() => store.process()}
       disabled={store.isProcessing || pendingCount === 0 || nothingSelected}
     >

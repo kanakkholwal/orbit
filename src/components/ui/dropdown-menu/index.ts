@@ -9,6 +9,7 @@ export { default as DropdownMenuSubContent } from "./dropdown-menu-sub-content.s
 export { default as DropdownMenuSubTrigger } from "./dropdown-menu-sub-trigger.svelte";
 export { default as DropdownMenuSub } from "./dropdown-menu-sub.svelte";
 export { default as DropdownMenuTrigger } from "./dropdown-menu-trigger.svelte";
+export { setDropdownMenu, dropdownMenuTrigger } from "./context";
 export { default as Root } from "./dropdown-menu.svelte";
 export { default as CheckboxItem } from "./dropdown-menu-checkbox-item.svelte";
 export { default as Content } from "./dropdown-menu-content.svelte";

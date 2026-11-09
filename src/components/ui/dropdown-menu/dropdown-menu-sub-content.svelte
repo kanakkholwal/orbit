@@ -1,16 +1,21 @@
 <script lang="ts">
 import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
-import { ANCHORED } from "$lib/anchor.js";
 import { cn } from "$lib/cn.js";
-import { menu } from "$lib/menu.js";
+import { type MenuSize, menu } from "$lib/menu.js";
+import { ANCHORED } from "$lib/anchor.js";
 
-let { class: classProp, ...rest }: DropdownMenuPrimitive.SubContentProps = $props();
+let {
+	class: classProp,
+	size = "default",
+	...rest
+}: DropdownMenuPrimitive.SubContentProps & { size?: MenuSize } = $props();
 </script>
 
 <DropdownMenuPrimitive.Portal>
 	<DropdownMenuPrimitive.SubContent
 		{...rest}
 		data-slot="dropdown-menu-sub-content"
-		class={cn(ANCHORED, "static", menu().surface(), "min-w-40", classProp)}
+		data-size={size}
+		class={cn(ANCHORED, "static min-w-40", menu({ size }).surface(), classProp)}
 	/>
 </DropdownMenuPrimitive.Portal>

@@ -20,7 +20,7 @@
     IconLayoutSidebarLeftExpand as Library,
     IconLoader2 as Loader,
     IconPlus as Plus,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { MediaQuery } from "svelte/reactivity";
   import PageView from "./canvas/PageView.svelte";
   import { pageBox } from "./model/themes";
@@ -124,8 +124,8 @@
     {/key}
   {:else}
     <div class="border-b border-border px-4 py-3">
-      <h2 class="text-body font-medium text-foreground">Document</h2>
-      <p class="text-caption text-muted-foreground">Select a block on the page to edit it.</p>
+      <h2 class="text-sm font-medium text-foreground">Document</h2>
+      <p class="text-xs text-muted-foreground">Select a block on the page to edit it.</p>
     </div>
     <DocumentPanel {studio} />
   {/if}
@@ -144,9 +144,9 @@
             d.name = value;
           });
         }}
-        class="h-9 w-32 min-w-24 shrink rounded-lg border border-transparent bg-transparent px-2 text-body font-medium text-foreground outline-none transition-colors hover:border-border focus:border-ring sm:w-56"
+        class="h-9 w-32 min-w-24 shrink rounded-lg border border-transparent bg-transparent px-2 text-sm font-medium text-foreground outline-none transition-colors hover:border-border focus:border-ring sm:w-56"
       />
-      <span class="hidden items-center gap-1.5 whitespace-nowrap px-1 text-caption text-muted-foreground md:flex" role="status">
+      <span class="hidden items-center gap-1.5 whitespace-nowrap px-1 text-xs text-muted-foreground md:flex" role="status">
         {#if studio.saveState === "saving"}
           <Loader class="size-3.5 animate-spin" />Saving
         {:else if studio.saveState === "error"}
@@ -171,7 +171,7 @@
         <Eye />
         <span class="hidden sm:inline">Preview</span>
       </Button>
-      <Button variant="primary" size="sm" disabled={studio.isProcessing} onclick={() => studio.downloadPdf()}>
+      <Button variant="default" size="sm" disabled={studio.isProcessing} onclick={() => studio.downloadPdf()}>
         {#if studio.isProcessing}<Loader class="animate-spin" />{:else}<Download />{/if}
         <span class="hidden sm:inline">{studio.isProcessing ? "Building" : "Download PDF"}</span>
       </Button>
@@ -182,8 +182,8 @@
           {/snippet}
         </DropdownMenu.Trigger>
         <DropdownMenu.Content align="end" class="w-60 rounded-xl p-1 shadow-lg">
-          <DropdownMenu.Item class="min-h-9 rounded-lg px-2.5 text-body" onclick={() => studio.downloadJson()}><ExportJson />Save draft as file</DropdownMenu.Item>
-          <DropdownMenu.Item class="min-h-9 rounded-lg px-2.5 text-body" onclick={openInViewer}><Eye />Open PDF in View PDF</DropdownMenu.Item>
+          <DropdownMenu.Item class="min-h-9 rounded-lg px-2.5 text-sm" onclick={() => studio.downloadJson()}><ExportJson />Save draft as file</DropdownMenu.Item>
+          <DropdownMenu.Item class="min-h-9 rounded-lg px-2.5 text-sm" onclick={openInViewer}><Eye />Open PDF in View PDF</DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>
     </div>
@@ -194,7 +194,7 @@
       {/if}
 
       <div
-        class="scrollbar-subtle relative min-w-0 flex-1 overflow-auto overscroll-contain bg-canvas"
+        class="scrollbar-subtle relative min-w-0 flex-1 overflow-auto overscroll-contain bg-background"
         bind:clientWidth={canvasWidth}
         role="presentation"
         onclick={(e) => {
@@ -209,7 +209,7 @@
           }}
         >
           <PageView {doc} {studio} {zoom} />
-          <p class="mt-4 text-caption text-muted-foreground">The editor shows one long page. Preview shows the real page breaks.</p>
+          <p class="mt-4 text-xs text-muted-foreground">The editor shows one long page. Preview shows the real page breaks.</p>
         </div>
       </div>
 

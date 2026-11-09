@@ -213,10 +213,10 @@
             class="flex min-h-0 flex-1 flex-col"
         >
             <div class="flex flex-col gap-1 px-5 pb-4 pt-5">
-                <Drawer.Title class="text-subheading font-medium text-foreground">
+                <Drawer.Title class="text-xl font-medium text-foreground">
                     {translate("link.title") || "Insert link"}
                 </Drawer.Title>
-                <Drawer.Description class="text-body text-muted-foreground">
+                <Drawer.Description class="text-sm text-muted-foreground">
                     {translate("link.description") || "Send readers to a website or another page."}
                 </Drawer.Description>
             </div>
@@ -244,10 +244,10 @@
                             type="number"
                             min={1}
                             max={totalPages}
-                            value={pageNumber}
+                            value={String(pageNumber)}
                             oninput={handlePageInput}
                         />
-                        <p class="text-body text-muted-foreground">
+                        <p class="text-sm text-muted-foreground">
                             {translate("link.pageRange", { params: { totalPages } }) || `1 to ${totalPages}`}
                         </p>
                     </div>
@@ -261,7 +261,7 @@
                 <Button type="button" variant="ghost" onclick={() => onClose?.()}>
                     {translate("common.cancel") || "Cancel"}
                 </Button>
-                <Button type="submit" variant="primary" disabled={!canSubmit}>
+                <Button type="submit" variant="default" disabled={!canSubmit}>
                     {translate("link.link") || "Insert link"}
                 </Button>
             </div>

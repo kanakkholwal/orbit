@@ -35,7 +35,7 @@ import {
     IconWand as WandIcon,
     IconBolt as Zap,
     type Icon
-} from '@tabler/icons-svelte';
+} from "$lib/icons";
 import {
     IconArrowsShuffle,
     IconBook2,
@@ -54,7 +54,7 @@ import {
     IconScan,
     IconShieldSearch,
     IconStackFront,
-} from '@tabler/icons-svelte';
+} from "$lib/icons";
 import type { Component } from 'svelte';
 
 

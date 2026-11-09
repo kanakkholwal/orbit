@@ -13,7 +13,11 @@ let contentEl = $state<HTMLElement | null>(null);
 </script>
 
 <AlertDialogPrimitive.Portal>
-	<AlertDialogPrimitive.Overlay data-slot="alert-dialog-backdrop" class={styles.backdrop()} />
+	<AlertDialogPrimitive.Overlay
+		data-slot="alert-dialog-backdrop"
+		aria-hidden="true"
+		class={styles.backdrop()}
+	/>
 	<AlertDialogPrimitive.Content
 		bind:ref={contentEl}
 		data-slot="alert-dialog-content"

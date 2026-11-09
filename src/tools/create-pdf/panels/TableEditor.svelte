@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
-  import { IconClipboardText as Paste, IconColumnInsertRight as AddColumn, IconRowInsertBottom as AddRow, IconX as X } from "@tabler/icons-svelte";
+  import { IconClipboardText as Paste, IconColumnInsertRight as AddColumn, IconRowInsertBottom as AddRow, IconX as X } from "$lib/icons";
 
   type Props = {
     columns: string[];
@@ -32,12 +32,12 @@
   }
 
   const cellClass =
-    "h-9 w-full min-w-24 rounded-md border border-transparent bg-transparent px-2 text-body text-foreground outline-none transition-colors hover:border-border focus:border-ring focus:bg-background";
+    "h-9 w-full min-w-24 rounded-md border border-transparent bg-transparent px-2 text-sm text-foreground outline-none transition-colors hover:border-border focus:border-ring focus:bg-background";
 </script>
 
 <div class="flex flex-col gap-3">
   <div class="scrollbar-subtle -mx-1 overflow-x-auto px-1">
-    <table class="w-full border-separate border-spacing-0 text-body">
+    <table class="w-full border-separate border-spacing-0 text-sm">
       <thead>
         <tr>
           {#each columns as column, c (c)}
@@ -111,9 +111,9 @@
         rows="5"
         placeholder={"Item\tQty\tPrice\nDesign\t1\t$400"}
         aria-label="Rows copied from a spreadsheet"
-        class="w-full rounded-xl border border-border bg-background px-3 py-2.5 font-mono text-caption leading-relaxed text-foreground outline-none placeholder:text-placeholder focus:border-ring"
+        class="w-full rounded-xl border border-border bg-background px-3 py-2.5 font-mono text-xs leading-relaxed text-foreground outline-none placeholder:text-muted-foreground focus:border-ring"
       ></textarea>
-      <p class="text-caption text-muted-foreground">Copy cells from a spreadsheet or CSV. The first line becomes the header.</p>
+      <p class="text-xs text-muted-foreground">Copy cells from a spreadsheet or CSV. The first line becomes the header.</p>
       <Button size="sm" class="self-start" disabled={!pasted.trim()} onclick={applyPaste}>Replace table</Button>
     </div>
   {/if}

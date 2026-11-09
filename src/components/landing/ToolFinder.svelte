@@ -7,7 +7,7 @@
     IconLayoutGrid as All,
     IconLock as Lock,
     IconSearch as Search,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
 
   const MAX_RESULTS = 25;
 
@@ -46,17 +46,16 @@
   <article
     class="relative flex min-h-100 flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-0 lg:w-1/2"
   >
-    <div aria-hidden="true" class="plate-grid absolute inset-0"></div>
     {#each ["left-4 top-4 border-l border-t", "right-4 top-4 border-r border-t", "bottom-4 left-4 border-b border-l", "bottom-4 right-4 border-b border-r"] as corner (corner)}
       <span aria-hidden="true" class="absolute size-4 border-border-strong {corner}"></span>
     {/each}
 
     <header class="relative flex items-start justify-between gap-4 px-8 pt-8">
       <div class="min-w-0">
-        <p class="truncate text-body font-medium text-foreground">{specimenCategory}</p>
-        <p class="mt-1 text-caption text-muted-foreground">Hover a tool to preview it</p>
+        <p class="truncate text-sm font-medium text-foreground">{specimenCategory}</p>
+        <p class="mt-1 text-xs text-muted-foreground">Hover a tool to preview it</p>
       </div>
-      <span class="flex shrink-0 items-center gap-1.5 text-caption font-medium text-primary">
+      <span class="flex shrink-0 items-center gap-1.5 text-xs font-medium text-primary">
         <Lock class="size-3.5" />
         Stays on your device
       </span>
@@ -66,14 +65,14 @@
       <div
         class="grid size-36 place-items-center rounded-3xl border-2 border-foreground bg-card text-foreground shadow-md sm:size-44"
       >
-        <specimen.icon class="size-16 sm:size-20" stroke={1.5} />
+        <specimen.icon class="size-16 sm:size-20" />
       </div>
     </div>
 
     <footer class="relative flex flex-col gap-4 px-8 pb-8 sm:flex-row sm:items-end sm:justify-between">
       <div class="min-w-0">
-        <h3 class="text-subheading font-medium text-foreground">{specimen.title}</h3>
-        <p class="mt-1 line-clamp-2 max-w-md text-body text-muted-foreground">
+        <h3 class="text-xl font-medium text-foreground">{specimen.title}</h3>
+        <p class="mt-1 line-clamp-2 max-w-md text-sm text-muted-foreground">
           {specimen.description}
         </p>
       </div>
@@ -84,12 +83,12 @@
     </footer>
   </article>
 
-  <div class="panel-brand-tall flex items-center justify-center rounded-2xl p-2 sm:p-6 md:p-10 lg:w-1/2">
+  <div class="bg-primary text-primary-foreground flex items-center justify-center rounded-2xl p-2 sm:p-6 md:p-10 lg:w-1/2">
     <div
-      class="w-full max-w-md rounded-3xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-[2px]"
+      class="w-full max-w-md rounded-2xl border border-white/20 bg-white/10 p-4"
     >
       <label
-        class="flex h-11 items-center overflow-hidden rounded-xl border border-white/40 bg-white/80 text-fixed-dark focus-within:ring-2 focus-within:ring-white"
+        class="flex h-11 items-center overflow-hidden rounded-xl border border-white/40 bg-white/80 text-neutral-950 focus-within:ring-2 focus-within:ring-white"
       >
         <span class="flex h-full items-center px-3">
           <Search class="size-4" />
@@ -100,7 +99,7 @@
           bind:value={query}
           oninput={() => (previewSlug = null)}
           placeholder="Search for tools..."
-          class="h-full min-w-0 flex-1 bg-transparent pr-4 pl-2 text-body text-fixed-dark outline-none placeholder:text-neutral-600"
+          class="h-full min-w-0 flex-1 bg-transparent pr-4 pl-2 text-sm text-neutral-950 outline-none placeholder:text-neutral-600"
         />
       </label>
 
@@ -119,17 +118,17 @@
                   aria-current={specimen.slug === tool.slug ? "true" : undefined}
                 >
                   <span
-                    class="grid size-10 place-items-center rounded-lg bg-white/60 text-fixed-dark transition-colors duration-200 group-hover:bg-white group-focus-visible:ring-2 group-focus-visible:ring-white group-aria-current:bg-white"
+                    class="grid size-10 place-items-center rounded-lg bg-white/60 text-neutral-950 transition-colors duration-(--duration-base) group-hover:bg-white group-focus-visible:ring-2 group-focus-visible:ring-white group-aria-current:bg-white"
                   >
                     <tool.icon class="size-5" />
                   </span>
-                  <span class="w-full truncate text-center text-caption text-white">{tool.title}</span>
+                  <span class="w-full truncate text-center text-xs text-white">{tool.title}</span>
                 </a>
               </li>
             {/each}
           </ul>
         {:else}
-          <p class="flex flex-1 items-center justify-center text-center text-body text-white">
+          <p class="flex flex-1 items-center justify-center text-center text-sm text-white">
             No tools match “{query}”.
           </p>
         {/if}
@@ -145,7 +144,7 @@
           >
             <span
               aria-hidden="true"
-              class="segment-thumb absolute inset-y-1 left-1 rounded-xl bg-neutral-100 transition-transform duration-300 ease-craft"
+              class="segment-thumb absolute inset-y-1 left-1 rounded-xl bg-neutral-100 transition-transform duration-(--duration-slow) ease-(--ease-ui-out)"
               style:width={`calc((100% - 0.5rem - ${filters.length - 1} * 0.25rem) / ${filters.length})`}
               style:transform={`translateX(calc(${activeIndex} * (100% + 0.25rem)))`}
             ></span>
@@ -159,7 +158,7 @@
                   category = filter.id;
                   previewSlug = null;
                 }}
-                class="relative z-10 flex items-center justify-center rounded-xl py-2.5 transition-[color,transform] duration-150 active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-primary {category === filter.id ? 'text-fixed-dark' : 'text-neutral-500'}"
+                class="relative z-10 flex items-center justify-center rounded-xl py-2.5 transition-[color,transform] duration-(--duration-fast) active:scale-[0.97] focus-visible:ring-2 focus-visible:ring-primary {category === filter.id ? 'text-neutral-950' : 'text-neutral-500'}"
               >
                 <filter.icon class="size-5" />
               </button>
@@ -172,14 +171,6 @@
 </div>
 
 <style>
-  .plate-grid {
-    background-image:
-      linear-gradient(to right, var(--border) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-    background-size: 24px 24px;
-    opacity: 0.5;
-  }
-
   .segment-track {
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.25),

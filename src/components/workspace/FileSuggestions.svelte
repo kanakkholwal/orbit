@@ -6,7 +6,7 @@
     IconFileTypePdf as FilePdf,
     IconPhoto as Photo,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
 
   let {
     files,
@@ -39,8 +39,8 @@
       {#if kind === "image"}<Photo class="size-5" />{:else}<FilePdf class="size-5" />{/if}
     </span>
     <span class="min-w-0 flex-1">
-      <span class="block truncate text-body font-medium text-foreground">{label}</span>
-      <span class="block text-caption tabular-nums text-muted-foreground">{formatSize(totalSize)} · stays on this device</span>
+      <span class="block truncate text-sm font-medium text-foreground">{label}</span>
+      <span class="block text-xs tabular-nums text-muted-foreground">{formatSize(totalSize)} · stays on this device</span>
     </span>
     <button
       type="button"
@@ -54,14 +54,14 @@
   {/if}
 
   {#if suggestions.length > 0}
-    <p class="px-1 text-caption font-medium text-muted-foreground">{heading}</p>
+    <p class="px-1 text-xs font-medium text-muted-foreground">{heading}</p>
     <ul class="grid grid-cols-1 gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
       {#each suggestions as tool (tool.slug)}
         <li>
           <button
             type="button"
             onclick={() => openFilesInTool(files, tool.slug)}
-            class="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-body text-foreground outline-none transition-colors duration-150 hover:bg-muted focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+            class="group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm text-foreground outline-none transition-colors duration-(--duration-fast) hover:bg-muted focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
           >
             <tool.icon class="size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
             <span class="flex-1 truncate">{tool.title}</span>
@@ -71,7 +71,7 @@
       {/each}
     </ul>
   {:else}
-    <p class="px-1 text-body text-muted-foreground">
+    <p class="px-1 text-sm text-muted-foreground">
       Orbit opens PDFs and images. Choose one of those to see what you can do with it.
     </p>
   {/if}

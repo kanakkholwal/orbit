@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Button } from "$components/ui/button";
-  import { IconPhotoUp as Upload, IconTrash as Trash } from "@tabler/icons-svelte";
+  import { IconPhotoUp as Upload, IconTrash as Trash } from "$lib/icons";
   import { toast } from "svelte-sonner";
 
   type Props = { value: string; label: string; onchange: (value: string) => void };
@@ -57,7 +57,7 @@
   <button
     type="button"
     onclick={() => input?.click()}
-    class="flex h-20 w-full flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-border-strong text-body text-muted-foreground outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+    class="flex h-20 w-full flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-border-strong text-sm text-muted-foreground outline-none transition-colors hover:border-primary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
   >
     <Upload class="size-5" />
     Choose {label.toLowerCase()}

@@ -6,7 +6,7 @@ import { type InputGroupSize, inputGroup } from "./variants";
 let {
 	ref = $bindable(null),
 	class: classProp,
-	size = "md",
+	size = "default",
 	children,
 	...rest
 }: HTMLAttributes<HTMLDivElement> & {

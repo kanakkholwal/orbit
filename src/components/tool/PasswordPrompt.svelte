@@ -3,7 +3,7 @@
   import { Input } from "$components/ui/input";
   import { Label } from "$components/ui/label";
   import { cn } from "$lib/utils";
-  import { IconEye as Eye, IconEyeOff as EyeOff, IconLock as Lock } from "@tabler/icons-svelte";
+  import { IconEye as Eye, IconEyeOff as EyeOff, IconLock as Lock } from "$lib/icons";
 
   type Props = {
     fileName: string;
@@ -47,8 +47,8 @@
       <Lock class="size-5" />
     </span>
     <div class="flex min-w-0 flex-col gap-0.5">
-      <h2 class="truncate text-body-lg font-medium text-foreground" title={fileName}>{fileName}</h2>
-      <p class="text-body text-muted-foreground">
+      <h2 class="truncate text-base font-medium text-foreground" title={fileName}>{fileName}</h2>
+      <p class="text-sm text-muted-foreground">
         This PDF is locked. Enter its password to open it here. The password is used only on this device.
       </p>
     </div>
@@ -80,14 +80,14 @@
         {#if showPassword}<EyeOff />{:else}<Eye />{/if}
       </Button>
     </div>
-    <p id="{uid}-password-error" class="text-caption text-destructive empty:hidden" aria-live="polite">{error}</p>
+    <p id="{uid}-password-error" class="text-xs text-destructive empty:hidden" aria-live="polite">{error}</p>
   </div>
 
   <div class="flex flex-wrap justify-end gap-2">
     {#if oncancel}
       <Button type="button" variant="ghost" onclick={oncancel} disabled={busy}>Choose another file</Button>
     {/if}
-    <Button type="submit" variant="primary" disabled={busy || !password}>
+    <Button type="submit" variant="default" disabled={busy || !password}>
       {busy ? "Unlocking…" : "Unlock"}
     </Button>
   </div>

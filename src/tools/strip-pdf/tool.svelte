@@ -9,7 +9,7 @@
     IconDownload as Download,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { StripPdfState } from "./helper.svelte";
 
   const store = new StripPdfState();
@@ -26,10 +26,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop slide PDFs to remove duplicate pages</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop slide PDFs to remove duplicate pages</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Presentations exported with animations repeat each slide once per step. Keep only the last, complete page of every slide.
       </p>
     {/snippet}
@@ -137,7 +137,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || pendingCount === 0}>
       {store.isProcessing ? "Stripping…" : pendingCount > 0 ? `Strip ${plural(pendingCount)}` : "Strip"}
     </Button>
   </ToolFooter>

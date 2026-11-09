@@ -2,6 +2,7 @@
 import { Accordion as AccordionPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import { cn } from "$lib/cn.js";
+import { type AccordionMotion, accordion } from "./variants";
 
 let {
 	children,
@@ -9,6 +10,7 @@ let {
 	collapsible: _collapsible,
 	value = $bindable(),
 	onValueChange,
+	motion = "smooth",
 	class: classProp,
 	...rest
 }: {
@@ -20,12 +22,11 @@ let {
 	/** The open item in single mode, the open items in multiple mode. Bindable. */
 	value?: string | string[];
 	onValueChange?: (value: string | string[]) => void;
+	motion?: AccordionMotion;
 	class?: string;
 } = $props();
 
-const rootClass = $derived(
-	cn("divide-y divide-border overflow-hidden rounded-xl border border-border", classProp),
-);
+const rootClass = $derived(cn(accordion({ motion }), classProp));
 
 function commit(next: string | string[]) {
 	value = next;
@@ -40,6 +41,7 @@ function commit(next: string | string[]) {
 		type="multiple"
 		bind:value={() => (Array.isArray(value) ? value : value ? [value] : []), commit}
 		data-slot="accordion"
+		data-motion={motion}
 		class={rootClass}
 	>
 		{@render children?.()}
@@ -50,6 +52,7 @@ function commit(next: string | string[]) {
 		type="single"
 		bind:value={() => (Array.isArray(value) ? (value[0] ?? "") : (value ?? "")), commit}
 		data-slot="accordion"
+		data-motion={motion}
 		class={rootClass}
 	>
 		{@render children?.()}

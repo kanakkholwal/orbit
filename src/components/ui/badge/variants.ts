@@ -1,11 +1,12 @@
 import { tv, type VariantProps } from "tailwind-variants";
 
 export const badge = tv({
-	base: "inline-flex shrink-0 items-center gap-1.5 rounded-md border font-medium whitespace-nowrap transition-colors duration-(--duration-fast)",
+	base: "inline-flex shrink-0 items-center gap-1.5 border font-medium whitespace-nowrap transition-colors duration-(--duration-fast)",
 	variants: {
 		variant: {
+			// --primary on its own 15% tint is 4.01:1 in light; --primary-hover clears 4.5:1.
 			default:
-				"border-transparent bg-[color-mix(in_oklch,var(--primary)_15%,transparent)] text-primary",
+				"border-transparent bg-[color-mix(in_oklch,var(--primary)_15%,transparent)] text-primary-hover",
 			secondary: "border-transparent bg-card text-foreground",
 			outline: "border-border bg-transparent text-foreground",
 			success:
@@ -19,13 +20,14 @@ export const badge = tv({
 			gold: "badge-shine border-[color-mix(in_oklch,var(--warning)_40%,transparent)] bg-[color-mix(in_oklch,var(--warning)_22%,transparent)] text-warning-strong",
 		},
 		size: {
-			sm: "h-5 px-1.5 text-xs",
-			md: "h-6 px-2 text-xs",
-			lg: "h-7 px-2.5 text-sm",
-			xl: "h-8 px-3 text-sm",
+			// Radius holds near 30% of the height, like the control ladder.
+			sm: "h-5 gap-1 rounded-sm px-1.5 text-xs [&_svg]:size-3",
+			default: "h-6 rounded-md px-2 text-xs [&_svg]:size-3",
+			lg: "h-7 rounded-md px-2.5 text-sm [&_svg]:size-3.5",
+			xl: "h-8 rounded-md px-3 text-sm [&_svg]:size-4",
 		},
 	},
-	defaultVariants: { variant: "default", size: "md" },
+	defaultVariants: { variant: "default", size: "default" },
 });
 
 export type BadgeVariant = NonNullable<VariantProps<typeof badge>["variant"]>;

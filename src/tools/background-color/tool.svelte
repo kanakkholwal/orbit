@@ -6,14 +6,14 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { BackgroundColorState } from "./helper.svelte";
 
   const store = new BackgroundColorState();
   const uid = $props.id();
 
   const field =
-    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const swatches = [
     { value: "#ffffcc", label: "Cream" },
@@ -35,10 +35,10 @@
 {#if !s.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to change its page colour</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to change its page colour</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Give white pages a soft tint that is easier on the eyes or matches your brand.
       </p>
     {/snippet}
@@ -69,7 +69,7 @@
 
     <section aria-label="Preview" class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-muted px-4 py-6 sm:py-10">
       <div
-        class="@container relative aspect-[1/1.414] w-full max-w-sm overflow-hidden rounded-sm shadow-sm transition-colors duration-200"
+        class="@container relative aspect-[1/1.414] w-full max-w-sm overflow-hidden rounded-sm shadow-sm transition-colors duration-(--duration-base)"
         style:background-color={s.colorHex}
         aria-hidden="true"
       >
@@ -80,7 +80,7 @@
           {/each}
         </div>
       </div>
-      <p class="max-w-sm text-center text-caption text-muted-foreground">
+      <p class="max-w-sm text-center text-xs text-muted-foreground">
         The colour goes behind the text. If a page has a white picture behind its text, the picture will cover it.
       </p>
     </section>
@@ -106,7 +106,7 @@
           {/each}
         </div>
         <label
-          class="relative flex h-10 cursor-pointer items-center gap-3 rounded-lg border border-border bg-background px-2 text-body text-foreground has-focus-visible:border-ring"
+          class="relative flex h-10 cursor-pointer items-center gap-3 rounded-lg border border-border bg-background px-2 text-sm text-foreground has-focus-visible:border-ring"
         >
           <span class="size-6 rounded-md border border-border-strong" style:background-color={s.colorHex}></span>
           <span class="flex-1">Custom colour</span>
@@ -143,7 +143,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
       {store.isProcessing ? "Colouring…" : `Colour ${pageLabel(targets.length)}`}
     </Button>
   </ToolFooter>

@@ -4,13 +4,13 @@ import type { HTMLAttributes } from "svelte/elements";
 import Field from "$components/ui/field/field.svelte";
 import type { FieldOrientation } from "$components/ui/field/variants.js";
 import { cn } from "$lib/cn.js";
-import { setFormField } from "./context";
 import {
 	type FormSpacing,
 	formFieldIds,
 	formFieldState,
 	form as formStyles,
 } from "./variants";
+import { setFormField } from "./context";
 
 let {
 	ref = $bindable(null),

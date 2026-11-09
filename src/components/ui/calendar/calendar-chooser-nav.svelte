@@ -2,8 +2,8 @@
 import { type ButtonVariant, button } from "$components/ui/button/variants.js";
 import { cn } from "$lib/cn.js";
 import { YEAR_PAGE } from "./chooser";
-import { getCalendarChooser } from "./chooser-state.svelte";
 import { calendar } from "./variants";
+import { getCalendarChooser } from "./chooser-state.svelte";
 
 let { variant = "ghost" }: { variant?: ButtonVariant } = $props();
 

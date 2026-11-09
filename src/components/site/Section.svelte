@@ -31,7 +31,7 @@
   {id}
   class={cn(
     pad[spacing],
-    band && "border-y border-border bg-paper",
+    band && "border-y border-border bg-muted",
     className
   )}
 >

@@ -22,7 +22,7 @@
     IconPlus as Plus,
     IconRefresh as Refresh,
     IconX as X,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import {
     ACCEPTED_FORMATS,
     JpgToPdfState,
@@ -71,10 +71,10 @@
 {#if count === 0}
   <UploadArea {accept} onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop images to make a PDF</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop images to make a PDF</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Photos, scans and screenshots become one PDF, one page per image, in the order you choose.
       </p>
     {/snippet}
@@ -116,14 +116,14 @@
       {/snippet}
     </ToolBar>
 
-    <p class="text-body text-muted-foreground">
+    <p class="text-sm text-muted-foreground">
       Pages follow this order. Drag an image or use the arrows to move it.
     </p>
 
     <ul class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6" use:sortableList={gridSort}>
       {#each store.files as item, i (item.id)}
         <li
-          class="group flex cursor-grab flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-150 hover:border-border-strong hover:shadow-sm active:cursor-grabbing"
+          class="group flex cursor-grab flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-border-strong hover:shadow-sm active:cursor-grabbing"
           title={item.file.name}
         >
           <div class="relative grid aspect-3/4 place-items-center overflow-hidden rounded-lg bg-muted">
@@ -131,11 +131,11 @@
               <img src={item.previewUrl} alt={item.file.name} loading="lazy" class="h-full w-full object-contain" />
             {:else}
               <span class="flex flex-col items-center gap-1 text-muted-foreground">
-                <Photo class="size-6" stroke={1.75} />
-                <span class="text-caption">{item.file.name.split(".").pop()?.toUpperCase()}</span>
+                <Photo class="size-6" />
+                <span class="text-xs">{item.file.name.split(".").pop()?.toUpperCase()}</span>
               </span>
             {/if}
-            <span class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-caption font-medium tabular-nums text-foreground shadow-xs">
+            <span class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-xs font-medium tabular-nums text-foreground shadow-xs">
               {i + 1}
             </span>
             <button
@@ -159,7 +159,7 @@
             >
               <ArrowLeft />
             </Button>
-            <span class="min-w-0 flex-1 truncate text-center text-caption tabular-nums text-muted-foreground">
+            <span class="min-w-0 flex-1 truncate text-center text-xs tabular-nums text-muted-foreground">
               {formatBytes(item.file.size)}
             </span>
             <Button
@@ -229,7 +229,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.convert()} disabled={store.isProcessing}>
+    <Button variant="default" onclick={() => store.convert()} disabled={store.isProcessing}>
       {store.isProcessing ? "Creating PDF…" : `Create PDF from ${imageLabel(count)}`}
     </Button>
   </ToolFooter>

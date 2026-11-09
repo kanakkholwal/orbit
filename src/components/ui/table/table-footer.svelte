@@ -2,8 +2,8 @@
 import type { Snippet } from "svelte";
 import type { HTMLAttributes } from "svelte/elements";
 import { cn } from "$lib/cn.js";
-import { getTableStyle } from "./context";
 import { table } from "./variants";
+import { getTableStyle } from "./context";
 
 let {
 	children,

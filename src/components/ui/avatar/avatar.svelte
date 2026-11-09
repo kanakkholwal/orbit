@@ -2,12 +2,12 @@
 import { Avatar as AvatarPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import { cn } from "$lib/cn.js";
-import { setAvatar } from "./context";
 import { type AvatarShape, type AvatarSize, avatar } from "./variants";
+import { setAvatar } from "./context";
 
 let {
 	children,
-	size = "md",
+	size = "default",
 	shape = "circle",
 	class: classProp,
 	...rest
@@ -29,6 +29,7 @@ setAvatar({
 <AvatarPrimitive.Root
 	bind:loadingStatus={status}
 	data-slot="avatar"
+	data-size={size}
 	class={cn(avatar({ size, shape }), classProp)}
 	{...rest}
 >

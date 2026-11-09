@@ -5,7 +5,7 @@
     IconCopyPlus as CopyPlus,
     IconLoader2 as Loader,
     IconTrash as Trash,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import type { OrganizePdfState, PageItem } from "./helper.svelte";
 
   type Props = { store: OrganizePdfState; page: PageItem; index: number; total: number };
@@ -36,12 +36,12 @@
   }
 
   const actionClass =
-    "grid size-9 place-items-center rounded-lg text-muted-foreground outline-none transition-[opacity,color,background-color] duration-150 hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:text-placeholder pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-within:opacity-100";
+    "grid size-9 place-items-center rounded-lg text-muted-foreground outline-none transition-[opacity,color,background-color] duration-(--duration-fast) hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:text-muted-foreground pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-within:opacity-100";
 </script>
 
 <div
   use:lazy
-  class="group relative flex cursor-grab flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-150 hover:border-border-strong hover:shadow-sm active:cursor-grabbing"
+  class="group relative flex cursor-grab flex-col gap-1.5 rounded-xl border border-border bg-card p-1.5 transition-[border-color,box-shadow] duration-(--duration-fast) hover:border-border-strong hover:shadow-sm active:cursor-grabbing"
 >
   <div class="relative grid aspect-3/4 place-items-center overflow-hidden rounded-lg bg-muted">
     {#if !isRendered}
@@ -49,12 +49,12 @@
     {/if}
     <canvas
       bind:this={canvas}
-      class="pointer-events-none h-auto! max-h-full w-auto! max-w-full transition-opacity duration-300 {isRendered
+      class="pointer-events-none h-auto! max-h-full w-auto! max-w-full transition-opacity duration-(--duration-slow) {isRendered
         ? 'opacity-100'
         : 'opacity-0'}"
     ></canvas>
     <span
-      class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-caption font-medium tabular-nums text-foreground shadow-xs"
+      class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-xs font-medium tabular-nums text-foreground shadow-xs"
       aria-hidden="true"
     >
       {index + 1}
@@ -90,7 +90,7 @@
     >
       <ChevronLeft class="size-4" />
     </button>
-    <span class="truncate text-caption tabular-nums text-muted-foreground">Page {sourceNumber}</span>
+    <span class="truncate text-xs tabular-nums text-muted-foreground">Page {sourceNumber}</span>
     <button
       type="button"
       onclick={() => store.movePage(index, index + 1)}

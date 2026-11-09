@@ -1,11 +1,13 @@
 <script lang="ts">
 import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
 import { cn } from "$lib/cn.js";
+import { dropdownMenuTrigger } from "./context";
 
 let { class: classProp, ...rest }: DropdownMenuPrimitive.TriggerProps = $props();
 </script>
 
 <DropdownMenuPrimitive.Trigger
+	id={dropdownMenuTrigger()}
 	{...rest}
 	data-slot="dropdown-menu-trigger"
 	class={cn(

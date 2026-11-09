@@ -2,11 +2,14 @@ import { tv, type VariantProps } from "tailwind-variants";
 
 export const commandFrame = tv({
 	slots: {
-		// Opened from the keyboard many times a day, so it appears at once; only closing fades.
+		// Command shares Dialog's modal scale/fade contract; its top offset is the only layout difference.
 		popup: [
-			"fixed top-[14vh] left-1/2 z-50 -translate-x-1/2 outline-none transition-opacity duration-0",
-			"data-[closed]:opacity-0 data-[closed]:duration-[var(--duration-exit)] data-[closed]:ease-[var(--ease-out)]",
-			"data-[state=closed]:opacity-0 data-[state=closed]:duration-[var(--duration-exit)] data-[state=closed]:ease-[var(--ease-out)]",
+			"fixed top-[14vh] left-1/2 z-50 -translate-x-1/2 outline-none",
+			"transition-[opacity,scale] duration-[var(--duration-overlay)] ease-[var(--ease-out-quad)]",
+			"data-[closed]:opacity-0 data-[closed]:scale-[var(--popover-exit-scale)] data-[closed]:duration-[var(--duration-exit)]",
+			"data-[state=closed]:opacity-0 data-[state=closed]:scale-[var(--popover-exit-scale)] data-[state=closed]:duration-[var(--duration-exit)]",
+			"starting:data-[open]:opacity-0 starting:data-[open]:scale-[var(--modal-enter-scale)]",
+			"starting:data-[state=open]:opacity-0 starting:data-[state=open]:scale-[var(--modal-enter-scale)]",
 			"flex max-h-[min(30rem,70dvh)] w-[min(36rem,calc(100vw-2rem))] flex-col overflow-hidden",
 			"motion-reduce:transition-none",
 		],
@@ -21,13 +24,13 @@ export const commandFrame = tv({
 			"w-full min-w-0 bg-transparent text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
 		count: "hidden",
 		// Caps in a hint depress while their key is held, so the footer answers the keyboard.
-		kbd: "inline-flex h-5 min-w-5 shrink-0 items-center justify-center gap-0.5 rounded-md bg-foreground/[0.06] px-1.5 font-medium font-sans text-muted-foreground text-xs transition-[translate,background-color,color] duration-(--duration-instant) ease-[var(--ease-out)] data-[pressed]:translate-y-px data-[pressed]:bg-foreground/[0.08] data-[pressed]:text-foreground motion-reduce:transition-none",
+		kbd: "inline-flex h-5 min-w-5 shrink-0 items-center justify-center gap-0.5 rounded-md bg-foreground/[0.06] px-1.5 font-medium font-sans text-muted-foreground text-xs transition-[translate,background-color,color] duration-(--duration-instant) ease-[var(--ease-ui-out)] data-[pressed]:translate-y-px data-[pressed]:bg-foreground/[0.08] data-[pressed]:text-foreground motion-reduce:transition-none",
 		// ToggleGroup brings a rim and a pressed fill; the sliding pill replaces both.
 		filters: "relative flex shrink-0 items-center border-0 bg-transparent p-0",
-		pill: "pointer-events-none absolute top-0 left-0 data-[ready]:transition-[translate,width,height] data-[ready]:duration-(--duration-slow) data-[ready]:ease-[var(--ease-out)] motion-reduce:transition-none",
+		pill: "pointer-events-none absolute top-0 left-0 data-[ready]:transition-[translate,width,height] data-[ready]:duration-(--duration-slow) data-[ready]:ease-[var(--ease-ui-out)] motion-reduce:transition-none",
 		filter: [
 			"relative z-10 inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 font-medium text-muted-foreground outline-none data-[pressed]:bg-transparent data-[state=on]:bg-transparent",
-			"transition-[color,background-color] duration-(--duration-fast) ease-[var(--ease-out)] hover:text-foreground",
+			"transition-[color,background-color] duration-(--duration-fast) ease-[var(--ease-ui-out)] hover:text-foreground",
 			"focus-visible:ring-2 focus-visible:ring-ring motion-reduce:transition-none [&_svg]:size-4 [&_svg]:shrink-0",
 		],
 		list: "scroll-area relative min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain",
@@ -44,7 +47,7 @@ export const commandFrame = tv({
 		],
 		// One marker for the active row. It snaps: arrow keys repeat too fast for motion to help.
 		marker:
-			"pointer-events-none absolute top-0 left-0 data-[glide]:transition-[translate,width,height] data-[glide]:duration-(--duration-fast) data-[glide]:ease-[var(--ease-out)] motion-reduce:transition-none",
+			"pointer-events-none absolute top-0 left-0 data-[glide]:transition-[translate,width,height] data-[glide]:duration-(--duration-fast) data-[glide]:ease-[var(--ease-ui-out)] motion-reduce:transition-none",
 		empty: "text-center text-muted-foreground text-sm",
 		shortcut: "ml-auto shrink-0 text-muted-foreground text-xs tracking-widest",
 		separator: "-mx-1 h-px border-0 bg-border",
@@ -59,12 +62,13 @@ export const commandFrame = tv({
 		 */
 		variant: {
 			default: {
-				panel: "rounded-xl bg-popover shadow-(--overlay-shadow)",
+				panel: "rounded-xl border border-border bg-popover shadow-(--overlay-shadow)",
 				body: "rounded-xl bg-popover p-1",
-				inputWrap: "mx-1 mt-1 h-8 rounded-lg border border-input/30 bg-input/30 px-2",
+				inputWrap: "mx-1 mt-1 h-8 rounded-lg bg-foreground/[0.04] px-2",
 				inputIcon: "opacity-50",
 				input: "h-8 text-sm",
-				list: "max-h-72 scroll-py-1",
+				// The primitive measures its rows into a height var, so filtering eases instead of snapping.
+				list: "h-[var(--cmdk-list-height,var(--bits-command-list-height,auto))] max-h-72 flex-none scroll-py-1 transition-[height] duration-(--duration-base) ease-(--ease-ui-out) motion-reduce:transition-none",
 				group: "p-1 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5",
 				groupHeading: "px-2 py-1.5",
 				item: [
@@ -76,7 +80,8 @@ export const commandFrame = tv({
 				footer: "border-border border-t px-3 py-2",
 			},
 			framed: {
-				panel: "rounded-2xl bg-card p-1 shadow-(--overlay-shadow)",
+				panel:
+					"rounded-2xl border border-border bg-background p-1 shadow-(--overlay-shadow)",
 				header: "pt-1.5 pb-2",
 				body: "rounded-[11px] border border-border bg-popover",
 				inputWrap: "border-border border-b px-3",
@@ -99,14 +104,15 @@ export const commandFrame = tv({
 			},
 			launcher: {
 				popup: "w-[min(42rem,calc(100vw-2rem))]",
-				// The popover is the lifted frame; input, tray and list recess into the page colour.
-				panel: "rounded-3xl bg-popover p-3 shadow-(--overlay-shadow)",
+				// The card-toned shell separates the white input, tray and result islands in light mode.
+				panel: "rounded-3xl border border-border bg-card p-3 shadow-(--overlay-shadow)",
 				body: "gap-3",
 				bar: "flex-wrap sm:flex-nowrap",
 				inputWrap:
 					"h-11 min-w-48 flex-1 rounded-full border border-border bg-background px-4",
 				input: "h-11 text-sm",
-				filters: "gap-0.5 rounded-full border border-border bg-background p-1",
+				// Matches the h-11 input: 1px border + 3px padding round the h-9 filters is 44px.
+				filters: "h-11 gap-0.5 rounded-full border border-border bg-background p-[3px]",
 				pill: "rounded-full bg-foreground/[0.06]",
 				filter:
 					"size-9 rounded-full data-[pressed]:text-foreground data-[state=on]:text-foreground",
@@ -118,7 +124,7 @@ export const commandFrame = tv({
 				groupHeading: "px-2.5 pt-2 pb-1.5",
 				item: [
 					"gap-3 rounded-xl px-2.5 py-2.5 text-muted-foreground text-sm",
-					"transition-[color,scale] [transition-duration:var(--duration-instant),var(--duration-fast)] ease-[var(--ease-out)] active:scale-[0.99] motion-reduce:transition-none",
+					"transition-[color,scale] [transition-duration:var(--duration-instant),var(--duration-fast)] ease-[var(--ease-ui-out)] active:scale-[0.99] motion-reduce:transition-none",
 					'data-[selected=""]:text-foreground data-[selected=true]:text-foreground',
 				],
 				marker: "rounded-xl bg-foreground/[0.06]",
@@ -127,11 +133,12 @@ export const commandFrame = tv({
 			},
 			spotlight: {
 				popup: "w-[min(46rem,calc(100vw-2rem))]",
-				panel: "rounded-2xl bg-popover p-2 shadow-(--overlay-shadow)",
+				panel:
+					"rounded-2xl border border-border bg-popover p-2 shadow-(--overlay-shadow)",
 				filters: "gap-1 self-start px-1 pt-1",
-				pill: "rounded-full bg-primary/15",
+				pill: "rounded-full bg-foreground/[0.08]",
 				filter:
-					"h-7 rounded-full px-3 text-xs data-[pressed]:text-primary data-[state=on]:text-primary",
+					"h-7 rounded-full px-3 text-xs data-[pressed]:text-foreground data-[state=on]:text-foreground",
 				inputWrap: "h-14 gap-3 px-3",
 				inputIcon: "size-5",
 				input: "h-14 text-lg",
@@ -141,7 +148,7 @@ export const commandFrame = tv({
 					"[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1",
 				groupHeading: "px-3 pt-2 pb-1",
 				item: [
-					"gap-3 rounded-lg px-3 py-2.5 text-base transition-[scale] duration-(--duration-fast) ease-[var(--ease-out)] active:scale-[0.99] motion-reduce:transition-none",
+					"gap-3 rounded-lg px-3 py-2.5 text-base transition-[scale] duration-(--duration-fast) ease-[var(--ease-ui-out)] active:scale-[0.99] motion-reduce:transition-none",
 					"[&_svg:not([class*='size-'])]:size-[18px] [&_svg]:text-foreground",
 				],
 				marker: "rounded-lg bg-foreground/[0.08]",

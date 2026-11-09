@@ -3,8 +3,8 @@ import { Dialog as DialogPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import { dialogFrame } from "$components/ui/dialog/variants.js";
 import { cn } from "$lib/cn.js";
-import { setCommandDialogState } from "./context";
 import { type CommandVariant, commandFrame } from "./variants";
+import { setCommandDialogState } from "./context";
 
 let {
 	children,
@@ -45,6 +45,7 @@ setCommandDialogState({
 	<DialogPrimitive.Portal>
 		<DialogPrimitive.Overlay
 			data-slot="command-dialog-backdrop"
+			aria-hidden="true"
 			class={cn(dialogFrame().backdrop(), "backdrop-blur-md backdrop-saturate-150")}
 		/>
 		<DialogPrimitive.Content

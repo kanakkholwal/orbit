@@ -11,7 +11,7 @@
     IconMessage as Message,
     IconForms as Forms,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { RemoveAnnotationsState } from "./helper.svelte";
 
   const store = new RemoveAnnotationsState();
@@ -31,10 +31,10 @@
 {#if !store.state.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to clean up</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to clean up</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Remove comments, highlights and other marks, and keep the pages themselves. The file never leaves this device.
       </p>
     {/snippet}
@@ -74,20 +74,20 @@
 
     <section class="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5">
       <div class="flex flex-col gap-0.5">
-        <h2 class="text-body-lg font-medium text-foreground">What gets removed</h2>
-        <p class="text-body text-muted-foreground">
+        <h2 class="text-base font-medium text-foreground">What gets removed</h2>
+        <p class="text-sm text-muted-foreground">
           Everything added on top of the pages. Text and images on the pages stay as they are.
         </p>
       </div>
       <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2">
         {#each removes as item (item.label)}
-          <li class="flex items-center gap-3 rounded-lg bg-muted px-3 py-2.5 text-body text-foreground">
+          <li class="flex items-center gap-3 rounded-lg bg-muted px-3 py-2.5 text-sm text-foreground">
             <item.icon class="size-4 shrink-0 text-muted-foreground" />
             {item.label}
           </li>
         {/each}
       </ul>
-      <p class="border-t border-border pt-4 text-caption text-muted-foreground">
+      <p class="border-t border-border pt-4 text-xs text-muted-foreground">
         This cannot be undone in the new copy. Your original file stays unchanged.
       </p>
     </section>
@@ -108,7 +108,7 @@
       </span>
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || count === 0}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || count === 0}>
       {store.isProcessing ? "Removing…" : "Remove annotations"}
     </Button>
   </ToolFooter>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { IconCheck as Check, IconLoader2 as Loader } from "@tabler/icons-svelte";
+  import { IconCheck as Check, IconLoader2 as Loader } from "$lib/icons";
   import type { RemoveBlankPagesState } from "./helper.svelte";
 
   type Props = { store: RemoveBlankPagesState; pageInfo: { index: number; isSelected: boolean } };
@@ -37,7 +37,7 @@
   onclick={() => store.togglePageSelection(pageInfo.index)}
   aria-pressed={selected}
   aria-label={`Page ${pageNumber}${selected ? ", will be removed" : ", will be kept"}`}
-  class="group relative flex flex-col gap-1.5 rounded-xl border bg-card p-1.5 text-left outline-none transition-[border-color,box-shadow] duration-150 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background {selected
+  class="group relative flex flex-col gap-1.5 rounded-xl border bg-card p-1.5 text-left outline-none transition-[border-color,box-shadow] duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background {selected
     ? 'border-primary shadow-[0_0_0_1px_var(--color-primary)]'
     : 'border-border hover:border-border-strong hover:shadow-sm'}"
 >
@@ -47,26 +47,26 @@
     {/if}
     <canvas
       bind:this={canvas}
-      class="pointer-events-none h-auto! max-h-full w-auto! max-w-full transition-opacity duration-300 {isRendered
+      class="pointer-events-none h-auto! max-h-full w-auto! max-w-full transition-opacity duration-(--duration-slow) {isRendered
         ? 'opacity-100'
         : 'opacity-0'}"
     ></canvas>
     <span
-      class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-caption font-medium tabular-nums text-foreground shadow-xs"
+      class="absolute left-1.5 top-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-xs font-medium tabular-nums text-foreground shadow-xs"
       aria-hidden="true"
     >
       {pageNumber}
     </span>
     <span
       aria-hidden="true"
-      class="absolute right-1.5 top-1.5 grid size-6 place-items-center rounded-full border-2 shadow-xs transition-colors duration-150 {selected
+      class="absolute right-1.5 top-1.5 grid size-6 place-items-center rounded-full border-2 shadow-xs transition-colors duration-(--duration-fast) {selected
         ? 'border-primary bg-primary text-primary-foreground'
         : 'border-border-strong bg-background/90 text-transparent group-hover:border-placeholder'}"
     >
-      <Check class="size-3.5" stroke={3} />
+      <Check class="size-3.5" />
     </span>
   </span>
-  <span class="flex min-h-5 items-center justify-between gap-1 px-0.5 text-caption tabular-nums" aria-hidden="true">
+  <span class="flex min-h-5 items-center justify-between gap-1 px-0.5 text-xs tabular-nums" aria-hidden="true">
     <span class="truncate text-muted-foreground">Page {pageNumber}</span>
     <span class="shrink-0 {selected ? 'font-medium text-foreground' : 'text-muted-foreground'}">
       {selected ? "Remove" : "Keep"}

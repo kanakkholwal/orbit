@@ -15,9 +15,9 @@
 
 <div class={cn("flex items-start justify-between gap-4 py-2.5", className)}>
   <label for={id} class="flex min-w-0 cursor-pointer flex-col gap-0.5">
-    <span class="text-body font-medium text-foreground">{label}</span>
+    <span class="text-sm font-medium text-foreground">{label}</span>
     {#if description}
-      <span class="text-caption text-muted-foreground">{description}</span>
+      <span class="text-xs text-muted-foreground">{description}</span>
     {/if}
   </label>
   <Switch {id} bind:checked {disabled} class="mt-0.5" />

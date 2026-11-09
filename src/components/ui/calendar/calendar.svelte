@@ -4,6 +4,8 @@ import { Calendar as CalendarPrimitive } from "bits-ui";
 import type { Snippet } from "svelte";
 import type { ButtonVariant } from "$components/ui/button/variants.js";
 import { cn } from "$lib/cn.js";
+import type { WithoutChildren } from "./types";
+import { type CalendarCaptionLayout, type CalendarSize, calendar } from "./variants";
 import CalendarCaption from "./calendar-caption.svelte";
 import CalendarCell from "./calendar-cell.svelte";
 import CalendarChooser from "./calendar-chooser.svelte";
@@ -21,8 +23,6 @@ import CalendarNav from "./calendar-nav.svelte";
 import CalendarNextButton from "./calendar-next-button.svelte";
 import CalendarPrevButton from "./calendar-prev-button.svelte";
 import { CalendarChooserState, setCalendarChooser } from "./chooser-state.svelte";
-import type { WithoutChildren } from "./types";
-import { type CalendarCaptionLayout, type CalendarSize, calendar } from "./variants";
 
 let {
 	ref = $bindable(null),
@@ -32,7 +32,7 @@ let {
 	weekdayFormat = "short",
 	buttonVariant = "ghost",
 	captionLayout = "label",
-	size = "md",
+	size = "default",
 	locale = "en-US",
 	minValue,
 	maxValue,
@@ -40,6 +40,7 @@ let {
 	yearFormat = "numeric",
 	day,
 	disableDaysOutsideMonth = false,
+	fixedWeeks = true,
 	...rest
 }: WithoutChildren<CalendarPrimitive.RootProps> & {
 	buttonVariant?: ButtonVariant;
@@ -73,6 +74,7 @@ const days = $derived(chooser.view === "days");
 	bind:placeholder
 	{weekdayFormat}
 	{disableDaysOutsideMonth}
+	{fixedWeeks}
 	{locale}
 	{minValue}
 	{maxValue}

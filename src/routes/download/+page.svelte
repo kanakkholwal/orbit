@@ -13,7 +13,7 @@
     IconDeviceDesktop as Monitor,
     IconDeviceMobile as Smartphone,
     IconTerminal as Terminal,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
 
   type OS = "macOS" | "Windows" | "Linux" | "Unknown";
 
@@ -116,19 +116,19 @@
     >
       {#snippet actions()}
         {#if isMobile}
-          <InstallPwaButton variant="primary" size="default" />
+          <InstallPwaButton variant="default" size="default" />
           <Button href="/install-pwa">
             <Smartphone />
             Install steps
           </Button>
         {:else if primaryDownload.link}
-          <Button href={primaryDownload.link} variant="primary">
+          <Button href={primaryDownload.link} variant="default">
             <ArrowDownToLine />
             {primaryDownload.label}
           </Button>
           <Button href="#all-platforms">All platforms</Button>
         {:else}
-          <Button href="#all-platforms" variant="primary">{primaryDownload.label}</Button>
+          <Button href="#all-platforms" variant="default">{primaryDownload.label}</Button>
         {/if}
       {/snippet}
     </PageHero>
@@ -141,13 +141,13 @@
       description="The web app works everywhere. The desktop app adds a real launcher and works with no browser at all."
     >
       <ul class="flex flex-col gap-3">
-        <li class="panel-card flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-6 sm:p-6">
+        <li class="rounded-2xl border border-border bg-card flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-6 sm:p-6">
           <span class="grid size-10 shrink-0 place-items-center rounded-lg border border-border">
             <Smartphone class="size-5 text-primary" />
           </span>
           <div class="min-w-0 flex-1">
-            <h3 class="text-body-lg font-medium text-foreground">Web app</h3>
-            <p class="mt-1 text-body text-muted-foreground">Any modern browser, on phone, tablet or computer.</p>
+            <h3 class="text-base font-medium text-foreground">Web app</h3>
+            <p class="mt-1 text-sm text-muted-foreground">Any modern browser, on phone, tablet or computer.</p>
           </div>
           <div class="flex shrink-0 flex-wrap items-center gap-2">
             <Button href="/install-pwa" variant="ghost">How it works</Button>
@@ -160,7 +160,7 @@
             {@const isDetected = detectedOS === platform.id}
             <li
               class={cn(
-                "panel-card grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 p-5 sm:p-6",
+                "rounded-2xl border border-border bg-card grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 p-5 sm:p-6",
                 isDetected && "border-primary"
               )}
             >
@@ -168,28 +168,28 @@
                 <platform.icon class="size-5 text-foreground" />
               </span>
               <div class="min-w-0 flex-1">
-                <h3 class="flex items-center gap-2 text-body-lg font-medium text-foreground">
+                <h3 class="flex items-center gap-2 text-base font-medium text-foreground">
                   {platform.name}
                   {#if isDetected}
-                    <span class="rounded-full bg-primary/10 px-2 py-0.5 text-caption font-medium text-primary">
+                    <span class="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
                       Your system
                     </span>
                   {/if}
                 </h3>
-                <p class="mt-1 text-body text-muted-foreground">{platform.requirement}</p>
+                <p class="mt-1 text-sm text-muted-foreground">{platform.requirement}</p>
               </div>
               <div class="col-span-2 flex flex-wrap items-center gap-2 sm:col-start-2 sm:col-end-3">
                 {#each [platform.primary, ...platform.secondary] as opt, i (opt.label)}
                   <Button
                     href={opt.url ?? undefined}
                     disabled={!opt.url}
-                    variant={i === 0 ? (isDetected ? "primary" : "outline") : "ghost"}
+                    variant={i === 0 ? (isDetected ? "default" : "outline") : "ghost"}
                     class="gap-1.5"
                   >
                     <ArrowDownToLine />
                     {opt.label}
                     {#if opt.tag}
-                      <span class="text-caption font-normal">{opt.tag}</span>
+                      <span class="text-xs font-normal">{opt.tag}</span>
                     {/if}
                   </Button>
                 {/each}
@@ -204,11 +204,11 @@
   {#if !isMobile}
     <RailRow label="About these builds">
       <SplitSection title="About these" accent="builds" description="What to expect when you install.">
-        <dl class="panel-card divide-y divide-border px-6">
+        <dl class="rounded-2xl border border-border bg-card divide-y divide-border px-6">
           {#each notes as [label, value] (label)}
             <div class="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-              <dt class="shrink-0 text-body text-muted-foreground">{label}</dt>
-              <dd class="text-body font-medium text-foreground sm:text-right">{value}</dd>
+              <dt class="shrink-0 text-sm text-muted-foreground">{label}</dt>
+              <dd class="text-sm font-medium text-foreground sm:text-right">{value}</dd>
             </div>
           {/each}
         </dl>
@@ -219,7 +219,7 @@
   <RailRow label="Use in browser">
     <BrandPanel title="Rather not install anything?" body="Every tool runs right in your browser, with the same privacy.">
       {#snippet actions()}
-        <Button href="/explore" variant="ink">Use in browser</Button>
+        <Button href="/explore" variant="secondary">Use in browser</Button>
         <Button href={`${config.github}/releases`} target="_blank" rel="noopener noreferrer" variant="light">
           All releases
           <Github />

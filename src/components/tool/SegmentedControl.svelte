@@ -29,7 +29,7 @@
     {@const active = value === option.value}
     <label
       class={cn(
-        "relative flex h-full cursor-pointer items-center justify-center rounded-md px-3 text-body transition-[background-color,color,box-shadow] duration-150 has-focus-visible:ring-2 has-focus-visible:ring-ring",
+        "relative flex h-full cursor-pointer items-center justify-center rounded-md px-3 text-sm transition-[background-color,color,box-shadow] duration-(--duration-fast) has-focus-visible:ring-2 has-focus-visible:ring-ring",
         active ? "bg-background font-medium text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
       )}
     >

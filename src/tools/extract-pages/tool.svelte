@@ -5,14 +5,14 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { ExtractPagesState } from "./helper.svelte";
 
   const store = new ExtractPagesState();
   const uid = $props.id();
 
   const field =
-    "h-10 w-full rounded-lg border border-border bg-background px-3 text-body tabular-nums text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full rounded-lg border border-border bg-background px-3 text-sm tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const s = $derived(store.state);
   const busy = $derived(s.isProcessing);
@@ -55,10 +55,10 @@
 {#if !s.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to pull pages out</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to pull pages out</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Choose the pages you need. Each one is saved as its own PDF.
       </p>
     {/snippet}
@@ -109,7 +109,7 @@
             disabled={busy}
             onclick={() => toggle(index)}
             class={cn(
-              "grid aspect-3/4 w-full place-items-center rounded-lg border text-body tabular-nums outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
+              "grid aspect-3/4 w-full place-items-center rounded-lg border text-sm tabular-nums outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50",
               active
                 ? "border-primary bg-primary/10 font-medium text-primary"
                 : "border-border bg-card text-muted-foreground hover:border-border-strong hover:text-foreground"
@@ -138,15 +138,15 @@
 
       <OptionGroup label="What you get">
         <dl class="flex flex-col divide-y divide-border rounded-xl border border-border">
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Pages</dt>
             <dd class="font-medium tabular-nums text-foreground">{selected.length} of {s.pageCount}</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Download</dt>
             <dd class="font-medium text-foreground">One ZIP file</dd>
           </div>
-          <div class="flex items-center justify-between px-3 py-2.5 text-body">
+          <div class="flex items-center justify-between px-3 py-2.5 text-sm">
             <dt class="text-muted-foreground">Inside</dt>
             <dd class="font-medium text-foreground">A PDF per page</dd>
           </div>
@@ -169,7 +169,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.extract()} disabled={busy || blocker !== null}>
+    <Button variant="default" onclick={() => store.extract()} disabled={busy || blocker !== null}>
       {busy ? "Extracting…" : `Extract ${pageLabel(selected.length)}`}
     </Button>
   </ToolFooter>

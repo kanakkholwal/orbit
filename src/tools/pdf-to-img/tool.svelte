@@ -12,7 +12,7 @@
   import UploadArea from "$components/ui/UploadArea.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { onMount } from "svelte";
   import { canEncodeWebp, PdfToJpgState, type ImageFormat } from "./helper.svelte";
 
@@ -52,10 +52,10 @@
 {:else if !s.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files[0])}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to turn into images</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to turn into images</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Save every page as a picture you can share, post or put in a slide.
       </p>
     {/snippet}
@@ -88,16 +88,16 @@
 
     <dl class="grid grid-cols-1 divide-y divide-border rounded-2xl border border-border bg-card sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       <div class="flex flex-col gap-0.5 p-4">
-        <dt class="text-caption text-muted-foreground">You get</dt>
-        <dd class="text-body-lg font-medium tabular-nums text-foreground">{imageLabel(s.pageCount)}</dd>
+        <dt class="text-xs text-muted-foreground">You get</dt>
+        <dd class="text-base font-medium tabular-nums text-foreground">{imageLabel(s.pageCount)}</dd>
       </div>
       <div class="flex flex-col gap-0.5 p-4">
-        <dt class="text-caption text-muted-foreground">Format</dt>
-        <dd class="text-body-lg font-medium text-foreground">{format.label}</dd>
+        <dt class="text-xs text-muted-foreground">Format</dt>
+        <dd class="text-base font-medium text-foreground">{format.label}</dd>
       </div>
       <div class="flex flex-col gap-0.5 p-4">
-        <dt class="text-caption text-muted-foreground">Download</dt>
-        <dd class="text-body-lg font-medium text-foreground">One ZIP file</dd>
+        <dt class="text-xs text-muted-foreground">Download</dt>
+        <dd class="text-base font-medium text-foreground">One ZIP file</dd>
       </div>
     </dl>
   </div>
@@ -107,14 +107,14 @@
       <OptionGroup label="Format" description={format.hint}>
         <SegmentedControl name="{uid}-format" options={formatOptions} bind:value={store.state.format} />
         {#if !webpSupported}
-          <p class="text-caption text-muted-foreground">This browser can't save WebP images.</p>
+          <p class="text-xs text-muted-foreground">This browser can't save WebP images.</p>
         {/if}
       </OptionGroup>
 
       <div role="group" aria-labelledby="{uid}-quality-label" class="flex flex-col gap-1">
         <div class="flex items-baseline justify-between gap-3">
-          <label id="{uid}-quality-label" for="{uid}-quality" class="text-body font-medium text-foreground">Quality</label>
-          <span class="text-body tabular-nums text-muted-foreground">
+          <label id="{uid}-quality-label" for="{uid}-quality" class="text-sm font-medium text-foreground">Quality</label>
+          <span class="text-sm tabular-nums text-muted-foreground">
             {lossless ? "Full" : `${qualityWord} · ${Math.round(s.quality * 100)}%`}
           </span>
         </div>
@@ -128,7 +128,7 @@
           disabled={lossless}
           class="h-10 w-full cursor-pointer accent-primary disabled:cursor-not-allowed disabled:opacity-50"
         />
-        <p class="text-caption text-muted-foreground">
+        <p class="text-xs text-muted-foreground">
           {lossless ? "PNG always keeps full quality." : "Lower quality makes smaller files."}
         </p>
       </div>
@@ -149,7 +149,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.convert()} disabled={busy}>
+    <Button variant="default" onclick={() => store.convert()} disabled={busy}>
       {busy ? "Converting…" : `Convert to ${format.label}`}
     </Button>
   </ToolFooter>

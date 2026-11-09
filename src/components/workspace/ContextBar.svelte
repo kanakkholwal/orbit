@@ -17,7 +17,7 @@
     IconDownload as Download,
     IconHome as Home,
     IconShare as Share,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { toast } from "svelte-sonner";
 
   let { tool, wide }: { tool: ToolConfig | null; wide: boolean } = $props();
@@ -50,14 +50,14 @@
         <tool.icon class="size-4" />
       </span>
       <div class="min-w-0">
-        <h1 class="truncate text-body font-medium text-foreground">{tool.title}</h1>
+        <h1 class="truncate text-sm font-medium text-foreground">{tool.title}</h1>
         {#if category}
-          <p class="hidden truncate text-caption text-muted-foreground sm:block">{category}</p>
+          <p class="hidden truncate text-xs text-muted-foreground sm:block">{category}</p>
         {/if}
       </div>
     {:else}
       <place.icon class="hidden size-4 text-muted-foreground sm:block" />
-      <span class="truncate text-body font-medium text-foreground">{place.title}</span>
+      <span class="truncate text-sm font-medium text-foreground">{place.title}</span>
     {/if}
   </div>
 

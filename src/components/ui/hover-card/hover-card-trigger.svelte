@@ -6,7 +6,7 @@ let { class: classProp, ...rest }: HoverCardPrimitive.TriggerProps = $props();
 </script>
 
 <HoverCardPrimitive.Trigger
-	{...rest}
 	data-slot="hover-card-trigger"
+	{...rest}
 	class={cn("inline-flex", classProp)}
 />

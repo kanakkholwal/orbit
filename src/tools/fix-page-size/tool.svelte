@@ -6,14 +6,14 @@
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "@tabler/icons-svelte";
+  import { IconDownload as Download, IconLoader2 as Loader, IconRefresh as Refresh } from "$lib/icons";
   import { FixPageSizeState } from "./helper.svelte";
 
   const store = new FixPageSizeState();
   const uid = $props.id();
 
   const field =
-    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-body tabular-nums text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-sm tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const sizes = [
     { value: "A4", label: "A4", hint: "210 × 297 mm" },
@@ -63,10 +63,10 @@
 {#if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to make every page the same size</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to make every page the same size</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Turn a mix of page sizes into A4, Letter or your own size, ready to print.
       </p>
     {/snippet}
@@ -121,7 +121,7 @@
           </div>
         {/if}
       </div>
-      <p class="text-center text-caption text-muted-foreground">
+      <p class="text-center text-xs text-muted-foreground">
         {#if blocker}
           Enter a size to see the page shape.
         {:else}
@@ -139,14 +139,14 @@
             {@const active = store.targetSize === size.value}
             <label
               class={cn(
-                "flex min-h-14 cursor-pointer flex-col justify-center rounded-xl border px-3 py-2 transition-colors duration-150 has-focus-visible:ring-2 has-focus-visible:ring-ring",
+                "flex min-h-14 cursor-pointer flex-col justify-center rounded-xl border px-3 py-2 transition-colors duration-(--duration-fast) has-focus-visible:ring-2 has-focus-visible:ring-ring",
                 active ? "border-primary bg-primary/5" : "border-border hover:border-border-strong",
                 size.value === "Custom" && "col-span-2"
               )}
             >
               <input type="radio" name="{uid}-size" value={size.value} bind:group={store.targetSize} class="sr-only" />
-              <span class="text-body font-medium text-foreground">{size.label}</span>
-              <span class="text-caption tabular-nums text-muted-foreground">{size.hint}</span>
+              <span class="text-sm font-medium text-foreground">{size.label}</span>
+              <span class="text-xs tabular-nums text-muted-foreground">{size.hint}</span>
             </label>
           {/each}
         </div>
@@ -157,11 +157,11 @@
           <SegmentedControl name="{uid}-units" options={units} bind:value={store.customUnits} />
           <div class="grid grid-cols-2 gap-2">
             <div class="flex flex-col gap-1">
-              <label for="{uid}-width" class="text-caption text-muted-foreground">Width</label>
+              <label for="{uid}-width" class="text-xs text-muted-foreground">Width</label>
               <input id="{uid}-width" type="number" step="0.01" min="0.1" bind:value={store.customWidth} class={field} />
             </div>
             <div class="flex flex-col gap-1">
-              <label for="{uid}-height" class="text-caption text-muted-foreground">Height</label>
+              <label for="{uid}-height" class="text-xs text-muted-foreground">Height</label>
               <input id="{uid}-height" type="number" step="0.01" min="0.1" bind:value={store.customHeight} class={field} />
             </div>
           </div>
@@ -199,7 +199,7 @@
             ></button>
           {/each}
           <label
-            class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-body text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
+            class="relative ml-1 flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border px-2 text-sm text-foreground has-focus-visible:ring-2 has-focus-visible:ring-ring"
           >
             <span class="size-5 rounded-full border border-border-strong" style:background-color={store.backgroundColor}></span>
             <span class="uppercase tabular-nums">{store.backgroundColor}</span>
@@ -227,7 +227,7 @@
       {/if}
     {/snippet}
 
-    <Button variant="primary" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
+    <Button variant="default" onclick={() => store.process()} disabled={store.isProcessing || blocker !== null}>
       {store.isProcessing ? "Resizing…" : `Resize to ${sizeName}`}
     </Button>
   </ToolFooter>

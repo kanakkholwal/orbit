@@ -21,7 +21,7 @@
     IconDownload as Download,
     IconPlus as Plus,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { CompressState, type Algorithm, type CompressionLevel } from "./helper.svelte";
 
   const store = new CompressState();
@@ -61,10 +61,10 @@
 {#if store.files.length === 0}
   <UploadArea accept=".pdf,application/pdf" onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop PDFs to compress</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop PDFs to compress</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Make files small enough to email or upload. Add as many as you like; they never leave this device.
       </p>
     {/snippet}
@@ -205,7 +205,7 @@
     {/snippet}
 
     <Button
-      variant="primary"
+      variant="default"
       onclick={() => store.process()}
       disabled={store.isProcessing || pendingCount === 0}
     >

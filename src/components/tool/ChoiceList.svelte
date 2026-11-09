@@ -16,7 +16,7 @@
     {@const active = value === choice.value}
     <label
       class={cn(
-        "flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-2.5 transition-colors duration-150 has-focus-visible:ring-2 has-focus-visible:ring-ring",
+        "flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-2.5 transition-colors duration-(--duration-fast) has-focus-visible:ring-2 has-focus-visible:ring-ring",
         active ? "border-primary bg-primary/5" : "border-border hover:border-border-strong"
       )}
     >
@@ -31,9 +31,9 @@
         {#if active}<span class="size-1.5 rounded-full bg-primary-foreground"></span>{/if}
       </span>
       <span class="flex min-w-0 flex-col">
-        <span class="text-body font-medium text-foreground">{choice.label}</span>
+        <span class="text-sm font-medium text-foreground">{choice.label}</span>
         {#if choice.hint}
-          <span class="text-caption text-muted-foreground">{choice.hint}</span>
+          <span class="text-xs text-muted-foreground">{choice.hint}</span>
         {/if}
       </span>
     </label>

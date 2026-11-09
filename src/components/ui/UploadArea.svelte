@@ -6,7 +6,7 @@
   import { takePendingFiles } from "$lib/runtime/pending-files.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { IconCloudUpload as UploadCloud } from "@tabler/icons-svelte";
+  import { IconCloudUpload as UploadCloud } from "$lib/icons";
   import { onMount, type Snippet } from "svelte";
   import { toast } from "svelte-sonner";
   import { buttonVariants } from "./button";
@@ -175,7 +175,7 @@
       {#if icon}
         {@render icon()}
       {:else}
-        <UploadCloud class="size-6" stroke={1.75} />
+        <UploadCloud class="size-6" />
       {/if}
     </span>
 
@@ -200,7 +200,7 @@
       {#if action}
         {@render action()}
       {:else}
-        <span class={buttonVariants({ variant: "primary", size: "default" })}>
+        <span class={buttonVariants({ variant: "default", size: "default" })}>
           Choose {multiple ? "files" : "a file"}
         </span>
       {/if}

@@ -4,7 +4,7 @@
   import * as Select from "$components/ui/select";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
-  import { prefersReducedMotion } from "$lib/motion";
+  import { prefersReducedMotion } from "$lib/reduced-motion";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
@@ -16,7 +16,7 @@
     IconPlayerTrackNext as Next,
     IconPlayerTrackPrev as Prev,
     IconRefresh as Refresh,
-  } from "@tabler/icons-svelte";
+  } from "$lib/icons";
   import { ReadAloudState } from "./helper.svelte";
 
   const store = new ReadAloudState();
@@ -26,7 +26,7 @@
   let startPage = $state(1);
 
   const field =
-    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-body tabular-nums text-foreground outline-none transition-colors placeholder:text-placeholder focus:border-ring";
+    "h-10 w-full min-w-0 rounded-lg border border-border bg-background px-3 text-sm tabular-nums text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-ring";
 
   const plural = (n: number, word: string) => `${n} ${n === 1 ? word : `${word}s`}`;
   const voiceLabel = (v: SpeechSynthesisVoice) => `${v.name}${v.localService ? "" : " (Online)"}`;
@@ -69,10 +69,10 @@
 {#if !store.supported}
   <section class="mx-auto flex max-w-lg flex-col items-center gap-3 rounded-2xl border border-border bg-card px-6 py-12 text-center">
     <span class="grid size-14 place-items-center rounded-2xl bg-muted text-muted-foreground">
-      <AlertCircle class="size-7" stroke={1.75} />
+      <AlertCircle class="size-7" />
     </span>
-    <h2 class="text-heading-sm font-medium text-foreground">This browser can't read aloud</h2>
-    <p class="text-pretty text-body text-muted-foreground">
+    <h2 class="text-2xl font-medium text-foreground">This browser can't read aloud</h2>
+    <p class="text-pretty text-sm text-muted-foreground">
       Reading aloud uses the speech voices built into your browser, and this one doesn't offer any. Try a recent
       version of Chrome, Edge, Safari or Firefox.
     </p>
@@ -80,10 +80,10 @@
 {:else if !store.file}
   <UploadArea accept=".pdf,application/pdf" multiple={false} onFilesSelected={(files) => store.loadFile(files)}>
     {#snippet title()}
-      <h3 class="text-heading-sm font-medium text-foreground">Drop a PDF to hear it read aloud</h3>
+      <h3 class="text-2xl font-medium text-foreground">Drop a PDF to hear it read aloud</h3>
     {/snippet}
     {#snippet description()}
-      <p class="max-w-sm text-pretty text-body text-muted-foreground">
+      <p class="max-w-sm text-pretty text-sm text-muted-foreground">
         Listen to any document with a voice from your device, and follow along as each sentence is highlighted.
       </p>
     {/snippet}
@@ -114,32 +114,32 @@
     {#if store.isProcessing}
       <div class="flex flex-col items-center gap-2 py-16 text-muted-foreground">
         <Loader class="size-5 animate-spin text-primary" />
-        <p class="text-body">Getting the text ready</p>
+        <p class="text-sm">Getting the text ready</p>
       </div>
     {:else if store.loaded && !hasText}
       <section class="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-live="polite">
-        <h2 class="text-body-lg font-medium text-foreground">No text to read</h2>
-        <p class="text-body text-muted-foreground">
+        <h2 class="text-base font-medium text-foreground">No text to read</h2>
+        <p class="text-sm text-muted-foreground">
           This PDF looks like a scan or a set of images, so there are no words to read. Run
           <a href="/tools/ocr-pdf" class="font-medium text-primary underline-offset-4 hover:underline">OCR PDF</a>
           on it first, then open the result here.
         </p>
       </section>
     {:else if store.loaded}
-      <p class="text-body text-muted-foreground">Click any sentence to start reading from there.</p>
+      <p class="text-sm text-muted-foreground">Click any sentence to start reading from there.</p>
 
       <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
       <article bind:this={reader} onclick={pickSentence} class="mx-auto flex w-full max-w-3xl flex-col gap-8 pb-8">
         {#each store.pages as page (page.number)}
           <section aria-label={`Page ${page.number}`} class="flex flex-col gap-4">
-            <h2 class="text-caption font-medium uppercase tracking-wide text-muted-foreground">Page {page.number}</h2>
+            <h2 class="text-xs font-medium uppercase tracking-wide text-muted-foreground">Page {page.number}</h2>
             {#if page.paragraphs.length === 0}
-              <p class="text-body text-muted-foreground">No text on this page.</p>
+              <p class="text-sm text-muted-foreground">No text on this page.</p>
             {/if}
             {#each page.paragraphs as paragraph (paragraph.index)}
               <p
                 class={cn(
-                  "border-l-2 pl-3 text-body-lg leading-relaxed text-foreground transition-colors duration-200",
+                  "border-l-2 pl-3 text-base leading-relaxed text-foreground transition-colors duration-(--duration-base)",
                   active && current?.paragraph === paragraph.index ? "border-primary" : "border-transparent"
                 )}
               >
@@ -147,7 +147,7 @@
                   <span
                     data-sentence={sentence.index}
                     class={cn(
-                      "cursor-pointer rounded-sm box-decoration-clone transition-colors duration-150 hover:bg-muted",
+                      "cursor-pointer rounded-sm box-decoration-clone transition-colors duration-(--duration-fast) hover:bg-muted",
                       active && store.index === sentence.index && "bg-primary/15 hover:bg-primary/15"
                     )}
                     aria-current={active && store.index === sentence.index ? "true" : undefined}>{sentence.text}</span
@@ -168,7 +168,7 @@
         description="Voices come from your device and browser, so the list differs between computers."
       >
         {#if store.voices.length === 0}
-          <p class="rounded-xl border border-border px-3 py-2.5 text-body text-muted-foreground">
+          <p class="rounded-xl border border-border px-3 py-2.5 text-sm text-muted-foreground">
             No voices found yet. If none appear, add a speech voice in your system settings.
           </p>
         {:else}
@@ -179,7 +179,7 @@
             <Select.Content class="max-h-80">
               {#if ownVoices.length > 0}
                 <Select.Group>
-                  <Select.GroupHeading>Your language</Select.GroupHeading>
+                  <Select.Label>Your language</Select.Label>
                   {#each ownVoices as voice (voice.voiceURI)}
                     <Select.Item value={voice.voiceURI} label={voiceLabel(voice)} />
                   {/each}
@@ -187,7 +187,7 @@
               {/if}
               {#if otherVoices.length > 0}
                 <Select.Group>
-                  <Select.GroupHeading>Other languages</Select.GroupHeading>
+                  <Select.Label>Other languages</Select.Label>
                   {#each otherVoices as voice (voice.voiceURI)}
                     <Select.Item value={voice.voiceURI} label={`${voiceLabel(voice)} · ${voice.lang}`} />
                   {/each}
@@ -196,7 +196,7 @@
             </Select.Content>
           </Select.Root>
           {#if store.voice && !store.voice.localService}
-            <p class="text-caption text-muted-foreground">
+            <p class="text-xs text-muted-foreground">
               Online voices are run by your browser's maker, which may receive the text to speak it. Pick a voice without
               "Online" to keep everything on this device.
             </p>
@@ -217,7 +217,7 @@
             onchange={(e) => store.setRate(Number(e.currentTarget.value))}
             class="h-10 w-full cursor-pointer accent-primary"
           />
-          <span class="w-12 shrink-0 text-right text-body tabular-nums text-foreground">{store.rate.toFixed(1)}×</span>
+          <span class="w-12 shrink-0 text-right text-sm tabular-nums text-foreground">{store.rate.toFixed(1)}×</span>
         </div>
       </OptionGroup>
 
@@ -236,7 +236,7 @@
       </OptionGroup>
 
       <OptionGroup label="About the audio">
-        <p class="text-body text-muted-foreground">
+        <p class="text-sm text-muted-foreground">
           The voice plays live from your browser, so it can't be saved as an audio file. The PDF itself never leaves
           this device.
         </p>
@@ -276,7 +276,7 @@
     >
       <Next />
     </Button>
-    <Button variant="primary" class="min-w-32" disabled={!hasText} aria-keyshortcuts="Space" onclick={() => store.toggle()}>
+    <Button variant="default" class="min-w-32" disabled={!hasText} aria-keyshortcuts="Space" onclick={() => store.toggle()}>
       {#if store.status === "playing"}<Pause />{:else}<Play />{/if}
       {playLabel}
     </Button>
