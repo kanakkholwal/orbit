@@ -1,56 +1,64 @@
-import type { PageLoad } from './$types';
+import type { PageLoad } from "./$types";
 
+type Asset = { url: string; size: number };
 
+export interface Downloads {
+  windowsMsi: Asset | null;
+  windowsExe: Asset | null;
+  macosIntel: Asset | null;
+  macosAppleSilicon: Asset | null;
+  linuxAppImage: Asset | null;
+  linuxDeb: Asset | null;
+  linuxRpm: Asset | null;
+}
+
+const EMPTY: Downloads = {
+  windowsMsi: null,
+  windowsExe: null,
+  macosIntel: null,
+  macosAppleSilicon: null,
+  linuxAppImage: null,
+  linuxDeb: null,
+  linuxRpm: null,
+};
 
 export const load: PageLoad = async ({ fetch, setHeaders }) => {
-  // Cache this response in the browser/CDN for 1 hour to prevent GitHub API rate limits
-  setHeaders({
-    'Cache-Control': 'public, max-age=3600'
-  });
+  // One hour of caching keeps the page clear of GitHub's API rate limit.
+  setHeaders({ "Cache-Control": "public, max-age=3600" });
 
   try {
-    const response = await fetch('https://api.github.com/repos/kanakkholwal/orbit/releases/latest');
-    
-    if (!response.ok) throw new Error('Failed to fetch release');
-    
+    const response = await fetch("https://api.github.com/repos/kanakkholwal/orbit/releases/latest");
+    if (!response.ok) throw new Error("Failed to fetch release");
+
     const release = await response.json();
-    const version: string = release.tag_name; // e.g., "v0.x.x-preview"
-    const assets: { name: string; browser_download_url: string }[] = release.assets;
-
-    // Windows: prefer .msi, fall back to .exe (skip .sig files)
-    const windowsMsi = assets.find(a => a.name.endsWith('.msi') && !a.name.endsWith('.sig'));
-    const windowsExe = assets.find(a => a.name.endsWith('.exe') && !a.name.endsWith('.sig'));
-
-    // macOS: .dmg files
-    const macosIntel = assets.find(a => a.name.includes('x64') && a.name.endsWith('.dmg') && !a.name.endsWith('.sig'));
-    const macosAppleSilicon = assets.find(a => a.name.includes('aarch64') && a.name.endsWith('.dmg') && !a.name.endsWith('.sig'));
-
-    // Linux
-    const linuxAppImage = assets.find(a => a.name.endsWith('.AppImage') && !a.name.endsWith('.sig'));
-    const linuxDeb      = assets.find(a => a.name.endsWith('.deb')      && !a.name.endsWith('.sig'));
-    const linuxRpm      = assets.find(a => a.name.endsWith('.rpm')      && !a.name.endsWith('.sig'));
-
-    return {
-      version,
-      downloads: {
-        windowsMsi:           windowsMsi?.browser_download_url       ?? null,
-        windowsExe:           windowsExe?.browser_download_url       ?? null,
-        macosIntel:           macosIntel?.browser_download_url       ?? null,
-        macosAppleSilicon:    macosAppleSilicon?.browser_download_url ?? null,
-        linuxAppImage:        linuxAppImage?.browser_download_url     ?? null,
-        linuxDeb:             linuxDeb?.browser_download_url         ?? null,
-        linuxRpm:             linuxRpm?.browser_download_url         ?? null,
-      }
+    const assets: { name: string; browser_download_url: string; size: number }[] = release.assets;
+    const find = (test: (name: string) => boolean): Asset | null => {
+      const asset = assets.find((a) => !a.name.endsWith(".sig") && test(a.name));
+      return asset ? { url: asset.browser_download_url, size: asset.size } : null;
     };
-  } catch (error) {
-    // Fallback if the API fails or no release has been published yet
+
+    const downloads: Downloads = {
+      windowsMsi: find((n) => n.endsWith(".msi")),
+      windowsExe: find((n) => n.endsWith(".exe")),
+      macosIntel: find((n) => n.includes("x64") && n.endsWith(".dmg")),
+      macosAppleSilicon: find((n) => n.includes("aarch64") && n.endsWith(".dmg")),
+      linuxAppImage: find((n) => n.endsWith(".AppImage")),
+      linuxDeb: find((n) => n.endsWith(".deb")),
+      linuxRpm: find((n) => n.endsWith(".rpm")),
+    };
+
     return {
-      version: 'Latest',
-      downloads: {
-        windowsMsi: null, windowsExe: null,
-        macosIntel: null, macosAppleSilicon: null,
-        linuxAppImage: null, linuxDeb: null, linuxRpm: null,
-      }
+      version: release.tag_name as string,
+      published: (release.published_at as string | null) ?? null,
+      releaseUrl: (release.html_url as string | null) ?? "https://github.com/kanakkholwal/orbit/releases",
+      downloads,
+    };
+  } catch {
+    return {
+      version: "Latest",
+      published: null as string | null,
+      releaseUrl: "https://github.com/kanakkholwal/orbit/releases",
+      downloads: EMPTY,
     };
   }
 };
