@@ -39,8 +39,11 @@ function inline(node: Node): string {
     }
     case "br":
       return "  \n";
-    case "img":
-      return el.getAttribute("alt") ? esc(el.getAttribute("alt") ?? "") : "";
+    case "img": {
+      const src = el.getAttribute("src") ?? "";
+      const alt = esc(el.getAttribute("alt") ?? "image").replace(/[\[\]]/g, "");
+      return /^(data:image\/(png|jpe?g|gif|webp|svg\+xml)|https?:)/i.test(src) ? "\n\n![" + alt + "](" + src + ")\n\n" : alt === "image" ? "" : alt;
+    }
     default:
       return inner();
   }
