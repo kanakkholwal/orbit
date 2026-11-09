@@ -121,7 +121,7 @@
 
 {#snippet noAccount()}
   <div class="relative w-full max-w-sm pb-6">
-    <div class="relative z-20 flex items-center gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm">
+    <div class="relative z-20 flex items-center gap-4 rounded-2xl border border-border bg-background p-5 shadow-sm">
       <span class="grid size-12 shrink-0 place-items-center rounded-xl border border-border">
         <UserOff class="size-6 text-foreground" />
       </span>
@@ -130,13 +130,13 @@
         <span class="block text-sm text-muted-foreground">Open a tool and drop your file.</span>
       </span>
     </div>
-    <div aria-hidden="true" class="absolute inset-x-3 bottom-3 z-10 h-12 rounded-2xl border border-border bg-card"></div>
-    <div aria-hidden="true" class="absolute inset-x-6 bottom-0 h-12 rounded-2xl border border-border bg-card"></div>
+    <div aria-hidden="true" class="absolute inset-x-3 bottom-3 z-10 h-12 rounded-2xl border border-border bg-background"></div>
+    <div aria-hidden="true" class="absolute inset-x-6 bottom-0 h-12 rounded-2xl border border-border bg-background"></div>
   </div>
 {/snippet}
 
 <div
-  class="mx-auto grid min-h-[60vh] w-full grid-cols-1 gap-2 md:gap-4 lg:h-[calc(100svh-6.5rem)] lg:grid-cols-12"
+  class="mx-auto grid min-h-[60vh] w-full grid-cols-1 gap-2 md:gap-4 lg:h-[36rem] lg:grid-cols-12"
 >
   <div class="grid min-h-0 grid-cols-1 gap-2 md:gap-4 lg:col-span-4 lg:grid-rows-[6fr_4fr]">
     {@render card(

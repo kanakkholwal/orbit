@@ -86,7 +86,7 @@
         {/each}
       </ul>
     {:else if imageCount === 0}
-      <div class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+      <div class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-background px-6 py-12 text-center">
         <span class="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
           <PhotoOff class="size-5" />
         </span>

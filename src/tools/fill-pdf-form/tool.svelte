@@ -138,7 +138,7 @@
     />
 
     {#if store.loading}
-      <div class="flex items-center gap-2 rounded-2xl border border-border bg-card p-5 text-sm text-muted-foreground">
+      <div class="flex items-center gap-2 rounded-2xl border border-border bg-background p-5 text-sm text-muted-foreground">
         <Loader class="size-4 animate-spin text-primary" />
         Reading the form…
       </div>
@@ -168,7 +168,7 @@
       <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <div class="flex min-w-0 flex-col gap-4">
           {#each groups as group (group.page)}
-            <section class="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-labelledby="{uid}-page-{group.page}">
+            <section class="flex flex-col gap-4 rounded-2xl border border-border bg-background p-4 sm:p-5" aria-labelledby="{uid}-page-{group.page}">
               <div class="flex items-baseline justify-between gap-2">
                 <h2 id="{uid}-page-{group.page}" class="text-base font-medium text-foreground">
                   {group.page >= 0 ? `Page ${group.page + 1}` : "Not placed on a page"}
@@ -317,7 +317,7 @@
           {/if}
         </div>
 
-        <section class="flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-card p-3 lg:sticky lg:top-4" aria-label="Page preview">
+        <section class="flex min-w-0 flex-col gap-3 rounded-2xl border border-border bg-background p-3 lg:sticky lg:top-4" aria-label="Page preview">
           <div class="flex items-center justify-between gap-2">
             <Button
               variant="outline"
@@ -413,7 +413,7 @@
 {/if}
 
 {#snippet notice(Icon: typeof Forms, title: string, body: string, href?: string, action?: string)}
-  <section class="flex flex-col items-start gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row">
+  <section class="flex flex-col items-start gap-4 rounded-2xl border border-border bg-background p-5 sm:flex-row">
     <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-muted-foreground">
       <Icon class="size-5" />
     </span>

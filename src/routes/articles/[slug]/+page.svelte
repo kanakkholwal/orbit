@@ -60,7 +60,7 @@
 
         <aside class="flex flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
           {#if primary}
-            <div class="rounded-2xl border border-border bg-card flex flex-col gap-3 p-5">
+            <div class="rounded-2xl border border-border bg-background flex flex-col gap-3 p-5">
               <span class="grid size-10 place-items-center rounded-lg border border-border bg-background text-primary">
                 <primary.icon class="size-5" />
               </span>
@@ -94,7 +94,7 @@
             <li>
               <a
                 href={`/articles/${item.slug}`}
-                class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-5 outline-none transition-[border-color,box-shadow] duration-(--duration-base) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
+                class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-background p-5 outline-none transition-[border-color,box-shadow] duration-(--duration-base) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span class="text-base font-medium text-foreground">{item.title}</span>
                 <span class="line-clamp-2 text-sm text-muted-foreground">{item.description}</span>

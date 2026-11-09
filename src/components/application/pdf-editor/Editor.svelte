@@ -218,7 +218,7 @@
 
 {#if pdfEngine.error}
   <div class="flex h-full items-center justify-center bg-background p-6">
-    <div class="rounded-2xl border border-border bg-card flex max-w-sm flex-col items-center gap-3 bg-background p-6 text-center" role="alert">
+    <div class="rounded-2xl border border-border bg-background flex max-w-sm flex-col items-center gap-3 bg-background p-6 text-center" role="alert">
       <CircleAlert class="size-5 text-destructive" />
       <p class="text-sm font-medium text-foreground">The PDF viewer didn't start</p>
       <p class="text-sm text-muted-foreground">{pdfEngine.error.message}</p>

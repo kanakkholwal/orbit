@@ -22,7 +22,7 @@
 
 <section
   aria-label="Start with a file"
-  class={cn("rounded-2xl border border-border bg-card flex flex-col gap-4 p-4 sm:p-5", className)}
+  class={cn("flex flex-col rounded-2xl border border-border bg-background p-1", className)}
   ondragenter={(e) => {
     if (!e.dataTransfer?.types.includes("Files")) return;
     e.preventDefault();
@@ -42,6 +42,7 @@
     if (dropped.length > 0) files = dropped;
   }}
 >
+  <div class="flex flex-1 flex-col gap-4 rounded-[11px] bg-card p-4 sm:p-5">
   <h2 class="text-base font-medium text-foreground">Start with a file</h2>
 
   {#if files.length > 0}
@@ -50,7 +51,7 @@
     <div
       class={cn(
         "flex flex-1 flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed px-6 py-10 text-center transition-colors duration-(--duration-fast)",
-        dragging ? "border-primary bg-primary/5" : "border-border bg-background"
+        dragging ? "border-primary bg-primary/5" : "border-border-strong bg-background"
       )}
     >
       <span class="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
@@ -74,4 +75,5 @@
       />
     </div>
   {/if}
+</div>
 </section>

@@ -17,7 +17,7 @@
   {id}
   aria-label={label}
   class={cn(
-    "mx-auto flex w-full max-w-5xl scroll-mt-24 flex-col px-5 py-12 md:px-8 md:py-16",
+    "mx-auto flex w-full max-w-6xl scroll-mt-24 flex-col px-5 py-12 md:px-8 md:py-16",
     divider && "border-t border-border",
     className
   )}

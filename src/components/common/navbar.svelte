@@ -40,7 +40,7 @@
   </header>
 {:else}
   <header class="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur-md">
-    <div class="mx-auto flex h-14 w-full max-w-5xl items-center gap-6 px-5 md:px-8">
+    <div class="mx-auto flex h-14 w-full max-w-6xl items-center gap-6 px-5 md:px-8">
       <a
         href="/"
         class="flex items-center rounded-md transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -101,7 +101,7 @@
       inert={!open}
     >
       <div class="overflow-hidden">
-        <nav class="mx-auto flex max-w-5xl flex-col gap-1 border-t border-border px-5 py-3" aria-label="Mobile">
+        <nav class="mx-auto flex max-w-6xl flex-col gap-1 border-t border-border px-5 py-3" aria-label="Mobile">
           {#each links as link (link.href)}
             <a href={link.href} class="rounded-md px-3 py-2.5 text-base text-foreground hover:bg-foreground/[0.04]">
               {link.label}

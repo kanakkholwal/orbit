@@ -118,9 +118,11 @@
             <h2 class="text-2xl font-medium text-foreground">How it works</h2>
             <ol class="flex flex-col gap-3">
               {#each toolContent.howItWorks as step, i (i)}
-                <li class="rounded-2xl border border-border bg-card flex gap-4 px-5 py-4">
-                  <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
-                  <p class="text-sm leading-relaxed text-muted-foreground">{step}</p>
+                <li class="rounded-2xl border border-border bg-background p-1">
+                  <div class="flex gap-4 rounded-[11px] bg-card px-5 py-4">
+                    <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
+                    <p class="text-sm leading-relaxed text-muted-foreground">{step}</p>
+                  </div>
                 </li>
               {/each}
             </ol>
@@ -134,9 +136,11 @@
             <h2 class="text-2xl font-medium text-foreground">What it's good for</h2>
             <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {#each toolContent.useCases as uc (uc.title)}
-                <li class="rounded-2xl border border-border bg-card flex flex-col gap-2 p-5">
-                  <h3 class="text-base font-medium text-foreground">{uc.title}</h3>
-                  <p class="text-sm leading-relaxed text-muted-foreground">{uc.body}</p>
+                <li class="rounded-2xl border border-border bg-background p-1">
+                  <div class="flex h-full flex-col gap-2 rounded-[11px] bg-card p-5">
+                    <h3 class="text-base font-medium text-foreground">{uc.title}</h3>
+                    <p class="text-sm leading-relaxed text-muted-foreground">{uc.body}</p>
+                  </div>
                 </li>
               {/each}
             </ul>

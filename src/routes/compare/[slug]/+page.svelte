@@ -57,7 +57,7 @@
       description={`How Orbit and ${alt.name} handle the things people ask about most.`}
     >
       <div class="flex flex-col gap-3">
-        <div class="rounded-2xl border border-border bg-card overflow-x-auto">
+        <div class="rounded-2xl border border-border bg-background overflow-x-auto">
           <table class="w-full min-w-[34rem] border-collapse text-left text-sm">
             <caption class="sr-only">Orbit compared with {alt.name}</caption>
             <thead>
@@ -91,7 +91,7 @@
     <SplitSection title="Why people" accent="choose Orbit" description="The reasons that come up again and again.">
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {#each alt.whySwitch as item (item.title)}
-          <li class="rounded-2xl border border-border bg-card flex flex-col gap-2 p-6">
+          <li class="rounded-2xl border border-border bg-background flex flex-col gap-2 p-6">
             <h3 class="text-base font-medium text-foreground">{item.title}</h3>
             <p class="text-sm leading-relaxed text-muted-foreground">{item.body}</p>
           </li>
@@ -106,7 +106,7 @@
       accent="is the better pick"
       description="No tool is right for everyone. Here is where the other option does more."
     >
-      <ul class="rounded-2xl border border-border bg-card flex flex-col divide-y divide-border px-6">
+      <ul class="rounded-2xl border border-border bg-background flex flex-col divide-y divide-border px-6">
         {#each alt.theyWin as item (item)}
           <li class="py-4 text-sm leading-relaxed text-foreground">{item}</li>
         {/each}

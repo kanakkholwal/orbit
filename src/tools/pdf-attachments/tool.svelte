@@ -95,12 +95,12 @@
     />
 
     {#if store.loading}
-      <div class="flex items-center gap-2 rounded-2xl border border-border bg-card p-5 text-sm text-muted-foreground">
+      <div class="flex items-center gap-2 rounded-2xl border border-border bg-background p-5 text-sm text-muted-foreground">
         <Loader class="size-4 animate-spin text-primary" />
         Looking for attachments…
       </div>
     {:else if store.locked}
-      <section class="flex flex-col items-start gap-4 rounded-2xl border border-border bg-card p-5 sm:flex-row">
+      <section class="flex flex-col items-start gap-4 rounded-2xl border border-border bg-background p-5 sm:flex-row">
         <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-muted text-muted-foreground">
           <Lock class="size-5" />
         </span>
@@ -141,7 +141,7 @@
       </ToolBar>
 
       {#if store.attachments.length === 0 && store.pending.length === 0}
-        <section class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-5 py-10 text-center">
+        <section class="flex flex-col items-center gap-3 rounded-2xl border border-border bg-background px-5 py-10 text-center">
           <span class="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
             <Paperclip class="size-5" />
           </span>

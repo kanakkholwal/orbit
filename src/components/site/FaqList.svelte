@@ -29,7 +29,7 @@
   {#each items as item, i (item.q)}
     <div
       class={cards
-        ? "rounded-2xl border border-border bg-card px-6 dark:bg-background"
+        ? "rounded-2xl border border-border bg-background px-6 dark:bg-background"
         : "border-b border-border"}
     >
       <h3>

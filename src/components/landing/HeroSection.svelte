@@ -40,7 +40,7 @@
 
     <div class="rise mt-8 flex flex-wrap gap-2 sm:gap-4" style="--i:3">
       <Button href="/explore" variant="default">Start processing</Button>
-      <Button href={config.github} target="_blank" rel="noopener noreferrer">
+      <Button href={config.github} target="_blank" rel="noopener noreferrer" variant="secondary">
         Star on GitHub
         <Github />
       </Button>

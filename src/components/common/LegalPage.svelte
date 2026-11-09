@@ -30,9 +30,9 @@
   </RailRow>
 
   <RailRow label="Contents">
-    <div class="flex flex-col gap-10 px-1 py-6 sm:px-4 sm:py-8 lg:flex-row lg:gap-20 lg:px-16 lg:py-10">
+    <div class="flex flex-col gap-10 lg:flex-row lg:gap-16">
       <aside class="shrink-0 lg:w-64">
-        <nav class="rounded-2xl border border-border bg-card flex flex-col p-2 lg:sticky lg:top-28" aria-label="On this page">
+        <nav class="rounded-2xl border border-border bg-background flex flex-col p-2 lg:sticky lg:top-28" aria-label="On this page">
           {#each sections as section, i (section.heading)}
             <a
               href={`#${slug(section.heading)}`}
@@ -45,7 +45,7 @@
         </nav>
       </aside>
 
-      <article class="rounded-2xl border border-border bg-card min-w-0 flex-1 divide-y divide-border">
+      <article class="rounded-2xl border border-border bg-background min-w-0 flex-1 divide-y divide-border">
         {#each sections as section, i (section.heading)}
           <section id={slug(section.heading)} class="flex scroll-mt-28 flex-col gap-3 px-6 py-8 sm:px-10">
             <h2 class="flex items-baseline gap-3 text-xl font-medium text-foreground">

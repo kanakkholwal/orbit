@@ -85,9 +85,9 @@
   </RailRow>
 
   <RailRow id="faq" label="Frequently asked questions" class="">
-    <div class="relative w-full overflow-hidden px-4 py-6 sm:px-10 sm:py-8 lg:px-16 lg:py-10">
+    <div class="relative w-full">
       <div class="flex flex-col gap-10 lg:flex-row lg:gap-20">
-        <div class="flex shrink-0 flex-col gap-2 lg:w-110">
+        <div class="flex shrink-0 flex-col gap-2 lg:w-80">
           <h2 class="text-4xl font-medium text-foreground">
             Frequently asked <br />
             <span class="text-primary">questions</span>

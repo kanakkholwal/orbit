@@ -30,7 +30,7 @@
 </script>
 
 <div class="flex h-full items-center justify-center overflow-y-auto bg-background p-6">
-  <div class="rounded-2xl border border-border bg-card flex w-full max-w-sm flex-col gap-5 bg-background p-6">
+  <div class="rounded-2xl border border-border bg-background flex w-full max-w-sm flex-col gap-5 bg-background p-6">
     <div class="flex flex-col items-center gap-3 text-center">
       <span class="grid size-12 place-items-center rounded-xl bg-muted">
         {#if needsPassword}

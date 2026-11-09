@@ -94,12 +94,12 @@
     </ToolBar>
 
     {#if detecting}
-      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-12 text-muted-foreground">
+      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-background px-6 py-12 text-muted-foreground">
         <Loader class="size-5 animate-spin text-primary" />
         <p class="text-sm">Looking for blank pages</p>
       </div>
     {:else if !checked}
-      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-background px-6 py-12 text-center">
         <span class="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
           <Search class="size-5" />
         </span>
@@ -109,7 +109,7 @@
         </p>
       </div>
     {:else if found === 0}
-      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+      <div class="flex flex-col items-center gap-2 rounded-2xl border border-border bg-background px-6 py-12 text-center">
         <span class="grid size-10 place-items-center rounded-xl bg-muted text-muted-foreground">
           <FileCheck class="size-5" />
         </span>

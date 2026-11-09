@@ -40,7 +40,7 @@
   });
 
   const ctrl =
-    "inline-flex h-8 w-12 items-center justify-center text-muted-foreground transition-colors hover:bg-muted/70 hover:text-foreground focus-visible:outline-none";
+    "inline-flex h-8 w-12 items-center justify-center text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground focus-visible:outline-none";
 </script>
 
 {#if appState.isTauri}

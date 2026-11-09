@@ -53,7 +53,7 @@
 </script>
 
 <footer class="mt-24 border-t border-border">
-  <div class="mx-auto w-full max-w-5xl px-5 py-12 md:px-8">
+  <div class="mx-auto w-full max-w-6xl px-5 py-12 md:px-8">
     <div class="grid gap-10 md:grid-cols-6">
       <div class="flex flex-col items-start gap-4 md:col-span-2">
         <a

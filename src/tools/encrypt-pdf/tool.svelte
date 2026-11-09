@@ -98,7 +98,7 @@
     />
 
     <section
-      class="flex flex-col gap-5 rounded-2xl border border-border bg-card p-4 sm:p-5"
+      class="flex flex-col gap-5 rounded-2xl border border-border bg-background p-4 sm:p-5"
       oninput={clearResult}
     >
       <div class="flex flex-col gap-0.5">

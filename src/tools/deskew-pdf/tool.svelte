@@ -147,7 +147,7 @@
     </ul>
 
     {#if detail?.result}
-      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4" aria-label="Page details">
+      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4" aria-label="Page details">
         <div class="flex min-w-0 flex-col gap-0.5">
           <h2 class="text-sm font-medium text-foreground">Page by page</h2>
           <p class="truncate text-xs text-muted-foreground" title={detail.file.name}>{detail.file.name}</p>

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { TableOfContents } from "$components/ui/table-of-contents";
   import { BrandPanel, FaqList, PageHero, RailFrame, RailRow } from "$components/site";
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
@@ -65,21 +66,11 @@
   </RailRow>
 
   <RailRow label="Guide">
-    <div class="flex flex-col gap-10 px-1 py-6 sm:px-4 sm:py-8 lg:flex-row lg:gap-20 lg:px-16 lg:py-10">
+    <div class="flex flex-col gap-10 lg:flex-row lg:gap-16">
       <aside class="shrink-0 lg:w-56">
-        <nav class="rounded-2xl border border-border bg-card flex flex-col p-2 lg:sticky lg:top-28" aria-label="On this page">
-          {#each sections as s, i (s.id)}
-            <a
-              href={`#${s.id}`}
-              class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors duration-(--duration-base) hover:bg-muted hover:text-foreground"
-            >
-              {s.label}
-              <span class="text-xs tabular-nums text-muted-foreground">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-            </a>
-          {/each}
-        </nav>
+        <div class="lg:sticky lg:top-24">
+          <TableOfContents items={sections.map((x) => ({ id: x.id, label: x.label, depth: 2 as const }))} scrollOffset={72} />
+        </div>
       </aside>
 
       <div class="flex min-w-0 flex-1 flex-col gap-16">
@@ -90,7 +81,7 @@
           </p>
           <ul class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {#each guarantees as g (g.title)}
-              <li class="rounded-2xl border border-border bg-card flex flex-col gap-3 p-6">
+              <li class="rounded-2xl border border-border bg-background flex flex-col gap-3 p-6">
                 <span class="grid size-10 place-items-center rounded-lg border border-border">
                   <g.icon class="size-5 text-primary" />
                 </span>
@@ -105,7 +96,7 @@
           <h2 class="text-2xl font-medium text-foreground sm:text-3xl">Installation</h2>
           <ol class="mt-6 flex flex-col gap-3">
             {#each installSteps as step, i (step.title)}
-              <li class="rounded-2xl border border-border bg-card flex gap-4 px-6 py-5">
+              <li class="rounded-2xl border border-border bg-background flex gap-4 px-6 py-5">
                 <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
                 <div>
                   <h3 class="text-base font-medium text-foreground">{step.title}</h3>
@@ -128,7 +119,7 @@
               <ArrowUpRight />
             </Button>
           </div>
-          <ul class="rounded-2xl border border-border bg-card mt-6 divide-y divide-border">
+          <ul class="rounded-2xl border border-border bg-background mt-6 divide-y divide-border">
             {#each toolList.slice(0, 8) as tool (tool.slug)}
               <li>
                 <a
@@ -155,7 +146,7 @@
             The page loads the tool once. Your document is read into the tab's memory, processed by the engines
             below, and written back to your disk. There is no upload endpoint to send it to.
           </p>
-          <ul class="rounded-2xl border border-border bg-card mt-6 divide-y divide-border">
+          <ul class="rounded-2xl border border-border bg-background mt-6 divide-y divide-border">
             {#each engines as engine (engine.name)}
               <li class="flex flex-col gap-1 px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
                 <span>

@@ -60,7 +60,7 @@
     >
       {#snippet actions()}
         <Button href="/explore" variant="default">Try the tools</Button>
-        <Button href={config.github} target="_blank" rel="noopener noreferrer">
+        <Button href={config.github} target="_blank" rel="noopener noreferrer" variant="secondary">
           Star on GitHub
           <Github />
         </Button>
@@ -76,7 +76,7 @@
     >
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {#each principles as p (p.title)}
-          <li class="rounded-2xl border border-border bg-card flex flex-col gap-3 p-6">
+          <li class="rounded-2xl border border-border bg-background flex flex-col gap-3 p-6">
             <span class="grid size-10 place-items-center rounded-lg border border-border">
               <p.icon class="size-5 text-primary" />
             </span>
@@ -90,7 +90,7 @@
 
   <RailRow label="At a glance">
     <SplitSection title="At a" accent="glance" description="The short answers to what people ask first.">
-      <dl class="rounded-2xl border border-border bg-card divide-y divide-border px-6">
+      <dl class="rounded-2xl border border-border bg-background divide-y divide-border px-6">
         {#each facts as [label, value] (label)}
           <div class="flex items-center justify-between gap-4 py-5">
             <dt class="text-sm text-muted-foreground">{label}</dt>
@@ -124,7 +124,7 @@
           Contact us
           <Mail />
         </Button>
-        <Button href={`${config.github}/issues`} target="_blank" rel="noopener noreferrer" variant="light">
+        <Button href={`${config.github}/issues`} target="_blank" rel="noopener noreferrer" variant="secondary">
           Open an issue
           <Github />
         </Button>

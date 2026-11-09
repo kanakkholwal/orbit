@@ -141,7 +141,7 @@
       description="The web app works everywhere. The desktop app adds a real launcher and works with no browser at all."
     >
       <ul class="flex flex-col gap-3">
-        <li class="rounded-2xl border border-border bg-card flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-6 sm:p-6">
+        <li class="rounded-2xl border border-border bg-background flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:gap-6 sm:p-6">
           <span class="grid size-10 shrink-0 place-items-center rounded-lg border border-border">
             <Smartphone class="size-5 text-primary" />
           </span>
@@ -160,7 +160,7 @@
             {@const isDetected = detectedOS === platform.id}
             <li
               class={cn(
-                "rounded-2xl border border-border bg-card grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 p-5 sm:p-6",
+                "rounded-2xl border border-border bg-background grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-4 p-5 sm:p-6",
                 isDetected && "border-primary"
               )}
             >
@@ -204,7 +204,7 @@
   {#if !isMobile}
     <RailRow label="About these builds">
       <SplitSection title="About these" accent="builds" description="What to expect when you install.">
-        <dl class="rounded-2xl border border-border bg-card divide-y divide-border px-6">
+        <dl class="rounded-2xl border border-border bg-background divide-y divide-border px-6">
           {#each notes as [label, value] (label)}
             <div class="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
               <dt class="shrink-0 text-sm text-muted-foreground">{label}</dt>

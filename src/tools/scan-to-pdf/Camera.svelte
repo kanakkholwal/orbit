@@ -121,7 +121,7 @@
   }}
 />
 
-<section class="flex flex-col overflow-hidden rounded-2xl border border-border bg-card" aria-label="Camera">
+<section class="flex flex-col overflow-hidden rounded-2xl border border-border bg-background" aria-label="Camera">
   <div class="relative grid aspect-4/3 max-h-[62vh] w-full place-items-center bg-neutral-950 sm:aspect-video">
     <video
       bind:this={video}

@@ -72,7 +72,7 @@
       {/if}
     </FileRow>
 
-    <section class="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <section class="flex flex-col gap-4 rounded-2xl border border-border bg-background p-4 sm:p-5">
       <div class="flex flex-col gap-0.5">
         <h2 class="text-base font-medium text-foreground">What gets removed</h2>
         <p class="text-sm text-muted-foreground">

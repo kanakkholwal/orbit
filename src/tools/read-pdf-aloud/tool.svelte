@@ -67,7 +67,7 @@
 </script>
 
 {#if !store.supported}
-  <section class="mx-auto flex max-w-lg flex-col items-center gap-3 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+  <section class="mx-auto flex max-w-lg flex-col items-center gap-3 rounded-2xl border border-border bg-background px-6 py-12 text-center">
     <span class="grid size-14 place-items-center rounded-2xl bg-muted text-muted-foreground">
       <AlertCircle class="size-7" />
     </span>
@@ -117,7 +117,7 @@
         <p class="text-sm">Getting the text ready</p>
       </div>
     {:else if store.loaded && !hasText}
-      <section class="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-live="polite">
+      <section class="flex flex-col gap-1 rounded-2xl border border-border bg-background p-4 sm:p-5" aria-live="polite">
         <h2 class="text-base font-medium text-foreground">No text to read</h2>
         <p class="text-sm text-muted-foreground">
           This PDF looks like a scan or a set of images, so there are no words to read. Run

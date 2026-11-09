@@ -3,6 +3,7 @@
   import { page } from "$app/state";
   import Seo from "$components/Seo.svelte";
   import { ToolCard } from "$components/tool";
+  import { Badge } from "$components/ui/badge";
   import { Button } from "$components/ui/button";
   import ToolLauncher from "$components/workspace/ToolLauncher.svelte";
   import { config } from "$constants/app";
@@ -102,7 +103,7 @@
   {/if}
 
   {#if sections.length === 0}
-    <div class="rounded-2xl border border-border bg-card flex flex-col items-center gap-3 px-6 py-14 text-center">
+    <div class="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border-strong px-6 py-14 text-center">
       <Search class="size-5 text-muted-foreground" />
       <p class="text-base font-medium text-foreground">No tools found</p>
       <p class="max-w-sm text-pretty text-sm text-muted-foreground">
@@ -120,10 +121,10 @@
               <p class="mt-0.5 text-sm text-muted-foreground">{section.description}</p>
             {/if}
           </div>
-          <span class="shrink-0 text-xs tabular-nums text-muted-foreground">
+          <Badge variant="secondary" class="shrink-0">
             {section.tools.length}
             {section.tools.length === 1 ? "tool" : "tools"}
-          </span>
+          </Badge>
         </div>
 
         <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

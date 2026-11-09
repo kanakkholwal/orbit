@@ -171,7 +171,7 @@
         <p class="text-sm text-muted-foreground">It may be damaged or locked with a password. Try another PDF.</p>
       </div>
     {:else if store.checked}
-      <section aria-live="polite" class="flex items-start gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <section aria-live="polite" class="flex items-start gap-4 rounded-2xl border border-border bg-background p-4 sm:p-5">
         <span class={cn("grid size-12 shrink-0 place-items-center rounded-xl", tone[overall])}>
           {@render verdictGlyph(overall, "size-6")}
         </span>

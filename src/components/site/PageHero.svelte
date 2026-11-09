@@ -20,7 +20,7 @@
 
 <div
   class={cn(
-    "grid grid-cols-1 gap-10 px-1 pb-6 pt-16 sm:pb-10 sm:pt-24",
+    "grid grid-cols-1 gap-10 pb-6 pt-16 sm:pb-10 sm:pt-24",
     aside && "lg:grid-cols-2 lg:items-center",
     className
   )}

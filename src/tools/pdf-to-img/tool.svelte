@@ -86,7 +86,7 @@
       onRemove={busy ? undefined : () => store.reset()}
     />
 
-    <dl class="grid grid-cols-1 divide-y divide-border rounded-2xl border border-border bg-card sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+    <dl class="grid grid-cols-1 divide-y divide-border rounded-2xl border border-border bg-background sm:grid-cols-3 sm:divide-x sm:divide-y-0">
       <div class="flex flex-col gap-0.5 p-4">
         <dt class="text-xs text-muted-foreground">You get</dt>
         <dd class="text-base font-medium tabular-nums text-foreground">{imageLabel(s.pageCount)}</dd>

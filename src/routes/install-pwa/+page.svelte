@@ -189,7 +189,7 @@
 
       <ol class="flex flex-col gap-3">
         {#each activeGuide.steps as step, i (step.title)}
-          <li class="rounded-2xl border border-border bg-card flex gap-4 px-6 py-5">
+          <li class="rounded-2xl border border-border bg-background flex gap-4 px-6 py-5">
             <span class="text-sm font-semibold tabular-nums text-primary">{String(i + 1).padStart(2, "0")}</span>
             <div>
               <h3 class="text-base font-medium text-foreground">{step.title}</h3>
@@ -205,7 +205,7 @@
     <SplitSection title="Why" accent="install it" description="The same private tools, a little closer at hand.">
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {#each features as f (f.label)}
-          <li class="rounded-2xl border border-border bg-card flex flex-col gap-3 p-6">
+          <li class="rounded-2xl border border-border bg-background flex flex-col gap-3 p-6">
             <span class="grid size-10 place-items-center rounded-lg border border-border">
               <f.icon class="size-5 text-primary" />
             </span>

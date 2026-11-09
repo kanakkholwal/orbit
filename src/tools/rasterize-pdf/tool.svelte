@@ -86,7 +86,7 @@
       onRemove={busy ? undefined : () => store.reset()}
     />
 
-    <section aria-labelledby="{uid}-effects" class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <section aria-labelledby="{uid}-effects" class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4 sm:p-5">
       <h2 id="{uid}-effects" class="text-sm font-medium text-foreground">What happens to each page</h2>
       <ul class="flex flex-col gap-2.5">
         {#each effects as effect (effect.text)}

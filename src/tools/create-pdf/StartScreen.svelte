@@ -130,7 +130,7 @@
             <button
               type="button"
               onclick={() => studio.openPreset(preset)}
-              class="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-card text-left outline-none transition-[border-color,box-shadow,transform] duration-(--duration-base) ease-(--ease-ui-out) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
+              class="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-background text-left outline-none transition-[border-color,box-shadow,transform] duration-(--duration-base) ease-(--ease-ui-out) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.99]"
             >
               {#if i === 0}
                 <div class="relative aspect-4/3 w-full overflow-hidden border-b border-border bg-background" bind:clientWidth={cardWidth}>

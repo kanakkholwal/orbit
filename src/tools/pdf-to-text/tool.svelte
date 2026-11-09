@@ -139,7 +139,7 @@
     </ul>
 
     {#if preview?.text !== undefined}
-      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4" aria-label="Text preview">
+      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4" aria-label="Text preview">
         <div class="flex items-center justify-between gap-3">
           <div class="flex min-w-0 flex-col gap-0.5">
             <h2 class="text-sm font-medium text-foreground">Preview</h2>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onNavigate } from "$app/navigation";
+  import { afterNavigate, onNavigate } from "$app/navigation";
   import SearchCommandMenu from "$components/layout/SearchCommandMenu.svelte";
   import * as Drawer from "$components/ui/drawer";
   import * as Tooltip from "$components/ui/tooltip";
@@ -28,6 +28,12 @@
     workspace.closeDrawers();
   });
 
+  // The workspace pane scrolls, not the window, so SvelteKit cannot restore the top.
+  afterNavigate(({ type, to }) => {
+    if (type === "popstate" || to?.url.hash) return;
+    document.getElementById("workspace")?.scrollTo({ top: 0 });
+  });
+
   $effect(() => {
     if (inlinePanel) workspace.closeDrawers();
   });
@@ -43,10 +49,10 @@
         inert={!panelOpen}
         class={cn(
           "shrink-0 overflow-hidden transition-[width,opacity] duration-(--duration-slow) ease-(--ease-ui-out)",
-          panelOpen ? "w-64 opacity-100" : "w-0 opacity-0"
+          panelOpen ? "w-60 opacity-100" : "w-0 opacity-0"
         )}
       >
-        <ToolsPanel class="w-64" />
+        <ToolsPanel class="w-60" />
       </aside>
     {/if}
 
@@ -70,7 +76,7 @@
     {/if}
 
     <div
-      class="bg-background flex min-h-0 min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-xs"
+      class="bg-background flex min-h-0 min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-(--surface-shadow)"
     >
       <ContextBar {tool} {wide} />
 

@@ -168,7 +168,7 @@
         {/snippet}
       </UploadArea>
     {:else}
-      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-labelledby="{uid}-preview">
+      <section class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4 sm:p-5" aria-labelledby="{uid}-preview">
         <div class="flex flex-col gap-0.5">
           <h2 id="{uid}-preview" class="text-base font-medium text-foreground">
             {preview ? `Preview of page ${preview.pageIndex + 1}` : "Preview"}

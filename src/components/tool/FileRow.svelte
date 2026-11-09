@@ -19,11 +19,11 @@
 
 <div
   class={cn(
-    "flex items-center gap-3 rounded-xl border border-border bg-card py-2 pl-2 pr-2 transition-colors duration-(--duration-fast)",
+    "flex items-center gap-3 rounded-xl border border-border bg-background p-1.5 pr-2 transition-colors duration-(--duration-fast) hover:border-border-strong",
     className
   )}
 >
-  <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-muted text-muted-foreground">
+  <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-card text-muted-foreground">
     <Icon class="size-5" />
   </span>
 

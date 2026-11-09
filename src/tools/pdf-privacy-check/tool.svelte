@@ -98,7 +98,7 @@
     {/if}
 
     {#if store.scan && findings.length === 0}
-      <section class="flex items-start gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <section class="flex items-start gap-3 rounded-2xl border border-border bg-background p-4 sm:p-5">
         <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
           <ShieldCheck class="size-5" />
         </span>

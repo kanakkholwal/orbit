@@ -13,7 +13,7 @@
         href={product.href}
         target="_blank"
         rel="noopener noreferrer"
-        class="group flex h-full flex-col gap-1.5 rounded-2xl border border-border bg-card p-5 transition-colors duration-(--duration-base) hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-background"
+        class="group flex h-full flex-col gap-1.5 rounded-2xl border border-border bg-background p-5 transition-colors duration-(--duration-base) hover:border-border-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-background"
       >
         <span class="flex items-center gap-2">
           <span class="text-base font-medium text-foreground">{product.name}</span>

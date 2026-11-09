@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { CtaBanner, CtaBannerGrain } from "$components/blocks/cta-banner";
   import { Button } from "$components/ui/button";
   import { categories } from "$constants/tools";
   import { toolList } from "$tools/list";
@@ -44,7 +45,7 @@
 
 <div class="flex h-full flex-col gap-5 py-6 lg:flex-row">
   <article
-    class="relative flex min-h-100 flex-col overflow-hidden rounded-2xl border border-border bg-card lg:min-h-0 lg:w-1/2"
+    class="relative flex min-h-100 flex-col overflow-hidden rounded-2xl border border-border bg-background lg:min-h-0 lg:w-1/2"
   >
     {#each ["left-4 top-4 border-l border-t", "right-4 top-4 border-r border-t", "bottom-4 left-4 border-b border-l", "bottom-4 right-4 border-b border-r"] as corner (corner)}
       <span aria-hidden="true" class="absolute size-4 border-border-strong {corner}"></span>
@@ -83,9 +84,10 @@
     </footer>
   </article>
 
-  <div class="bg-primary text-primary-foreground flex items-center justify-center rounded-2xl p-2 sm:p-6 md:p-10 lg:w-1/2">
+  <CtaBanner variant="grain" class="flex items-center justify-center p-2 sm:p-6 md:p-10 lg:w-1/2">
+    <CtaBannerGrain />
     <div
-      class="w-full max-w-md rounded-2xl border border-white/20 bg-white/10 p-4"
+      class="relative z-10 w-full max-w-md rounded-3xl border border-white/20 bg-white/10 p-4 shadow-lg backdrop-blur-[2px]"
     >
       <label
         class="flex h-11 items-center overflow-hidden rounded-xl border border-white/40 bg-white/80 text-neutral-950 focus-within:ring-2 focus-within:ring-white"
@@ -167,7 +169,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </CtaBanner>
 </div>
 
 <style>

@@ -3,7 +3,18 @@
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
-  import { cn } from "$lib/utils";
+  import {
+    ChangelogFeed,
+    ChangelogFeedDescription,
+    ChangelogFeedEmpty,
+    ChangelogFeedFilters,
+    ChangelogFeedHeader,
+    ChangelogFeedHeading,
+    ChangelogFeedList,
+    ChangelogFeedTitle,
+    type ChangelogEntry,
+    type ChangelogKind,
+  } from "$components/blocks/changelog-feed";
   import { IconBrandGithub as Github } from "$lib/icons";
 
   type Tag = "New" | "Improved" | "Fixed" | "Heads up";
@@ -62,15 +73,22 @@
     },
   ];
 
-  const tagStyles: Record<Tag, string> = {
-    New: "bg-primary/10 text-primary",
-    Improved: "bg-muted text-foreground",
-    Fixed: "bg-success/10 text-success",
-    "Heads up": "bg-warning/10 text-warning",
+  const kindOf: Record<Tag, ChangelogKind> = {
+    New: "new",
+    Improved: "improved",
+    Fixed: "fixed",
+    "Heads up": "improved",
   };
 
-  const formatDate = (iso: string) =>
-    new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+  const feed: ChangelogEntry[] = entries.map((e) => ({
+    id: e.version,
+    date: e.date,
+    version: e.version,
+    kind: kindOf[e.items[0].tag],
+    title: e.title,
+    summary: e.summary,
+    details: e.items.map((i) => `${i.tag}: ${i.text}`),
+  }));
 </script>
 
 <Seo
@@ -90,38 +108,17 @@
   </RailRow>
 
   <RailRow label="Releases">
-    <ol class="flex flex-col gap-6 px-1 py-6 sm:px-4 sm:py-8 lg:px-16 lg:py-10">
-      {#each entries as entry (entry.version)}
-        <li class="flex flex-col gap-4 lg:flex-row lg:gap-20">
-          <div class="shrink-0 lg:w-110">
-            <div class="flex items-baseline gap-3 lg:sticky lg:top-28 lg:flex-col lg:gap-1">
-              <span class="text-2xl font-medium tabular-nums text-foreground">v{entry.version}</span>
-              <time datetime={entry.date} class="text-sm text-muted-foreground">{formatDate(entry.date)}</time>
-            </div>
-          </div>
-
-          <article class="rounded-2xl border border-border bg-card min-w-0 flex-1 p-6">
-            <h2 class="text-xl font-medium text-foreground">{entry.title}</h2>
-            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{entry.summary}</p>
-            <ul class="mt-5 flex flex-col gap-3 border-t border-border pt-5">
-              {#each entry.items as item (item.text)}
-                <li class="flex items-start gap-3 text-sm">
-                  <span
-                    class={cn(
-                      "mt-px inline-flex w-18 shrink-0 justify-center rounded-full px-2 py-0.5 text-xs font-medium",
-                      tagStyles[item.tag]
-                    )}
-                  >
-                    {item.tag}
-                  </span>
-                  <span class="text-foreground">{item.text}</span>
-                </li>
-              {/each}
-            </ul>
-          </article>
-        </li>
-      {/each}
-    </ol>
+    <ChangelogFeed entries={feed} variant="timeline" class="mx-auto w-full max-w-3xl">
+      <ChangelogFeedHeader>
+        <ChangelogFeedHeading>
+          <ChangelogFeedTitle>Releases</ChangelogFeedTitle>
+          <ChangelogFeedDescription>Newest first. Filter by what changed.</ChangelogFeedDescription>
+        </ChangelogFeedHeading>
+      </ChangelogFeedHeader>
+      <ChangelogFeedFilters />
+      <ChangelogFeedList />
+      <ChangelogFeedEmpty />
+    </ChangelogFeed>
   </RailRow>
 
   <RailRow label="Follow releases">
@@ -130,7 +127,7 @@
       body="Every release is published on GitHub with the full list of changes."
     >
       {#snippet actions()}
-        <Button href={`${config.github}/releases`} target="_blank" rel="noopener noreferrer" variant="light">
+        <Button href={`${config.github}/releases`} target="_blank" rel="noopener noreferrer" variant="secondary">
           View releases
           <Github />
         </Button>

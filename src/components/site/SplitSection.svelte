@@ -17,9 +17,9 @@
   let { title, accent, description, sticky = false, aside, class: className, children }: Props = $props();
 </script>
 
-<div class={cn("relative w-full px-1 py-6 sm:px-4 sm:py-8 lg:px-16 lg:py-10", className)}>
+<div class={cn("relative w-full", className)}>
   <div class="flex flex-col gap-10 lg:flex-row lg:gap-20">
-    <div class="flex shrink-0 flex-col gap-2 lg:w-110">
+    <div class="flex shrink-0 flex-col gap-2 lg:w-80">
       <div class={cn("flex flex-col gap-2", sticky && "lg:sticky lg:top-28")}>
         <h2 class="text-balance text-4xl font-medium text-foreground">
           {title}

@@ -130,7 +130,7 @@
             <li>
               <a
                 href={`/tools/${tool.slug}`}
-                class="rounded-2xl border border-border bg-card group flex h-full flex-col gap-4 p-5 transition-[box-shadow,transform] duration-(--duration-base) ease-(--ease-ui-out) hover:shadow-lg active:scale-[0.98]"
+                class="rounded-2xl border border-border bg-background group flex h-full flex-col gap-4 p-5 transition-[box-shadow,transform] duration-(--duration-base) ease-(--ease-ui-out) hover:shadow-lg active:scale-[0.98]"
               >
                 <span class="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
                   <tool.icon class="size-5" />
@@ -179,7 +179,7 @@
 
       <div class="min-w-0 flex-1">
         {#if filtered.length === 0}
-          <div class="rounded-2xl border border-border bg-card flex flex-col items-center gap-3 px-6 py-16 text-center">
+          <div class="rounded-2xl border border-border bg-background flex flex-col items-center gap-3 px-6 py-16 text-center">
             <Search class="size-5 text-muted-foreground" />
             <p class="text-sm text-muted-foreground">No tools match “{query}”.</p>
             <Button

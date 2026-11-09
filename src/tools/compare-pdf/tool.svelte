@@ -91,7 +91,7 @@
   <div class="flex flex-col gap-4">
     {#if showDiff}
       {#if !store.hasText}
-        <section class="flex flex-col gap-1 rounded-2xl border border-border bg-card p-4 sm:p-5" aria-live="polite">
+        <section class="flex flex-col gap-1 rounded-2xl border border-border bg-background p-4 sm:p-5" aria-live="polite">
           <h2 class="text-base font-medium text-foreground">No text to compare</h2>
           <p class="text-sm text-muted-foreground">
             These PDFs look like scans or images, so there are no words to read. Run
@@ -163,7 +163,7 @@
           {@const label = pageLabel(page)}
           <section
             aria-label={label ?? `Original page ${page.before}, changed page ${page.after}`}
-            class="overflow-hidden rounded-2xl border border-border bg-card"
+            class="overflow-hidden rounded-2xl border border-border bg-background"
           >
             <details open={page.status !== "same"} class="group">
               <summary

@@ -56,7 +56,7 @@
       onRemove={store.isProcessing ? undefined : () => store.reset()}
     />
 
-    <section class="flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <section class="flex flex-col gap-3 rounded-2xl border border-border bg-background p-4 sm:p-5">
       <h2 class="text-base font-medium text-foreground">How the contents page is made</h2>
       <ol class="flex list-decimal flex-col gap-1.5 pl-5 text-sm text-muted-foreground marker:text-muted-foreground">
         <li>Orbit reads the bookmarks already saved in your PDF.</li>

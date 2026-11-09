@@ -25,12 +25,12 @@
   </RailRow>
 
   <RailRow label="All comparisons" class="px-3 pb-12 sm:px-6 sm:pb-16">
-    <ul class="grid grid-cols-1 gap-3 px-1 sm:grid-cols-2 sm:px-4 lg:grid-cols-3 lg:px-16">
+    <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {#each ALTERNATIVES as alt (alt.slug)}
         <li>
           <a
             href={`/compare/${alt.slug}`}
-            class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-card p-5 outline-none transition-[border-color,box-shadow] duration-(--duration-base) ease-(--ease-ui-out) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
+            class="group flex h-full flex-col gap-2 rounded-2xl border border-border bg-background p-5 outline-none transition-[border-color,box-shadow] duration-(--duration-base) ease-(--ease-ui-out) hover:border-border-strong hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span class="text-xs font-medium text-muted-foreground">Orbit vs {alt.name}</span>
             <span class="text-base font-medium text-foreground">{alt.title}</span>
