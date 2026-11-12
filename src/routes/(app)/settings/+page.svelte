@@ -7,6 +7,7 @@
   import { Progress } from "$components/ui/progress";
   import { Slider } from "$components/ui/slider";
   import { clearRecentTools } from "$lib/runtime/recent-tools.svelte";
+  import { warmAllEngines } from "$lib/engine-warmup";
   import { deviceProfile, formatCap, TIER_LABEL } from "$lib/device-profile.svelte";
   import { settings, type DefaultFormats } from "$lib/settings/settings.svelte";
   import { formatBytes, offlineStorage } from "$lib/settings/storage.svelte";
@@ -53,6 +54,17 @@
     const ok = await offlineStorage.requestPersistence();
     if (ok) toast.success("Offline data protected", { description: "The browser will not evict cached engines." });
     else toast.info("Browser declined", { description: "Installing Orbit as an app usually helps." });
+  }
+
+  let warming = $state<{ done: number; total: number } | null>(null);
+
+  async function makeOffline() {
+    warming = { done: 0, total: 1 };
+    await offlineStorage.requestPersistence();
+    await warmAllEngines((done, total) => (warming = { done, total }));
+    warming = null;
+    await offlineStorage.refresh();
+    toast.success("Ready offline", { description: "Every tool now works without internet." });
   }
 
   async function clearOffline() {
@@ -127,6 +139,9 @@
         {#if offlineStorage.supported && !offlineStorage.persisted}
           <Button variant="outline" class="min-h-11" onclick={persist}>Keep offline data</Button>
         {/if}
+        <Button class="min-h-11" disabled={!!warming} onclick={makeOffline}>
+          {warming ? `Downloading ${warming.done} of ${warming.total}` : "Make all tools work offline"}
+        </Button>
         <Button variant="outline" class="min-h-11" onclick={clearOffline}>Clear offline engines</Button>
       </div>
     </ToolPanel>

@@ -1,4 +1,5 @@
 import { browser } from "$app/environment";
+import { getTool } from "$tools/list";
 
 export type EngineId =
 	| "pdfjs"
@@ -7,9 +8,18 @@ export type EngineId =
 	| "jszip"
 	| "forge"
 	| "signpdf"
-	| "forme";
+	| "forme"
+	| "mediabunny"
+	| "heic2any";
 
 const loaders: Record<EngineId, () => Promise<unknown>> = {
+	mediabunny: () =>
+		Promise.all([
+			import("mediabunny"),
+			import("@mediabunny/mp3-encoder"),
+			import("@mediabunny/flac-encoder"),
+		]),
+	heic2any: () => import("heic2any"),
 	pdfjs: async () => {
 		const { loadPdfJs } = await import("./pdf/pdfjs");
 		return loadPdfJs();
@@ -84,6 +94,15 @@ const toolEngines: Record<string, EngineId[]> = {
 	"view-metadata": ["pdfjs"],
 };
 
+/** Image and media tools share engines, so their slugs are mapped by menu group. */
+function enginesFor(slug: string): EngineId[] | undefined {
+	if (toolEngines[slug]) return toolEngines[slug];
+	const category = getTool(slug)?.category;
+	if (category === "media") return ["mediabunny", "jszip"];
+	if (category === "images") return ["heic2any", "jszip"];
+	return undefined;
+}
+
 const warmed = new Set<EngineId>();
 
 /** Remote engines stay cold on a metered or offline connection. */
@@ -118,7 +137,7 @@ function whenIdle(run: () => void) {
  * Remote engines wait for `includeRemote`, since PyMuPDF pulls tens of MB.
  */
 export function warmEnginesForTool(slug: string, includeRemote = false) {
-	const engines = toolEngines[slug]?.filter(
+	const engines = enginesFor(slug)?.filter(
 		(engine) => includeRemote || !remoteEngines.includes(engine),
 	);
 	if (!browser || !engines?.length || connectionIsFrugal()) return () => {};
@@ -139,4 +158,19 @@ export function warmEnginesForTool(slug: string, includeRemote = false) {
 export function warmEnginesForPath(pathname: string) {
 	const slug = pathname.startsWith("/tools/") ? pathname.slice(7) : "";
 	if (slug) warmEnginesForTool(slug, true);
+}
+
+/** Downloads every engine so all tools work offline. Reports each finished engine. */
+export async function warmAllEngines(onProgress: (done: number, total: number) => void) {
+	const ids = Object.keys(loaders) as EngineId[];
+	let done = 0;
+	for (const id of ids) {
+		try {
+			await loaders[id]();
+			warmed.add(id);
+		} catch {
+			/* offline or blocked: the engine downloads when first used */
+		}
+		onProgress(++done, ids.length);
+	}
 }

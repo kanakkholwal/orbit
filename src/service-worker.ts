@@ -19,6 +19,8 @@ const isTauri =
     self.location.hostname.includes('tauri.localhost'));
 // Create a unique cache name for this deployment
 const CACHE = `orbit.nexonauts.cache-${version}`;
+// Files shared into the app wait here until the /open page picks them up.
+const SHARE_CACHE = 'orbit-shared';
 
 const ASSETS = [
     ...build, // the app itself
@@ -39,7 +41,7 @@ self.addEventListener('activate', (event) => {
     // Remove previous cached data from disk
     async function deleteOldCaches() {
         for (const key of await caches.keys()) {
-            if (key !== CACHE) await caches.delete(key);
+            if (key !== CACHE && key !== SHARE_CACHE) await caches.delete(key);
         }
     }
 
@@ -47,6 +49,28 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+    // Web Share Target: files arrive as a multipart POST, so stash them and open the chooser.
+    if (event.request.method === 'POST' && new URL(event.request.url).pathname === '/share-target') {
+        event.respondWith(
+            (async () => {
+                const form = await event.request.formData();
+                const files = form.getAll('files').filter((f): f is File => f instanceof File);
+                const cache = await caches.open(SHARE_CACHE);
+                await Promise.all((await cache.keys()).map((key) => cache.delete(key)));
+                await Promise.all(
+                    files.map((file, i) =>
+                        cache.put(
+                            `/shared/${i}`,
+                            new Response(file, { headers: { 'content-type': file.type, 'x-name': encodeURIComponent(file.name) } })
+                        )
+                    )
+                );
+                return Response.redirect('/open?shared=1', 303);
+            })()
+        );
+        return;
+    }
+
     // ignore POST requests etc
     if (event.request.method !== 'GET') return;
     if (isTauri) return; // Don't handle fetch events in Tauri, as it has its own caching mechanism

@@ -45,7 +45,9 @@
       ? { title: "Explore tools", icon: Compass }
       : path.startsWith("/settings")
         ? { title: "Settings", icon: SettingsIcon }
-        : { title: "Home", icon: Home }
+        : path.startsWith("/open")
+          ? { title: "Open files", icon: Compass }
+          : { title: "Home", icon: Home }
   );
 </script>
 
