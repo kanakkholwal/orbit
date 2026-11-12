@@ -35,7 +35,7 @@
   }
 
   const actionClass =
-    "grid size-9 place-items-center rounded-lg text-muted-foreground outline-none transition-[opacity,color,background-color] duration-(--duration-fast) hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-within:opacity-100";
+    "grid size-9 pointer-coarse:size-11 place-items-center rounded-lg text-muted-foreground outline-none transition-[opacity,color,background-color] duration-(--duration-fast) hover:bg-muted hover:text-foreground focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring pointer-fine:opacity-0 pointer-fine:group-hover:opacity-100 pointer-fine:group-focus-within:opacity-100";
 </script>
 
 <div

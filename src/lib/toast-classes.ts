@@ -23,7 +23,7 @@ export const TOAST_CLASSES = {
 	cancelButton:
 		"col-start-2 row-start-2 mt-2 inline-flex h-7 items-center justify-self-end rounded-full px-3 font-medium text-muted-foreground text-xs transition-colors hover:text-foreground group-has-[[data-icon]]/toast:col-start-3",
 	closeButton:
-		"-mt-0.5 -mr-0.5 col-start-2 row-start-1 inline-flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/[0.06] hover:text-foreground group-has-[[data-icon]]/toast:col-start-3 [&_svg]:size-3.5",
+		"relative after:absolute after:-inset-2 -mt-0.5 -mr-0.5 col-start-2 row-start-1 inline-flex size-7 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-primary/[0.06] hover:text-foreground group-has-[[data-icon]]/toast:col-start-3 [&_svg]:size-3.5",
 	// The loader stays mounted after a promise settles, flagged hidden; hide it for real.
 	loader: "inline-flex data-[visible=false]:hidden",
 };

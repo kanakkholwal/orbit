@@ -112,7 +112,7 @@
               aria-pressed={group === g}
               onclick={() => (group = g)}
               class={cn(
-                "h-9 rounded-lg px-3 text-sm outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-ring",
+                "h-9 rounded-lg px-3 text-sm pointer-coarse:h-11 outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-ring",
                 group === g ? "bg-foreground font-medium text-background" : "text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >

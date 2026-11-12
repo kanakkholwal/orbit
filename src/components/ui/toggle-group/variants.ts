@@ -47,13 +47,13 @@ export const toggleGroup = tv({
 				indicator: "rounded-[calc(var(--radius-sm)-3px)]",
 			},
 			sm: {
-				root: "h-8 rounded-md p-0.5",
-				item: "h-6.5 rounded-[calc(var(--radius-md)-3px)] px-2 text-xs [&_svg]:size-3.5",
+				root: "h-8 pointer-coarse:h-11 rounded-md p-0.5",
+				item: "h-6.5 pointer-coarse:h-9.5 rounded-[calc(var(--radius-md)-3px)] px-2 text-xs [&_svg]:size-3.5",
 				indicator: "rounded-[calc(var(--radius-md)-3px)]",
 			},
 			default: {
-				root: "h-9 rounded-lg p-0.5",
-				item: "h-7.5 rounded-[calc(var(--radius-lg)-3px)] px-2.5 text-sm [&_svg]:size-4",
+				root: "h-9 pointer-coarse:h-11 rounded-lg p-0.5",
+				item: "h-7.5 pointer-coarse:h-9.5 rounded-[calc(var(--radius-lg)-3px)] px-2.5 text-sm [&_svg]:size-4",
 				indicator: "rounded-[calc(var(--radius-lg)-3px)]",
 			},
 			lg: {

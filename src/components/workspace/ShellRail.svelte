@@ -38,7 +38,7 @@
   <a
     href="/"
     aria-label={`${config.appName} home`}
-    class="mb-1.5 grid size-9 place-items-center rounded-lg text-foreground transition-opacity hover:opacity-80"
+    class="mb-1.5 grid size-9 pointer-coarse:size-11 place-items-center rounded-lg text-foreground transition-opacity hover:opacity-80"
   >
     <Logo markOnly size="xs" class="h-6 text-foreground" />
   </a>

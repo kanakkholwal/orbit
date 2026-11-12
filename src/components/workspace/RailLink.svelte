@@ -14,7 +14,7 @@
   let { label, icon: Glyph, href, active = false, onclick }: Props = $props();
 
   const base =
-    "grid size-9 place-items-center rounded-lg outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
+    "grid size-9 pointer-coarse:size-11 place-items-center rounded-lg outline-none transition-colors duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring";
 </script>
 
 <Tooltip.Root>

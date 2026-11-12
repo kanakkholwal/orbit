@@ -1,9 +1,12 @@
 <script lang="ts">
+  import { page } from "$app/state";
   import { Badge } from "$components/ui/badge";
   import { Switch } from "$components/ui/switch";
   import { aiFlagEnabled, setAiFlag, type AiAvailability } from "$lib/chrome-ai";
   import { IconAlertTriangle as Warning } from "$lib/icons";
   import { appState } from "$stores/app-state.svelte";
+  import { getTool } from "$tools/list";
+  import ToolHeader from "./ToolHeader.svelte";
   import { onMount, type Snippet } from "svelte";
 
   type Props = {
@@ -34,6 +37,8 @@
     if (next) refresh();
   }
 
+  const tool = $derived(page.params.slug ? getTool(page.params.slug) : null);
+
   const reason = $derived(
     appState.isTauri
       ? "The desktop app does not include Chrome's built-in AI."
@@ -42,6 +47,10 @@
 </script>
 
 <div class="flex flex-col gap-4">
+  <!-- When the tool is usable, its own UploadArea renders the header. -->
+  {#if tool && (!enabled || status === "checking" || status === "unsupported" || status === "unavailable")}
+    <ToolHeader {tool} />
+  {/if}
   <div class="rounded-2xl border border-border bg-background p-1">
     <div class="flex flex-col gap-3 rounded-[11px] bg-card p-4">
       <div class="flex items-start justify-between gap-4">
@@ -55,7 +64,9 @@
             text stays on this device.
           </p>
         </div>
-        <Switch checked={enabled} onCheckedChange={toggle} aria-label="Enable experimental AI tools" />
+        <label class="-m-3 grid place-items-center p-3">
+          <Switch checked={enabled} onCheckedChange={toggle} aria-label="Enable experimental AI tools" />
+        </label>
       </div>
       <p class="flex items-start gap-2 text-xs text-muted-foreground">
         <Warning class="mt-0.5 size-3.5 shrink-0 text-warning-strong" />

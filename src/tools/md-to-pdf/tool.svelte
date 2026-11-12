@@ -19,9 +19,17 @@
   const lineCount = $derived(store.isEmpty ? 0 : store.markdown.split("\n").length);
   const resultFiles = $derived(store.resultFiles);
   const showResult = $derived(!!store.result && !store.isProcessing && store.result.source === store.markdown);
+  import { page } from "$app/state";
+  import ToolHeader from "$components/tool/ToolHeader.svelte";
+  import { getTool } from "$tools/list";
+
+  const tool = $derived(page.params.slug ? getTool(page.params.slug) : null);
 </script>
 
 <div class="flex flex-col gap-4">
+  {#if tool}
+    <ToolHeader {tool} />
+  {/if}
   {#if showResult && store.result}
     <ResultCard title="Your PDF is ready" description={`${store.result.name} is downloaded.`}>
       {#snippet actions()}

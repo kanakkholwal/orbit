@@ -46,9 +46,9 @@ export const tabsFrame = tv({
 		},
 		size: {
 			xs: { list: "h-6", trigger: "gap-1 px-2 text-xs [&_svg]:size-3" },
-			sm: { list: "h-8", trigger: "gap-1.5 px-2.5 text-xs [&_svg]:size-3.5" },
-			default: { list: "h-9", trigger: "gap-2 px-3 text-sm [&_svg]:size-4" },
-			lg: { list: "h-10", trigger: "gap-2 px-3.5 text-sm [&_svg]:size-4" },
+			sm: { list: "h-8 pointer-coarse:h-11", trigger: "gap-1.5 px-2.5 text-xs [&_svg]:size-3.5" },
+			default: { list: "h-9 pointer-coarse:h-11", trigger: "gap-2 px-3 text-sm [&_svg]:size-4" },
+			lg: { list: "h-10 pointer-coarse:h-11", trigger: "gap-2 px-3.5 text-sm [&_svg]:size-4" },
 			xl: { list: "h-12", trigger: "gap-2 px-4 text-base [&_svg]:size-4.5" },
 		},
 		// Vertical lists grow with their triggers; the marker follows on both axes.

@@ -1392,3 +1392,12 @@
 		display: none;
 	}
 }
+
+/* Touch targets: form controls reach 44 px on coarse pointers (phones, tablets). */
+@media (pointer: coarse) {
+	:root {
+		--control-height-sm: 2.75rem;
+		--control-height-default: 2.75rem;
+		--control-height-lg: 2.75rem;
+	}
+}

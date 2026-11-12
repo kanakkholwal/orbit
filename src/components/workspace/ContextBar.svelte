@@ -55,7 +55,7 @@
   class="flex min-h-12 shrink-0 items-center gap-3 border-b border-border bg-background px-3 md:px-4"
   style="padding-top: env(safe-area-inset-top);"
 >
-  <a href="/" aria-label={`${config.appName} home`} class="grid size-9 shrink-0 place-items-center max-[360px]:hidden md:hidden">
+  <a href="/" aria-label={`${config.appName} home`} class="grid size-11 shrink-0 place-items-center max-[360px]:hidden sm:size-9 md:hidden">
     <Logo markOnly size="xs" class="h-6 text-foreground" />
   </a>
 
@@ -109,6 +109,6 @@
         <span class="sr-only">Share</span>
       </ShareButton>
     {/if}
-    <ThemeToggle class="size-9 rounded-lg hover:bg-muted md:hidden" />
+    <ThemeToggle class="rounded-lg hover:bg-muted md:hidden" />
   </div>
 </header>
