@@ -126,6 +126,7 @@
 
 {#if layout === "immersive"}
   <div class="h-full min-h-0 overflow-clip">
+    <h1 class="sr-only">{tool.title}</h1>
     {@render toolBody()}
   </div>
 {:else}

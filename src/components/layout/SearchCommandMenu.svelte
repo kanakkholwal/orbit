@@ -183,6 +183,14 @@
 </script>
 
 {#snippet palette(phone: boolean)}
+  <!-- Typing in the field bubbles up here, which is how the empty-query state is known. -->
+  <div
+    class="contents"
+    role="presentation"
+    oninput={(e) => {
+      if (e.target instanceof HTMLInputElement) query = e.target.value;
+    }}
+  >
   <CommandRoot variant={phone ? "spotlight" : undefined} class={phone ? "flex h-full min-h-0 flex-col" : undefined}>
     {#if phone}
       <div class="flex shrink-0 items-center justify-between px-3 pb-1">
@@ -194,7 +202,6 @@
       <CommandInput
         placeholder={phone ? "Search tools and pages" : `Search ${toolList.length} tools and pages`}
         hint={phone ? undefined : "Ctrl K"}
-        oninput={(e: Event) => (query = (e.currentTarget as HTMLInputElement).value)}
       />
       <CommandFilters bind:value={scope} label="Show">
         <CommandFilter value="all" label="Everything"><AllIcon /></CommandFilter>
@@ -235,6 +242,7 @@
       </CommandFooter>
     {/if}
   </CommandRoot>
+  </div>
 {/snippet}
 
 {#if isMobile.current}

@@ -25,6 +25,8 @@ class OfflineStorage {
 
     async clearCaches() {
         if (!browser || !('caches' in window)) return;
+        const { clearOfflineRecord } = await import('$lib/engine-warmup');
+        clearOfflineRecord();
         const keys = await caches.keys();
         await Promise.all(keys.map((key) => caches.delete(key)));
         await this.refresh();

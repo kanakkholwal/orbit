@@ -3,7 +3,6 @@
   import FeatureBento from "$components/landing/FeatureBento.svelte";
   import HeroSection from "$components/landing/HeroSection.svelte";
   import GuidesStrip from "$components/landing/GuidesStrip.svelte";
-  import ProofStrip from "$components/landing/ProofStrip.svelte";
   import Steps from "$components/landing/Steps.svelte";
   import ToolFinder from "$components/landing/ToolFinder.svelte";
   import Seo from "$components/Seo.svelte";
@@ -82,10 +81,6 @@
 <RailFrame>
   <RailRow id="home" divider={false} label="Introduction" class="pt-12 pb-4 md:pt-16 md:pb-6">
     <HeroSection />
-  </RailRow>
-
-  <RailRow id="proof" label="At a glance" class="py-8 md:py-10">
-    <ProofStrip />
   </RailRow>
 
   <RailRow id="tools" label="Find a tool" class="py-10 md:py-12">

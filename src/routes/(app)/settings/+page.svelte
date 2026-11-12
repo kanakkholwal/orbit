@@ -6,8 +6,9 @@
   import { Input } from "$components/ui/input";
   import { Progress } from "$components/ui/progress";
   import { Slider } from "$components/ui/slider";
+  import { IconCheck as Check } from "$lib/icons";
   import { clearRecentTools } from "$lib/runtime/recent-tools.svelte";
-  import { warmAllEngines } from "$lib/engine-warmup";
+  import { offlineStatus, warmAllEngines, type OfflineStatus } from "$lib/engine-warmup";
   import { deviceProfile, formatCap, TIER_LABEL } from "$lib/device-profile.svelte";
   import { settings, type DefaultFormats } from "$lib/settings/settings.svelte";
   import { formatBytes, offlineStorage } from "$lib/settings/storage.svelte";
@@ -27,6 +28,7 @@
     settings.load();
     offlineStorage.refresh();
     void deviceProfile.init();
+    void refreshPack();
     ready = true;
   });
 
@@ -57,18 +59,40 @@
   }
 
   let warming = $state<{ done: number; total: number } | null>(null);
+  let pack = $state<OfflineStatus | null>(null);
+  const refreshPack = async () => (pack = await offlineStatus());
 
-  async function makeOffline() {
-    warming = { done: 0, total: 1 };
+  // With "ask before large downloads" on, the first press names the size and a second press confirms.
+  let confirming = $state(false);
+  let confirmTimer: ReturnType<typeof setTimeout> | undefined;
+
+  async function makeOffline(force = false) {
+    if (settings.value.confirmLargeDownloads && !confirming && pack && pack.done < pack.total) {
+      confirming = true;
+      clearTimeout(confirmTimer);
+      confirmTimer = setTimeout(() => (confirming = false), 6000);
+      return;
+    }
+    confirming = false;
+    warming = { done: 0, total: pack?.total ?? 1 };
     await offlineStorage.requestPersistence();
-    await warmAllEngines((done, total) => (warming = { done, total }));
+    await warmAllEngines((done, total) => (warming = { done, total }), force);
     warming = null;
     await offlineStorage.refresh();
-    toast.success("Ready offline", { description: "Every tool now works without internet." });
+    await refreshPack();
+    if (pack?.ready) toast.success("Ready offline", { description: "Every tool now works without internet." });
+    else {
+      // On a first visit the service worker is not in control yet, so large files are not kept until a reload.
+      const needsReload = "serviceWorker" in navigator && !navigator.serviceWorker.controller;
+      toast.warning("Not everything is stored yet", {
+        description: needsReload ? "Reload this page once, then press the button again." : "Check your connection and press the button again.",
+      });
+    }
   }
 
   async function clearOffline() {
     await offlineStorage.clearCaches();
+    await refreshPack();
     toast.success("Offline engines cleared", { description: "They download again on next use." });
   }
 
@@ -130,18 +154,48 @@
       {:else}
         <p class="text-sm text-muted-foreground">This browser does not report storage use.</p>
       {/if}
+      <div class="flex flex-col gap-0.5" aria-live="polite">
+        <p class="text-sm font-medium text-foreground">
+          {#if pack === null}
+            Checking what is stored…
+          {:else if pack.ready}
+            Everything is stored on this device
+          {:else}
+            {pack.done} of {pack.total} engines stored
+          {/if}
+        </p>
+        <p class="text-xs text-muted-foreground">
+          Includes a 58 MB document converter.{pack?.at ? ` Last downloaded ${new Date(pack.at).toLocaleDateString()}.` : ""}
+        </p>
+      </div>
       <OptionToggle
         label="Ask before large downloads"
-        description="Warns before fetching engines over 20 MB, useful on mobile data."
+        description="Asks for a second press before the offline download, which is about 70 MB."
         bind:checked={settings.value.confirmLargeDownloads}
       />
       <div class="flex flex-wrap gap-2">
         {#if offlineStorage.supported && !offlineStorage.persisted}
           <Button variant="outline" size="sm" onclick={persist}>Keep offline data</Button>
         {/if}
-        <Button size="sm" disabled={!!warming} onclick={makeOffline}>
-          {warming ? `Downloading ${warming.done} of ${warming.total}` : "Make all tools work offline"}
-        </Button>
+        {#if pack?.ready && !warming}
+          <Button variant="outline" size="sm" disabled>
+            <Check />
+            Ready offline
+          </Button>
+          <Button variant="ghost" size="sm" onclick={() => makeOffline(true)}>Download again</Button>
+        {:else}
+          <Button size="sm" disabled={!!warming || pack === null} onclick={() => makeOffline()}>
+            {#if warming}
+              Downloading {warming.done} of {warming.total}
+            {:else if confirming}
+              Download about 70 MB? Press again
+            {:else if pack && pack.done > 0}
+              Download the rest ({pack.total - pack.done} left)
+            {:else}
+              Make all tools work offline
+            {/if}
+          </Button>
+        {/if}
         <Button variant="outline" size="sm" onclick={clearOffline}>Clear offline engines</Button>
       </div>
     </ToolPanel>

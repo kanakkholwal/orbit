@@ -46,15 +46,15 @@
 
 <Seo
   title="About"
-  description={`The story and principles behind ${config.appName}, a private PDF toolkit that runs entirely on your device.`}
-  keywords={["about orbit pdf", "privacy first pdf tool", "open source pdf editor"]}
+  description={`The story and principles behind ${config.appName}, a private set of tools for PDFs, photos, video, audio and documents that runs entirely on your device.`}
+  keywords={["about orbit", "privacy first file tools", "open source pdf and photo tools"]}
 />
 
 <RailFrame>
   <RailRow divider={false} label="About Orbit">
     <PageHero
       badge="Free and open source"
-      title="A PDF toolkit that"
+      title="A file toolkit that"
       accent="respects your files"
       lede={`${config.appName} began with a small frustration: PDF sites that are slow, cap how much you can do and are quick to ask for your file. So we built one that keeps your documents on your own device.`}
     >

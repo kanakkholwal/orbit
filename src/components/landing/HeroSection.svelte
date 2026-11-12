@@ -5,7 +5,7 @@
   import { toolList } from "$tools/list";
   import { IconBrandGithub as Github, IconCheck as Check } from "$lib/icons";
   import { MediaQuery } from "svelte/reactivity";
-  import HeroIllustration from "./HeroIllustration.svelte";
+  import HeroShowcase from "./HeroShowcase.svelte";
 
   const reduceMotion = new MediaQuery("prefers-reduced-motion: reduce");
   const subjects = ["PDFs", "photos", "videos", "audio", "documents", "forms"];
@@ -46,6 +46,6 @@
   </div>
 
   <div class="rise flex min-h-0 items-center justify-center pb-8 lg:py-16" style="--i:2">
-    <HeroIllustration />
+    <HeroShowcase />
   </div>
 </div>

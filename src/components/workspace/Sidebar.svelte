@@ -217,8 +217,8 @@
             >
               <item.icon class={cn("size-5", item.active ? "text-primary" : "text-muted-foreground")} />
               <span class="flex items-baseline justify-between gap-2">
-                <span class="min-w-0 truncate text-sm font-medium text-foreground">{item.label}</span>
-                <span class="text-xs tabular-nums text-muted-foreground">{item.count}</span>
+                <span class="min-w-0 text-sm font-medium leading-tight text-foreground">{item.label}</span>
+                <span class="shrink-0 text-xs tabular-nums text-muted-foreground">{item.count}</span>
               </span>
             </a>
           </li>
