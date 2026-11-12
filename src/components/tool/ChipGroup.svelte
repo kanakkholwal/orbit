@@ -29,10 +29,10 @@
   onValueChange={(v) => {
     if (typeof v === "string" && v) onchange(v as T);
   }}
-  class={cn("w-full", className)}
+  class={cn("w-full max-sm:flex-nowrap max-sm:overflow-x-auto max-sm:pb-1 max-sm:no-scrollbar", className)}
 >
   {#each options as option (option.value)}
-    <ToggleGroupItem value={option.value} class="whitespace-nowrap max-sm:min-h-11 max-sm:px-3.5">
+    <ToggleGroupItem value={option.value} class="shrink-0 whitespace-nowrap max-sm:min-h-11 max-sm:px-3.5">
       {option.label}
     </ToggleGroupItem>
   {/each}

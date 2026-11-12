@@ -1,7 +1,7 @@
 {
-  "name": "Orbit PDF",
-  "short_name": "Orbit PDF",
-  "description": "Free, fast, offline-first PDF toolkit. 100% client-side — your files never leave your device.",
+  "name": "Orbit",
+  "short_name": "Orbit",
+  "description": "Free, private tools for PDFs, photos, video, audio and documents. Everything runs on your device, so your files never leave it.",
   "icons": [
     {
       "src": "/assets/meta/web-app-manifest-192x192.png",

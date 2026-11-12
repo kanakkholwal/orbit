@@ -155,7 +155,7 @@
   )}
 
   <div class="grid min-h-0 grid-cols-1 gap-2 md:gap-4 lg:col-span-5 lg:grid-rows-[5fr_5fr]">
-    {@render card("Every PDF tool you need", "Merge, split, compress, convert, sign and more. All free.", toolMarquee)}
+    {@render card("Every tool you need", "PDFs, photos, video, audio and documents. Merge, compress, resize, convert and sign. All free.", toolMarquee)}
     {@render card(
       "No sign-up. No watermark.",
       "Your finished file looks exactly like you made it, with no strings attached.",

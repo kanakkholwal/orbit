@@ -137,12 +137,12 @@
       />
       <div class="flex flex-wrap gap-2">
         {#if offlineStorage.supported && !offlineStorage.persisted}
-          <Button variant="outline" class="min-h-11" onclick={persist}>Keep offline data</Button>
+          <Button variant="outline" size="sm" onclick={persist}>Keep offline data</Button>
         {/if}
-        <Button class="min-h-11" disabled={!!warming} onclick={makeOffline}>
+        <Button size="sm" disabled={!!warming} onclick={makeOffline}>
           {warming ? `Downloading ${warming.done} of ${warming.total}` : "Make all tools work offline"}
         </Button>
-        <Button variant="outline" class="min-h-11" onclick={clearOffline}>Clear offline engines</Button>
+        <Button variant="outline" size="sm" onclick={clearOffline}>Clear offline engines</Button>
       </div>
     </ToolPanel>
 
@@ -167,7 +167,7 @@
         description="Page views and tool names only. File names and contents never leave your device."
         bind:checked={settings.value.analytics}
       />
-      <Button variant="outline" class="min-h-11 self-start" onclick={resetAll}>Reset all settings</Button>
+      <Button variant="outline" size="sm" class="self-start" onclick={resetAll}>Reset all settings</Button>
     </ToolPanel>
 
     <ToolPanel title="Support Orbit" class="rise [--i:7] md:col-span-2 lg:col-span-7">

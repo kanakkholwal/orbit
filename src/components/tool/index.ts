@@ -17,3 +17,6 @@ export { default as ToolFooter } from "./ToolFooter.svelte";
 export { default as ToolPanel } from "./ToolPanel.svelte";
 export { default as FileConvert } from "./FileConvert.svelte";
 export { default as AiGate } from "./AiGate.svelte";
+export { default as PageCard } from "./PageCard.svelte";
+export { default as CollectionGrid } from "./CollectionGrid.svelte";
+export { pageAction } from "./page-card";

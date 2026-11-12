@@ -102,9 +102,9 @@
     direction={isMobile.current ? "bottom" : "left"}
     shouldScaleBackground={false}
   >
-    <Drawer.Content class={cn(isMobile.current ? "h-[85dvh] max-h-[85dvh] rounded-t-2xl" : "w-80 max-w-80 rounded-none bg-card")}>
+    <Drawer.Content class={cn(isMobile.current ? "max-h-[85dvh] rounded-t-2xl" : "w-80 max-w-80 rounded-none bg-card")}>
       <Drawer.Title class="sr-only">Menu</Drawer.Title>
-      <Sidebar mode="drawer" class="min-h-0 flex-1" onnavigate={() => (workspace.panelDrawerOpen = false)} />
+      <Sidebar mode={isMobile.current ? "sheet" : "drawer"} class="min-h-0 flex-1" onnavigate={() => (workspace.panelDrawerOpen = false)} />
     </Drawer.Content>
   </Drawer.Root>
 {/if}

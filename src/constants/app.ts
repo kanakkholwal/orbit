@@ -5,10 +5,10 @@ import {
 } from '$env/static/public';
 
 const config = {
-    appName: 'Orbit PDF',
+    appName: 'Orbit',
     appVersion: '0.1.0',
-    appDescription: `Free, fast, and offline PDF toolkit for professionals. Edit, convert, and process PDFs entirely in your browser with no data uploads. 100% client-side processing.`,
-    appKeywords: ['free pdf tools', 'offline pdf editor', 'client-side pdf processing', 'fast pdf converter', 'privacy-focused pdf toolkit', 'web-based pdf tool', 'no upload pdf processing', 'open source pdf', 'pdf tools no upload', 'pdf tools no watermark', 'ilovepdf alternative', 'smallpdf alternative', 'ihatepdf alternative', 'free pdf editor online'],
+    appDescription: `Free, private tools for PDFs, photos, video, audio and documents. Compress, resize, convert, sign and edit on your own device, with no upload, no account and no watermark. Works offline.`,
+    appKeywords: ['file converter', 'image compressor', 'resize photo for form', 'video converter', 'free pdf tools', 'offline pdf editor', 'client-side pdf processing', 'fast pdf converter', 'privacy-focused pdf toolkit', 'web-based pdf tool', 'no upload pdf processing', 'open source pdf', 'pdf tools no upload', 'pdf tools no watermark', 'ilovepdf alternative', 'smallpdf alternative', 'ihatepdf alternative', 'free pdf editor online'],
     supportEmail: "support@nexonauts.com",
     appDomain: "orbit.nexonauts.com",
     github: "https://github.com/kanakkholwal/orbit",

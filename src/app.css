@@ -1401,3 +1401,81 @@
 		--control-height-lg: 2.75rem;
 	}
 }
+
+/* Shared by the indeterminate progress bar. */
+.progress-sweep {
+	animation: progress-sweep 1.4s linear infinite;
+}
+
+@keyframes progress-sweep {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(250%);
+	}
+}
+
+/* Number input nudge when a key press runs into min or max. */
+@keyframes otp-shake {
+	20% {
+		translate: -6px 0;
+	}
+	40% {
+		translate: 5px 0;
+	}
+	60% {
+		translate: -3px 0;
+	}
+	80% {
+		translate: 2px 0;
+	}
+}
+
+/* MorphText: words blur through each other under a goo threshold filter, 900ms ease-in-out. */
+.morph-text-enter {
+	animation: morph-text-enter 900ms cubic-bezier(0.42, 0, 0.58, 1) both;
+}
+
+.morph-text-exit {
+	animation: morph-text-exit 900ms cubic-bezier(0.42, 0, 0.58, 1) both;
+}
+
+.morph-text-subtext {
+	animation: morph-text-subtext 1s cubic-bezier(0, 0, 0.58, 1) 1s both;
+}
+
+@keyframes morph-text-enter {
+	from {
+		opacity: 0;
+		filter: blur(20px);
+		transform: scale(0.8);
+	}
+}
+
+@keyframes morph-text-exit {
+	to {
+		opacity: 0;
+		filter: blur(20px);
+		transform: scale(1.2);
+	}
+}
+
+@keyframes morph-text-subtext {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.morph-text-enter,
+	.morph-text-subtext {
+		animation-name: fade-in;
+		filter: none;
+	}
+	.morph-text-exit {
+		animation-name: text-fade-out;
+		filter: none;
+	}
+}

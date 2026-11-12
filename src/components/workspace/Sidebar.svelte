@@ -30,7 +30,7 @@
     mode = "inline",
     onnavigate,
     class: className,
-  }: { mode?: "inline" | "drawer"; onnavigate?: () => void; class?: string } = $props();
+  }: { mode?: "inline" | "drawer" | "sheet"; onnavigate?: () => void; class?: string } = $props();
 
   const path = $derived(page.url.pathname);
   const exploring = $derived(path.startsWith("/explore"));
@@ -86,6 +86,9 @@
     { key: "github", href: config.github, label: "GitHub", icon: Github, active: false, external: true },
   ]);
 
+  // One flyout at a time: moving to the next group closes the previous one at once, with no delay.
+  let flyout = $state<string | null>(null);
+
   // One pill follows the pointer or keyboard focus from row to row.
   let wrap = $state<HTMLElement>();
   let pill = $state({ y: 0, h: 0, show: false });
@@ -133,7 +136,15 @@
       <li>
         {#if item.group}
           {@const group = item.group}
-          <HoverCard openDelay={180} closeDelay={120}>
+          <HoverCard
+            openDelay={flyout ? 0 : 160}
+            closeDelay={80}
+            open={flyout === item.key}
+            onOpenChange={(next) => {
+              if (next) flyout = item.key;
+              else if (flyout === item.key) flyout = null;
+            }}
+          >
             <HoverCardTrigger
               href={item.href}
               data-row
@@ -148,7 +159,7 @@
                 <p class="text-sm font-medium text-foreground">{group.name}</p>
                 <p class="text-xs text-muted-foreground">{group.description}</p>
               </div>
-              <ul class="scrollbar-subtle flex max-h-72 flex-col gap-0.5 overflow-y-auto">
+              <ul class="no-scrollbar flex max-h-72 flex-col gap-0.5 overflow-y-auto">
                 {#each group.tools ?? [] as tool (tool.slug)}
                   <li>
                     <a
@@ -183,6 +194,52 @@
   </ul>
 {/snippet}
 
+{#if mode === "sheet"}
+  <!-- Phone launcher: the tab bar already has Home, Explore, Search and Settings, so this only browses tools. -->
+  <div class={cn("flex min-h-0 flex-col bg-card", className)}>
+    <div class="shrink-0 px-5 pb-3 pt-1">
+      <h2 class="text-lg font-medium text-foreground">Browse tools</h2>
+      <p class="text-sm text-muted-foreground">Pick a type, or open one you used before.</p>
+    </div>
+
+    <div class="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-4">
+      <ul class="grid grid-cols-2 gap-2">
+        {#each groups as item (item.key)}
+          <li>
+            <a
+              href={item.href}
+              onclick={onnavigate}
+              aria-current={item.active ? "page" : undefined}
+              class={cn(
+                "flex min-h-[4.5rem] flex-col justify-between gap-3 rounded-xl border bg-background p-3 outline-none transition-[border-color,scale] duration-(--duration-fast) focus-visible:ring-2 focus-visible:ring-ring active:scale-(--press-scale-row)",
+                item.active ? "border-primary" : "border-border"
+              )}
+            >
+              <item.icon class={cn("size-5", item.active ? "text-primary" : "text-muted-foreground")} />
+              <span class="flex items-baseline justify-between gap-2">
+                <span class="min-w-0 truncate text-sm font-medium text-foreground">{item.label}</span>
+                <span class="text-xs tabular-nums text-muted-foreground">{item.count}</span>
+              </span>
+            </a>
+          </li>
+        {/each}
+      </ul>
+
+      {#if recent.length > 0}
+        <h3 class={eyebrow}>Recent</h3>
+        {@render list(recent)}
+      {/if}
+
+      <h3 class={eyebrow}>More</h3>
+      {@render list(more.filter((i) => i.key !== "settings"))}
+    </div>
+
+    <div class="flex shrink-0 items-center justify-between border-t border-border py-2 pl-5 pr-3" style="padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);">
+      <span class="text-xs text-muted-foreground">Runs on your device</span>
+      <ThemeToggle />
+    </div>
+  </div>
+{:else}
 <div class={cn("flex h-full min-h-0 flex-col bg-card", className)}>
   {#if mode === "inline"}
     <div class="flex h-12 shrink-0 items-center justify-between border-b border-border pl-4 pr-2">
@@ -199,7 +256,7 @@
     <SearchTrigger class="w-full" />
   </div>
 
-  <nav aria-label="Main" class="scrollbar-subtle min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-3">
+  <nav aria-label="Main" class="no-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-3">
     <div
       bind:this={wrap}
       class="relative"
@@ -240,3 +297,4 @@
     <ThemeToggle />
   </div>
 </div>
+{/if}

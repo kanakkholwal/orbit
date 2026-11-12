@@ -51,7 +51,7 @@
 
 <Seo
   title="Documentation"
-  description="Get started with Orbit PDF: installation, tools, how it works and answers to common questions."
+  description="Get started with Orbit: installation, tools, how it works and answers to common questions."
   keywords={["orbit pdf docs", "pdf toolkit guide", "offline pdf editor docs"]}
 />
 
