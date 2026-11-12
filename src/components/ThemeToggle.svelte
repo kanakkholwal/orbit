@@ -25,7 +25,7 @@
   aria-pressed={isDark}
   title={isDark ? "Switch to light theme" : "Switch to dark theme"}
   class={cn(
-    "relative size-9 rounded-full text-muted-foreground hover:text-foreground",
+    "relative size-9 rounded-full text-muted-foreground hover:text-foreground max-sm:size-11",
     className
   )}
 >

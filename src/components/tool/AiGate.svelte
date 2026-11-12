@@ -55,7 +55,9 @@
             text stays on this device.
           </p>
         </div>
-        <Switch checked={enabled} onCheckedChange={toggle} aria-label="Enable experimental AI tools" />
+        <label class="-m-3 grid place-items-center p-3">
+          <Switch checked={enabled} onCheckedChange={toggle} aria-label="Enable experimental AI tools" />
+        </label>
       </div>
       <p class="flex items-start gap-2 text-xs text-muted-foreground">
         <Warning class="mt-0.5 size-3.5 shrink-0 text-warning-strong" />

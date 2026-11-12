@@ -101,23 +101,26 @@ export class CompareState extends PdfEngine {
         try {
             const pdfjs = await this.getPdfJs();
             const sides = [this.original, this.changed];
-            const docs = await Promise.all(
-                sides.map(async (s) => pdfjs.getDocument({ data: new Uint8Array(await s.file.arrayBuffer()) }).promise)
-            );
-            const total = docs.reduce((sum, d) => sum + d.numPages, 0);
-            let done = 0;
+            // One document at a time: two loading tasks open together can answer each other's page requests.
+            const counts: number[] = [];
             const read: string[][] = [];
-            for (let s = 0; s < sides.length; s++) {
-                const pages: string[] = [];
-                for (let p = 1; p <= docs[s].numPages; p++) {
-                    this.progress = { current: ++done, total, text: `Reading ${sides[s].file.name}` };
-                    const page = await docs[s].getPage(p);
-                    const content = await page.getTextContent();
-                    pages.push(pageText(content.items.filter((i): i is TextItem => 'str' in i)));
-                    page.cleanup();
+            let done = 0;
+            for (const side of sides) {
+                const doc = await pdfjs.getDocument({ data: new Uint8Array(await side.file.arrayBuffer()) }).promise;
+                try {
+                    const pages: string[] = [];
+                    counts.push(doc.numPages);
+                    for (let p = 1; p <= doc.numPages; p++) {
+                        this.progress = { current: ++done, total: Math.max(done, counts.reduce((a, b) => a + b, 0)), text: `Reading ${side.file.name}` };
+                        const page = await doc.getPage(p);
+                        const content = await page.getTextContent();
+                        pages.push(pageText(content.items.filter((i): i is TextItem => 'str' in i)));
+                        page.cleanup();
+                    }
+                    read.push(pages);
+                } finally {
+                    await doc.destroy().catch(() => {});
                 }
-                read.push(pages);
-                await docs[s].destroy();
             }
             this.original = { file: sides[0].file, pages: read[0] };
             this.changed = { file: sides[1].file, pages: read[1] };

@@ -15,16 +15,27 @@ const PDF_TOOLS = [
 	"rotate-pdf",
 	"view-pdf",
 ];
-const IMAGE_TOOLS = ["img-to-pdf"];
+const IMAGE_TOOLS = [
+	"photo-for-forms",
+	"image-compress",
+	"image-resize",
+	"image-crop",
+	"image-convert",
+	"img-to-pdf",
+];
+const VIDEO_TOOLS = ["video-converter", "compress-video", "video-to-audio"];
+const AUDIO_TOOLS = ["audio-converter"];
 
 let pending: { files: File[]; path: string } | null = null;
 
-export type FileKind = "pdf" | "image" | "other";
+export type FileKind = "pdf" | "image" | "video" | "audio" | "other";
 
 export function fileKind(file: File): FileKind {
 	const name = file.name.toLowerCase();
 	if (file.type === "application/pdf" || name.endsWith(".pdf")) return "pdf";
-	if (file.type.startsWith("image/")) return "image";
+	if (file.type.startsWith("image/") || /\.(heic|heif|avif)$/.test(name)) return "image";
+	if (file.type.startsWith("video/") || /\.(mkv|mov)$/.test(name)) return "video";
+	if (file.type.startsWith("audio/") || /\.(flac|m4a)$/.test(name)) return "audio";
 	return "other";
 }
 
@@ -33,7 +44,13 @@ export function suggestTools(files: File[]): ToolConfig[] {
 	if (files.length === 0) return [];
 	const kinds = new Set(files.map(fileKind));
 	if (kinds.size !== 1 || kinds.has("other")) return [];
-	const slugs = kinds.has("pdf") ? PDF_TOOLS : IMAGE_TOOLS;
+	const slugs = kinds.has("pdf")
+		? PDF_TOOLS
+		: kinds.has("video")
+			? VIDEO_TOOLS
+			: kinds.has("audio")
+				? AUDIO_TOOLS
+				: IMAGE_TOOLS;
 	return slugs
 		.map((slug) => getTool(slug))
 		.filter((t): t is ToolConfig => t !== null);

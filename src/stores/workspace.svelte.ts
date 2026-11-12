@@ -10,6 +10,8 @@ class WorkspaceShell {
 	panelDrawerOpen = $state(false);
 	inspectorDrawerOpen = $state(false);
 	searchOpen = $state(false);
+	/** False once the tool page header has scrolled away, so the top bar can show a compact title. */
+	headerInView = $state(true);
 	inspector = $state.raw<ShellSlot | null>(null);
 	actionBar = $state.raw<Snippet | null>(null);
 

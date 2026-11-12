@@ -18,6 +18,8 @@ export interface CompressSettings {
     subsetFonts: boolean;
     convertToGrayscale: boolean;
     removeThumbnails: boolean;
+    /** Keep tightening until the file is under this many KB. 0 means use the chosen level only. */
+    targetKB: number;
 }
 
 export interface CompressFile {
@@ -26,6 +28,8 @@ export interface CompressFile {
     originalSize: number;
     status: 'pending' | 'processing' | 'done' | 'error';
     compressedSize?: number;
+    /** False when even the strongest setting stayed above the target. */
+    metTarget?: boolean;
     resultBlob?: Blob;
     error?: string;
 }
@@ -53,7 +57,8 @@ export class CompressState extends PdfEngine {
         removeMetadata: true,
         subsetFonts: true,
         convertToGrayscale: false,
-        removeThumbnails: true
+        removeThumbnails: true,
+        targetKB: 0
     });
 
 
@@ -106,7 +111,7 @@ export class CompressState extends PdfEngine {
             // Lazy load heavy libs only when needed
             let pymupdf: any = null;
             this.progress.text = 'Loading compression engine...';
-            if (this.settings.algorithm === 'condense') {
+            if (this.settings.algorithm === 'condense' || this.settings.targetKB > 0) {
                 // You'll need to adapt your pymupdf loader to be importable here
                 // For now, I'll stub it or assume you have a utility
                 const { loadPyMuPDF } = await import('$utils/pymupdf-loader');
@@ -126,7 +131,10 @@ export class CompressState extends PdfEngine {
                 try {
                     let resultBlob: Blob;
 
-                    if (this.settings.algorithm === 'condense') {
+                    if (this.settings.targetKB > 0) {
+                        resultBlob = await this.compressToTarget(fileEntry.file, pymupdf);
+                        fileEntry.metTarget = resultBlob.size <= this.settings.targetKB * 1024;
+                    } else if (this.settings.algorithm === 'condense') {
                         resultBlob = await this.compressCondense(fileEntry.file, pymupdf);
                     } else {
                         resultBlob = await this.compressPhoton(fileEntry.file);
@@ -154,8 +162,37 @@ export class CompressState extends PdfEngine {
         }
     }
 
-    private async compressCondense(file: File, pymupdf: any): Promise<Blob> {
-        const preset = CONDENSE_PRESETS[this.settings.level];
+    /**
+     * Tries each strength from the chosen one upward with Optimize, then Flatten,
+     * and returns the first result under the target, or the smallest seen.
+     */
+    private async compressToTarget(file: File, pymupdf: any): Promise<Blob> {
+        const limit = this.settings.targetKB * 1024;
+        const order: CompressionLevel[] = ['light', 'balanced', 'aggressive', 'extreme'];
+        const from = Math.max(0, order.indexOf(this.settings.level));
+        const steps: { algo: Algorithm; level: CompressionLevel }[] = [
+            ...order.slice(from).map(level => ({ algo: 'condense' as const, level })),
+            ...order.slice(Math.max(from, 1)).map(level => ({ algo: 'photon' as const, level }))
+        ];
+        let best: Blob | null = null;
+        for (const [i, step] of steps.entries()) {
+            this.progress.text = `Trying ${step.level} ${step.algo === 'condense' ? 'optimize' : 'flatten'} (${i + 1}/${steps.length})`;
+            let blob: Blob;
+            if (step.algo === 'condense') {
+                blob = await this.compressCondense(file, pymupdf, step.level);
+            } else {
+                await this.getPdfJs();
+                blob = await this.compressPhoton(file, step.level);
+            }
+            if (!best || blob.size < best.size) best = blob;
+            if (blob.size <= limit) return blob;
+            await yieldToMain();
+        }
+        return best as Blob;
+    }
+
+    private async compressCondense(file: File, pymupdf: any, level: CompressionLevel = this.settings.level): Promise<Blob> {
+        const preset = CONDENSE_PRESETS[level];
 
         // Merge preset with custom overrides if any (logic simplified for brevity)
         const options = {
@@ -181,8 +218,8 @@ export class CompressState extends PdfEngine {
         return result.blob;
     }
 
-    private async compressPhoton(file: File): Promise<Blob> {
-        const preset = PHOTON_PRESETS[this.settings.level];
+    private async compressPhoton(file: File, level: CompressionLevel = this.settings.level): Promise<Blob> {
+        const preset = PHOTON_PRESETS[level];
         const arrayBuffer = await file.arrayBuffer();
 
         const loadingTask = this.pdfjsLib!.getDocument(new Uint8Array(arrayBuffer));

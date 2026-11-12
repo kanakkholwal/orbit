@@ -51,8 +51,8 @@
 
 <Seo
   title="Documentation"
-  description="Get started with Orbit PDF: installation, tools, how it works and answers to common questions."
-  keywords={["orbit pdf docs", "pdf toolkit guide", "offline pdf editor docs"]}
+  description="Get started with Orbit: installation, tools, how it works and answers to common questions."
+  keywords={["orbit docs", "file toolkit guide", "offline pdf and photo tools docs"]}
 />
 
 <RailFrame>
@@ -77,7 +77,7 @@
         <section id="getting-started" class="scroll-mt-28">
           <h2 class="text-2xl font-medium text-foreground sm:text-3xl">Getting started</h2>
           <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            {config.appName} is a private PDF toolkit. Open a tool, drop a file, save the result.
+            {config.appName} is a private toolkit for PDFs, photos, video, audio and documents. Open a tool, drop a file, save the result.
           </p>
           <ul class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {#each guarantees as g (g.title)}

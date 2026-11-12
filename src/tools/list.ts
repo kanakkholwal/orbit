@@ -58,6 +58,10 @@ import {
 } from "$lib/icons";
 import type { Component } from 'svelte';
 import { buildExtraTools, PAIRS } from './extra';
+import { buildCompressPdfAliases } from './compress-pdf/aliases';
+import { buildImageTools } from './image-studio/register';
+import { buildDocTools } from './document-convert/register';
+import { buildMediaTools } from './media-convert/register';
 
 
 
@@ -76,6 +80,12 @@ export interface ToolConfig {
     layout?: ToolLayout;
     /** Search-engine title when the tool name alone doesn't describe the problem it solves. */
     seoTitle?: string;
+    /** Slugs to show first as related tools. Links count in both directions. */
+    related?: string[];
+    /** SEO landing page for a preset of another tool. Searchable, but not listed in menus. */
+    alias?: boolean;
+    /** Shows a New badge in the tools panel. */
+    isNew?: boolean;
 }
 /*
 * Centralized configuration for all tools in the application.
@@ -790,6 +800,10 @@ const tools: Record<string, ToolConfig> = {
 };
 
 Object.assign(tools, buildExtraTools(tools));
+Object.assign(tools, buildImageTools());
+Object.assign(tools, buildMediaTools());
+Object.assign(tools, buildDocTools());
+Object.assign(tools, buildCompressPdfAliases());
 
 Object.freeze(tools);
 
@@ -809,9 +823,10 @@ export const getRecommendedTools = (slug: string): Omit<ToolConfig & {relevance:
     return toolList.map(({component, ...t}) => {
         if (t.slug === slug) return null;
         const sharedKeywords = t.keywords?.filter(keyword => tool.keywords?.includes(keyword)) || [];
-        return { ...t, relevance: sharedKeywords.length };
+        const linked = tool.related?.includes(t.slug) || t.related?.includes(slug);
+        return { ...t, relevance: sharedKeywords.length + (linked ? 10 : 0) };
     }).filter((t): t is Omit<ToolConfig & {relevance: number}, 'component'> => t !== null).sort((a, b) => (b?.relevance || 0) - (a?.relevance || 0)).slice(0, 5);
 }
 
 export const getToolsByCategory = (category: string) => Object.values(tools)
-    .filter(tool => tool.category === category);
+    .filter(tool => tool.category === category && !tool.alias);

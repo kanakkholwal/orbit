@@ -1,7 +1,7 @@
 {
-  "name": "Orbit PDF",
-  "short_name": "Orbit PDF",
-  "description": "Free, fast, offline-first PDF toolkit. 100% client-side — your files never leave your device.",
+  "name": "Orbit Files",
+  "short_name": "Orbit",
+  "description": "Free, private tools for PDFs, photos, video, audio and documents. Everything runs on your device, so your files never leave it.",
   "icons": [
     {
       "src": "/assets/meta/web-app-manifest-192x192.png",
@@ -95,6 +95,91 @@
           "sizes": "192x192"
         }
       ]
+    },
+    {
+      "name": "Photo and Signature for Forms",
+      "short_name": "Form photo",
+      "description": "Resize a photo to an exact size and KB limit",
+      "url": "/tools/photo-for-forms?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/assets/meta/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Compress Image",
+      "short_name": "Compress image",
+      "description": "Shrink a photo to a target size",
+      "url": "/tools/image-compress?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/assets/meta/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Video Converter",
+      "short_name": "Video",
+      "description": "Convert or compress a video",
+      "url": "/tools/video-converter?source=pwa-shortcut",
+      "icons": [
+        {
+          "src": "/assets/meta/web-app-manifest-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "files",
+          "accept": [
+            "application/pdf",
+            "image/*",
+            "video/*",
+            "audio/*"
+          ]
+        }
+      ]
+    }
+  },
+  "file_handlers": [
+    {
+      "action": "/open",
+      "accept": {
+        "application/pdf": [
+          ".pdf"
+        ],
+        "image/*": [
+          ".jpg",
+          ".jpeg",
+          ".png",
+          ".webp",
+          ".heic",
+          ".avif"
+        ],
+        "video/*": [
+          ".mp4",
+          ".mov",
+          ".mkv",
+          ".webm"
+        ],
+        "audio/*": [
+          ".mp3",
+          ".wav",
+          ".m4a",
+          ".ogg",
+          ".flac"
+        ]
+      }
     }
   ]
 }

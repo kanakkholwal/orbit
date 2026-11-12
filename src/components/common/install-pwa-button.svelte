@@ -25,7 +25,7 @@
   async function onInstall() {
     const result = await promptInstall();
     if (result === 'accepted') {
-      toast.success('Orbit PDF installed');
+      toast.success('Orbit installed');
     } else if (result === 'dismissed') {
       toast('Install cancelled');
     }

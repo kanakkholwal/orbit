@@ -147,8 +147,8 @@
 
 <Seo
   title="Download the Desktop App for Windows, macOS and Linux"
-  description={`Download ${config.appName} for Windows, macOS and Linux. Free, offline PDF tools that never upload your files.`}
-  keywords={[...config.appKeywords, "download orbit", "orbit pdf download", "offline pdf tools desktop"]}
+  description={`Download ${config.appName} for Windows, macOS and Linux. Free, offline tools for PDFs, photos, video, audio and documents that never upload your files.`}
+  keywords={[...config.appKeywords, "download orbit", "orbit download", "offline file tools desktop"]}
   {jsonLd}
 />
 

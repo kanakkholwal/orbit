@@ -18,15 +18,18 @@
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
   import { IsMobile } from "$lib/hooks/is-mobile.svelte";
+  import { recentTools } from "$lib/runtime/recent-tools.svelte";
+  import { Button } from "$components/ui/button";
   import { appState } from "$stores/app-state.svelte";
   import { workspace } from "$stores/workspace.svelte";
-  import { toolList } from "$tools/list";
+  import { getTool, toolList } from "$tools/list";
   import {
     IconBug as BugIcon,
     IconCompass as Compass,
     IconFileText as FileText,
     IconBrandGithub as Github,
     IconHome as HomeIcon,
+    IconHistory as Clock,
     IconSearch as Search,
     IconLayoutGrid as AllIcon,
     IconLink as LinkIcon,
@@ -46,9 +49,12 @@
 
   const isMobile = new IsMobile();
 
-  let inputRef = $state<HTMLInputElement>();
+  let query = $state("");
 
-  const close = () => (workspace.searchOpen = false);
+  const close = () => {
+    workspace.searchOpen = false;
+    query = "";
+  };
 
   async function openExternal(url: string) {
     if (appState.isTauri) {
@@ -135,6 +141,25 @@
     return [...map].map(([name, items]) => ({ name, items }));
   });
 
+  // With nothing typed, the tools you used last come first.
+  const recentGroup = $derived.by(() => {
+    if (query.trim() || scope !== "all") return null;
+    const items: Command[] = recentTools.items
+      .map((r) => getTool(r.slug))
+      .filter((tool) => tool !== null)
+      .slice(0, 4)
+      .map((tool) => ({
+        id: `recent:${tool.slug}`,
+        title: tool.title,
+        description: "Recently used",
+        category: "Recent",
+        icon: tool.icon || Clock,
+        keywords: [],
+        action: () => goto(`/tools/${tool.slug}`),
+      }));
+    return items.length > 0 ? { name: "Recent", items } : null;
+  });
+
   function run(cmd: Command) {
     cmd.action();
     close();
@@ -157,10 +182,27 @@
   });
 </script>
 
-{#snippet palette()}
-  <CommandRoot>
+{#snippet palette(phone: boolean)}
+  <!-- Typing in the field bubbles up here, which is how the empty-query state is known. -->
+  <div
+    class="contents"
+    role="presentation"
+    oninput={(e) => {
+      if (e.target instanceof HTMLInputElement) query = e.target.value;
+    }}
+  >
+  <CommandRoot variant={phone ? "spotlight" : undefined} class={phone ? "flex h-full min-h-0 flex-col" : undefined}>
+    {#if phone}
+      <div class="flex shrink-0 items-center justify-between px-3 pb-1">
+        <h2 class="text-base font-medium text-foreground">Search</h2>
+        <Button variant="ghost" size="sm" onclick={close}>Close</Button>
+      </div>
+    {/if}
     <CommandBar>
-      <CommandInput placeholder={`Search ${toolList.length} tools and pages`} hint="Ctrl K" />
+      <CommandInput
+        placeholder={phone ? "Search tools and pages" : `Search ${toolList.length} tools and pages`}
+        hint={phone ? undefined : "Ctrl K"}
+      />
       <CommandFilters bind:value={scope} label="Show">
         <CommandFilter value="all" label="Everything"><AllIcon /></CommandFilter>
         <CommandFilter value="tools" label="Tools"><FileText /></CommandFilter>
@@ -170,11 +212,11 @@
     </CommandBar>
     <CommandList>
       <CommandEmpty>Nothing matches that.</CommandEmpty>
-      {#each groups as group (group.name)}
+      {#each recentGroup ? [recentGroup, ...groups] : groups as group (group.name)}
         <CommandGroup heading={group.name}>
           {#each group.items as cmd (cmd.id)}
             <CommandItem
-              value={cmd.title}
+              value={cmd.id.startsWith("recent:") ? `recent ${cmd.title}` : cmd.title}
               keywords={[cmd.description ?? "", ...(cmd.keywords ?? [])].join(" ")}
               onSelect={() => run(cmd)}
             >
@@ -190,25 +232,28 @@
         </CommandGroup>
       {/each}
     </CommandList>
-    <CommandFooter>
-      <span class="flex items-center gap-4">
-        <CommandHint keys={["↑", "↓"]}>Move</CommandHint>
-        <CommandHint keys={["↵"]}>Open</CommandHint>
-      </span>
-      <CommandHint keys={["Esc"]}>Close</CommandHint>
-    </CommandFooter>
+    {#if !phone}
+      <CommandFooter>
+        <span class="flex items-center gap-4">
+          <CommandHint keys={["↑", "↓"]}>Move</CommandHint>
+          <CommandHint keys={["↵"]}>Open</CommandHint>
+        </span>
+        <CommandHint keys={["Esc"]}>Close</CommandHint>
+      </CommandFooter>
+    {/if}
   </CommandRoot>
+  </div>
 {/snippet}
 
 {#if isMobile.current}
   <Drawer.Root bind:open={workspace.searchOpen} shouldScaleBackground={false}>
-    <Drawer.Content class="h-[85dvh] max-h-[85dvh] rounded-t-3xl">
+    <Drawer.Content class="h-[92dvh] max-h-[92dvh] rounded-t-2xl">
       <Drawer.Title class="sr-only">Search</Drawer.Title>
-      {@render palette()}
+      {@render palette(true)}
     </Drawer.Content>
   </Drawer.Root>
 {:else}
   <CommandDialog bind:open={workspace.searchOpen} label="Search" variant="launcher">
-    {@render palette()}
+    {@render palette(false)}
   </CommandDialog>
 {/if}

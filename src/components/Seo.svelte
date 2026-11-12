@@ -9,7 +9,7 @@
     /** Absolute URL or a path on the canonical domain. */
     image?: string;
     imageAlt?: string;
-    /** Uses the title as is, without the " | Orbit PDF" suffix. */
+    /** Uses the title as is, without the " | Orbit" suffix. */
     isBase?: boolean;
     type?: "website" | "article";
     publishedTime?: string;

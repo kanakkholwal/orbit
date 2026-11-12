@@ -2,17 +2,16 @@
   import { page } from "$app/state";
   import { trackFileUpload } from "$lib/analytics-tracker";
   import { LARGE_FILE_BYTES } from "$lib/device-limits";
+  import { formatCap } from "$lib/device-profile.svelte";
   import { warmEnginesForPath } from "$lib/engine-warmup";
   import { fileDropState, registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { takePendingFiles } from "$lib/runtime/pending-files.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
-  import { getTool } from "$tools/list";
-  import { Badge } from "./badge";
-  import { IconCloudUpload as UploadCloud } from "$lib/icons";
+  import { IconCamera as Camera, IconCloudUpload as UploadCloud } from "$lib/icons";
   import { onMount, type Snippet } from "svelte";
   import { toast } from "svelte-sonner";
-  import { buttonVariants } from "./button";
+  import { Button, buttonVariants } from "./button";
 
   interface Props {
     accept?: string;
@@ -44,17 +43,31 @@
     hint,
   }: Props = $props();
 
-  const tool = $derived(getTool(page.url.pathname.split("/")[2] ?? "") ?? null);
   let isDragging = $state(false);
   let fileInput: HTMLInputElement;
+  let cameraInput = $state<HTMLInputElement | null>(null);
+  const pasteKey = typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform) ? "⌘ V" : "Ctrl V";
+  /** A camera button only makes sense for photo tools. */
+  const wantsCamera = $derived(/image\//.test(accept) && !disabled);
 
   // Tauri intercepts HTML drag/drop, so register this area as a native-drop intake.
   onMount(() => {
     if (disabled) return;
     const handed = takePendingFiles(page.url.pathname);
     if (handed.length > 0) queueMicrotask(() => validateAndEmit(handed));
-    if (!appState.isTauri) return;
-    return registerFileDrop((dropped) => validateAndEmit(dropped));
+    // Pasted screenshots and copied files go through the same checks as dropped ones.
+    const onPaste = (event: ClipboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("input, textarea, [contenteditable]")) return;
+      const pasted = Array.from(event.clipboardData?.files ?? []);
+      if (pasted.length > 0) validateAndEmit(multiple ? pasted : pasted.slice(0, 1));
+    };
+    window.addEventListener("paste", onPaste);
+    const stopNative = appState.isTauri ? registerFileDrop((dropped) => validateAndEmit(dropped)) : undefined;
+    return () => {
+      window.removeEventListener("paste", onPaste);
+      stopNative?.();
+    };
   });
 
   let dragActive = $derived(
@@ -100,7 +113,7 @@
   function validateAndEmit(newFiles: File[]) {
     const validFiles = newFiles.filter((file) => {
       if (file.size > maxSize) {
-        toast.error(`File ${file.name} is too large.`);
+        toast.error("File too large for this device", { description: `${file.name} is over ${formatCap(maxSize)}. Try a smaller file.` });
         return false;
       }
       if (accept && accept !== "*" && accept.trim() !== "") {
@@ -141,6 +154,9 @@
     if (!accept || accept === "*" || accept === "*/*") return "Any file";
     const types = accept.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
     if (types.every((t) => t.includes("pdf"))) return "PDF";
+    const names = { image: "Images", video: "Video", audio: "Audio" } as const;
+    const kinds = (Object.keys(names) as (keyof typeof names)[]).filter((k) => types.includes(`${k}/*`));
+    if (kinds.length > 0) return kinds.map((k) => names[k]).join(", ");
     const imageRe = /^image\/|\.(png|jpe?g|gif|bmp|tiff?|webp|hei[cf]|ico|psd|jxr|jp2|jpx)$/;
     if (types.every((t) => imageRe.test(t))) return "Images";
     const exts = [
@@ -156,101 +172,104 @@
   });
 </script>
 
-<div class="mx-auto flex w-full max-w-3xl flex-col gap-8 py-4 sm:py-10">
-  {#if tool}
-    <header class="rise flex flex-col items-center gap-4 text-center">
-      <span class="grid size-14 place-items-center rounded-2xl border border-border bg-background p-1 shadow-(--surface-shadow)">
-        <span class="grid size-full place-items-center rounded-xl bg-card text-primary">
-          <tool.icon class="size-6" />
-        </span>
-      </span>
-      <div class="flex flex-col gap-2">
-        <h1 class="text-balance text-3xl font-medium text-foreground sm:text-4xl">{tool.title}</h1>
-        <p class="mx-auto max-w-xl text-pretty text-sm text-muted-foreground sm:text-base">{tool.description}</p>
-      </div>
-    </header>
-  {/if}
-
+<div class={cn("flex w-full max-w-5xl flex-col gap-3", className)}>
   <div class="rise" style="--i:1">
     <button
-  type="button"
-  class={cn(
-    "group relative flex w-full flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-background p-1 outline-none transition-colors duration-(--duration-base) focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-    dragActive ? "border-primary" : "hover:border-border-strong",
-    disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
-    className
-  )}
-  ondragenter={handleDragEnter}
-  ondragleave={handleDragLeave}
-  ondragover={handleDragOver}
-  ondrop={handleDrop}
-  onclick={click}
-  {disabled}
->
-  <div
-    class={cn(
-      "flex w-full flex-col items-center gap-5 rounded-[11px] border-2 border-dashed px-6 py-12 text-center transition-colors duration-(--duration-base) sm:py-16",
-      dragActive ? "border-primary bg-primary/5" : "border-border-strong bg-card"
-    )}
-  >
-    <span
+      type="button"
       class={cn(
-        "grid size-14 place-items-center rounded-2xl transition-[background-color,color,transform] duration-(--duration-base) ease-(--ease-ui-out)",
-        dragActive ? "scale-105 bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+        "group relative flex w-full flex-col overflow-hidden rounded-2xl border bg-background p-1 text-left outline-none transition-[border-color,box-shadow] duration-(--duration-base) ease-(--ease-ui-out) focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none",
+        dragActive ? "border-primary shadow-[0_0_0_4px_color-mix(in_oklch,var(--primary)_14%,transparent)]" : "border-border hover:border-border-strong",
+        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
       )}
+      ondragenter={handleDragEnter}
+      ondragleave={handleDragLeave}
+      ondragover={handleDragOver}
+      ondrop={handleDrop}
+      onclick={click}
+      {disabled}
     >
-      {#if icon}
-        {@render icon()}
-      {:else}
-        <UploadCloud class="size-6" />
-      {/if}
-    </span>
-
-    <div class="flex flex-col items-center gap-1.5">
-      {#if dragActive}
-        <h3 class="text-2xl font-medium text-foreground">Drop to add</h3>
-      {:else if title}
-        {@render title()}
-      {:else}
-        <h3 class="text-2xl font-medium text-foreground">Drop files here</h3>
-      {/if}
-      {#if description}
-        {@render description()}
-      {:else}
-        <p class="max-w-sm text-pretty text-sm text-muted-foreground">
-          Or choose them from your device. Files are opened here and never uploaded.
-        </p>
-      {/if}
-    </div>
-
-    <div class="flex flex-col items-center gap-3">
-      {#if action}
-        {@render action()}
-      {:else}
-        <span class={buttonVariants({ variant: "default", size: "default" })}>
-          Choose {multiple ? "files" : "a file"}
+      <div
+        class={cn(
+          "relative flex w-full flex-col items-center gap-5 rounded-xl px-6 py-14 text-center transition-colors duration-(--duration-base) sm:py-20",
+          "bg-card bg-[radial-gradient(color-mix(in_oklch,var(--foreground)_14%,transparent)_1px,transparent_1px)] bg-size-[18px_18px]",
+          dragActive && "bg-primary/[0.06]"
+        )}
+      >
+        <!-- Two ghost cards fan out behind the icon on hover or while dragging. -->
+        <span class="relative grid size-16 place-items-center" aria-hidden="true">
+          <span
+            class={cn(
+              "absolute size-12 rounded-xl border border-border bg-background transition-transform duration-(--duration-slow) ease-(--ease-ui-out) motion-reduce:transition-none",
+              dragActive ? "-translate-x-5 -rotate-12" : "-rotate-6 group-hover:-translate-x-3 group-hover:-rotate-12"
+            )}
+          ></span>
+          <span
+            class={cn(
+              "absolute size-12 rounded-xl border border-border bg-background transition-transform duration-(--duration-slow) ease-(--ease-ui-out) motion-reduce:transition-none",
+              dragActive ? "translate-x-5 rotate-12" : "rotate-6 group-hover:translate-x-3 group-hover:rotate-12"
+            )}
+          ></span>
+          <span
+            class={cn(
+              "relative grid size-14 place-items-center rounded-xl border border-border bg-background text-primary shadow-(--surface-shadow) transition-transform duration-(--duration-slow) ease-(--ease-ui-out) motion-reduce:transition-none",
+              dragActive ? "-translate-y-1 scale-105 border-primary" : "group-hover:-translate-y-1"
+            )}
+          >
+            {#if icon}
+              {@render icon()}
+            {:else}
+              <UploadCloud class="size-6" />
+            {/if}
+          </span>
         </span>
-      {/if}
-      {#if hint}
-        {@render hint()}
-      {:else}
-        <p class="text-xs text-muted-foreground">
-          {acceptLabel}{maxSize !== Infinity ? ` · up to ${(maxSize / (1024 * 1024)).toFixed(0)} MB each` : ""} · stays on this device
-        </p>
-      {/if}
+
+        <div class="flex flex-col items-center gap-1.5">
+          {#if dragActive}
+            <h3 class="text-xl font-medium text-foreground sm:text-2xl">Drop to add</h3>
+          {:else if title}
+            {@render title()}
+          {:else}
+            <h3 class="text-xl font-medium text-foreground sm:text-2xl">Drop {multiple ? "files" : "a file"} here</h3>
+          {/if}
+          {#if description}
+            {@render description()}
+          {:else}
+            <p class="max-w-sm text-pretty text-sm text-muted-foreground">
+              Or choose {multiple ? "them" : "it"} from your device. Nothing is uploaded.
+            </p>
+          {/if}
+        </div>
+
+        <div class="flex flex-col items-center gap-3">
+          {#if action}
+            {@render action()}
+          {:else}
+            <span class={buttonVariants({ variant: "default", size: "default" })}>
+              Choose {multiple ? "files" : "a file"}
+            </span>
+          {/if}
+          {#if hint}
+            {@render hint()}
+          {:else}
+            <p class="text-xs text-muted-foreground">
+              {acceptLabel}{maxSize !== Infinity ? ` · up to ${formatCap(maxSize)} each` : ""}
+              <span class="hidden pointer-fine:inline"> · or paste with {pasteKey}</span>
+            </p>
+          {/if}
+        </div>
+      </div>
+
+      <input bind:this={fileInput} type="file" {accept} {multiple} class="hidden" onchange={handleInputChange} />
+    </button>
+  </div>
+
+  {#if wantsCamera}
+    <div class="rise flex justify-center pointer-fine:hidden" style="--i:2">
+      <Button variant="outline" size="sm" class="rounded-full" {disabled} onclick={() => cameraInput?.click()}>
+        <Camera />
+        Take a photo
+      </Button>
+      <input bind:this={cameraInput} type="file" accept="image/*" capture="environment" class="hidden" onchange={handleInputChange} />
     </div>
-  </div>
-
-  <input bind:this={fileInput} type="file" {accept} {multiple} class="hidden" onchange={handleInputChange} />
-</button>
-  </div>
-
-  <ul class="rise flex flex-wrap items-center justify-center gap-2" style="--i:2">
-    <li><Badge variant="secondary">{acceptLabel}</Badge></li>
-    <li><Badge variant="secondary">Stays on this device</Badge></li>
-    <li><Badge variant="secondary">No account</Badge></li>
-    {#if maxSize !== Infinity}
-      <li><Badge variant="secondary">Up to {(maxSize / (1024 * 1024)).toFixed(0)} MB each</Badge></li>
-    {/if}
-  </ul>
+  {/if}
 </div>

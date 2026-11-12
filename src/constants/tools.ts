@@ -1,6 +1,8 @@
 import { getToolsByCategory } from "$tools/list";
 import {
   IconFileText as FileText,
+  IconPhoto as PhotoIcon,
+  IconPlayerPlay as MediaIcon,
   IconPencil as PenLineIcon,
   IconRotateClockwise as RotateCw,
   IconShield as Shield,
@@ -36,6 +38,20 @@ const toolsCategories: ToolCategory[] = [
     name: "Conversion",
     description: "Transform documents to other formats.",
     icon: RotateCw,
+
+  },
+  {
+    id: "images",
+    name: "Images",
+    description: "Resize, crop and compress photos for forms and sharing.",
+    icon: PhotoIcon,
+
+  },
+  {
+    id: "media",
+    name: "Video and audio",
+    description: "Convert, compress and extract sound on your device.",
+    icon: MediaIcon,
 
   },
   {

@@ -4,6 +4,12 @@ import { toolContentBatchC } from './tool-content-batch-c';
 import { moreToolContent } from './tool-content-more';
 import type { ToolConfig } from '$tools/list';
 import { ALIAS_BASE } from '$tools/extra';
+import { imageToolContent } from '$tools/image-studio/content';
+import { docToolContent } from '$tools/document-convert/content';
+import { DOC_ALIAS_BASE } from '$tools/document-convert/register';
+import { mediaToolContent } from '$tools/media-convert/content';
+import { MEDIA_ALIAS_BASE } from '$tools/media-convert/register';
+import { IMAGE_ALIAS_BASE } from '$tools/image-studio/register';
 
 /**
  * Long-form, SEO-oriented content for each tool page: a plain-language intro,
@@ -367,9 +373,10 @@ const bespoke: Record<string, Partial<ToolContent>> = {
 /* ── Public accessor ──────────────────────────────────────────────────────── */
 
 export function getToolContent(tool: ToolMeta): ToolContent {
-    const lookup = (slug: string) => bespoke[slug] ?? moreToolContent[slug] ?? toolContentBatchA[slug] ?? toolContentBatchB[slug] ?? toolContentBatchC[slug];
+    const lookup = (slug: string) => bespoke[slug] ?? moreToolContent[slug] ?? toolContentBatchA[slug] ?? toolContentBatchB[slug] ?? toolContentBatchC[slug] ?? imageToolContent[slug] ?? mediaToolContent[slug] ?? docToolContent[slug];
     const own = lookup(tool.slug);
-    const shared = !own && ALIAS_BASE[tool.slug] ? lookup(ALIAS_BASE[tool.slug]) : undefined;
+    const aliasBase = ALIAS_BASE[tool.slug] ?? IMAGE_ALIAS_BASE[tool.slug] ?? MEDIA_ALIAS_BASE[tool.slug] ?? DOC_ALIAS_BASE[tool.slug] ?? (tool.slug.startsWith('compress-pdf-to-') ? 'compress-pdf' : undefined);
+    const shared = !own && aliasBase ? lookup(aliasBase) : undefined;
     const b = own ?? (shared ? { ...shared, intro: undefined } : {});
     const faqs = b.faqs ? [...b.faqs, ...universalFaqs(tool)] : universalFaqs(tool);
     return {

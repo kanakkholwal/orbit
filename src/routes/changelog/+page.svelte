@@ -93,7 +93,7 @@
 
 <Seo
   title="Changelog"
-  description="Release notes for Orbit PDF: new tools, improvements and fixes."
+  description="Release notes for Orbit: new tools, improvements and fixes."
   keywords={["orbit pdf changelog", "release notes", "pdf toolkit updates"]}
 />
 

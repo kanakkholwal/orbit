@@ -7,6 +7,7 @@
     IconHome as Home,
     IconLayoutGrid as Grid,
     IconSearch as Search,
+    IconSettings as SettingsIcon,
   } from "$lib/icons";
 
   let { class: className }: { class?: string } = $props();
@@ -45,4 +46,12 @@
     <Grid class="size-5" />
     Tools
   </button>
+  <a
+    href="/settings"
+    aria-current={path.startsWith("/settings") ? "page" : undefined}
+    class={cn(item, path.startsWith("/settings") ? "text-primary" : "text-muted-foreground")}
+  >
+    <SettingsIcon class="size-5" />
+    Settings
+  </a>
 </nav>

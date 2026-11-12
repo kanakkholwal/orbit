@@ -93,7 +93,7 @@
           />
           <button
             type="button"
-            class="absolute right-0.5 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+            class="absolute right-0.5 top-1/2 grid size-9 pointer-coarse:size-11 -translate-y-1/2 place-items-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
             aria-label={showPassword ? "Hide password" : "Show password"}
             aria-pressed={showPassword}
             onclick={() => (showPassword = !showPassword)}

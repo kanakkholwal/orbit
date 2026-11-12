@@ -12,17 +12,19 @@
   import { MediaQuery } from "svelte/reactivity";
   import ContextBar from "./ContextBar.svelte";
   import MobileTabBar from "./MobileTabBar.svelte";
-  import ShellRail from "./ShellRail.svelte";
-  import ToolsPanel from "./ToolsPanel.svelte";
+  import Sidebar from "./Sidebar.svelte";
 
   let { tool = null, children }: { tool?: ToolConfig | null; children: Snippet } = $props();
 
   const isMobile = new IsMobile();
+  const desktopQuery = new MediaQuery("min-width: 1024px");
   const wideQuery = new MediaQuery("min-width: 1280px");
+  /** The options panel sits beside the content from 1280 px; below that it is a drawer. */
   const wide = $derived(wideQuery.current);
   const immersive = $derived(tool?.layout === "immersive");
-  const inlinePanel = $derived(wide && !immersive);
-  const panelOpen = $derived(workspace.panelPinned && !immersive);
+  /** The sidebar is part of the page from 1024 px; below that it opens as a drawer. */
+  const inlineSidebar = $derived(desktopQuery.current && !immersive);
+  const sidebarOpen = $derived(inlineSidebar && workspace.panelPinned);
 
   onNavigate(() => {
     workspace.closeDrawers();
@@ -35,50 +37,32 @@
   });
 
   $effect(() => {
-    if (inlinePanel) workspace.closeDrawers();
+    if (inlineSidebar) workspace.closeDrawers();
+  });
+
+  // Opening search from inside the drawer should not leave the drawer on top of it.
+  $effect(() => {
+    if (workspace.searchOpen) workspace.panelDrawerOpen = false;
   });
 </script>
 
 <Tooltip.Provider delayDuration={400}>
   <div class={cn("flex min-h-0 w-full overflow-clip bg-background", appState.isTauri ? "h-full" : "fixed inset-0")}>
-    <ShellRail wide={inlinePanel} class="hidden md:flex" />
-
-    {#if wide}
+    {#if inlineSidebar}
       <aside
-        aria-label="Tools"
-        inert={!panelOpen}
+        aria-label="Sidebar"
+        inert={!sidebarOpen}
         class={cn(
-          "shrink-0 overflow-hidden transition-[width,opacity] duration-(--duration-slow) ease-(--ease-ui-out)",
-          panelOpen ? "w-60 opacity-100" : "w-0 opacity-0"
+          "shrink-0 overflow-hidden border-border transition-[width] duration-(--duration-slow) ease-(--ease-ui-out) motion-reduce:transition-none",
+          sidebarOpen ? "w-68 border-r" : "w-0"
         )}
       >
-        <ToolsPanel class="w-60" />
+        <Sidebar class="w-68" />
       </aside>
     {/if}
 
-    {#if inlinePanel}
-      <button
-        type="button"
-        onclick={() => workspace.togglePanel(true)}
-        aria-label={panelOpen ? "Collapse tools panel" : "Expand tools panel"}
-        aria-expanded={panelOpen}
-        title={panelOpen ? "Collapse tools panel" : "Expand tools panel"}
-        class={cn(
-          "group relative w-2 shrink-0 outline-none",
-          panelOpen ? "cursor-w-resize" : "cursor-e-resize"
-        )}
-      >
-        <span
-          aria-hidden="true"
-          class="absolute inset-y-4 left-1/2 w-0.5 -translate-x-1/2 rounded-full bg-transparent transition-colors duration-(--duration-fast) group-hover:bg-border-strong group-focus-visible:bg-ring"
-        ></span>
-      </button>
-    {/if}
-
-    <div
-      class="bg-background flex min-h-0 min-w-0 flex-1 flex-col overflow-clip md:my-2 md:mr-2 md:rounded-xl md:border md:border-border md:shadow-(--surface-shadow)"
-    >
-      <ContextBar {tool} {wide} />
+    <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-clip bg-background">
+      <ContextBar {tool} {wide} {inlineSidebar} {sidebarOpen} />
 
       <div class="flex min-h-0 flex-1">
         <main id="workspace" class="scrollbar-subtle relative min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain">
@@ -112,18 +96,17 @@
   </div>
 </Tooltip.Provider>
 
-{#if !inlinePanel}
+{#if !inlineSidebar}
   <Drawer.Root
     bind:open={workspace.panelDrawerOpen}
     direction={isMobile.current ? "bottom" : "left"}
     shouldScaleBackground={false}
   >
-    <Drawer.Content class={cn(isMobile.current ? "h-[85dvh] max-h-[85dvh] rounded-t-3xl" : "w-80 max-w-80 bg-background")}>
-      <Drawer.Title class="sr-only">Tools</Drawer.Title>
-      <ToolsPanel class="min-h-0 flex-1" onnavigate={() => (workspace.panelDrawerOpen = false)} />
+    <Drawer.Content class={cn(isMobile.current ? "max-h-[85dvh] rounded-t-2xl" : "w-80 max-w-80 rounded-none bg-card")}>
+      <Drawer.Title class="sr-only">Menu</Drawer.Title>
+      <Sidebar mode={isMobile.current ? "sheet" : "drawer"} class="min-h-0 flex-1" onnavigate={() => (workspace.panelDrawerOpen = false)} />
     </Drawer.Content>
   </Drawer.Root>
-
 {/if}
 
 {#if !wide}

@@ -8,7 +8,7 @@
       heading: "1. Our privacy-first architecture",
       paragraphs: [
         `${config.appName} is built so that your documents never leave your device. Every PDF, image, or file you open is processed entirely within your own browser (or the desktop app) using WebAssembly engines. We do not upload, transmit, receive, store, or have any access to the contents of your files. There is no server that sees your documents, because no document is ever sent to one.`,
-        `This is not a policy promise alone — it is how the software is engineered. The project is open source under GPL-3.0, so the privacy claims are independently verifiable.`,
+        `This is not a policy promise alone — it is how the software is engineered. The project is open source under AGPL-3.0, so the privacy claims are independently verifiable.`,
       ],
     },
     {

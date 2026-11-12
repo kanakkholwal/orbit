@@ -65,7 +65,7 @@
       when: (p, b) => p === "desktop" && b === "chromium",
       steps: [
         { title: "Click the install icon", body: "Look for the small screen-with-arrow icon at the right of the address bar." },
-        { title: "Or use the menu", body: "Open the three-dot menu and choose \"Install Orbit PDF\"." },
+        { title: "Or use the menu", body: "Open the three-dot menu and choose \"Install Orbit\"." },
         { title: "Open it from your dock", body: "Orbit is added to your Start menu or Dock and opens in its own window." },
       ],
     },
@@ -120,7 +120,7 @@
     try {
       const result = await promptInstall();
       if (result === "accepted") {
-        toast.success("Orbit PDF installed");
+        toast.success("Orbit installed");
         return;
       }
       if (result === "dismissed") {

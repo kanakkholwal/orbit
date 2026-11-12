@@ -805,6 +805,26 @@
 				"https://baby-ui.pages.dev/svelte/r/tokens.json"
 			]
 		},
+		"https://baby-ui.pages.dev/svelte/r/morph-text.json": {
+			"name": "morph-text",
+			"type": "registry:ui",
+			"framework": "svelte",
+			"installedAt": "2026-11-12T17:44:09.605Z",
+			"itemHash": "2e3d10539b8853efa591a379fa79f53aaa8e374306e24f417af1b454d5ec9937",
+			"files": {
+				"src/components/text/morph-text/index.ts": "812002d8423c6444c62b8a4012624da52f02fc91300b21ca995850943d7b91fe",
+				"src/components/text/morph-text/morph-text.svelte": "74385cc1b4e6fbf269720f569473bcbf1f15dfc1ac5f235135db5b7430039a8e",
+				"src/components/text/morph-text/variants.ts": "05f182f182864c3b0bc175d0b4a51d16d39bcb069221a267bc48a7db338b19f4"
+			},
+			"dependencies": [
+				"clsx",
+				"tailwind-merge",
+				"tailwind-variants"
+			],
+			"registryDependencies": [
+				"https://baby-ui.pages.dev/svelte/r/tokens.json"
+			]
+		},
 		"https://baby-ui.pages.dev/svelte/r/navigation-menu.json": {
 			"name": "navigation-menu",
 			"type": "registry:ui",
@@ -958,6 +978,26 @@
 			},
 			"dependencies": [
 				"bits-ui",
+				"clsx",
+				"tailwind-merge",
+				"tailwind-variants"
+			],
+			"registryDependencies": [
+				"https://baby-ui.pages.dev/svelte/r/tokens.json"
+			]
+		},
+		"https://baby-ui.pages.dev/svelte/r/reveal-text.json": {
+			"name": "reveal-text",
+			"type": "registry:ui",
+			"framework": "svelte",
+			"installedAt": "2026-11-12T18:02:09.662Z",
+			"itemHash": "ebbb92a69abf62e211b7c5c18c2ef6baf70eac9053a09944bd2f338b108ededf",
+			"files": {
+				"src/components/text/reveal-text/index.ts": "ff0ccd01438d401ee04b9537461b8b485007802d97529782fb954251f2713e59",
+				"src/components/text/reveal-text/reveal-text.svelte": "b71740586a6a508745bb0975365e2ba6911733f5e15427f1dd8478ced27ea985",
+				"src/components/text/reveal-text/variants.ts": "3844b48c08374e2ccef960e30263278a480d7bbbf69bc91ce9f3d377ee3c400c"
+			},
+			"dependencies": [
 				"clsx",
 				"tailwind-merge",
 				"tailwind-variants"
@@ -1280,6 +1320,26 @@
 				"https://baby-ui.pages.dev/svelte/r/tokens.json",
 				"https://baby-ui.pages.dev/svelte/r/tokens-charts.json",
 				"https://baby-ui.pages.dev/svelte/r/tokens-effects.json"
+			]
+		},
+		"https://baby-ui.pages.dev/svelte/r/toast.json": {
+			"name": "toast",
+			"type": "registry:ui",
+			"framework": "svelte",
+			"installedAt": "2026-11-12T15:03:57.326Z",
+			"itemHash": "1a9c6c03e0a55491986b2e10b65bc7b6d14462f854051e007c8a32418c135b1e",
+			"files": {
+				"src/components/ui/toast/index.ts": "a9b53f204f8198be7585bac1798f942381c4817aa4740e560bb07ddc7c01d99c",
+				"src/components/ui/toast/toaster.svelte": "7cd97da6fb34d50dfad6ef550a0e01114cbaae461dc9cf83e2390e2e34319cd2",
+				"src/lib/toast-classes.ts": "ba1cfc5b405c98c29a1ca11a6c67302114370cd7b240e011d9221b2ac077b9d2"
+			},
+			"dependencies": [
+				"clsx",
+				"svelte-sonner",
+				"tailwind-merge"
+			],
+			"registryDependencies": [
+				"https://baby-ui.pages.dev/svelte/r/tokens.json"
 			]
 		},
 		"https://baby-ui.pages.dev/svelte/r/toggle-group.json": {

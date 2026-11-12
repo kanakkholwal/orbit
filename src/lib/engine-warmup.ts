@@ -1,4 +1,6 @@
 import { browser } from "$app/environment";
+import { config } from "$constants/app";
+import { getTool } from "$tools/list";
 
 export type EngineId =
 	| "pdfjs"
@@ -7,9 +9,26 @@ export type EngineId =
 	| "jszip"
 	| "forge"
 	| "signpdf"
-	| "forme";
+	| "forme"
+	| "mediabunny"
+	| "heic2any"
+	| "pandoc";
 
 const loaders: Record<EngineId, () => Promise<unknown>> = {
+	// Downloaded in full so the service worker stores it; it is only started when a document is converted.
+	pandoc: async () => {
+		const { PANDOC_WASM_URL } = await import("$lib/docs/convert");
+		const response = await fetch(PANDOC_WASM_URL);
+		if (!response.ok) throw new Error("pandoc download failed");
+		await response.blob();
+	},
+	mediabunny: () =>
+		Promise.all([
+			import("mediabunny"),
+			import("@mediabunny/mp3-encoder"),
+			import("@mediabunny/flac-encoder"),
+		]),
+	heic2any: () => import("heic2any"),
 	pdfjs: async () => {
 		const { loadPdfJs } = await import("./pdf/pdfjs");
 		return loadPdfJs();
@@ -84,6 +103,15 @@ const toolEngines: Record<string, EngineId[]> = {
 	"view-metadata": ["pdfjs"],
 };
 
+/** Image and media tools share engines, so their slugs are mapped by menu group. */
+function enginesFor(slug: string): EngineId[] | undefined {
+	if (toolEngines[slug]) return toolEngines[slug];
+	const category = getTool(slug)?.category;
+	if (category === "media") return ["mediabunny", "jszip"];
+	if (category === "images") return ["heic2any", "jszip"];
+	return undefined;
+}
+
 const warmed = new Set<EngineId>();
 
 /** Remote engines stay cold on a metered or offline connection. */
@@ -118,7 +146,7 @@ function whenIdle(run: () => void) {
  * Remote engines wait for `includeRemote`, since PyMuPDF pulls tens of MB.
  */
 export function warmEnginesForTool(slug: string, includeRemote = false) {
-	const engines = toolEngines[slug]?.filter(
+	const engines = enginesFor(slug)?.filter(
 		(engine) => includeRemote || !remoteEngines.includes(engine),
 	);
 	if (!browser || !engines?.length || connectionIsFrugal()) return () => {};
@@ -139,4 +167,89 @@ export function warmEnginesForTool(slug: string, includeRemote = false) {
 export function warmEnginesForPath(pathname: string) {
 	const slug = pathname.startsWith("/tools/") ? pathname.slice(7) : "";
 	if (slug) warmEnginesForTool(slug, true);
+}
+
+const RECORD_KEY = "orbit:offline-pack";
+/** Engines downloaded under an older app version are treated as missing. */
+const BUILD = config.appVersion;
+
+interface OfflineRecord {
+	build: string;
+	engines: Partial<Record<EngineId, number>>;
+}
+
+function readRecord(): OfflineRecord {
+	try {
+		const raw = JSON.parse(localStorage.getItem(RECORD_KEY) ?? "null") as OfflineRecord | null;
+		if (raw && raw.build === BUILD) return raw;
+	} catch {
+		/* unreadable record: start again */
+	}
+	return { build: BUILD, engines: {} };
+}
+
+function writeRecord(record: OfflineRecord) {
+	try {
+		localStorage.setItem(RECORD_KEY, JSON.stringify(record));
+	} catch {
+		/* storage unavailable: the next check just reports less */
+	}
+}
+
+/** Forgets what was downloaded, for example after the caches are cleared. */
+export function clearOfflineRecord() {
+	if (!browser) return;
+	try {
+		localStorage.removeItem(RECORD_KEY);
+	} catch {
+		/* nothing stored */
+	}
+	warmed.clear();
+}
+
+export interface OfflineStatus {
+	done: number;
+	total: number;
+	ready: boolean;
+	/** When the most recent engine finished downloading. */
+	at?: number;
+}
+
+/** What is stored on this device, checked against the cache for the large engine. */
+export async function offlineStatus(): Promise<OfflineStatus> {
+	const ids = Object.keys(loaders) as EngineId[];
+	if (!browser) return { done: 0, total: ids.length, ready: false };
+	const record = readRecord();
+	if (record.engines.pandoc) {
+		const { isPandocCached } = await import("$lib/docs/convert");
+		if (!(await isPandocCached())) {
+			delete record.engines.pandoc;
+			writeRecord(record);
+		}
+	}
+	const times = ids.map((id) => record.engines[id]).filter((v): v is number => typeof v === "number");
+	return { done: times.length, total: ids.length, ready: times.length === ids.length, at: times.length ? Math.max(...times) : undefined };
+}
+
+/**
+ * Downloads every engine that is not already stored, so all tools work offline. Engines recorded
+ * for this app version are skipped unless `force` is set. Reports each engine as it settles.
+ */
+export async function warmAllEngines(onProgress: (done: number, total: number) => void, force = false) {
+	const ids = Object.keys(loaders) as EngineId[];
+	const record = force ? { build: BUILD, engines: {} as OfflineRecord["engines"] } : readRecord();
+	let done = 0;
+	for (const id of ids) {
+		if (!record.engines[id]) {
+			try {
+				await loaders[id]();
+				warmed.add(id);
+				record.engines[id] = Date.now();
+				writeRecord(record);
+			} catch {
+				/* offline or blocked: the engine downloads when first used */
+			}
+		}
+		onProgress(++done, ids.length);
+	}
 }

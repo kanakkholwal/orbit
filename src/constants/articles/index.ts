@@ -22,6 +22,13 @@ import splitPdf from "./how-to-split-a-pdf-into-separate-pages";
 import comparison from "./ilovepdf-vs-smallpdf-vs-orbit-private-pdf-tools";
 import uploadSafety from "./is-it-safe-to-upload-pdfs-to-online-converters";
 import duplicateSlides from "./why-powerpoint-pdf-has-duplicate-slides";
+import resizePhoto from "./how-to-resize-a-photo-for-a-passport-or-visa-form";
+import compressImage from "./how-to-compress-an-image-to-50-kb-or-100-kb";
+import heicToJpg from "./how-to-convert-heic-photos-to-jpg";
+import compressVideo from "./how-to-compress-a-video-for-whatsapp-or-email";
+import extractAudio from "./how-to-extract-audio-from-a-video";
+import wordToMarkdown from "./how-to-convert-word-to-markdown-and-back";
+import compressPdfToSize from "./how-to-compress-a-pdf-to-200-kb-for-an-online-form";
 
 export interface Article {
   slug: string;
@@ -36,6 +43,13 @@ export interface Article {
 }
 
 export const articles: Article[] = [
+  resizePhoto,
+  compressImage,
+  heicToJpg,
+  compressVideo,
+  extractAudio,
+  wordToMarkdown,
+  compressPdfToSize,
   wordToPdf,
   largeCsv,
   redactPdf,

@@ -4,11 +4,11 @@
   import SearchTrigger from "$components/layout/SearchTrigger.svelte";
   import Logo from "$components/Logo.svelte";
   import ThemeToggle from "$components/ThemeToggle.svelte";
-  import { Badge } from "$components/ui/badge";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
   import { canInstallNatively, promptInstall } from "$lib/pwa.svelte";
+  import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
   import { workspace } from "$stores/workspace.svelte";
   import type { ToolConfig } from "$tools/list";
@@ -17,13 +17,18 @@
     IconCompass as Compass,
     IconDownload as Download,
     IconHome as Home,
-    IconChevronRight as Chevron,
+    IconLayoutSidebar as PanelIcon,
+    IconSettings as SettingsIcon,
     IconShare as Share,
-    IconShieldCheck as Shield,
   } from "$lib/icons";
   import { toast } from "svelte-sonner";
 
-  let { tool, wide }: { tool: ToolConfig | null; wide: boolean } = $props();
+  let {
+    tool,
+    wide,
+    inlineSidebar,
+    sidebarOpen,
+  }: { tool: ToolConfig | null; wide: boolean; inlineSidebar: boolean; sidebarOpen: boolean } = $props();
 
   const installable = $derived(!appState.isTauri && canInstallNatively());
 
@@ -35,60 +40,65 @@
   const path = $derived(page.url.pathname);
   const category = $derived(tool ? toolsCategories.find((c) => c.id === tool.category)?.name : null);
   const place = $derived(
-    path.startsWith("/explore") ? { title: "Explore tools", icon: Compass } : { title: "Home", icon: Home }
+    path.startsWith("/explore")
+      ? { title: "Explore tools", icon: Compass }
+      : path.startsWith("/settings")
+        ? { title: "Settings", icon: SettingsIcon }
+        : path.startsWith("/open")
+          ? { title: "Open files", icon: Compass }
+          : { title: "Home", icon: Home }
   );
 </script>
 
-<header
-  class="flex min-h-12 shrink-0 items-center gap-3 border-b border-border bg-background px-3 md:px-4"
-  style="padding-top: env(safe-area-inset-top);"
->
-  <a href="/" aria-label={`${config.appName} home`} class="grid size-9 shrink-0 place-items-center md:hidden">
+<header class="flex h-14 shrink-0 items-center gap-2 bg-background px-3 md:px-6" style="padding-top: env(safe-area-inset-top);">
+  <a href="/" aria-label={`${config.appName} home`} class="grid size-11 shrink-0 place-items-center max-[360px]:hidden sm:size-9 md:hidden">
     <Logo markOnly size="xs" class="h-6 text-foreground" />
   </a>
 
-  <div class="flex min-w-0 flex-1 items-center gap-2.5">
+  {#if !sidebarOpen}
+    <Button
+      variant="ghost"
+      size="icon"
+      class="shrink-0 rounded-full max-md:hidden"
+      aria-label={inlineSidebar ? "Show sidebar" : "Open menu"}
+      onclick={() => workspace.togglePanel(inlineSidebar)}
+    >
+      <PanelIcon />
+    </Button>
+  {/if}
+
+  <div class="flex min-w-0 flex-1 items-center">
     {#if tool}
-      <nav aria-label="Breadcrumb" class="flex min-w-0 items-center gap-1.5 text-sm">
-        <a href="/explore" class="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground sm:inline">Tools</a>
-        {#if category}
-          <Chevron class="hidden size-3 shrink-0 text-muted-foreground sm:block" />
-          <a
-            href={`/explore?category=${tool.category}`}
-            class="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:inline"
-          >
-            {category}
-          </a>
-          <Chevron class="hidden size-3 shrink-0 text-muted-foreground md:block" />
-        {/if}
-        <h1 class="flex min-w-0 items-center gap-2 truncate font-medium text-foreground">
-          <tool.icon class="size-4 shrink-0 text-primary" />
-          <span class="truncate">{tool.title}</span>
-        </h1>
-      </nav>
-      <Badge variant="secondary" class="ml-1 hidden shrink-0 lg:inline-flex">
-        <Shield class="size-3" />
-        On device
-      </Badge>
+      <!-- The full breadcrumb lives in the page header; this compact title appears once it scrolls away. -->
+      <span
+        class={cn(
+          "flex min-w-0 items-center gap-2 text-sm transition-[opacity,translate] duration-(--duration-base) ease-(--ease-ui-out) motion-reduce:transition-none",
+          workspace.headerInView ? "pointer-events-none translate-y-1 opacity-0" : "translate-y-0 opacity-100"
+        )}
+        aria-hidden={workspace.headerInView}
+      >
+        <tool.icon class="size-4 shrink-0 text-primary" />
+        <span class="truncate font-medium text-foreground">{tool.title}</span>
+        {#if category}<span class="hidden shrink-0 text-muted-foreground sm:inline">in {category}</span>{/if}
+      </span>
     {:else}
-      <place.icon class="hidden size-4 text-muted-foreground sm:block" />
+      <place.icon class="mr-2 hidden size-4 text-muted-foreground sm:block" />
       <span class="truncate text-sm font-medium text-foreground">{place.title}</span>
     {/if}
   </div>
 
-  {#if tool}
-    <SearchTrigger class="hidden w-64 md:flex lg:w-80" />
-  {/if}
-
-  <div class="flex flex-1 items-center justify-end gap-1.5">
+  <div class="flex shrink-0 items-center justify-end gap-1.5">
+    {#if !sidebarOpen}
+      <SearchTrigger class="hidden w-56 lg:flex xl:w-72" />
+    {/if}
     {#if workspace.inspector && !wide}
-      <Button variant="outline" size="sm" onclick={() => (workspace.inspectorDrawerOpen = true)}>
+      <Button variant="outline" size="sm" class="rounded-full" onclick={() => (workspace.inspectorDrawerOpen = true)}>
         <Adjustments />
         {workspace.inspector.title}
       </Button>
     {/if}
     {#if installable}
-      <Button variant="outline" size="sm" onclick={install} aria-label={`Install ${config.appName}`} title="Install as an app that works offline">
+      <Button variant="outline" size="sm" class="rounded-full" onclick={install} aria-label={`Install ${config.appName}`} title="Install as an app that works offline">
         <Download />
         <span class="hidden sm:inline">Install</span>
       </Button>
@@ -97,12 +107,13 @@
       <ShareButton
         data={{ title: tool.title, text: `Try ${tool.title} on ${config.appName}`, url: page.url.href }}
         variant="ghost"
-        size="sm"
+        size="icon"
+        class="rounded-full bg-muted/60 hover:bg-muted max-[360px]:hidden"
       >
         <Share class="size-4" />
-        <span class="hidden lg:inline">Share</span>
+        <span class="sr-only">Share</span>
       </ShareButton>
     {/if}
-    <ThemeToggle class="size-9 rounded-lg hover:bg-muted md:hidden" />
+    <ThemeToggle class={cn("bg-muted/60 hover:bg-muted", sidebarOpen && "md:hidden")} />
   </div>
 </header>

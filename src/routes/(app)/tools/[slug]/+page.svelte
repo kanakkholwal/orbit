@@ -2,7 +2,7 @@
   import AdUnit from "$components/AdUnit.svelte";
   import Seo from "$components/Seo.svelte";
   import { FaqList } from "$components/site";
-  import { ToolCard } from "$components/tool";
+  import { ToolCard, ToolHeader } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { getToolContent } from "$constants/tool-content";
@@ -109,7 +109,7 @@
         <p class="text-sm text-muted-foreground">Opening {tool.title}</p>
       </div>
     {:then mod}
-      <mod.default />
+      <mod.default slug={tool.slug} />
     {:catch}
       <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3 px-6 text-center" in:fade={{ duration: 150 }}>
         <CircleAlert class="size-5 text-destructive" />
@@ -126,6 +126,7 @@
 
 {#if layout === "immersive"}
   <div class="h-full min-h-0 overflow-clip">
+    <h1 class="sr-only">{tool.title}</h1>
     {@render toolBody()}
   </div>
 {:else}
@@ -134,15 +135,16 @@
       aria-label={`${tool.title} workspace`}
       class={cn(
         "w-full min-h-[80dvh] flex-1 px-3 py-4 sm:px-6 sm:py-6",
-        layout === "form" && "mx-auto max-w-5xl"
+        layout === "form" ? "mx-auto max-w-5xl" : "mx-auto max-w-7xl"
       )}
     >
+      <ToolHeader {tool} />
       {@render toolBody()}
     </section>
 
     {#if showGuide}
       <div class="border-t border-border bg-background">
-        <div class="mx-auto flex w-full max-w-5xl flex-col gap-14 px-3 py-12 sm:px-6">
+        <div class="mx-auto flex w-full max-w-7xl flex-col gap-14 px-3 py-12 sm:px-6 *:max-w-5xl">
           <section class="flex flex-col gap-3">
             <h2 class="text-2xl font-medium text-foreground">About {tool.title}</h2>
             <p class="max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">{toolContent.intro}</p>

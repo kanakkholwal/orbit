@@ -53,15 +53,15 @@ export const button = tv({
 		size: {
 			// The control ladder (DESIGN.md): radius rides the size, about a quarter of the height.
 			xs: "h-6 gap-1 rounded-sm px-2 text-xs active:scale-[var(--press-scale-sm)] [&_svg]:size-3",
-			sm: "h-8 gap-1.5 rounded-md px-3 text-xs active:scale-[var(--press-scale-sm)] [&_svg]:size-3.5",
-			default: "h-9 gap-2 rounded-lg px-4 [&_svg]:size-4",
-			lg: "h-10 gap-2 rounded-lg px-5 active:scale-[var(--press-scale-lg)] [&_svg]:size-4.5",
+			sm: "h-8 pointer-coarse:h-11 gap-1.5 rounded-md px-3 text-xs active:scale-[var(--press-scale-sm)] [&_svg]:size-3.5",
+			default: "h-9 pointer-coarse:h-11 gap-2 rounded-lg px-4 [&_svg]:size-4",
+			lg: "h-10 pointer-coarse:h-11 gap-2 rounded-lg px-5 active:scale-[var(--press-scale-lg)] [&_svg]:size-4.5",
 			xl: "h-12 gap-2.5 rounded-xl px-6 text-base active:scale-[var(--press-scale-lg)] [&_svg]:size-5",
 			"icon-xs":
 				"size-6 rounded-sm p-0 active:scale-[var(--press-scale-icon)] [&_svg]:size-3",
 			"icon-sm":
-				"size-8 rounded-md p-0 active:scale-[var(--press-scale-icon)] [&_svg]:size-3.5",
-			icon: "size-9 rounded-lg p-0 [&_svg]:size-4",
+				"size-8 pointer-coarse:size-11 rounded-md p-0 active:scale-[var(--press-scale-icon)] [&_svg]:size-3.5",
+			icon: "size-9 pointer-coarse:size-11 rounded-lg p-0 [&_svg]:size-4",
 			"icon-lg":
 				"size-10 rounded-lg p-0 active:scale-[var(--press-scale-lg)] [&_svg]:size-4.5",
 			"icon-xl":

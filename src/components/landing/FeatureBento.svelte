@@ -16,17 +16,40 @@
 </script>
 
 {#snippet card(title: string, body: string, visual: Snippet, className = "")}
-  <article
-    class="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-transparent text-card-foreground transition-shadow duration-(--duration-fast) hover:shadow-lg md:rounded-3xl {className}"
-  >
-    <div class="relative z-0 flex min-h-0 flex-1 items-center justify-center overflow-hidden p-3 md:p-6">
-      {@render visual()}
-    </div>
-    <div class="relative z-10 p-4 md:px-8 md:pb-6">
-      <h3 class="mb-1 text-sm font-medium text-foreground md:text-base">{title}</h3>
-      <p class="text-sm text-muted-foreground md:text-base">{body}</p>
+  <article class="rise rounded-2xl border border-border bg-background p-1 {className}">
+    <div class="flex h-full flex-col overflow-hidden rounded-[11px] bg-card">
+      <div class="relative flex min-h-48 flex-1 items-center justify-center overflow-hidden p-5 md:p-6">
+        {@render visual()}
+      </div>
+      <div class="flex flex-col gap-1 border-t border-border p-5">
+        <h3 class="text-base font-medium text-foreground">{title}</h3>
+        <p class="text-pretty text-sm text-muted-foreground">{body}</p>
+      </div>
     </div>
   </article>
+{/snippet}
+
+{#snippet formSize()}
+  <div class="flex w-full max-w-sm items-center gap-4">
+    <div class="relative aspect-[7/9] w-24 shrink-0 rounded-md border border-border bg-background">
+      <span class="absolute inset-2 rounded-sm border border-dashed border-primary/60"></span>
+      <span class="absolute left-1/2 top-[22%] size-7 -translate-x-1/2 rounded-full bg-muted"></span>
+      <span class="absolute bottom-[18%] left-1/2 h-8 w-12 -translate-x-1/2 rounded-t-full bg-muted"></span>
+      <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border border-border bg-card px-1.5 py-0.5 text-xs font-medium text-foreground shadow-xs">35 x 45 mm</span>
+    </div>
+    <ul class="flex min-w-0 flex-1 flex-col gap-2">
+      {#each [["Passport photo", "413 x 531 px"], ["Signature", "140 x 60 px"], ["Exam form", "under 50 KB"]] as [name, size] (name)}
+        <li class="flex items-center justify-between gap-3 rounded-lg border border-border bg-background px-3 py-2 text-sm">
+          <span class="truncate text-foreground">{name}</span>
+          <span class="shrink-0 text-xs tabular-nums text-muted-foreground">{size}</span>
+        </li>
+      {/each}
+      <li class="flex items-center justify-between gap-3 rounded-lg bg-success/10 px-3 py-2 text-sm text-success-strong">
+        <span>Your photo</span>
+        <span class="text-xs font-medium tabular-nums">42 KB, fits</span>
+      </li>
+    </ul>
+  </div>
 {/snippet}
 
 {#snippet stayLocal()}
@@ -135,33 +158,28 @@
   </div>
 {/snippet}
 
-<div
-  class="mx-auto grid min-h-[60vh] w-full grid-cols-1 gap-2 md:gap-4 lg:h-[36rem] lg:grid-cols-12"
->
-  <div class="grid min-h-0 grid-cols-1 gap-2 md:gap-4 lg:col-span-4 lg:grid-rows-[6fr_4fr]">
-    {@render card(
-      "Your files stay yours",
-      "Documents open right in your browser. Nothing is uploaded, stored or shared.",
-      stayLocal
-    )}
-    {@render card("Works without internet", "Install the app and keep working on a plane or a train.", offline)}
-  </div>
-
+<div class="grid grid-cols-1 gap-3 md:grid-cols-6">
   {@render card(
-    "Sign in seconds",
-    "Draw or type your signature and place it anywhere on the page.",
-    signature,
-    "lg:col-span-3"
+    "Your files stay yours",
+    "Documents open right in your browser. Nothing is uploaded, stored or shared.",
+    stayLocal,
+    "md:col-span-3"
   )}
-
-  <div class="grid min-h-0 grid-cols-1 gap-2 md:gap-4 lg:col-span-5 lg:grid-rows-[5fr_5fr]">
-    {@render card("Every PDF tool you need", "Merge, split, compress, convert, sign and more. All free.", toolMarquee)}
-    {@render card(
-      "No sign-up. No watermark.",
-      "Your finished file looks exactly like you made it, with no strings attached.",
-      noAccount
-    )}
-  </div>
+  {@render card(
+    "Exact sizes for forms",
+    "Pick a passport, signature or KB limit and the file is cropped and shrunk to fit.",
+    formSize,
+    "md:col-span-3"
+  )}
+  {@render card("Works without internet", "Install the app and keep working on a plane or a train.", offline, "md:col-span-2")}
+  {@render card("Sign in seconds", "Draw or type your signature and place it anywhere on the page.", signature, "md:col-span-2")}
+  {@render card("No sign-up. No watermark.", "Your finished file looks exactly like you made it, with no strings attached.", noAccount, "md:col-span-2")}
+  {@render card(
+    "Every tool you need",
+    "PDFs, photos, video, audio and documents. Merge, compress, resize, convert and sign. All free.",
+    toolMarquee,
+    "md:col-span-6"
+  )}
 </div>
 
 <style>

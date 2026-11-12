@@ -6,7 +6,7 @@
 
   let { children } = $props();
 
-  import { Toaster } from "$components/ui/sonner";
+  import { Toaster } from "$components/ui/toast";
   import { config } from "$constants/app";
   import Analytics from "$lib/Analytics.svelte";
   import { setupPwa } from "$lib/pwa.svelte";
@@ -20,6 +20,7 @@
   import TitleBar from "$components/layout/TitleBar.svelte";
   import { initTauriFileDrop } from "$lib/runtime/file-drop.svelte";
   import { loadRecentTools } from "$lib/runtime/recent-tools.svelte";
+  import { settings } from "$lib/settings/settings.svelte";
   import { initTauriOpenedPdfs } from "$lib/runtime/tauri-opened-pdf.svelte";
 
   let isTauri = $derived(appState.isTauri);
@@ -41,6 +42,7 @@
 
     // Recently-used tools (workspace "jump back in")
     loadRecentTools();
+    settings.load();
 
     if (appState.isTauri) {
       // Native drag-from-Explorer file drop bridge
@@ -62,7 +64,7 @@
 
 <Loader />
 <ModeWatcher />
-<Toaster position="top-right" richColors />
+<Toaster position="top-right" />
 
 {#if isTauri}
   <!-- Desktop: frameless window → custom title bar + fixed app frame -->
