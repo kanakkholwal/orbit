@@ -24,12 +24,18 @@
     IconCompass as Compass,
     IconDownload as Download,
     IconHome as Home,
+    IconLayoutSidebar as PanelIcon,
     IconSettings as SettingsIcon,
     IconShare as Share,
   } from "$lib/icons";
   import { toast } from "svelte-sonner";
 
-  let { tool, wide }: { tool: ToolConfig | null; wide: boolean } = $props();
+  let {
+    tool,
+    wide,
+    inlineSidebar,
+    sidebarOpen,
+  }: { tool: ToolConfig | null; wide: boolean; inlineSidebar: boolean; sidebarOpen: boolean } = $props();
 
   const installable = $derived(!appState.isTauri && canInstallNatively());
 
@@ -59,6 +65,18 @@
     <Logo markOnly size="xs" class="h-6 text-foreground" />
   </a>
 
+  {#if !sidebarOpen}
+    <Button
+      variant="ghost"
+      size="icon"
+      class="shrink-0 max-md:hidden"
+      aria-label={inlineSidebar ? "Show sidebar" : "Open menu"}
+      onclick={() => workspace.togglePanel(inlineSidebar)}
+    >
+      <PanelIcon />
+    </Button>
+  {/if}
+
   <div class="flex min-w-0 flex-1 items-center">
     {#if tool}
       <Breadcrumb class="min-w-0">
@@ -85,7 +103,9 @@
   </div>
 
   <div class="flex shrink-0 items-center justify-end gap-1.5">
-    <SearchTrigger class="hidden w-56 lg:flex xl:w-72" />
+    {#if !sidebarOpen}
+      <SearchTrigger class="hidden w-56 lg:flex xl:w-72" />
+    {/if}
     {#if workspace.inspector && !wide}
       <Button variant="outline" size="sm" onclick={() => (workspace.inspectorDrawerOpen = true)}>
         <Adjustments />

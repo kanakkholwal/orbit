@@ -10,13 +10,13 @@
   import { categories, toolsCategories } from "$constants/tools";
   import { toolList } from "$tools/list";
   import { IconSearch as Search } from "$lib/icons";
-  import { onMount } from "svelte";
 
   let searchQuery = $state("");
   let activeCategory = $state("all");
 
-  // The page is prerendered, so the query string is only readable in the browser.
-  onMount(() => {
+  // The page is prerendered, so the query string is only readable in the browser. It also changes
+  // when a sidebar group link is followed while already on this page.
+  $effect(() => {
     searchQuery = page.url.searchParams.get("search") || "";
     activeCategory = page.url.searchParams.get("category") || "all";
   });

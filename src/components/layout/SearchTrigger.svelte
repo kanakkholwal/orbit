@@ -1,7 +1,6 @@
 <script lang="ts">
   import { cn } from "$lib/utils";
   import { workspace } from "$stores/workspace.svelte";
-  import { toolList } from "$tools/list";
   import { IconSearch as Search } from "$lib/icons";
 
   let { class: className }: { class?: string } = $props();
@@ -20,7 +19,7 @@
   )}
 >
   <Search class="size-4 shrink-0" />
-  <span class="flex-1 truncate">Search {toolList.length} tools</span>
+  <span class="flex-1 truncate">Search tools</span>
   <kbd class="hidden rounded-md bg-background px-1.5 py-0.5 font-sans text-xs font-medium text-muted-foreground sm:inline">
     {isMac ? "⌘" : "Ctrl"} K
   </kbd>
