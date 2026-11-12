@@ -183,7 +183,7 @@ export class ImageStudioState extends BaseEngine {
     // Items
 
     async addFiles(files: File[]) {
-        const added = await mapLimit(files, async (file) => {
+        const added = await mapLimit(files, async (file): Promise<StudioItem | null> => {
             try {
                 const bitmap = await decode(file);
                 try {
@@ -200,7 +200,7 @@ export class ImageStudioState extends BaseEngine {
                         height: bitmap.height,
                         crop: centredCrop(bitmap.width, bitmap.height, this.cropRatio),
                         status: 'ready'
-                    } satisfies StudioItem;
+                    };
                 } finally {
                     bitmap.close();
                 }

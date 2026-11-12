@@ -28,20 +28,28 @@
     className
   )}
 >
-  <svelte:element
-    this={onSelect ? "button" : "span"}
-    type={onSelect ? "button" : undefined}
-    onclick={onSelect}
-    aria-label={onSelect ? `Select ${name}` : undefined}
-    aria-pressed={onSelect ? active : undefined}
-    class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-card text-muted-foreground"
-  >
+  {#snippet lead()}
     {#if thumb}
       <img src={thumb} alt="" class="size-full object-cover" loading="lazy" decoding="async" />
     {:else}
       <Icon class="size-5" />
     {/if}
-  </svelte:element>
+  {/snippet}
+  {#if onSelect}
+    <button
+      type="button"
+      onclick={onSelect}
+      aria-label={`Select ${name}`}
+      aria-pressed={active}
+      class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-card text-muted-foreground"
+    >
+      {@render lead()}
+    </button>
+  {:else}
+    <span class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-card text-muted-foreground">
+      {@render lead()}
+    </span>
+  {/if}
 
   <div class="flex min-w-0 flex-1 flex-col gap-0.5">
     <span class="truncate text-sm font-medium text-foreground" title={name}>{name}</span>
