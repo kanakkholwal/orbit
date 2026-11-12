@@ -30,6 +30,46 @@ export interface ConvertOptions {
     quality: MediaQuality;
     /** Shrinks video taller than this. Smaller videos are never scaled up. */
     maxHeight?: number;
+    /** Write the output to a temporary file on disk (OPFS) instead of memory. */
+    stream?: boolean;
+}
+
+export interface MediaResult {
+    blob: Blob;
+    /** Deletes the temporary file when the result is no longer needed. */
+    cleanup?: () => Promise<void>;
+}
+
+const TEMP_PREFIX = 'orbit-';
+
+/** Removes temporary output left behind by a closed tab or a crash. */
+export async function cleanupStaleOutputs() {
+    try {
+        const root = await navigator.storage?.getDirectory?.();
+        if (!root) return;
+        for await (const name of (root as unknown as { keys(): AsyncIterable<string> }).keys()) {
+            if (name.startsWith(TEMP_PREFIX) && !name.startsWith('orbit-probe')) await root.removeEntry(name).catch(() => {});
+        }
+    } catch {
+        /* nothing to clean */
+    }
+}
+
+async function openDiskSink(mb: typeof import('mediabunny'), ext: string) {
+    const root = await navigator.storage.getDirectory();
+    const name = `${TEMP_PREFIX}${crypto.randomUUID()}.${ext}`;
+    const handle = await root.getFileHandle(name, { create: true });
+    const file = await handle.createWritable();
+    const writable = new WritableStream({
+        write: (chunk) => file.write(chunk),
+        close: () => file.close(),
+        abort: (reason) => file.abort(reason)
+    });
+    return {
+        target: new mb.StreamTarget(writable, { chunked: true, chunkSize: 16 * 1024 * 1024 }),
+        read: () => handle.getFile(),
+        remove: () => root.removeEntry(name).catch(() => {})
+    };
 }
 
 type Mediabunny = typeof import('mediabunny');
@@ -79,7 +119,7 @@ export class MediaJob {
         private onProgress: (fraction: number) => void
     ) {}
 
-    async run(): Promise<Blob> {
+    async run(): Promise<MediaResult> {
         const mb = await import('mediabunny');
         const { to } = this.opts;
         const format = getMediaFormat(to);
@@ -87,8 +127,16 @@ export class MediaJob {
         await ensureEncoder(mb, to);
 
         const input = new mb.Input({ source: new mb.BlobSource(this.file), formats: mb.ALL_FORMATS });
-        const target = new mb.BufferTarget();
-        const output = new mb.Output({ format: outputFormat(mb, to), target });
+        let sink: Awaited<ReturnType<typeof openDiskSink>> | null = null;
+        if (this.opts.stream) {
+            try {
+                sink = await openDiskSink(mb, to);
+            } catch {
+                sink = null;
+            }
+        }
+        const buffer = sink ? null : new mb.BufferTarget();
+        const output = new mb.Output({ format: outputFormat(mb, to), target: sink?.target ?? (buffer as InstanceType<typeof mb.BufferTarget>) });
 
         try {
             const q = quality(mb, this.opts.quality);
@@ -107,8 +155,12 @@ export class MediaJob {
             }
             this.conversion.onProgress = (p) => this.onProgress(p);
             await this.conversion.execute();
-            if (!target.buffer) throw new Error('The conversion produced no output.');
-            return new Blob([target.buffer], { type: format.mime });
+            if (sink) return { blob: await sink.read(), cleanup: sink.remove };
+            if (!buffer?.buffer) throw new Error('The conversion produced no output.');
+            return { blob: new Blob([buffer.buffer], { type: format.mime }) };
+        } catch (err) {
+            await sink?.remove();
+            throw err;
         } finally {
             input.dispose();
         }

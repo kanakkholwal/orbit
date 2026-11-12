@@ -11,6 +11,7 @@ export { default as ResultCard } from "./ResultCard.svelte";
 export { default as SegmentedControl } from "./SegmentedControl.svelte";
 export { default as StatusPill } from "./StatusPill.svelte";
 export { default as ToolBar } from "./ToolBar.svelte";
+export { default as ToolHeader } from "./ToolHeader.svelte";
 export { default as ToolCard } from "./ToolCard.svelte";
 export { default as ToolFooter } from "./ToolFooter.svelte";
 export { default as ToolPanel } from "./ToolPanel.svelte";

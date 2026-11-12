@@ -15,8 +15,8 @@
   let { title, counter, description, children, actions, class: className = "", contentClass = "" }: Props = $props();
 </script>
 
-<section class={cn("rounded-2xl border border-border bg-background p-1", className)}>
-  <div class="flex flex-col gap-3 rounded-[11px] bg-card p-4">
+<section class={cn("flex flex-col rounded-2xl border border-border bg-background p-1", className)}>
+  <div class="flex flex-1 flex-col gap-3 rounded-[11px] bg-card p-4">
     {#if title || counter !== undefined || actions}
       <div class="flex items-end justify-between gap-3">
         <div class="flex min-w-0 flex-col gap-0.5">

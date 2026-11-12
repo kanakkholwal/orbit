@@ -1,3 +1,4 @@
+import { deviceProfile } from './device-profile.svelte';
 const nav = typeof navigator === "undefined" ? undefined : (navigator as Navigator & { deviceMemory?: number });
 
 /** Phones and low-memory devices, where a few large canvases are enough to crash the tab. */
@@ -35,7 +36,7 @@ export function releaseCanvas(...canvases: (HTMLCanvasElement | OffscreenCanvas 
 export const yieldToMain = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 /** Runs fn over items with at most `limit` in flight; one at a time on constrained devices. */
-export async function mapLimit<T, R>(items: T[], fn: (item: T, index: number) => Promise<R>, limit = constrained ? 1 : 3): Promise<R[]> {
+export async function mapLimit<T, R>(items: T[], fn: (item: T, index: number) => Promise<R>, limit = deviceProfile.ready ? deviceProfile.concurrency : constrained ? 1 : 3): Promise<R[]> {
   const out = new Array<R>(items.length);
   let next = 0;
   const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {

@@ -205,7 +205,7 @@ export class ImageStudioState extends BaseEngine {
                     bitmap.close();
                 }
             } catch (err) {
-                toast.error(`${file.name} could not be opened. ${err instanceof Error ? err.message : ''}`.trim());
+                toast.error('Could not open image', { description: `${file.name}. ${err instanceof Error ? err.message : ''}`.trim() });
                 return null;
             }
         });
@@ -325,7 +325,7 @@ export class ImageStudioState extends BaseEngine {
         this.isProcessing = false;
 
         const missed = this.done.filter((i) => !i.result?.metTarget).length;
-        if (missed > 0) toast.warning(`${missed} image${missed > 1 ? 's' : ''} could not reach the size limit. Try a smaller dimension.`);
+        if (missed > 0) toast.warning('Over the size limit', { description: `${missed} image${missed > 1 ? 's' : ''} could not get under it. Try a smaller size.` });
     }
 
     download(item: StudioItem) {

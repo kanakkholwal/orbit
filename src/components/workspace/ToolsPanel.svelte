@@ -1,6 +1,5 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { Badge } from "$components/ui/badge";
   import { InputGroup, InputGroupAddon, InputGroupInput } from "$components/ui/input-group";
   import { toolsCategories } from "$constants/tools";
   import { IconArrowRight as ArrowRight, IconChevronRight as Chevron, IconSearch as Search } from "$lib/icons";
@@ -94,7 +93,8 @@
                   <tool.icon class={cn("size-3.5 shrink-0", active && "text-primary")} />
                   <span class="truncate">{tool.title}</span>
                   {#if tool.isNew}
-                    <Badge variant="success" class="ml-auto shrink-0">New</Badge>
+                    <span class="ml-auto size-1.5 shrink-0 rounded-full bg-success" aria-hidden="true"></span>
+                    <span class="sr-only">New</span>
                   {/if}
                 </a>
               </li>

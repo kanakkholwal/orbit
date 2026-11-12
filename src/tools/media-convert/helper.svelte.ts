@@ -1,5 +1,6 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
-import { getMediaFormat, MediaJob, type MediaFormatId, type MediaQuality } from '$lib/media/convert';
+import { deviceProfile, formatCap } from '$lib/device-profile.svelte';
+import { cleanupStaleOutputs, getMediaFormat, MediaJob, type MediaFormatId, type MediaQuality } from '$lib/media/convert';
 import { settings } from '$lib/settings/settings.svelte';
 import { toast } from 'svelte-sonner';
 import { getMediaDef, type MediaDef } from './defs';
@@ -11,7 +12,7 @@ export interface MediaItem {
     /** 0 to 1 while processing. */
     progress: number;
     error?: string;
-    result?: { blob: Blob; name: string };
+    result?: { blob: Blob; name: string; cleanup?: () => Promise<void> };
 }
 
 /** Video and audio conversion, one file at a time because each job already saturates the device. */
@@ -36,6 +37,7 @@ export class MediaConvertState extends BaseEngine {
         this.quality = def.quality ?? 'medium';
         this.maxHeight = def.maxHeight;
         this.judged = def.judged ?? false;
+        this.kind = def.kind;
     }
 
     get done() {
@@ -46,15 +48,39 @@ export class MediaConvertState extends BaseEngine {
         return this.done.reduce((sum, i) => sum + (i.file.size - (i.result?.blob.size ?? i.file.size)), 0);
     }
 
+    /** Largest file this device is asked to convert, from its memory, cores and disk. */
+    get cap() {
+        return deviceProfile.capFor(this.kind);
+    }
+
+    kind: 'video' | 'audio' = 'video';
+
+    async prepare() {
+        await deviceProfile.init();
+        void cleanupStaleOutputs();
+    }
+
     addFiles(files: File[]) {
-        this.items.push(...files.map((file) => ({ id: crypto.randomUUID(), file, status: 'ready' as const, progress: 0 })));
+        const ok: File[] = [];
+        for (const file of files) {
+            if (file.size > this.cap) toast.error('File too large for this device', { description: `${file.name} is over ${formatCap(this.cap)}. Try a smaller file.` });
+            else ok.push(file);
+        }
+        this.items.push(...ok.map((file) => ({ id: crypto.randomUUID(), file, status: 'ready' as const, progress: 0 })));
+    }
+
+    private release(item: MediaItem) {
+        void item.result?.cleanup?.();
     }
 
     removeItem(id: string) {
+        const item = this.items.find((i) => i.id === id);
+        if (item) this.release(item);
         this.items = this.items.filter((i) => i.id !== id);
     }
 
     reset() {
+        for (const i of this.items) this.release(i);
         this.items = [];
     }
 
@@ -62,6 +88,7 @@ export class MediaConvertState extends BaseEngine {
     invalidate() {
         for (const i of this.items) {
             if (i.status === 'done' || i.status === 'error') {
+                this.release(i);
                 i.status = 'ready';
                 i.result = undefined;
                 i.progress = 0;
@@ -82,9 +109,9 @@ export class MediaConvertState extends BaseEngine {
             item.status = 'processing';
             item.progress = 0;
             try {
-                this.current = new MediaJob(item.file, { to: this.to, quality: this.quality, maxHeight: this.maxHeight }, (p) => (item.progress = p));
-                const blob = await this.current.run();
-                item.result = { blob, name: settings.outputName(item.file.name, format?.id ?? this.to) };
+                this.current = new MediaJob(item.file, { to: this.to, quality: this.quality, maxHeight: this.maxHeight, stream: deviceProfile.streaming }, (p) => (item.progress = p));
+                const { blob, cleanup } = await this.current.run();
+                item.result = { cleanup, blob, name: settings.outputName(item.file.name, format?.id ?? this.to) };
                 item.status = 'done';
             } catch (err) {
                 item.status = this.stopped ? 'ready' : 'error';
@@ -109,6 +136,13 @@ export class MediaConvertState extends BaseEngine {
         const results = this.done;
         if (results.length === 0) return;
         if (results.length === 1) return this.download(results[0]);
+        const total = results.reduce((sum, i) => sum + (i.result?.blob.size ?? 0), 0);
+        if (total > deviceProfile.capFor('zip')) {
+            // A ZIP is built in memory, so large batches are saved one by one instead.
+            toast.info('Saving one by one', { description: 'These files are large, so they download individually instead of as a ZIP.' });
+            for (const item of results) this.download(item);
+            return;
+        }
         const { default: JSZip } = await import('jszip');
         const zip = new JSZip();
         const used = new Set<string>();
@@ -120,6 +154,5 @@ export class MediaConvertState extends BaseEngine {
             zip.file(name, result.blob);
         }
         this.downloadBlob(await zip.generateAsync({ type: 'blob' }), 'orbit-media.zip');
-        toast.success('ZIP ready.');
     }
 }

@@ -7,6 +7,7 @@
   import { Progress } from "$components/ui/progress";
   import { Slider } from "$components/ui/slider";
   import { clearRecentTools } from "$lib/runtime/recent-tools.svelte";
+  import { deviceProfile, formatCap, TIER_LABEL } from "$lib/device-profile.svelte";
   import { settings, type DefaultFormats } from "$lib/settings/settings.svelte";
   import { formatBytes, offlineStorage } from "$lib/settings/storage.svelte";
   import { onMount } from "svelte";
@@ -24,6 +25,7 @@
   onMount(() => {
     settings.load();
     offlineStorage.refresh();
+    void deviceProfile.init();
     ready = true;
   });
 
@@ -34,19 +36,28 @@
   });
 
   const preview = $derived(settings.outputName("holiday photo.heic", settings.value.defaultFormats.image));
+  const deviceRows = $derived([
+    ["Performance", TIER_LABEL[deviceProfile.tier]],
+    ["Memory", deviceProfile.memoryGB ? `${deviceProfile.memoryGB} GB` : "Not reported"],
+    ["Processor cores", String(deviceProfile.cores)],
+    ["Large outputs", deviceProfile.streaming ? "Saved to disk" : "Held in memory"],
+    ["Largest video", formatCap(deviceProfile.capFor("video"))],
+    ["Largest audio file", formatCap(deviceProfile.capFor("audio"))],
+    ["Largest photo", formatCap(deviceProfile.capFor("image"))],
+  ]);
   const usagePct = $derived(
     offlineStorage.quota ? Math.min(100, (offlineStorage.usage / offlineStorage.quota) * 100) : 0
   );
 
   async function persist() {
     const ok = await offlineStorage.requestPersistence();
-    if (ok) toast.success("Offline data is now protected from eviction.");
-    else toast.info("The browser declined. Installing Orbit as an app usually helps.");
+    if (ok) toast.success("Offline data protected", { description: "The browser will not evict cached engines." });
+    else toast.info("Browser declined", { description: "Installing Orbit as an app usually helps." });
   }
 
   async function clearOffline() {
     await offlineStorage.clearCaches();
-    toast.success("Offline engines cleared. They download again on next use.");
+    toast.success("Offline engines cleared", { description: "They download again on next use." });
   }
 
   function resetAll() {
@@ -120,7 +131,22 @@
       </div>
     </ToolPanel>
 
-    <ToolPanel title="Privacy" class="rise [--i:5] lg:col-span-5" contentClass="flex h-full flex-col justify-between gap-4">
+    <ToolPanel
+    title="This device"
+    description="Limits come from what your browser reports, so conversions do not run out of memory."
+    class="rise [--i:5] lg:col-span-5"
+  >
+    <dl class="flex flex-col divide-y divide-border">
+      {#each deviceRows as [label, value] (label)}
+        <div class="flex items-baseline justify-between gap-4 py-2 text-sm">
+          <dt class="text-muted-foreground">{label}</dt>
+          <dd class="font-medium tabular-nums text-foreground">{value}</dd>
+        </div>
+      {/each}
+    </dl>
+  </ToolPanel>
+
+  <ToolPanel title="Privacy" class="rise [--i:6] lg:col-span-5" contentClass="flex h-full flex-col justify-between gap-4">
       <OptionToggle
         label="Anonymous usage stats"
         description="Page views and tool names only. File names and contents never leave your device."
@@ -129,7 +155,7 @@
       <Button variant="outline" class="min-h-11 self-start" onclick={resetAll}>Reset all settings</Button>
     </ToolPanel>
 
-    <ToolPanel title="Support Orbit" class="rise [--i:6] md:col-span-2 lg:col-span-12">
+    <ToolPanel title="Support Orbit" class="rise [--i:7] md:col-span-2 lg:col-span-7">
       <SponsorCard />
     </ToolPanel>
   </div>

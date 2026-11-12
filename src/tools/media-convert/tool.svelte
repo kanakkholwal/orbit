@@ -27,7 +27,7 @@
   import { MEDIA_FORMATS, type MediaFormatId, type MediaQuality } from "$lib/media/convert";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { onDestroy, untrack } from "svelte";
+  import { onDestroy, onMount, untrack } from "svelte";
   import { getMediaDef } from "./defs";
   import { MediaConvertState } from "./helper.svelte";
 
@@ -40,6 +40,8 @@
     void store.cancel();
     store.reset();
   });
+
+  onMount(() => void store.prepare());
 
   const ACCEPT = "video/*,audio/*,.mkv,.mov,.flac,.m4a,.ogg";
   let addInput = $state<HTMLInputElement | null>(null);
@@ -66,7 +68,7 @@
 </script>
 
 {#if store.items.length === 0}
-  <UploadArea accept={ACCEPT} onFilesSelected={(files) => store.addFiles(files)}>
+  <UploadArea accept={ACCEPT} maxSize={store.cap} onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
       <h3 class="text-2xl font-medium text-foreground">Choose {def.kind === "audio" ? "audio or video" : "videos"} to convert</h3>
     {/snippet}

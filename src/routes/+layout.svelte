@@ -6,7 +6,7 @@
 
   let { children } = $props();
 
-  import { Toaster } from "$components/ui/sonner";
+  import { Toaster } from "$components/ui/toast";
   import { config } from "$constants/app";
   import Analytics from "$lib/Analytics.svelte";
   import { setupPwa } from "$lib/pwa.svelte";
@@ -64,7 +64,7 @@
 
 <Loader />
 <ModeWatcher />
-<Toaster position="top-right" richColors />
+<Toaster position="top-right" />
 
 {#if isTauri}
   <!-- Desktop: frameless window → custom title bar + fixed app frame -->

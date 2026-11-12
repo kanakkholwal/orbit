@@ -4,7 +4,6 @@
   import SearchTrigger from "$components/layout/SearchTrigger.svelte";
   import Logo from "$components/Logo.svelte";
   import ThemeToggle from "$components/ThemeToggle.svelte";
-  import { Badge } from "$components/ui/badge";
   import {
     Breadcrumb,
     BreadcrumbItem,
@@ -27,7 +26,6 @@
     IconHome as Home,
     IconSettings as SettingsIcon,
     IconShare as Share,
-    IconShieldCheck as Shield,
   } from "$lib/icons";
   import { toast } from "svelte-sonner";
 
@@ -59,7 +57,7 @@
     <Logo markOnly size="xs" class="h-6 text-foreground" />
   </a>
 
-  <div class="flex min-w-0 flex-1 basis-0 items-center">
+  <div class="flex min-w-0 flex-1 items-center">
     {#if tool}
       <Breadcrumb class="min-w-0">
         <BreadcrumbList class="flex-nowrap">
@@ -74,10 +72,7 @@
             <BreadcrumbSeparator class="hidden md:flex" />
           {/if}
           <BreadcrumbItem class="min-w-0">
-            <BreadcrumbPage class="flex min-w-0 items-center gap-2">
-              <tool.icon class="size-4 shrink-0 text-primary" />
-              <span class="truncate" title={tool.title}>{tool.title}</span>
-            </BreadcrumbPage>
+            <BreadcrumbPage class="truncate" title={tool.title}>{tool.title}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -87,17 +82,8 @@
     {/if}
   </div>
 
-  {#if tool}
-    <SearchTrigger class="hidden w-72 shrink-0 lg:flex xl:w-80" />
-  {/if}
-
-  <div class="flex shrink-0 items-center justify-end gap-1.5 md:flex-1 md:basis-0">
-    {#if tool}
-      <Badge variant="secondary" class="hidden shrink-0 xl:inline-flex">
-        <Shield class="size-3" />
-        On device
-      </Badge>
-    {/if}
+  <div class="flex shrink-0 items-center justify-end gap-1.5">
+    <SearchTrigger class="hidden w-56 lg:flex xl:w-72" />
     {#if workspace.inspector && !wide}
       <Button variant="outline" size="sm" onclick={() => (workspace.inspectorDrawerOpen = true)}>
         <Adjustments />
@@ -114,11 +100,11 @@
       <ShareButton
         data={{ title: tool.title, text: `Try ${tool.title} on ${config.appName}`, url: page.url.href }}
         variant="ghost"
-        size="sm"
-        class="max-[360px]:hidden"
+        size="icon"
+        class="rounded-full max-[360px]:hidden max-sm:size-11"
       >
         <Share class="size-4" />
-        <span class="hidden lg:inline">Share</span>
+        <span class="sr-only">Share</span>
       </ShareButton>
     {/if}
     <ThemeToggle class="size-9 rounded-lg hover:bg-muted md:hidden" />

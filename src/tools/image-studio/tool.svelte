@@ -7,7 +7,8 @@
   import { IconArrowRight as ArrowRight, IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
   import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
-  import { onDestroy, untrack } from "svelte";
+  import { deviceProfile } from "$lib/device-profile.svelte";
+  import { onDestroy, onMount, untrack } from "svelte";
   import Cropper from "./Cropper.svelte";
   import { getStudioDef } from "./defs";
   import { ImageStudioState } from "./helper.svelte";
@@ -19,6 +20,8 @@
   const store = new ImageStudioState();
   store.configure(def.slug);
   onDestroy(() => store.reset());
+
+  onMount(() => void deviceProfile.init());
 
   const ACCEPT = "image/*,.heic,.heif,.avif";
   let addInput = $state<HTMLInputElement | null>(null);
@@ -38,7 +41,7 @@
 </script>
 
 {#if store.items.length === 0}
-  <UploadArea accept={ACCEPT} onFilesSelected={(files) => store.addFiles(files)}>
+  <UploadArea accept={ACCEPT} maxSize={deviceProfile.capFor("image")} onFilesSelected={(files) => store.addFiles(files)}>
     {#snippet title()}
       <h3 class="text-2xl font-medium text-foreground">Choose photos to {verb.toLowerCase()}</h3>
     {/snippet}

@@ -2,12 +2,14 @@
   import { page } from "$app/state";
   import { trackFileUpload } from "$lib/analytics-tracker";
   import { LARGE_FILE_BYTES } from "$lib/device-limits";
+  import { formatCap } from "$lib/device-profile.svelte";
   import { warmEnginesForPath } from "$lib/engine-warmup";
   import { fileDropState, registerFileDrop } from "$lib/runtime/file-drop.svelte";
   import { takePendingFiles } from "$lib/runtime/pending-files.svelte";
   import { cn } from "$lib/utils";
   import { appState } from "$stores/app-state.svelte";
   import { getTool } from "$tools/list";
+  import ToolHeader from "$components/tool/ToolHeader.svelte";
   import { Badge } from "./badge";
   import { IconCloudUpload as UploadCloud } from "$lib/icons";
   import { onMount, type Snippet } from "svelte";
@@ -100,7 +102,7 @@
   function validateAndEmit(newFiles: File[]) {
     const validFiles = newFiles.filter((file) => {
       if (file.size > maxSize) {
-        toast.error(`File ${file.name} is too large.`);
+        toast.error("File too large for this device", { description: `${file.name} is over ${formatCap(maxSize)}. Try a smaller file.` });
         return false;
       }
       if (accept && accept !== "*" && accept.trim() !== "") {
@@ -161,17 +163,7 @@
 
 <div class="mx-auto flex w-full max-w-3xl flex-col gap-8 py-4 sm:py-10">
   {#if tool}
-    <header class="rise flex flex-col items-center gap-4 text-center">
-      <span class="grid size-14 place-items-center rounded-2xl border border-border bg-background p-1 shadow-(--surface-shadow)">
-        <span class="grid size-full place-items-center rounded-xl bg-card text-primary">
-          <tool.icon class="size-6" />
-        </span>
-      </span>
-      <div class="flex flex-col gap-2">
-        <h1 class="text-balance text-3xl font-medium text-foreground sm:text-4xl">{tool.title}</h1>
-        <p class="mx-auto max-w-xl text-pretty text-sm text-muted-foreground sm:text-base">{tool.description}</p>
-      </div>
-    </header>
+    <ToolHeader {tool} />
   {/if}
 
   <div class="rise" style="--i:1">
@@ -236,10 +228,6 @@
       {/if}
       {#if hint}
         {@render hint()}
-      {:else}
-        <p class="text-xs text-muted-foreground">
-          {acceptLabel}{maxSize !== Infinity ? ` · up to ${(maxSize / (1024 * 1024)).toFixed(0)} MB each` : ""} · stays on this device
-        </p>
       {/if}
     </div>
   </div>
@@ -253,7 +241,7 @@
     <li><Badge variant="secondary">Stays on this device</Badge></li>
     <li><Badge variant="secondary">No account</Badge></li>
     {#if maxSize !== Infinity}
-      <li><Badge variant="secondary">Up to {(maxSize / (1024 * 1024)).toFixed(0)} MB each</Badge></li>
+      <li><Badge variant="secondary">Up to {formatCap(maxSize)} each</Badge></li>
     {/if}
   </ul>
 </div>
