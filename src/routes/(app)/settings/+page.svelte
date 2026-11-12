@@ -1,21 +1,23 @@
 <script lang="ts">
   import Seo from "$components/Seo.svelte";
   import SponsorCard from "$components/common/SponsorCard.svelte";
-  import { OptionGroup, OptionToggle, ToolPanel } from "$components/tool";
+  import { OptionGroup, OptionToggle, SegmentedControl, ToolPanel } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { Input } from "$components/ui/input";
+  import { Progress } from "$components/ui/progress";
+  import { Slider } from "$components/ui/slider";
   import { clearRecentTools } from "$lib/runtime/recent-tools.svelte";
-  import { settings } from "$lib/settings/settings.svelte";
+  import { settings, type DefaultFormats } from "$lib/settings/settings.svelte";
   import { formatBytes, offlineStorage } from "$lib/settings/storage.svelte";
   import { onMount } from "svelte";
   import { toast } from "svelte-sonner";
 
-  const formatKinds = [
+  const formatKinds: { key: keyof DefaultFormats; label: string; options: string[] }[] = [
     { key: "image", label: "Images", options: ["webp", "jpg", "png", "avif"] },
     { key: "audio", label: "Audio", options: ["mp3", "wav", "ogg", "flac"] },
     { key: "video", label: "Video", options: ["mp4", "webm", "gif"] },
     { key: "document", label: "Documents", options: ["docx", "md", "html", "txt"] },
-  ] as const;
+  ];
 
   let ready = $state(false);
 
@@ -56,105 +58,79 @@
 
 <Seo title="Settings" description="Filename template, default formats, offline storage and privacy options for Orbit." noindex />
 
-<div class="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 pb-20 pt-8 md:px-6">
+<div class="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 pb-24 pt-8 md:px-6">
   <header class="rise flex flex-col gap-1">
     <h1 class="text-2xl font-medium text-foreground">Settings</h1>
     <p class="text-sm text-muted-foreground">Saved on this device only. Nothing here is sent anywhere.</p>
   </header>
 
-  <ToolPanel
-    title="Conversion"
-    description="Applies to image, audio, video and document tools."
-    class="rise [--i:1]"
-    contentClass="flex flex-col gap-6"
-  >
-    <OptionGroup label="Output file name" description="Use %name% for the original name.">
-      <Input bind:value={settings.value.filenameTemplate} placeholder="%name%" class="min-h-11" autocomplete="off" />
+  <!-- Bento: one column on phones, two on tablets, twelve on desktop. -->
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
+    <ToolPanel title="File names" description="Use %name% for the original name." class="rise [--i:1] lg:col-span-7" contentClass="flex flex-col gap-2">
+      <Input bind:value={settings.value.filenameTemplate} placeholder="%name%" class="min-h-11" autocomplete="off" aria-label="Output file name" />
       <p class="text-xs tabular-nums text-muted-foreground">Example: {preview}</p>
-    </OptionGroup>
+    </ToolPanel>
 
-    {#each formatKinds as kind (kind.key)}
-      <OptionGroup label={`Default ${kind.label.toLowerCase()} format`}>
-        <div class="flex flex-wrap gap-2" role="radiogroup" aria-label={kind.label}>
-          {#each kind.options as option (option)}
-            <Button
-              type="button"
-              role="radio"
-              aria-checked={settings.value.defaultFormats[kind.key] === option}
-              variant={settings.value.defaultFormats[kind.key] === option ? "default" : "outline"}
-              class="min-h-11 min-w-14 uppercase"
-              onclick={() => (settings.value.defaultFormats[kind.key] = option)}
-            >
-              {option}
-            </Button>
-          {/each}
-        </div>
-      </OptionGroup>
-    {/each}
-
-    <OptionGroup
-      label={`Image quality: ${settings.value.imageQuality}`}
-      description="Lower is smaller. 80 to 90 looks the same for most photos."
-    >
-      <input
-        type="range"
-        min="40"
-        max="100"
-        step="1"
-        bind:value={settings.value.imageQuality}
-        aria-label="Image quality"
-        class="h-11 w-full accent-primary"
+    <ToolPanel title="Image quality" description="Lower is smaller. 80 to 90 looks the same for most photos." class="rise [--i:2] lg:col-span-5" contentClass="flex h-full flex-col justify-end">
+      <Slider
+        label="Image quality"
+        min={40}
+        max={100}
+        showValue
+        value={settings.value.imageQuality}
+        onValueChange={(v) => (settings.value.imageQuality = Array.isArray(v) ? v[0] : v)}
       />
-    </OptionGroup>
-  </ToolPanel>
+    </ToolPanel>
 
-  <ToolPanel
-    title="Offline"
-    description="Engines download once, then work without internet."
-    class="rise [--i:2]"
-    contentClass="flex flex-col gap-4"
-  >
-    {#if offlineStorage.supported}
-      <div class="flex flex-col gap-2">
-        <div class="h-1.5 overflow-hidden rounded-full bg-muted" role="presentation">
-          <div
-            class="h-full rounded-full bg-primary transition-[width] duration-(--duration-base)"
-            style="width: {usagePct}%"
-          ></div>
+    <ToolPanel title="Default formats" description="Picked first in each converter." class="rise [--i:3] md:col-span-2 lg:col-span-12" contentClass="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      {#each formatKinds as kind (kind.key)}
+        <OptionGroup label={kind.label}>
+          <SegmentedControl
+            name={`${kind.label} format`}
+            size="sm"
+            options={kind.options.map((o) => ({ value: o, label: o.toUpperCase() }))}
+            bind:value={settings.value.defaultFormats[kind.key]}
+          />
+        </OptionGroup>
+      {/each}
+    </ToolPanel>
+
+    <ToolPanel title="Offline" description="Engines download once, then work without internet." class="rise [--i:4] lg:col-span-7" contentClass="flex flex-col gap-4">
+      {#if offlineStorage.supported}
+        <div class="flex flex-col gap-2">
+          <Progress value={usagePct} max={100} size="sm" label="Offline storage used" />
+          <p class="text-xs tabular-nums text-muted-foreground">
+            {formatBytes(offlineStorage.usage)} of {formatBytes(offlineStorage.quota)}
+            {offlineStorage.persisted ? "· protected from eviction" : ""}
+          </p>
         </div>
-        <p class="text-xs tabular-nums text-muted-foreground">
-          {formatBytes(offlineStorage.usage)} used of {formatBytes(offlineStorage.quota)}
-          {offlineStorage.persisted ? "· protected from eviction" : ""}
-        </p>
-      </div>
-    {:else}
-      <p class="text-sm text-muted-foreground">This browser does not report storage use.</p>
-    {/if}
-    <div class="flex flex-wrap gap-2">
-      {#if offlineStorage.supported && !offlineStorage.persisted}
-        <Button variant="outline" class="min-h-11" onclick={persist}>Keep offline data</Button>
+      {:else}
+        <p class="text-sm text-muted-foreground">This browser does not report storage use.</p>
       {/if}
-      <Button variant="outline" class="min-h-11" onclick={clearOffline}>Clear offline engines</Button>
-    </div>
-    <OptionToggle
-      label="Ask before large downloads"
-      description="Warns before fetching engines over 20 MB, useful on mobile data."
-      bind:checked={settings.value.confirmLargeDownloads}
-    />
-  </ToolPanel>
+      <OptionToggle
+        label="Ask before large downloads"
+        description="Warns before fetching engines over 20 MB, useful on mobile data."
+        bind:checked={settings.value.confirmLargeDownloads}
+      />
+      <div class="flex flex-wrap gap-2">
+        {#if offlineStorage.supported && !offlineStorage.persisted}
+          <Button variant="outline" class="min-h-11" onclick={persist}>Keep offline data</Button>
+        {/if}
+        <Button variant="outline" class="min-h-11" onclick={clearOffline}>Clear offline engines</Button>
+      </div>
+    </ToolPanel>
 
-  <ToolPanel title="Privacy" class="rise [--i:3]" contentClass="flex flex-col gap-4">
-    <OptionToggle
-      label="Anonymous usage stats"
-      description="Page views and tool names only. File names and contents never leave your device."
-      bind:checked={settings.value.analytics}
-    />
-    <div>
-      <Button variant="outline" class="min-h-11" onclick={resetAll}>Reset settings and recent tools</Button>
-    </div>
-  </ToolPanel>
+    <ToolPanel title="Privacy" class="rise [--i:5] lg:col-span-5" contentClass="flex h-full flex-col justify-between gap-4">
+      <OptionToggle
+        label="Anonymous usage stats"
+        description="Page views and tool names only. File names and contents never leave your device."
+        bind:checked={settings.value.analytics}
+      />
+      <Button variant="outline" class="min-h-11 self-start" onclick={resetAll}>Reset all settings</Button>
+    </ToolPanel>
 
-  <ToolPanel title="Support Orbit" class="rise [--i:4]">
-    <SponsorCard />
-  </ToolPanel>
+    <div class="rise rounded-2xl bg-foreground p-5 text-background [--i:6] md:col-span-2 lg:col-span-12">
+      <SponsorCard tone="inverse" />
+    </div>
+  </div>
 </div>

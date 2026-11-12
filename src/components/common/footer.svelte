@@ -19,6 +19,7 @@
         { label: "Compare", href: "/compare" },
         { label: "Changelog", href: "/changelog" },
         { label: "Install PWA", href: "/install-pwa" },
+        { label: "Settings", href: "/settings" },
       ],
     },
     {
@@ -35,6 +36,7 @@
         { label: "Documentation", href: "/docs" },
         { label: "GitHub", href: config.github, external: true },
         { label: "Twitter", href: config.twitter, external: true },
+        { label: "Sponsor", href: config.sponsor, external: true },
         {
           label: "Support",
           href: `mailto:${config.supportEmail}`,

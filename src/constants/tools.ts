@@ -1,6 +1,7 @@
 import { getToolsByCategory } from "$tools/list";
 import {
   IconFileText as FileText,
+  IconPhoto as PhotoIcon,
   IconPencil as PenLineIcon,
   IconRotateClockwise as RotateCw,
   IconShield as Shield,
@@ -36,6 +37,13 @@ const toolsCategories: ToolCategory[] = [
     name: "Conversion",
     description: "Transform documents to other formats.",
     icon: RotateCw,
+
+  },
+  {
+    id: "images",
+    name: "Images",
+    description: "Resize, crop and compress photos for forms and sharing.",
+    icon: PhotoIcon,
 
   },
   {

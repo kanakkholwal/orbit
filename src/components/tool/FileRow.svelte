@@ -8,24 +8,40 @@
     name: string;
     meta?: string;
     icon?: typeof FilePdf;
+    /** Image URL shown instead of the icon, for image tools. */
+    thumb?: string;
+    active?: boolean;
+    onSelect?: () => void;
     onRemove?: () => void;
     children?: Snippet;
     trailing?: Snippet;
     class?: string;
   }
 
-  let { name, meta, icon: Icon = FilePdf, onRemove, children, trailing, class: className = "" }: Props = $props();
+  let { name, meta, icon: Icon = FilePdf, thumb, active = false, onSelect, onRemove, children, trailing, class: className = "" }: Props = $props();
 </script>
 
 <div
   class={cn(
-    "flex items-center gap-3 rounded-xl border border-border bg-background p-1.5 pr-2 transition-colors duration-(--duration-fast) hover:border-border-strong",
+    "flex items-center gap-3 rounded-xl border bg-background p-1.5 pr-2 transition-colors duration-(--duration-fast) hover:bg-foreground/[0.03]",
+    active ? "border-foreground/30" : "border-border hover:border-border-strong",
     className
   )}
 >
-  <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-card text-muted-foreground">
-    <Icon class="size-5" />
-  </span>
+  <svelte:element
+    this={onSelect ? "button" : "span"}
+    type={onSelect ? "button" : undefined}
+    onclick={onSelect}
+    aria-label={onSelect ? `Select ${name}` : undefined}
+    aria-pressed={onSelect ? active : undefined}
+    class="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg bg-card text-muted-foreground"
+  >
+    {#if thumb}
+      <img src={thumb} alt="" class="size-full object-cover" loading="lazy" decoding="async" />
+    {:else}
+      <Icon class="size-5" />
+    {/if}
+  </svelte:element>
 
   <div class="flex min-w-0 flex-1 flex-col gap-0.5">
     <span class="truncate text-sm font-medium text-foreground" title={name}>{name}</span>

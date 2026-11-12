@@ -109,7 +109,7 @@
         <p class="text-sm text-muted-foreground">Opening {tool.title}</p>
       </div>
     {:then mod}
-      <mod.default />
+      <mod.default slug={tool.slug} />
     {:catch}
       <div class="flex h-full min-h-80 flex-col items-center justify-center gap-3 px-6 text-center" in:fade={{ duration: 150 }}>
         <CircleAlert class="size-5 text-destructive" />

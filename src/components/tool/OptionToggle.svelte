@@ -7,8 +7,9 @@
     description,
     checked = $bindable(false),
     disabled = false,
+    onchange,
     class: className,
-  }: { label: string; description?: string; checked: boolean; disabled?: boolean; class?: string } = $props();
+  }: { label: string; description?: string; checked: boolean; disabled?: boolean; onchange?: (checked: boolean) => void; class?: string } = $props();
 
   const id = $props.id();
 </script>
@@ -20,5 +21,5 @@
       <span class="text-xs text-muted-foreground">{description}</span>
     {/if}
   </label>
-  <Switch {id} bind:checked {disabled} class="mt-0.5" />
+  <Switch {id} bind:checked {disabled} onCheckedChange={onchange} class="mt-0.5" />
 </div>
