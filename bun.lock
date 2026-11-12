@@ -36,6 +36,8 @@
         "@fontsource-variable/jetbrains-mono": "^5.3.0",
         "@formepdf/core": "0.23.0",
         "@formepdf/shared": "0.23.0",
+        "@mediabunny/flac-encoder": "^1.65.2",
+        "@mediabunny/mp3-encoder": "^1.65.2",
         "@neslinesli93/qpdf-wasm": "^0.3.0",
         "@pdf-lib/fontkit": "^1.1.1",
         "@signpdf/placeholder-pdf-lib": "^3.3.0",
@@ -55,6 +57,7 @@
         "jszip": "^3.10.1",
         "mammoth": "^1.13.0",
         "marked": "^18.0.5",
+        "mediabunny": "^1.65.2",
         "mode-watcher": "^1.1.0",
         "nanoid": "^5.1.6",
         "node-forge": "^1.3.3",
@@ -357,6 +360,10 @@
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
+    "@mediabunny/flac-encoder": ["@mediabunny/flac-encoder@1.65.2", "", { "peerDependencies": { "mediabunny": "^1.0.0" } }, "sha512-EcrtSDTmlImyaKarunE4xytrMueOuiSRg/QBHEVY7XUcIgO9oXLguHxRWnglv7Q7CMloDbcXZTMMlN8CUNziFg=="],
+
+    "@mediabunny/mp3-encoder": ["@mediabunny/mp3-encoder@1.65.2", "", { "peerDependencies": { "mediabunny": "^1.0.0" } }, "sha512-iuGMybEg07MH7EnDhRXJ0hH80cSJ8ftri+HbTnrE8k/YUu5AcP5l7ZTANh2ZORSsXbWYj/Hu8U/mI8Ctdzb9Rw=="],
+
     "@napi-rs/canvas": ["@napi-rs/canvas@0.1.92", "", { "optionalDependencies": { "@napi-rs/canvas-android-arm64": "0.1.92", "@napi-rs/canvas-darwin-arm64": "0.1.92", "@napi-rs/canvas-darwin-x64": "0.1.92", "@napi-rs/canvas-linux-arm-gnueabihf": "0.1.92", "@napi-rs/canvas-linux-arm64-gnu": "0.1.92", "@napi-rs/canvas-linux-arm64-musl": "0.1.92", "@napi-rs/canvas-linux-riscv64-gnu": "0.1.92", "@napi-rs/canvas-linux-x64-gnu": "0.1.92", "@napi-rs/canvas-linux-x64-musl": "0.1.92", "@napi-rs/canvas-win32-arm64-msvc": "0.1.92", "@napi-rs/canvas-win32-x64-msvc": "0.1.92" } }, "sha512-q7ZaUCJkEU5BeOdE7fBx1XWRd2T5Ady65nxq4brMf5L4cE1VV/ACq5w9Z5b/IVJs8CwSSIwc30nlthH0gFo4Ig=="],
 
     "@napi-rs/canvas-android-arm64": ["@napi-rs/canvas-android-arm64@0.1.92", "", { "os": "android", "cpu": "arm64" }, "sha512-rDOtq53ujfOuevD5taxAuIFALuf1QsQWZe1yS/N4MtT+tNiDBEdjufvQRPWZ11FubL2uwgP8ApYU3YOaNu1ZsQ=="],
@@ -579,6 +586,10 @@
 
     "@types/cropperjs": ["@types/cropperjs@1.3.3", "", { "dependencies": { "cropperjs": "*" } }, "sha512-xpX516HBzuFpvprQAB+djtV89eYBGhN8Hxw5jM2DPVW6VMmxW1y2keOcna2sKhlFO+QlqpzaJOINQGvX8ai5WQ=="],
 
+    "@types/dom-mediacapture-transform": ["@types/dom-mediacapture-transform@0.1.12", "", { "dependencies": { "@types/dom-webcodecs": "*" } }, "sha512-d7/QsLRwF864A5mgIM/YrfiglHoYn7zgCcAoJgW404r+2DwnNr7EBbLnCWpmOMgH8y0te73L1AV6H1bmauaWFw=="],
+
+    "@types/dom-webcodecs": ["@types/dom-webcodecs@0.1.13", "", {}, "sha512-O5hkiFIcjjszPIYyUSyvScyvrBoV3NOEEZx/pMlsu44TKzWNkLVBBxnxJz42in5n3QIolYOcBYFCPZZ0h8SkwQ=="],
+
     "@types/estree": ["@types/estree@1.0.8", "", {}, "sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w=="],
 
     "@types/node": ["@types/node@25.5.0", "", { "dependencies": { "undici-types": "~7.18.0" } }, "sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw=="],
@@ -754,6 +765,8 @@
     "mammoth": ["mammoth@1.13.0", "", { "dependencies": { "@xmldom/xmldom": "^0.8.6", "argparse": "~1.0.3", "base64-js": "^1.5.1", "dingbat-to-unicode": "^1.0.1", "jszip": "^3.7.1", "lop": "^0.4.2", "underscore": "^1.13.1", "xmlbuilder": "^10.0.0" }, "bin": { "mammoth": "bin/mammoth" } }, "sha512-2cawcYFcP7ISfXbBcL9lmVgTNWo88v/52ND1gnywHtVT/pX0//puPnf0iMPV9ZgmuvNOE+zkIhDgZ9M2c2dDDg=="],
 
     "marked": ["marked@18.0.5", "", { "bin": { "marked": "bin/marked.js" } }, "sha512-S6GcvALHg6K4ohtu4E7x0a1AqhAjp6cV8KhLSyN9qVapnzJkusVBxZRcIU9AeYsbe6P1hKDusSbEOzGyyuce6w=="],
+
+    "mediabunny": ["mediabunny@1.65.2", "", { "dependencies": { "@types/dom-mediacapture-transform": "^0.1.11", "@types/dom-webcodecs": "0.1.13" } }, "sha512-goZpibvo/5hkc/56WVNm93Ini+o7K4y8aXA20c/BN1B+m3L5aHQa8MTvO+S1APg/YI8kMILtrX6QCqUtxLW7bA=="],
 
     "miniflare": ["miniflare@4.20260603.0", "", { "dependencies": { "@cspotcode/source-map-support": "0.8.1", "sharp": "0.34.5", "undici": "7.24.8", "workerd": "1.20260603.1", "ws": "8.20.1", "youch": "4.1.0-beta.10" }, "bin": { "miniflare": "bootstrap.js" } }, "sha512-+kMQYB82gC8MPOuojHur3icQsUeZUEJ+Sphuo5rVC3Ri9txBLAW/mH33b9OVrpmkogQeaaqPS4tPtugJZhk5Kw=="],
 
