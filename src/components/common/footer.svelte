@@ -119,7 +119,7 @@
 
     <div class="mt-6 flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-border pt-5 text-xs text-muted-foreground">
       <p>© {currentYear} {config.appName} · v{config.appVersion}</p>
-      <p>GPL-3.0 · Runs entirely on your device</p>
+      <p>AGPL-3.0 · Runs entirely on your device</p>
     </div>
   </div>
 </footer>

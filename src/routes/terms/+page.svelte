@@ -20,7 +20,7 @@
     {
       heading: "3. Open-source license",
       paragraphs: [
-        "The software behind the Service is open source and licensed under the GNU General Public License v3.0 (GPL-3.0). You are free to use, study, modify, and redistribute it under the terms of that license. The full source code is available on GitHub.",
+        "The software behind the Service is open source and licensed under the GNU Affero General Public License v3.0 (AGPL-3.0). You are free to use, study, modify, and redistribute it under the terms of that license. The full source code is available on GitHub.",
         "These Terms of Use govern your use of the hosted website and distributed application; the GPL-3.0 governs your rights to the source code itself.",
       ],
     },

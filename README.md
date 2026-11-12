@@ -4,7 +4,7 @@
 
 Orbit PDF is a professional, high-performance PDF toolkit that runs entirely in your browser. By leveraging powerful WebAssembly (WASM) engines, it ensures your documents never leave your device, providing world-class security and speed.
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPLv3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![Svelte](https://img.shields.io/badge/Svelte-5.0-ff3e00?logo=svelte)](https://svelte.dev)
 [![WASM](https://img.shields.io/badge/Engine-WASM-654ff0?logo=webassembly)](https://webassembly.org)
 
@@ -92,7 +92,7 @@ Contributions are welcome! If you have an idea for a tool or a feature, feel fre
 
 ## 📦 Dependency Licenses
 
-Orbit PDF uses a number of open-source dependencies. Because several dependencies use licenses other than MIT (Apache-2.0, OFL-1.1, MPL-2.0), the project as a whole is licensed under GPL-3.0. Below is a summary of the key dependency licenses:
+Orbit PDF uses a number of open-source dependencies. Because several dependencies use licenses other than MIT (Apache-2.0, OFL-1.1, MPL-2.0), the project as a whole is licensed under AGPL-3.0. Below is a summary of the key dependency licenses:
 
 ### Direct Dependencies
 
@@ -144,19 +144,21 @@ Orbit PDF uses a number of open-source dependencies. Because several dependencie
 | BSD-3-Clause OR GPL-2.0 | 1 | Dual-licensed (node-forge, used under BSD-3-Clause) |
 | MIT AND Zlib | 1 | Permissive combination (pako) |
 
-> **Why GPL-3.0?**
-> The presence of Apache-2.0 licensed packages (pdfjs-dist, tesseract.js, xlsx) and MPL-2.0 packages (lightningcss) means that not all dependencies are MIT. Apache-2.0 is compatible with GPL-3.0 (but **not** GPL-2.0), so GPL-3.0 is the appropriate copyleft license for this project. This ensures that any fork or derivative work of Orbit PDF must also be open-source under the same terms and must credit the original authors.
+> **Why AGPL-3.0?**
+> The presence of Apache-2.0 licensed packages (pdfjs-dist, tesseract.js, xlsx) and MPL-2.0 packages (lightningcss) means that not all dependencies are MIT. Apache-2.0 is compatible with AGPL-3.0. AGPL also covers network use: anyone who hosts a modified Orbit as a web service must publish their source. Orbit reuses ideas and libraries from VERT (AGPL-3.0), so the project is AGPL-3.0 to match.
 
 ## 📄 License
 
-This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)** — see the [LICENSE](LICENSE) file for details.
 
 **What this means for you:**
 - ✅ You may use, study, and modify this software freely.
 - ✅ You may distribute copies of the original or modified versions.
-- ⚠️ Any distributed fork or derivative work **must** also be released under GPL-3.0.
+- ⚠️ Any distributed fork or derivative work **must** also be released under AGPL-3.0, including when it is offered over a network.
 - ⚠️ You **must** provide the source code when distributing the software.
 - ⚠️ You **must** retain and display the original copyright notice and credit **Kanak Kholwal / Orbit PDF**.
+
+Media conversion tooling is adapted from ideas and libraries in [VERT](https://github.com/VERT-sh/VERT) (AGPL-3.0).
 
 Copyright (C) 2026 Kanak Kholwal — <https://github.com/kanakkholwal/orbit>
 
