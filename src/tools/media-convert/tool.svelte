@@ -2,6 +2,7 @@
   import {
     FileRow,
     OptionGroup,
+    OptionToggle,
     ProgressLine,
     ResultCard,
     ResultDelta,
@@ -13,6 +14,7 @@
   } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { NativeSelect, NativeSelectOption } from "$components/ui/native-select";
+  import { NumberInput } from "$components/ui/number-input";
   import { Progress } from "$components/ui/progress";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
@@ -59,6 +61,12 @@
     { value: "1080", label: "Up to 1080p" },
     { value: "720", label: "Up to 720p" },
     { value: "480", label: "Up to 480p" },
+  ];
+
+  const angles = [
+    { value: "90", label: "90° right" },
+    { value: "180", label: "180°" },
+    { value: "270", label: "90° left" },
   ];
 
   const pending = $derived(store.items.filter((i) => i.status !== "done").length);
@@ -176,6 +184,36 @@
           }}
         />
       </OptionGroup>
+
+      {#if store.op === "rotate"}
+        <OptionGroup label="Turn">
+          <SegmentedControl
+            name="Rotation"
+            size="sm"
+            options={angles}
+            value={String(store.rotate)}
+            onchange={(v) => {
+              store.rotate = Number(v) as 90 | 180 | 270;
+              stale();
+            }}
+          />
+        </OptionGroup>
+        <OptionToggle
+          label="Mirror"
+          description="Flip left to right."
+          bind:checked={store.flip}
+          onchange={stale}
+        />
+      {:else if store.op === "trim"}
+        <OptionGroup label="Keep this part" description="In seconds. Leave the end at 0 to keep everything to the end.">
+          <div class="grid grid-cols-2 gap-3">
+            <NumberInput label="Start" min={0} step={0.5} suffix=" s" bind:value={store.trimStart} onValueChange={stale} />
+            <NumberInput label="End" min={0} step={0.5} suffix=" s" bind:value={store.trimEnd} onValueChange={stale} />
+          </div>
+        </OptionGroup>
+      {:else if store.op === "mute"}
+        <p class="text-sm text-muted-foreground">The picture is kept. The audio track is removed.</p>
+      {/if}
 
       <OptionGroup label="Quality" description="Lower quality makes a smaller file.">
         <SegmentedControl

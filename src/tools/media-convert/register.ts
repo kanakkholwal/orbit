@@ -2,7 +2,7 @@ import type { ToolConfig } from '../list';
 import { MEDIA_BASE, MEDIA_DEFS } from './defs';
 
 /** Popular presets that stay listed in menus next to the base tools. */
-const LISTED = new Set(['compress-video', 'video-to-audio']);
+const LISTED = new Set(['compress-video', 'video-to-audio', 'mute-video', 'rotate-video', 'trim-video', 'trim-audio']);
 const baseFor = (kind: string) => (kind === 'audio' ? 'audio-converter' : 'video-converter');
 
 export const MEDIA_ALIAS_BASE: Record<string, string> = Object.fromEntries(

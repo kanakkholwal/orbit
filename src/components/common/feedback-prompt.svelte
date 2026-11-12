@@ -13,7 +13,7 @@
   let mounted = $state(false);
 
   const tweetText = encodeURIComponent(
-    `I've been using ${config.appName} — a free, offline, privacy-first PDF toolkit. ${config.github}`,
+    `I've been using ${config.appName} — a free, offline, privacy-first toolkit for PDFs, photos, video and audio. ${config.github}`,
   );
   const tweetUrl = `https://twitter.com/intent/tweet?text=${tweetText}`;
 
@@ -51,7 +51,7 @@
     role="dialog"
     aria-label="Share feedback"
     class={[
-      "fixed bottom-4 right-4 z-50 w-[min(92vw,22rem)]",
+      "fixed bottom-24 right-4 z-50 w-[min(92vw,22rem)]",
       "rounded-xl border bg-background/95 backdrop-blur shadow-xl",
       "p-4 transition-all duration-(--duration-slow) ease-out",
       mounted

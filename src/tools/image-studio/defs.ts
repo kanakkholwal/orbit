@@ -149,7 +149,13 @@ const conversions = [
     convert('WebP', 'JPG', 'jpeg', ['webp to jpeg']),
     convert('HEIC', 'JPG', 'jpeg', ['iphone photo to jpg', 'heic to jpeg']),
     convert('JPG', 'WebP', 'webp'),
-    convert('PNG', 'WebP', 'webp')
+    convert('PNG', 'WebP', 'webp'),
+    convert('AVIF', 'JPG', 'jpeg', ['avif to jpeg']),
+    convert('AVIF', 'PNG', 'png'),
+    convert('BMP', 'JPG', 'jpeg', ['bmp to jpeg']),
+    convert('GIF', 'PNG', 'png', ['gif to still image']),
+    convert('WebP', 'PNG', 'png'),
+    convert('HEIC', 'PNG', 'png', ['iphone photo to png'])
 ];
 
 const social: StudioDef[] = [
@@ -177,7 +183,33 @@ const social: StudioDef[] = [
     }
 ];
 
+const sized = (slug: string, title: string, presetId: string, description: string, keywords: string[]): StudioDef => ({
+    slug,
+    title,
+    seoTitle: `${title}: Exact Size, No Upload`,
+    description,
+    icon: IconPhotoUp,
+    mode: 'resize',
+    presetId,
+    color: 'text-sky-500',
+    keywords: [...keywords, ...noUpload]
+});
+
+const socialSizes: StudioDef[] = [
+    sized('youtube-thumbnail-resizer', 'YouTube Thumbnail Resizer', 'yt-thumb', 'Resize any image to the 1280 x 720 YouTube thumbnail size, under the 2 MB limit. Free, private, and nothing is uploaded.', ['youtube thumbnail size', 'resize image for youtube thumbnail', '1280x720 image', 'thumbnail resizer']),
+    sized('whatsapp-dp-resizer', 'WhatsApp Profile Picture Resizer', 'whatsapp-dp', 'Resize a photo to a 500 x 500 square for your WhatsApp profile picture. Free, private, and nothing is uploaded.', ['whatsapp dp size', 'whatsapp profile picture size', 'resize image for whatsapp dp', 'whatsapp dp maker']),
+    sized('linkedin-profile-photo-resizer', 'LinkedIn Profile Photo Resizer', 'linkedin-profile', 'Resize a photo to the 400 x 400 size LinkedIn recommends for profile pictures. Free, private, and nothing is uploaded.', ['linkedin profile picture size', 'resize image for linkedin', 'linkedin photo size']),
+    sized('instagram-story-resizer', 'Instagram Story and Reel Resizer', 'story', 'Resize an image to the 1080 x 1920 size for Instagram stories and reels. Free, private, and nothing is uploaded.', ['instagram story size', 'resize image for instagram story', 'reel cover size', '1080x1920 image']),
+    sized('x-header-resizer', 'X (Twitter) Header Resizer', 'x-header', 'Resize an image to the 1500 x 500 header size for X and Twitter. Free, private, and nothing is uploaded.', ['twitter header size', 'x header size', 'resize image for twitter header', '1500x500 image'])
+];
+
+const moreForms: StudioDef[] = [
+    form('china-visa-photo', 'China Visa Photo Maker', 'visa-33x48', 'Crop and resize a photo to 33 x 48 mm for a China visa application. Free, private, and nothing is uploaded.', ['china visa photo size', '33x48 mm photo', 'chinese visa photo']),
+    form('pan-card-photo-resizer', 'PAN Card Photo Resizer', 'id-25x35', 'Crop and resize a photo to 25 x 35 mm for PAN style ID forms. Free, private, and nothing is uploaded.', ['pan card photo size', 'pan photo resize', '25x35 mm photo', 'id photo 25x35']),
+    form('signature-200x80', 'Signature 200 x 80 Resizer', 'sig-200x80', 'Resize a scanned signature to 200 x 80 px under 30 KB. Free, private, and nothing is uploaded.', ['signature 200x80', 'signature size 200x80', 'signature under 30kb'], IconSignature)
+];
+
 export const STUDIO_BASE = base;
-export const STUDIO_DEFS: StudioDef[] = [...base, ...presets, ...sizeLimits, ...conversions, ...social];
+export const STUDIO_DEFS: StudioDef[] = [...base, ...presets, ...sizeLimits, ...conversions, ...social, ...socialSizes, ...moreForms];
 
 export const getStudioDef = (slug: string | undefined) => STUDIO_DEFS.find((d) => d.slug === slug);

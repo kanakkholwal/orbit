@@ -32,6 +32,14 @@ export interface ConvertOptions {
     maxHeight?: number;
     /** Write the output to a temporary file on disk (OPFS) instead of memory. */
     stream?: boolean;
+    /** Drop the audio track from a video. */
+    mute?: boolean;
+    /** Clockwise degrees, plus an optional mirror, baked into the frames. */
+    rotate?: 0 | 90 | 180 | 270;
+    flip?: boolean;
+    /** Keep only this range, in seconds. */
+    trimStart?: number;
+    trimEnd?: number;
 }
 
 export interface MediaResult {
@@ -149,9 +157,15 @@ export class MediaJob {
                 const max = this.opts.maxHeight;
                 const track = max ? await input.getPrimaryVideoTrack() : null;
                 if (max && track && track.displayHeight > max) video.height = max;
+                if (this.opts.rotate) video.rotate = this.opts.rotate;
+                if (this.opts.flip) video.flip = true;
+                if (this.opts.rotate || this.opts.flip) video.allowRotationMetadata = false;
             }
+            const audio = format.kind === 'video' && this.opts.mute ? { discard: true } : { bitrate: q };
+            const { trimStart, trimEnd } = this.opts;
+            const trim = trimStart || trimEnd ? { start: trimStart ?? 0, ...(trimEnd ? { end: trimEnd } : {}) } : undefined;
 
-            this.conversion = await mb.Conversion.init({ input, output, video, audio: { bitrate: q } });
+            this.conversion = await mb.Conversion.init({ input, output, video, audio, ...(trim ? { trim } : {}) });
             if (!this.conversion.isValid) {
                 const reasons = this.conversion.discardedTracks.map((d) => d.reason).join(', ');
                 throw new Error(`This browser cannot convert that file${reasons ? ` (${reasons})` : ''}.`);

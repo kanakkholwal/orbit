@@ -62,7 +62,7 @@
         <span class="mb-4 w-fit -rotate-2 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-semibold text-foreground">
           {BLOCK_LIST.length} blocks · {PRESETS.length} templates · {THEMES.length} themes
         </span>
-        <h1 class="text-balance text-3xl font-medium text-foreground md:text-4xl">Create a PDF from scratch</h1>
+        <h2 class="text-balance text-3xl font-medium text-foreground md:text-4xl">Create a PDF from scratch</h2>
         <p class="mt-3 text-pretty text-sm text-muted-foreground md:text-base">
           Pick a template, type straight onto the page, and download a crisp PDF. Everything stays on this device.
         </p>
