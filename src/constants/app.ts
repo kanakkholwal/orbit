@@ -13,6 +13,7 @@ const config = {
     appDomain: "orbit.nexonauts.com",
     github: "https://github.com/kanakkholwal/orbit",
     twitter: "https://twitter.com/kanakkholwal",
+    sponsor: "https://github.com/sponsors/kanakkholwal",
     // AdSense forbids ads inside desktop apps, so desktop builds never get a publisher id.
     adsensePublisherId: dev || import.meta.env.TAURI_ENV_PLATFORM ? "" : (PUBLIC_ADSENSE_PUBLISHER_ID?.trim() || ""),
     googleAnalyticsId: dev || import.meta.env.TAURI_ENV_PLATFORM ? "" : (PUBLIC_GOOGLE_ANALYTICS_ID?.trim() || ""),

@@ -15,6 +15,7 @@
     IconHome as Home,
     IconLayoutSidebar as PanelIcon,
     IconSearch as Search,
+    IconSettings as SettingsIcon,
     IconBrandGithub,
   } from "$lib/icons";
   import RailLink from "./RailLink.svelte";
@@ -66,6 +67,7 @@
 
   <div class="flex-1"></div>
 
+  <RailLink label="Settings" icon={SettingsIcon} href="/settings" active={path.startsWith("/settings")} />
   <RailLink label="Star on GitHub" icon={IconBrandGithub} href={config.github} />
   {#if !appState.isTauri}
     <RailLink label="Get the desktop app" icon={Download} href="/download" />
