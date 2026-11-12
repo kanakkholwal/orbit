@@ -85,11 +85,7 @@
         description={`${store.done.length} ${store.done.length === 1 ? "file is" : "files are"} ready to download.`}
       >
         {#snippet actions()}
-          <Button onclick={() => store.downloadAll()}>
-            <Download />
-            {store.done.length > 1 ? "Download ZIP" : "Download"}
-          </Button>
-          <Button variant="ghost" onclick={() => store.reset()}>
+          <Button variant="outline" onclick={() => store.reset()}>
             <Refresh />
             Start over
           </Button>
@@ -136,7 +132,7 @@
 
             {#snippet trailing()}
               {#if item.status === "done"}
-                <Button variant="ghost" size="icon-sm" aria-label={`Download ${item.result?.name}`} onclick={() => store.download(item)}>
+                <Button variant="ghost" size="icon-sm" class="max-sm:size-11" aria-label={`Download ${item.result?.name}`} onclick={() => store.download(item)}>
                   <Download class="size-4" />
                 </Button>
               {:else if item.status === "error"}
@@ -162,7 +158,7 @@
     />
   </div>
 
-  <WorkspaceInspector title={def.title}>
+  <WorkspaceInspector title="Options">
     <div class="flex flex-col gap-6">
       <OptionGroup label="Convert to">
         <SegmentedControl

@@ -34,6 +34,8 @@ export function buildImageTools(): Record<string, ToolConfig> {
             seoTitle: d.seoTitle,
             description: d.description,
             category: 'images',
+            alias: !STUDIO_BASE.includes(d),
+            isNew: STUDIO_BASE.includes(d),
             layout: 'canvas',
             icon: d.icon,
             color: d.color ?? 'text-primary',

@@ -73,7 +73,7 @@
         variant="ghost"
         size="icon-sm"
         onclick={onRemove}
-        class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+        class="text-muted-foreground hover:bg-destructive/10 hover:text-destructive max-sm:size-11"
         aria-label={`Remove ${name}`}
       >
         <X class="size-4" />

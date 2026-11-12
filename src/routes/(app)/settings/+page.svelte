@@ -71,9 +71,9 @@
       <p class="text-xs tabular-nums text-muted-foreground">Example: {preview}</p>
     </ToolPanel>
 
-    <ToolPanel title="Image quality" description="Lower is smaller. 80 to 90 looks the same for most photos." class="rise [--i:2] lg:col-span-5" contentClass="flex h-full flex-col justify-end">
+    <ToolPanel title="Image output" description="Lower quality is smaller. 80 to 90 looks the same for most photos." class="rise [--i:2] lg:col-span-5" contentClass="flex h-full flex-col justify-end">
       <Slider
-        label="Image quality"
+        label="Quality"
         min={40}
         max={100}
         showValue
@@ -129,8 +129,8 @@
       <Button variant="outline" class="min-h-11 self-start" onclick={resetAll}>Reset all settings</Button>
     </ToolPanel>
 
-    <div class="rise rounded-2xl bg-foreground p-5 text-background [--i:6] md:col-span-2 lg:col-span-12">
-      <SponsorCard tone="inverse" />
-    </div>
+    <ToolPanel title="Support Orbit" class="rise [--i:6] md:col-span-2 lg:col-span-12">
+      <SponsorCard />
+    </ToolPanel>
   </div>
 </div>

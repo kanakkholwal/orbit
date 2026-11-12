@@ -5,6 +5,14 @@
   import Logo from "$components/Logo.svelte";
   import ThemeToggle from "$components/ThemeToggle.svelte";
   import { Badge } from "$components/ui/badge";
+  import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+  } from "$components/ui/breadcrumb";
   import { Button } from "$components/ui/button";
   import { config } from "$constants/app";
   import { toolsCategories } from "$constants/tools";
@@ -17,7 +25,7 @@
     IconCompass as Compass,
     IconDownload as Download,
     IconHome as Home,
-    IconChevronRight as Chevron,
+    IconSettings as SettingsIcon,
     IconShare as Share,
     IconShieldCheck as Shield,
   } from "$lib/icons";
@@ -35,7 +43,11 @@
   const path = $derived(page.url.pathname);
   const category = $derived(tool ? toolsCategories.find((c) => c.id === tool.category)?.name : null);
   const place = $derived(
-    path.startsWith("/explore") ? { title: "Explore tools", icon: Compass } : { title: "Home", icon: Home }
+    path.startsWith("/explore")
+      ? { title: "Explore tools", icon: Compass }
+      : path.startsWith("/settings")
+        ? { title: "Settings", icon: SettingsIcon }
+        : { title: "Home", icon: Home }
   );
 </script>
 
@@ -43,44 +55,49 @@
   class="flex min-h-12 shrink-0 items-center gap-3 border-b border-border bg-background px-3 md:px-4"
   style="padding-top: env(safe-area-inset-top);"
 >
-  <a href="/" aria-label={`${config.appName} home`} class="grid size-9 shrink-0 place-items-center md:hidden">
+  <a href="/" aria-label={`${config.appName} home`} class="grid size-9 shrink-0 place-items-center max-[360px]:hidden md:hidden">
     <Logo markOnly size="xs" class="h-6 text-foreground" />
   </a>
 
-  <div class="flex min-w-0 flex-1 items-center gap-2.5">
+  <div class="flex min-w-0 flex-1 basis-0 items-center">
     {#if tool}
-      <nav aria-label="Breadcrumb" class="flex min-w-0 items-center gap-1.5 text-sm">
-        <a href="/explore" class="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground sm:inline">Tools</a>
-        {#if category}
-          <Chevron class="hidden size-3 shrink-0 text-muted-foreground sm:block" />
-          <a
-            href={`/explore?category=${tool.category}`}
-            class="hidden shrink-0 text-muted-foreground transition-colors hover:text-foreground md:inline"
-          >
-            {category}
-          </a>
-          <Chevron class="hidden size-3 shrink-0 text-muted-foreground md:block" />
-        {/if}
-        <h1 class="flex min-w-0 items-center gap-2 truncate font-medium text-foreground">
-          <tool.icon class="size-4 shrink-0 text-primary" />
-          <span class="truncate">{tool.title}</span>
-        </h1>
-      </nav>
-      <Badge variant="secondary" class="ml-1 hidden shrink-0 lg:inline-flex">
-        <Shield class="size-3" />
-        On device
-      </Badge>
+      <Breadcrumb class="min-w-0">
+        <BreadcrumbList class="flex-nowrap">
+          <BreadcrumbItem class="hidden sm:inline-flex">
+            <BreadcrumbLink href="/explore">Tools</BreadcrumbLink>
+          </BreadcrumbItem>
+          {#if category}
+            <BreadcrumbSeparator class="hidden sm:flex" />
+            <BreadcrumbItem class="hidden md:inline-flex">
+              <BreadcrumbLink href={`/explore?category=${tool.category}`}>{category}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator class="hidden md:flex" />
+          {/if}
+          <BreadcrumbItem class="min-w-0">
+            <BreadcrumbPage class="flex min-w-0 items-center gap-2">
+              <tool.icon class="size-4 shrink-0 text-primary" />
+              <span class="truncate" title={tool.title}>{tool.title}</span>
+            </BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
     {:else}
-      <place.icon class="hidden size-4 text-muted-foreground sm:block" />
+      <place.icon class="mr-2 hidden size-4 text-muted-foreground sm:block" />
       <span class="truncate text-sm font-medium text-foreground">{place.title}</span>
     {/if}
   </div>
 
   {#if tool}
-    <SearchTrigger class="hidden w-64 md:flex lg:w-80" />
+    <SearchTrigger class="hidden w-72 shrink-0 lg:flex xl:w-80" />
   {/if}
 
-  <div class="flex flex-1 items-center justify-end gap-1.5">
+  <div class="flex shrink-0 items-center justify-end gap-1.5 md:flex-1 md:basis-0">
+    {#if tool}
+      <Badge variant="secondary" class="hidden shrink-0 xl:inline-flex">
+        <Shield class="size-3" />
+        On device
+      </Badge>
+    {/if}
     {#if workspace.inspector && !wide}
       <Button variant="outline" size="sm" onclick={() => (workspace.inspectorDrawerOpen = true)}>
         <Adjustments />
@@ -98,6 +115,7 @@
         data={{ title: tool.title, text: `Try ${tool.title} on ${config.appName}`, url: page.url.href }}
         variant="ghost"
         size="sm"
+        class="max-[360px]:hidden"
       >
         <Share class="size-4" />
         <span class="hidden lg:inline">Share</span>

@@ -1,3 +1,4 @@
+export { default as ChipGroup } from "./ChipGroup.svelte";
 export { default as ChoiceList } from "./ChoiceList.svelte";
 export { default as FileRow } from "./FileRow.svelte";
 export { default as OptionGroup } from "./OptionGroup.svelte";

@@ -21,6 +21,7 @@ export function buildCompressPdfAliases(): Record<string, ToolConfig> {
             seoTitle: `Compress PDF to ${label(kb)} Online Without Uploading`,
             description: `Shrink a PDF to under ${label(kb)} for forms, portals and email. The tool tightens compression step by step until the file fits. Free, private, and nothing is uploaded.`,
             category: 'essentials',
+            alias: true,
             icon: IconGauge,
             color: 'text-yellow-500',
             keywords: [`compress pdf to ${s}`, `reduce pdf size to ${s}`, `pdf under ${s}`, `pdf ${s}`, 'compress pdf to size', ...noUpload],

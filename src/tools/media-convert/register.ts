@@ -1,6 +1,8 @@
 import type { ToolConfig } from '../list';
 import { MEDIA_BASE, MEDIA_DEFS } from './defs';
 
+/** Popular presets that stay listed in menus next to the base tools. */
+const LISTED = new Set(['compress-video', 'video-to-audio']);
 const baseFor = (kind: string) => (kind === 'audio' ? 'audio-converter' : 'video-converter');
 
 export const MEDIA_ALIAS_BASE: Record<string, string> = Object.fromEntries(
@@ -17,6 +19,8 @@ export function buildMediaTools(): Record<string, ToolConfig> {
             seoTitle: d.seoTitle,
             description: d.description,
             category: 'media',
+            alias: !MEDIA_BASE.includes(d) && !LISTED.has(d.slug),
+            isNew: MEDIA_BASE.includes(d),
             layout: 'canvas',
             icon: d.icon,
             color: d.color ?? 'text-primary',

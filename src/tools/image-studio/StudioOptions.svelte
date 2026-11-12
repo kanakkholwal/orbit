@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { OptionGroup, OptionToggle, SegmentedControl } from "$components/tool";
+  import { ChipGroup, OptionGroup, OptionToggle, SegmentedControl } from "$components/tool";
   import { NativeSelect, NativeSelectOptGroup, NativeSelectOption } from "$components/ui/native-select";
   import { NumberInput } from "$components/ui/number-input";
   import { Slider } from "$components/ui/slider";
@@ -24,10 +24,14 @@
     { value: "contain", label: "Fit" },
     { value: "fill", label: "Stretch" },
   ];
-  const limitChips = [20, 50, 100, 200, 500, 1024].map((kb) => ({
-    value: String(kb),
-    label: kb >= 1024 ? `${kb / 1024} MB` : `${kb} KB`,
-  }));
+  const limitChips = [
+    { value: "0", label: "No limit" },
+    ...[20, 50, 100, 200, 500, 1024].map((kb) => ({
+      value: String(kb),
+      label: kb >= 1024 ? `${kb / 1024} MB` : `${kb} KB`,
+    })),
+  ];
+  const chipValue = $derived(!store.opts.useLimit ? "0" : limitChips.some((c) => c.value === String(store.opts.maxKB)) ? String(store.opts.maxKB) : "");
 
   const groups = $derived.by(() => {
     const wanted: PresetGroup[] =
@@ -36,7 +40,7 @@
   });
   const preset = $derived(getPreset(store.presetId));
   const pixels = $derived(store.outputPixels);
-  const showPresets = $derived(store.mode === "form" || store.mode === "resize" || store.mode === "compress");
+  const showPresets = $derived(store.mode === "form" || store.mode === "resize");
   const sizeLocked = $derived(store.mode === "resize" && store.opts.lockAspect);
 
   /** Any option change makes finished results stale. */
@@ -50,7 +54,7 @@
 
 <div class="flex flex-col gap-6">
   {#if showPresets}
-    <OptionGroup label={store.mode === "compress" ? "Size limit" : "Preset"} description={preset?.note}>
+    <OptionGroup label="Preset" description={preset?.note}>
       <NativeSelect
         aria-label="Preset"
         value={store.presetId ?? ""}
@@ -141,29 +145,47 @@
     </OptionGroup>
   {/if}
 
-  {#if store.mode === "compress" || store.mode === "form"}
-    <OptionGroup label="File size limit" description="Quality drops until the file fits.">
+  {#if store.mode === "compress"}
+    <OptionGroup label="Size limit" description="Quality drops until the file fits.">
       <div class="flex flex-col gap-3">
-        {#if store.mode === "form"}
-          <OptionToggle label="Limit file size" bind:checked={store.opts.useLimit} onchange={stale} />
-        {/if}
+        <ChipGroup
+          name="Size limit"
+          options={limitChips}
+          value={chipValue}
+          onchange={(v) => {
+            const kb = Number(v);
+            store.opts.useLimit = kb > 0;
+            if (kb > 0) store.opts.maxKB = kb;
+            store.presetId = kb > 0 ? `under-${kb}kb` : undefined;
+            stale();
+          }}
+        />
         {#if store.opts.useLimit}
-          {#if store.mode === "compress"}
-            <SegmentedControl
-              name="Quick limits"
-              size="sm"
-              options={limitChips}
-              value={String(store.opts.maxKB)}
-              onchange={(v) => {
-                store.opts.maxKB = Number(v);
-                store.presetId = `under-${v}kb`;
-                stale();
-              }}
-            />
-          {/if}
+          <NumberInput
+            label="Custom limit"
+            min={1}
+            step={10}
+            suffix=" KB"
+            value={store.opts.maxKB || null}
+            onValueChange={(v) => {
+              store.opts.maxKB = v ?? 0;
+              store.presetId = undefined;
+              stale();
+            }}
+          />
+        {/if}
+      </div>
+    </OptionGroup>
+  {/if}
+
+  {#if store.mode === "form"}
+    <OptionGroup label="File size limit" description="Forms often reject files that are too big or too small.">
+      <div class="flex flex-col gap-3">
+        <OptionToggle label="Limit file size" bind:checked={store.opts.useLimit} onchange={stale} />
+        {#if store.opts.useLimit}
           <div class="grid grid-cols-2 gap-3">
             <NumberInput
-              label="Under"
+              label="At most"
               min={1}
               step={10}
               suffix=" KB"

@@ -33,9 +33,9 @@
       onchange?.(v as T);
     }
   }}
-  class={cn("w-full", className)}
+  class={cn("w-full max-sm:h-11", className)}
 >
   {#each options as option (option.value)}
-    <ToggleGroupItem value={option.value} class="flex-1">{option.label}</ToggleGroupItem>
+    <ToggleGroupItem value={option.value} class="flex-1 whitespace-nowrap max-sm:h-9.5">{option.label}</ToggleGroupItem>
   {/each}
 </ToggleGroup>

@@ -141,6 +141,9 @@
     if (!accept || accept === "*" || accept === "*/*") return "Any file";
     const types = accept.split(",").map((t) => t.trim().toLowerCase()).filter(Boolean);
     if (types.every((t) => t.includes("pdf"))) return "PDF";
+    const names = { image: "Images", video: "Video", audio: "Audio" } as const;
+    const kinds = (Object.keys(names) as (keyof typeof names)[]).filter((k) => types.includes(`${k}/*`));
+    if (kinds.length > 0) return kinds.map((k) => names[k]).join(", ");
     const imageRe = /^image\/|\.(png|jpe?g|gif|bmp|tiff?|webp|hei[cf]|ico|psd|jxr|jp2|jpx)$/;
     if (types.every((t) => imageRe.test(t))) return "Images";
     const exts = [

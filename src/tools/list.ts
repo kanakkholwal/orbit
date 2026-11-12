@@ -81,6 +81,10 @@ export interface ToolConfig {
     seoTitle?: string;
     /** Slugs to show first as related tools. Links count in both directions. */
     related?: string[];
+    /** SEO landing page for a preset of another tool. Searchable, but not listed in menus. */
+    alias?: boolean;
+    /** Shows a New badge in the tools panel. */
+    isNew?: boolean;
 }
 /*
 * Centralized configuration for all tools in the application.
@@ -823,4 +827,4 @@ export const getRecommendedTools = (slug: string): Omit<ToolConfig & {relevance:
 }
 
 export const getToolsByCategory = (category: string) => Object.values(tools)
-    .filter(tool => tool.category === category);
+    .filter(tool => tool.category === category && !tool.alias);
