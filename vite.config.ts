@@ -7,6 +7,8 @@ import { defineConfig } from 'vite';
 
 
 export default defineConfig({
+	// The pandoc worker lazy-loads JSZip, which needs a code-splitting worker format.
+	worker: { format: 'es' },
 	resolve: {
 		// pandoc-wasm only exports its entry, but the environment-agnostic core is what the worker needs.
 		alias: { 'pandoc-wasm/core': resolve('node_modules/pandoc-wasm/src/core.js') }
