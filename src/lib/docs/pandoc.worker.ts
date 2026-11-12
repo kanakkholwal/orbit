@@ -32,11 +32,13 @@ async function convert(file: File, to: string): Promise<WorkerResponse> {
     const pandoc = await ensure();
     const base = file.name.replace(/\.[^.]+$/, '');
     const outName = `${base}.${target.id}`;
+    // A fixed temp name, so converting a file to its own format cannot overwrite the input.
+    const fsOut = `orbit-output.${target.id}`;
     const options: Record<string, unknown> = {
         from: from.reader,
         to: target.writer,
         'input-files': [file.name],
-        'output-file': outName,
+        'output-file': fsOut,
         'extract-media': '.'
     };
     if (target.standalone) options.standalone = true;
@@ -44,7 +46,7 @@ async function convert(file: File, to: string): Promise<WorkerResponse> {
     const result = await pandoc.convert(options, null, { [file.name]: file });
     const stderr = result.stderr.trim();
     if (stderr) return { type: 'error', error: stderr };
-    const output = result.files[outName];
+    const output = result.files[fsOut];
     if (!output) return { type: 'error', error: `Nothing was produced for ${from.label} to ${target.label}.` };
 
     const media = Object.entries(result.mediaFiles ?? {});

@@ -45,7 +45,7 @@
 </script>
 
 <Seo
-  title="Orbit: Free, Private Tools for PDFs, Photos, Video and Documents"
+  title="Orbit Files: Free, Private Tools for PDFs, Photos, Video and Documents"
   description={config.appDescription}
   keywords={config.appKeywords}
   isBase={true}
@@ -54,6 +54,7 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       name: config.appName,
+      alternateName: "Orbit",
       url: `https://${config.appDomain}`,
       potentialAction: {
         "@type": "SearchAction",
