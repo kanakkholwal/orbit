@@ -1,5 +1,6 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
 import { deviceProfile, formatCap } from '$lib/device-profile.svelte';
+import { downloadMany } from '$lib/download-many';
 import { cleanupStaleOutputs, getMediaFormat, MediaJob, type MediaFormatId, type MediaQuality } from '$lib/media/convert';
 import { settings } from '$lib/settings/settings.svelte';
 import { toast } from 'svelte-sonner';
@@ -133,26 +134,7 @@ export class MediaConvertState extends BaseEngine {
     }
 
     async downloadAll() {
-        const results = this.done;
-        if (results.length === 0) return;
-        if (results.length === 1) return this.download(results[0]);
-        const total = results.reduce((sum, i) => sum + (i.result?.blob.size ?? 0), 0);
-        if (total > deviceProfile.capFor('zip')) {
-            // A ZIP is built in memory, so large batches are saved one by one instead.
-            toast.info('Saving one by one', { description: 'These files are large, so they download individually instead of as a ZIP.' });
-            for (const item of results) this.download(item);
-            return;
-        }
-        const { default: JSZip } = await import('jszip');
-        const zip = new JSZip();
-        const used = new Set<string>();
-        for (const { result } of results) {
-            if (!result) continue;
-            let name = result.name;
-            for (let n = 2; used.has(name); n++) name = result.name.replace(/(\.[^.]+)?$/, `-${n}$1`);
-            used.add(name);
-            zip.file(name, result.blob);
-        }
-        this.downloadBlob(await zip.generateAsync({ type: 'blob' }), 'orbit-media.zip');
+        const files = this.done.flatMap((i) => (i.result ? [{ blob: i.result.blob, name: i.result.name }] : []));
+        await downloadMany(files, 'orbit-media.zip', (blob, name) => this.downloadBlob(blob, name));
     }
 }

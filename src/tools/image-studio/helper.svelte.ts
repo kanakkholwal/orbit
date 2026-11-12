@@ -1,5 +1,6 @@
 import { BaseEngine } from '$lib/base-engine.svelte';
 import { mapLimit } from '$lib/device-limits';
+import { downloadMany } from '$lib/download-many';
 import {
     EXT,
     decode,
@@ -333,19 +334,7 @@ export class ImageStudioState extends BaseEngine {
     }
 
     async downloadAll() {
-        const results = this.done;
-        if (results.length === 0) return;
-        if (results.length === 1) return this.download(results[0]);
-        const { default: JSZip } = await import('jszip');
-        const zip = new JSZip();
-        const used = new Set<string>();
-        for (const { result } of results) {
-            if (!result) continue;
-            let name = result.name;
-            for (let n = 2; used.has(name); n++) name = result.name.replace(/(\.[^.]+)?$/, `-${n}$1`);
-            used.add(name);
-            zip.file(name, result.blob);
-        }
-        this.downloadBlob(await zip.generateAsync({ type: 'blob' }), 'orbit-images.zip');
+        const files = this.done.flatMap((i) => (i.result ? [{ blob: i.result.blob, name: i.result.name }] : []));
+        await downloadMany(files, 'orbit-images.zip', (blob, name) => this.downloadBlob(blob, name));
     }
 }

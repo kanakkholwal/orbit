@@ -60,6 +60,7 @@ import type { Component } from 'svelte';
 import { buildExtraTools, PAIRS } from './extra';
 import { buildCompressPdfAliases } from './compress-pdf/aliases';
 import { buildImageTools } from './image-studio/register';
+import { buildDocTools } from './document-convert/register';
 import { buildMediaTools } from './media-convert/register';
 
 
@@ -801,6 +802,7 @@ const tools: Record<string, ToolConfig> = {
 Object.assign(tools, buildExtraTools(tools));
 Object.assign(tools, buildImageTools());
 Object.assign(tools, buildMediaTools());
+Object.assign(tools, buildDocTools());
 Object.assign(tools, buildCompressPdfAliases());
 
 Object.freeze(tools);
