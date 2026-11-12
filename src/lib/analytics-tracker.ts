@@ -1,3 +1,5 @@
+import { settings } from '$lib/settings/settings.svelte';
+
 /**
  * Generic Google Analytics event tracker
  * @param eventName - The name of the event (e.g., 'file_download', 'file_upload')
@@ -7,7 +9,7 @@ export function trackEvent(
   eventName: string,
   eventData: Record<string, string | number | boolean>
 ) {
-  if (typeof window === 'undefined' || !window?.gtag) {
+  if (typeof window === 'undefined' || !window?.gtag || !settings.value.analytics) {
     return;
   }
 

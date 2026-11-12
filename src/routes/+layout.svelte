@@ -20,6 +20,7 @@
   import TitleBar from "$components/layout/TitleBar.svelte";
   import { initTauriFileDrop } from "$lib/runtime/file-drop.svelte";
   import { loadRecentTools } from "$lib/runtime/recent-tools.svelte";
+  import { settings } from "$lib/settings/settings.svelte";
   import { initTauriOpenedPdfs } from "$lib/runtime/tauri-opened-pdf.svelte";
 
   let isTauri = $derived(appState.isTauri);
@@ -41,6 +42,7 @@
 
     // Recently-used tools (workspace "jump back in")
     loadRecentTools();
+    settings.load();
 
     if (appState.isTauri) {
       // Native drag-from-Explorer file drop bridge

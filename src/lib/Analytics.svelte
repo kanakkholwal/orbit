@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { config } from '$constants/app';
+  import { settings } from '$lib/settings/settings.svelte';
   import { onMount } from 'svelte';
   
   let { googleAnalyticsId }  = config
@@ -22,7 +23,7 @@
 </script>
 
 <svelte:head>
-  {#if googleAnalyticsId && browser}
+  {#if googleAnalyticsId && browser && settings.value.analytics}
     <script async src="https://www.googletagmanager.com/gtag/js?id={googleAnalyticsId}"></script>
   {/if}
 </svelte:head>
