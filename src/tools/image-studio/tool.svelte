@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { FileRow, ProgressLine, ResultCard, StatusPill, ToolBar, ToolFooter } from "$components/tool";
+  import { FileRow, ProgressLine, ResultCard, ResultDelta, StatusPill, ToolBar, ToolFooter, deltaTone } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { ImageCompare } from "$components/ui/image-compare";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
   import { IconArrowRight as ArrowRight, IconDownload as Download, IconPlus as Plus, IconRefresh as Refresh } from "$lib/icons";
+  import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import { onDestroy, untrack } from "svelte";
   import Cropper from "./Cropper.svelte";
@@ -30,6 +31,9 @@
     store.isProcessing ? "Working…" : pending > 0 ? `${verb} ${pending} ${pending === 1 ? "image" : "images"}` : verb
   );
   const active = $derived(store.active);
+  // Only size-reducing jobs are judged green or red; resizes and conversions can legitimately grow a file.
+  const judged = $derived(store.mode === "compress" || store.opts.useLimit);
+  const limitBytes = $derived(store.opts.useLimit ? store.opts.maxKB * 1024 : undefined);
   const compared = $derived(!store.usesCrop ? store.done[0] : undefined);
 </script>
 
@@ -48,8 +52,11 @@
   <div class="flex flex-col gap-4">
     {#if showResult}
       <ResultCard
-        title={store.totalSaved > 0 ? `${formatBytes(store.totalSaved)} smaller` : "Done"}
-        description={`${store.done.length} ${store.done.length === 1 ? "image is" : "images are"} ready to download.`}
+        tone={judged && store.totalSaved <= 0 ? "bad" : "good"}
+        title={store.totalSaved > 0 ? `${formatBytes(store.totalSaved)} smaller` : judged ? "No size saved" : "Done"}
+        description={judged && store.totalSaved <= 0
+          ? "The result is not smaller. Lower the quality or the size limit and try again."
+          : `${store.done.length} ${store.done.length === 1 ? "image is" : "images are"} ready to download.`}
       >
         {#snippet actions()}
           <Button onclick={() => store.downloadAll()}>
@@ -110,18 +117,27 @@
             name={item.file.name}
             thumb={item.previewUrl}
             active={store.usesCrop && active?.id === item.id}
+            tone={item.result && judged ? deltaTone(item.file.size, item.result.blob.size, limitBytes) : undefined}
             onSelect={store.usesCrop ? () => (store.activeId = item.id) : undefined}
             onRemove={store.isProcessing ? undefined : () => store.removeItem(item.id)}
           >
-            <span>{item.width} x {item.height} · {formatBytes(item.file.size)}</span>
             {#if item.status === "done" && item.result}
-              <ArrowRight class="size-3" aria-label="became" />
-              <span class="font-medium text-foreground">
-                {item.result.width} x {item.result.height} · {formatBytes(item.result.blob.size)}
-              </span>
-              {#if !item.result.metTarget}
-                <span class="text-destructive">Over the limit</span>
+              <span>{item.width} x {item.height}</span>
+              {#if item.result.width !== item.width || item.result.height !== item.height}
+                <ArrowRight class="size-3" aria-label="became" />
+                <span class="text-foreground">{item.result.width} x {item.result.height}</span>
               {/if}
+              <span aria-hidden="true">·</span>
+              <span>{formatBytes(item.file.size)}</span>
+              <ArrowRight class="size-3" aria-label="became" />
+              <span class={cn("font-medium", judged ? (deltaTone(item.file.size, item.result.blob.size, limitBytes) === "bad" ? "text-destructive-strong" : "text-success-strong") : "text-foreground")}>
+                {formatBytes(item.result.blob.size)}
+              </span>
+              {#if judged}
+                <ResultDelta before={item.file.size} after={item.result.blob.size} limit={limitBytes} />
+              {/if}
+            {:else}
+              <span>{item.width} x {item.height} · {formatBytes(item.file.size)}</span>
             {/if}
 
             {#snippet trailing()}

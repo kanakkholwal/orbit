@@ -6,16 +6,19 @@
     OptionToggle,
     ProgressLine,
     ResultCard,
+    ResultDelta,
     SegmentedControl,
     StatusPill,
     ToolBar,
     ToolFooter,
+    deltaTone,
   } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { NumberInput } from "$components/ui/number-input";
   import UploadArea from "$components/ui/UploadArea.svelte";
   import FileSuggestions from "$components/workspace/FileSuggestions.svelte";
   import WorkspaceInspector from "$components/workspace/WorkspaceInspector.svelte";
+  import { cn } from "$lib/utils";
   import { formatBytes } from "$utils/helper";
   import {
     IconArrowRight as ArrowRight,
@@ -50,6 +53,7 @@
     { value: "extreme", label: "Maximum", hint: "Smallest file, visible quality loss" },
   ];
 
+  const targetBytes = $derived(store.settings.targetKB > 0 ? store.settings.targetKB * 1024 : undefined);
   const pendingCount = $derived(store.files.filter((f) => f.status === "pending").length);
   const flatten = $derived(store.settings.algorithm === "photon");
   const runLabel = $derived(
@@ -123,18 +127,21 @@
         <li>
           <FileRow
             name={file.file.name}
+            tone={file.status === "done" && file.compressedSize ? deltaTone(file.originalSize, file.compressedSize, targetBytes) : undefined}
             onRemove={file.status === "pending" && !store.isProcessing ? () => store.removeFile(file.id) : undefined}
           >
             <span>{formatBytes(file.originalSize)}</span>
             {#if file.status === "done" && file.compressedSize}
               <ArrowRight class="size-3" aria-label="compressed to" />
-              <span class="font-medium text-foreground">{formatBytes(file.compressedSize)}</span>
-              <span class="text-success">
-                {Math.max(0, Math.round((1 - file.compressedSize / file.originalSize) * 100))}% smaller
+              <span
+                class={cn(
+                  "font-medium",
+                  deltaTone(file.originalSize, file.compressedSize, targetBytes) === "bad" ? "text-destructive-strong" : "text-success-strong"
+                )}
+              >
+                {formatBytes(file.compressedSize)}
               </span>
-              {#if file.metTarget === false}
-                <span class="text-destructive">Above the target</span>
-              {/if}
+              <ResultDelta before={file.originalSize} after={file.compressedSize} limit={targetBytes} />
             {/if}
 
             {#snippet trailing()}

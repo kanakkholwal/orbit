@@ -4,6 +4,8 @@ export { default as OptionGroup } from "./OptionGroup.svelte";
 export { default as OptionToggle } from "./OptionToggle.svelte";
 export { default as PasswordPrompt } from "./PasswordPrompt.svelte";
 export { default as ProgressLine } from "./ProgressLine.svelte";
+export { default as ResultDelta } from "./ResultDelta.svelte";
+export { deltaTone, type DeltaTone } from "./delta";
 export { default as ResultCard } from "./ResultCard.svelte";
 export { default as SegmentedControl } from "./SegmentedControl.svelte";
 export { default as StatusPill } from "./StatusPill.svelte";

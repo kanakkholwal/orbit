@@ -11,6 +11,8 @@
     /** Image URL shown instead of the icon, for image tools. */
     thumb?: string;
     active?: boolean;
+    /** Tints the row by outcome: good is green, bad is red. */
+    tone?: "good" | "bad" | "flat";
     onSelect?: () => void;
     onRemove?: () => void;
     children?: Snippet;
@@ -18,13 +20,15 @@
     class?: string;
   }
 
-  let { name, meta, icon: Icon = FilePdf, thumb, active = false, onSelect, onRemove, children, trailing, class: className = "" }: Props = $props();
+  let { name, meta, icon: Icon = FilePdf, thumb, active = false, tone, onSelect, onRemove, children, trailing, class: className = "" }: Props = $props();
 </script>
 
 <div
   class={cn(
     "flex items-center gap-3 rounded-xl border bg-background p-1.5 pr-2 transition-colors duration-(--duration-fast) hover:bg-foreground/[0.03]",
-    active ? "border-foreground/30" : "border-border hover:border-border-strong",
+    tone === "good" && "border-success/40 bg-success/[0.05]",
+    tone === "bad" && "border-destructive/40 bg-destructive/[0.05]",
+    !(tone === "good" || tone === "bad") && (active ? "border-foreground/30" : "border-border hover:border-border-strong"),
     className
   )}
 >
