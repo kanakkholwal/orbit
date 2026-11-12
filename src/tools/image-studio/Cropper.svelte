@@ -72,10 +72,10 @@
 
   const pct = (v: number, total: number) => `${(v / total) * 100}%`;
   const corners: { id: Corner; cls: string; cursor: string }[] = [
-    { id: "nw", cls: "-left-5 -top-5", cursor: "cursor-nwse-resize" },
-    { id: "ne", cls: "-right-5 -top-5", cursor: "cursor-nesw-resize" },
-    { id: "sw", cls: "-bottom-5 -left-5", cursor: "cursor-nesw-resize" },
-    { id: "se", cls: "-bottom-5 -right-5", cursor: "cursor-nwse-resize" },
+    { id: "nw", cls: "-left-1 -top-1 items-start justify-start", cursor: "cursor-nwse-resize" },
+    { id: "ne", cls: "-right-1 -top-1 items-start justify-end", cursor: "cursor-nesw-resize" },
+    { id: "sw", cls: "-bottom-1 -left-1 items-end justify-start", cursor: "cursor-nesw-resize" },
+    { id: "se", cls: "-bottom-1 -right-1 items-end justify-end", cursor: "cursor-nwse-resize" },
   ];
 </script>
 
@@ -98,13 +98,13 @@
     {#each corners as c (c.id)}
       <span
         role="presentation"
-        class="absolute grid size-10 place-items-center {c.cls} {c.cursor}"
+        class="absolute flex size-11 p-1.5 {c.cls} {c.cursor}"
         onpointerdown={(e) => startResize(e, c.id)}
         onpointermove={onMove}
         onpointerup={end}
         onpointercancel={end}
       >
-        <span class="size-3 rounded-sm border border-foreground/40 bg-white"></span>
+        <span class="size-3.5 rounded-sm border border-foreground/40 bg-white"></span>
       </span>
     {/each}
   </div>

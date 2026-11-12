@@ -84,12 +84,15 @@
           <FileRow
             name={item.file.name}
             icon={FileText}
+            tone={item.status === "error" ? "bad" : undefined}
             onRemove={item.status === "processing" ? undefined : () => store.removeItem(item.id)}
           >
             <span>{formatBytes(item.file.size)}</span>
             {#if item.status === "done" && item.result}
               <ArrowRight class="size-3" aria-label="became" />
               <span class="font-medium text-foreground">{item.result.name}</span>
+            {:else if item.status === "error"}
+              <span class="whitespace-normal text-destructive-strong">{item.error}</span>
             {/if}
 
             {#snippet trailing()}
@@ -100,7 +103,7 @@
                   <Download class="size-4" />
                 </Button>
               {:else if item.status === "error"}
-                <StatusPill status="error" label={item.error || "Failed"} />
+                <StatusPill status="error" label="Failed" />
               {/if}
             {/snippet}
           </FileRow>

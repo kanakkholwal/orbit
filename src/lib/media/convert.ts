@@ -139,6 +139,9 @@ export class MediaJob {
         const output = new mb.Output({ format: outputFormat(mb, to), target: sink?.target ?? (buffer as InstanceType<typeof mb.BufferTarget>) });
 
         try {
+            if (format.kind === 'audio' && !(await input.getPrimaryAudioTrack())) {
+                throw new Error('This file has no audio track to extract.');
+            }
             const q = quality(mb, this.opts.quality);
             let video: Record<string, unknown> = { discard: true };
             if (format.kind === 'video') {

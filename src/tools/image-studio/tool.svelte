@@ -116,7 +116,7 @@
             name={item.file.name}
             thumb={item.previewUrl}
             active={store.usesCrop && active?.id === item.id}
-            tone={item.result && judged ? deltaTone(item.file.size, item.result.blob.size, limitBytes) : undefined}
+            tone={item.status === "error" ? "bad" : item.result && judged ? deltaTone(item.file.size, item.result.blob.size, limitBytes) : undefined}
             onSelect={store.usesCrop ? () => (store.activeId = item.id) : undefined}
             onRemove={store.isProcessing ? undefined : () => store.removeItem(item.id)}
           >
@@ -135,6 +135,8 @@
               {#if judged}
                 <ResultDelta before={item.file.size} after={item.result.blob.size} limit={limitBytes} />
               {/if}
+            {:else if item.status === "error"}
+              <span class="whitespace-normal text-destructive-strong">{item.error}</span>
             {:else}
               <span>{item.width} x {item.height} · {formatBytes(item.file.size)}</span>
             {/if}
@@ -147,7 +149,7 @@
                   <Download class="size-4" />
                 </Button>
               {:else if item.status === "error"}
-                <StatusPill status="error" label={item.error || "Failed"} />
+                <StatusPill status="error" label="Failed" />
               {/if}
             {/snippet}
           </FileRow>

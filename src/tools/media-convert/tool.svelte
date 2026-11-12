@@ -110,7 +110,7 @@
           <FileRow
             name={item.file.name}
             icon={Icon}
-            tone={item.result && store.judged ? deltaTone(item.file.size, item.result.blob.size) : undefined}
+            tone={item.status === "error" ? "bad" : item.result && store.judged ? deltaTone(item.file.size, item.result.blob.size) : undefined}
             onRemove={item.status === "processing" ? undefined : () => store.removeItem(item.id)}
           >
             <span>{formatBytes(item.file.size)}</span>
@@ -127,6 +127,8 @@
               {#if store.judged}
                 <ResultDelta before={item.file.size} after={item.result.blob.size} />
               {/if}
+            {:else if item.status === "error"}
+              <span class="whitespace-normal text-destructive-strong">{item.error}</span>
             {:else if item.status === "processing"}
               <Progress value={Math.round(item.progress * 100)} max={100} size="sm" label={`Converting ${item.file.name}`} class="w-24" />
               <span class="tabular-nums">{Math.round(item.progress * 100)}%</span>
@@ -138,7 +140,7 @@
                   <Download class="size-4" />
                 </Button>
               {:else if item.status === "error"}
-                <StatusPill status="error" label={item.error || "Failed"} />
+                <StatusPill status="error" label="Failed" />
               {/if}
             {/snippet}
           </FileRow>
