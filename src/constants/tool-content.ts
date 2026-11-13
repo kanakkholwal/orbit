@@ -98,6 +98,19 @@ function defaultUseCases(tool: ToolMeta): ToolUseCase[] {
 /* ── Bespoke content (hand-written, overrides the generator) ──────────────── */
 
 const bespoke: Record<string, Partial<ToolContent>> = {
+    'custom-qr-code-generator': {
+        howItWorks: ['Type a link or text.', 'Pick the dot style, colours and corner shapes. Add your logo if you like.', 'Check that it scans on your phone.', 'Download as PNG, SVG or WebP.'],
+        useCases: [
+            { title: 'Branded print', body: 'Match the code to your colours and put your logo in the middle of a flyer or menu.' },
+            { title: 'Packaging and cards', body: 'Use SVG so the code stays sharp at any size.' },
+            { title: 'Social posts', body: 'A rounded, gradient code looks better next to a photo.' }
+        ],
+        faqs: [
+            { q: 'Will a styled code still scan?', a: 'Yes, if there is strong contrast between the dots and the background and the logo is small. Orbit uses high error correction when a logo is added. Always test before printing.' },
+            { q: 'Does it expire?', a: 'No. The data is written into the code, with no redirect service in between.' },
+            { q: 'Is my logo uploaded?', a: 'No. It is drawn onto the code in your browser and never leaves your device.' }
+        ]
+    },
     'qr-code-generator': {
         howItWorks: ['Type a link or text, or choose Wi-Fi and enter the network.', 'Pick the colours and error correction.', 'Download the code as PNG or SVG.'],
         useCases: [
