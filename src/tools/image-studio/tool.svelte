@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { FileRow, ProgressLine, ResultCard, ResultDelta, StatusPill, ToolBar, ToolFooter, deltaTone } from "$components/tool";
+  import { FileRow, FitFrame, ProgressLine, ResultCard, ResultDelta, StatusPill, ToolBar, ToolFooter, deltaTone } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { ImageCompare } from "$components/ui/image-compare";
   import UploadArea from "$components/ui/UploadArea.svelte";
@@ -71,28 +71,44 @@
     {/if}
 
     {#if showResult && compared?.resultUrl}
-      <ImageCompare aspectRatio={`${compared.width} / ${compared.height}`} class="max-h-[60vh]">
-        {#snippet before()}
-          <img src={compared.previewUrl} alt="Original" />
+      <FitFrame width={compared.width} height={compared.height}>
+        {#snippet children(ratio)}
+          <ImageCompare aspectRatio={ratio}>
+            {#snippet before()}
+              <img src={compared.previewUrl} alt="Original" />
+            {/snippet}
+            {#snippet after()}
+              <img src={compared.resultUrl} alt="Result" />
+            {/snippet}
+          </ImageCompare>
         {/snippet}
-        {#snippet after()}
-          <img src={compared.resultUrl} alt="Result" />
+      </FitFrame>
+    {:else if !store.usesCrop && active}
+      <FitFrame width={active.width} height={active.height}>
+        {#snippet children(ratio)}
+          <div class="overflow-hidden rounded-xl border border-border bg-muted" style:aspect-ratio={ratio}>
+            <img src={active.previewUrl} alt="Preview of the chosen file" class="size-full object-contain" />
+          </div>
         {/snippet}
-      </ImageCompare>
+      </FitFrame>
     {/if}
 
     {#if store.usesCrop && active}
-      <Cropper
-        src={active.previewUrl}
-        width={active.width}
-        height={active.height}
-        crop={active.crop}
-        ratio={store.cropRatio}
-        onchange={(c) => {
-          active.crop = c;
-          store.invalidate(active);
-        }}
-      />
+      <FitFrame width={active.width} height={active.height} maxHeight="70vh">
+        {#snippet children()}
+          <Cropper
+            src={active.previewUrl}
+            width={active.width}
+            height={active.height}
+            crop={active.crop}
+            ratio={store.cropRatio}
+            onchange={(c) => {
+              active.crop = c;
+              store.invalidate(active);
+            }}
+          />
+        {/snippet}
+      </FitFrame>
     {/if}
 
     <ToolBar

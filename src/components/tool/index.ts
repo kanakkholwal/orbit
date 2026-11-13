@@ -20,3 +20,4 @@ export { default as AiGate } from "./AiGate.svelte";
 export { default as PageCard } from "./PageCard.svelte";
 export { default as CollectionGrid } from "./CollectionGrid.svelte";
 export { pageAction } from "./page-card";
+export { default as FitFrame } from "./FitFrame.svelte";
