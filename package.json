@@ -111,6 +111,7 @@
 		"pdf-lib": "^1.17.1",
 		"pdfjs-dist": "^5.4.624",
 		"pptxgenjs": "^4.0.1",
+		"qr-code-styling": "^1.9.2",
 		"qrcode": "^1.5.4",
 		"sortablejs": "^1.15.7",
 		"tailwindcss": "^4.1.18",

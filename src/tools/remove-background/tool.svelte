@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { FileRow, OptionGroup, ProgressLine, ResultCard, SegmentedControl, StatusPill, ToolBar, ToolFooter } from "$components/tool";
+  import { FileRow, FitFrame, OptionGroup, ProgressLine, ResultCard, SegmentedControl, StatusPill, ToolBar, ToolFooter } from "$components/tool";
   import { Button } from "$components/ui/button";
   import { ImageCompare } from "$components/ui/image-compare";
   import UploadArea from "$components/ui/UploadArea.svelte";
@@ -56,16 +56,20 @@
     {/if}
 
     {#if showResult && shown}
-      <div class="overflow-hidden rounded-xl border border-border" style={backdropStyle}>
-        <ImageCompare aspectRatio={`${shown.width} / ${shown.height}`} class="max-h-[60vh]">
-          {#snippet before()}
-            <img src={shown.previewUrl} alt="Original" />
-          {/snippet}
-          {#snippet after()}
-            <img src={store.resultUrls[shown.id]} alt="Background removed" />
-          {/snippet}
-        </ImageCompare>
-      </div>
+      <FitFrame width={shown.width} height={shown.height}>
+        {#snippet children(ratio)}
+          <div class="overflow-hidden rounded-xl border border-border" style={backdropStyle}>
+            <ImageCompare aspectRatio={ratio}>
+              {#snippet before()}
+                <img src={shown.previewUrl} alt="Original" />
+              {/snippet}
+              {#snippet after()}
+                <img src={store.resultUrls[shown.id]} alt="Background removed" />
+              {/snippet}
+            </ImageCompare>
+          </div>
+        {/snippet}
+      </FitFrame>
     {/if}
 
     <ToolBar label="Photos" count={store.items.length} onReset={store.isProcessing ? undefined : () => store.reset()} resetLabel="Clear all">

@@ -4,7 +4,7 @@
   import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "$components/ui/input-group";
   import { ToggleGroup, ToggleGroupItem } from "$components/ui/toggle-group";
   import { appState } from "$stores/app-state.svelte";
-  import { toolList } from "$tools/list";
+  import { listedToolCount } from "$tools/list";
   import {
     IconArrowRight as ArrowRight,
     IconLayoutGrid as All,
@@ -73,7 +73,7 @@
 >
   <div class="mx-auto flex w-full max-w-3xl flex-col items-center px-4 pb-12 pt-12 text-center sm:pb-14 sm:pt-16">
     <Badge variant="secondary" class="rise">
-      <span class="text-primary">{toolList.length} tools</span>, nothing uploaded
+      <span class="text-primary">{listedToolCount} tools</span>, nothing uploaded
     </Badge>
     <h1 class="rise mt-5 text-balance text-4xl font-medium text-foreground md:text-5xl" style="--i:1">
       What do you want to <span class="text-primary">do</span> with your <span class="text-primary">PDF</span>?

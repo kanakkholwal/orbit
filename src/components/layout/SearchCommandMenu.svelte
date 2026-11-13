@@ -22,7 +22,7 @@
   import { Button } from "$components/ui/button";
   import { appState } from "$stores/app-state.svelte";
   import { workspace } from "$stores/workspace.svelte";
-  import { getTool, toolList } from "$tools/list";
+  import { getTool, toolList, listedToolCount } from "$tools/list";
   import {
     IconBug as BugIcon,
     IconCompass as Compass,
@@ -200,7 +200,7 @@
     {/if}
     <CommandBar>
       <CommandInput
-        placeholder={phone ? "Search tools and pages" : `Search ${toolList.length} tools and pages`}
+        placeholder={phone ? "Search tools and pages" : `Search ${listedToolCount} tools and pages`}
         hint={phone ? undefined : "Ctrl K"}
       />
       <CommandFilters bind:value={scope} label="Show">

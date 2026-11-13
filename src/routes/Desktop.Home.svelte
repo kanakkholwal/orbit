@@ -7,7 +7,7 @@
   import { toolsCategories } from "$constants/tools";
   import { recentTools } from "$lib/runtime/recent-tools.svelte";
   import { cn } from "$lib/utils";
-  import { getTool, toolList } from "$tools/list";
+  import { getTool, toolList, listedToolCount } from "$tools/list";
   import {
     IconArrowUpRight as ArrowUpRight,
     IconLayoutGrid as All,
@@ -29,7 +29,7 @@
   const recent = $derived(recentTools.items.map((r) => getTool(r.slug)).filter((t) => t !== null).slice(0, 4));
 
   const categories = $derived([
-    { id: "all", name: "All tools", count: toolList.length, icon: All },
+    { id: "all", name: "All tools", count: listedToolCount, icon: All },
     ...toolsCategories.map((c) => ({ id: c.id, name: c.name, count: c.tools?.length ?? 0, icon: c.icon })),
   ]);
 
@@ -85,7 +85,7 @@
         bind:this={searchInput}
         bind:value={query}
         type="search"
-        placeholder={`Search ${toolList.length} tools`}
+        placeholder={`Search ${listedToolCount} tools`}
         class="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none"
       />
       <kbd class="rounded-sm border border-border bg-muted px-1.5 font-mono text-xs text-muted-foreground">/</kbd>

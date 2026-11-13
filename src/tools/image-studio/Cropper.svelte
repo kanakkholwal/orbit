@@ -82,7 +82,7 @@
 <div
   bind:this={frame}
   class="relative mx-auto w-full max-w-full touch-none select-none overflow-hidden rounded-xl border border-border bg-muted"
-  style="aspect-ratio: {width} / {height}; max-height: 70vh;"
+  style="aspect-ratio: {width} / {height};"
 >
   <img {src} alt="Selected for cropping" draggable="false" class="pointer-events-none absolute inset-0 size-full" />
   <div
