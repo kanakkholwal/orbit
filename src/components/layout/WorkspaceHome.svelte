@@ -7,7 +7,7 @@
   import { toolsCategories } from "$constants/tools";
   import { clearRecentTools, recentTools } from "$lib/runtime/recent-tools.svelte";
   import { workspace } from "$stores/workspace.svelte";
-  import { getTool, toolList, type ToolConfig } from "$tools/list";
+  import { getTool, listedToolCount, type ToolConfig } from "$tools/list";
   import {
     IconArrowRight as ArrowRight,
     IconChevronRight as ChevronRight,
@@ -46,7 +46,7 @@
     </div>
     <Button variant="outline" onclick={() => (workspace.searchOpen = true)} class="w-full sm:w-64 justify-start text-muted-foreground">
       <Search />
-      Search {toolList.length} tools
+      Search {listedToolCount} tools
       <kbd class="ml-auto rounded-sm border border-border bg-muted px-1.5 text-xs">Ctrl K</kbd>
     </Button>
   </header>
@@ -97,7 +97,7 @@
     <div class="flex items-end justify-between gap-4">
       <h2 id="popular-heading" class="text-xl font-medium text-foreground">Popular tools</h2>
       <Button href="/explore" variant="ghost" size="sm">
-        All {toolList.length} tools
+        All {listedToolCount} tools
         <ArrowRight />
       </Button>
     </div>

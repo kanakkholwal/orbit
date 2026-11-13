@@ -820,6 +820,8 @@ export { tools };
 
 export const toolKeys = Object.keys(tools);
 export const toolList = Object.values(tools);
+/** Tools shown in menus. Alias pages are searchable but not counted. */
+export const listedToolCount = toolList.filter((t) => !t.alias).length;
 
 export const getRecommendedTools = (slug: string): Omit<ToolConfig & {relevance: number}, 'component'>[] => {
     const tool = getTool(slug);

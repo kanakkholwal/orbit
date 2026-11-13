@@ -4,7 +4,7 @@
   import Seo from "$components/Seo.svelte";
   import { Button } from "$components/ui/button";
   import { config, faqs } from "$constants/app";
-  import { toolList } from "$tools/list";
+  import { toolList, listedToolCount } from "$tools/list";
   import {
     IconArrowUpRight as ArrowUpRight,
     IconBolt as Zap,
@@ -115,7 +115,7 @@
           <div class="flex flex-wrap items-end justify-between gap-4">
             <h2 class="text-2xl font-medium text-foreground sm:text-3xl">Tools</h2>
             <Button href="/explore" variant="outline" size="sm">
-              All {toolList.length} tools
+              All {listedToolCount} tools
               <ArrowUpRight />
             </Button>
           </div>

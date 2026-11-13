@@ -15,7 +15,7 @@
   const faqs = [
     {
       q: "What can Orbit do?",
-      a: "It handles PDFs, photos, video, audio and documents: merge, split, compress, resize, crop, convert, sign, extract and more. There are over 90 tools, plus ready-made presets for jobs such as passport photos and files under a size limit.",
+      a: "It handles PDFs, photos, video, audio and documents: merge, split, compress, resize, crop, convert, sign, extract and more. There are over 100 tools, plus ready-made presets for jobs such as passport photos and files under a size limit.",
     },
     {
       q: "Are my files uploaded anywhere?",
