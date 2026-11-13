@@ -24,6 +24,13 @@ export class MediaConvertState extends BaseEngine {
     maxHeight = $state<number | undefined>(undefined);
     /** Compress jobs are judged green or red by how much smaller the file got. */
     judged = $state(false);
+    op = $state<MediaDef['op']>(undefined);
+    mute = $state(false);
+    rotate = $state<0 | 90 | 180 | 270>(0);
+    flip = $state(false);
+    trimStart = $state(0);
+    /** 0 means to the end. */
+    trimEnd = $state(0);
     private current: MediaJob | null = null;
     private stopped = false;
 
@@ -38,6 +45,9 @@ export class MediaConvertState extends BaseEngine {
         this.quality = def.quality ?? 'medium';
         this.maxHeight = def.maxHeight;
         this.judged = def.judged ?? false;
+        this.op = def.op;
+        this.mute = def.op === 'mute';
+        this.rotate = def.op === 'rotate' ? 90 : 0;
         this.kind = def.kind;
     }
 
@@ -110,7 +120,7 @@ export class MediaConvertState extends BaseEngine {
             item.status = 'processing';
             item.progress = 0;
             try {
-                this.current = new MediaJob(item.file, { to: this.to, quality: this.quality, maxHeight: this.maxHeight, stream: deviceProfile.streaming }, (p) => (item.progress = p));
+                this.current = new MediaJob(item.file, { to: this.to, quality: this.quality, maxHeight: this.maxHeight, stream: deviceProfile.streaming, mute: this.mute, rotate: this.rotate, flip: this.flip, trimStart: this.trimStart, trimEnd: this.trimEnd }, (p) => (item.progress = p));
                 const { blob, cleanup } = await this.current.run();
                 item.result = { cleanup, blob, name: settings.outputName(item.file.name, format?.id ?? this.to) };
                 item.status = 'done';

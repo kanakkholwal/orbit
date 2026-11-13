@@ -7,6 +7,7 @@ import { ALIAS_BASE } from '$tools/extra';
 import { imageToolContent } from '$tools/image-studio/content';
 import { docToolContent } from '$tools/document-convert/content';
 import { DOC_ALIAS_BASE } from '$tools/document-convert/register';
+import { imageFixContent } from '$tools/image-fix/content';
 import { mediaToolContent } from '$tools/media-convert/content';
 import { MEDIA_ALIAS_BASE } from '$tools/media-convert/register';
 import { IMAGE_ALIAS_BASE } from '$tools/image-studio/register';
@@ -43,6 +44,7 @@ type ToolMeta = Pick<ToolConfig, 'slug' | 'title' | 'description' | 'category'>;
 const OFFLINE_EXCEPTIONS: Record<string, string> = {
     'ocr-pdf': 'Mostly. The first time you read text in a language, its recognition data is downloaded once. After that, OCR for that language works without an internet connection.',
     'create-pdf': 'Yes, after the first PDF you make. The PDF engine downloads once the first time you preview or download, then it works without an internet connection.',
+    'remove-background': 'Yes, after the first photo. The recognition model of about 40 MB downloads once, then it is cached and works without an internet connection.',
     'read-pdf-aloud': 'Yes, with a voice that is installed on your device. Voices marked Online in the voice list need an internet connection.'
 };
 
@@ -96,6 +98,62 @@ function defaultUseCases(tool: ToolMeta): ToolUseCase[] {
 /* ── Bespoke content (hand-written, overrides the generator) ──────────────── */
 
 const bespoke: Record<string, Partial<ToolContent>> = {
+    'qr-code-generator': {
+        howItWorks: ['Type a link or text, or choose Wi-Fi and enter the network.', 'Pick the colours and error correction.', 'Download the code as PNG or SVG.'],
+        useCases: [
+            { title: 'Wi-Fi for guests', body: 'Print a code that joins your network without typing the password.' },
+            { title: 'Menus and flyers', body: 'Link to a page from print. The code does not expire.' },
+            { title: 'Business cards', body: 'Send people to your site or profile.' }
+        ],
+        faqs: [
+            { q: 'Does the QR code expire?', a: 'No. The data is written into the code itself, with no redirect service in between, so it works as long as the link does.' },
+            { q: 'PNG or SVG?', a: 'Use SVG for print, since it stays sharp at any size. Use PNG for screens and documents.' }
+        ]
+    },
+    'file-hash': {
+        howItWorks: ['Add one or more files.', 'Wait a moment for the checksums.', 'Compare or copy the SHA-256, SHA-1 or SHA-512 value.'],
+        useCases: [
+            { title: 'Check a download', body: 'Match the checksum a publisher lists to be sure the file is intact.' },
+            { title: 'Find duplicates', body: 'Two files with the same hash are the same file.' },
+            { title: 'Prove a file did not change', body: 'Keep the hash and compare it later.' }
+        ],
+        faqs: [
+            { q: 'Which hash should I use?', a: 'SHA-256 is the common choice. SHA-1 is listed only because some sites still publish it.' },
+            { q: 'Is there a size limit?', a: 'The file is read into memory, so very large files can fail on small devices.' }
+        ]
+    },
+    'favicon-generator': {
+        howItWorks: ['Choose a square logo, 512 x 512 pixels or more.', 'Wait while the icons are made.', 'Download the ZIP and paste the HTML snippet into your page.'],
+        useCases: [
+            { title: 'New websites', body: 'Get every icon size browsers and phones ask for.' },
+            { title: 'Web apps', body: 'Android icons at 192 and 512 pixels for an installable app.' },
+            { title: 'Blogs', body: 'Replace the default icon with your logo.' }
+        ],
+        faqs: [{ q: 'What is in the ZIP?', a: 'favicon.ico with 16, 32 and 48 pixel images, 16 and 32 pixel PNGs, an Apple touch icon, Android icons, and a ready-made HTML snippet.' }]
+    },
+    'color-palette': {
+        howItWorks: ['Choose an image.', 'See its main colours.', 'Copy a hex code, or change how many colours to show.'],
+        useCases: [
+            { title: 'Brand colours', body: 'Pull the colours from a logo.' },
+            { title: 'Design inspiration', body: 'Build a palette from a photo you like.' },
+            { title: 'Matching', body: 'Find a colour that goes with a product shot.' }
+        ],
+        faqs: [{ q: 'How are the colours picked?', a: 'The image is shrunk and split into groups of similar colours. Each group gives one colour, ordered by how much of the image it covers.' }]
+    },
+    'remove-background': {
+        intro: 'Remove Background cuts the subject out of a photo and saves it as a transparent PNG, or on white or any colour you pick. The AI model runs on your device, so the photo is never uploaded.',
+        howItWorks: ['Add one or more photos.', 'Press Remove background. The first photo also downloads the model, about 40 MB, once.', 'Pick Transparent, White or a colour.', 'Download the PNG, or a ZIP for several photos.'],
+        useCases: [
+            { title: 'Passport and ID photos', body: 'Put a clean white background behind a portrait before you resize it for a form.' },
+            { title: 'Product photos', body: 'Cut products out for a shop listing or a marketplace.' },
+            { title: 'Profile pictures and logos', body: 'Get a transparent PNG to place on any design.' }
+        ],
+        faqs: [
+            { q: 'Are my photos uploaded?', a: 'No. The photo is processed on your device. Only the model file is downloaded, once, from a public CDN, and it never receives your image.' },
+            { q: 'Why is the first photo slow?', a: 'The model is about 40 MB and is downloaded and cached on first use. Later photos start right away.' },
+            { q: 'Does it work on hair and fine edges?', a: 'Mostly. The small model can leave soft edges on very fine hair or similar colours. Plain, well-lit backgrounds give the cleanest result.' }
+        ]
+    },
     'md-to-pdf': {
         intro:
             'Markdown is perfect for writing, but most people need a PDF to share or print. This tool renders GitHub-flavored Markdown — headings, lists, tables, task lists, strikethrough, alerts, code blocks, blockquotes and rules — into a clean, paginated PDF, entirely in your browser. Paste your Markdown directly or load a .md file, and the conversion happens on your device with nothing uploaded.',
@@ -373,7 +431,7 @@ const bespoke: Record<string, Partial<ToolContent>> = {
 /* ── Public accessor ──────────────────────────────────────────────────────── */
 
 export function getToolContent(tool: ToolMeta): ToolContent {
-    const lookup = (slug: string) => bespoke[slug] ?? moreToolContent[slug] ?? toolContentBatchA[slug] ?? toolContentBatchB[slug] ?? toolContentBatchC[slug] ?? imageToolContent[slug] ?? mediaToolContent[slug] ?? docToolContent[slug];
+    const lookup = (slug: string) => bespoke[slug] ?? moreToolContent[slug] ?? toolContentBatchA[slug] ?? toolContentBatchB[slug] ?? toolContentBatchC[slug] ?? imageToolContent[slug] ?? imageFixContent[slug] ?? mediaToolContent[slug] ?? docToolContent[slug];
     const own = lookup(tool.slug);
     const aliasBase = ALIAS_BASE[tool.slug] ?? IMAGE_ALIAS_BASE[tool.slug] ?? MEDIA_ALIAS_BASE[tool.slug] ?? DOC_ALIAS_BASE[tool.slug] ?? (tool.slug.startsWith('compress-pdf-to-') ? 'compress-pdf' : undefined);
     const shared = !own && aliasBase ? lookup(aliasBase) : undefined;

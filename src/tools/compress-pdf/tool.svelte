@@ -35,7 +35,7 @@
   // Size-limit pages such as compress-pdf-to-200kb start with that target set.
   const fromSlug = /-to-(\d+)(kb|mb)$/.exec(untrack(() => slug));
   if (fromSlug) store.settings.targetKB = Number(fromSlug[1]) * (fromSlug[2] === "mb" ? 1024 : 1);
-  const targetChips = [100, 200, 500, 1024, 2048].map((kb) => ({
+  const targetChips = [50, 100, 200, 300, 500, 1024, 2048].map((kb) => ({
     value: String(kb),
     label: kb >= 1024 ? `${kb / 1024} MB` : `${kb} KB`,
   }));

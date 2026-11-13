@@ -1,7 +1,7 @@
 import { IconGauge } from '$lib/icons';
 import type { ToolConfig } from '../list';
 
-const SIZES = [100, 200, 500, 1024, 2048];
+const SIZES = [50, 100, 200, 300, 500, 1024, 2048];
 const noUpload = ['no upload', 'free', 'offline'];
 
 const label = (kb: number) => (kb >= 1024 ? `${kb / 1024} MB` : `${kb} KB`);
